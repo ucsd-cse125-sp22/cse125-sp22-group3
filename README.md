@@ -14,18 +14,18 @@ will be made and followed to make sure everyone is on track. Meeting times will 
 Wed. & Sat. @ 5-7PM
 
 ## Project Development
-We've divided our group into 7 core components each with a component Lead:
-**Gameplay/Level design**: Danica
-**Networking**: Nick
-**Art**: Cher
-**Graphics**: Cynthia
-**Integration testing**: Jennie
-**Game Logic/Physics**: Aarushi
-**Audio**: Jakob
+We've divided our group into 7 core components each with a component Lead: <br/>
+**Gameplay/Level design**: Danica <br/>
+**Networking**: Nick<br/>
+**Art**: Cher<br/>
+**Graphics**: Cynthia<br/>
+**Integration testing**: Jennie<br/>
+**Game Logic/Physics**: Aarushi<br/>
+**Audio**: Jakob<br/>
 Ofcourse everyone is allowed to work on any other part of the game, but component leads will keep track of and document progress.
-Everyone is responsible for testing and making sure their components are working.
-Every component lead will do documentation
-Visual Studio, C++ / JetBrains Rider, OpenGL will be used
+Everyone is responsible for testing and making sure their components are working.<br/>
+Every component lead will do documentation<br/>
+Visual Studio, C++ / JetBrains Rider, OpenGL will be used<br/>
 
 ## Project schedule
 Project timeline can be found on our [miro page](https://miro.com/welcomeonboard/cFF1MTFUenZteXlOQXNwaUlGY3dyOWJEREtCSFVGQVhscjc1dUhvQ1hJZnhhVjVjT0pZaGZKUEhIZXBJN0Y4N3wzMDc0NDU3MzY1OTQzMzg1MDk2?invite_link_id=78445583029)
