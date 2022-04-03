@@ -1,4 +1,4 @@
-# cse125-sp22-group3 - Farmers Market
+# CSE125 Spring 2022: Group 3 - Farmers Market
 By: Cherellen Banaga, Cynthia Butarbutar, Jakob Getzel, Nicholas Limit, Aarushi Shah, Danica Xiong, Shujing Zhang
 
 ## Project Description
