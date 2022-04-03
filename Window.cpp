@@ -55,8 +55,8 @@ bool Window::initializeObjects()
 {
 	// model = new Model("models/bunny.obj");
 	// mesh = new Mesh();
-	// model = new Model("models/Chef Bear/NpcChefBear.fbx");
-	model = new Model("models/backpack/backpack.obj");
+	model = new Model("models/Chef Bear/NpcChefBear.fbx");
+	//model = new Model("models/backpack/backpack.obj");
 	// Create a cube of size 5.
 	cube = new Cube(5.0f);
 
