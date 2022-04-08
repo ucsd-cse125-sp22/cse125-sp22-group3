@@ -5,65 +5,61 @@
 #include <functional>
 
 // Networking libraries
-#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-// potentially needed
-//#pragma comment (lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
+#pragma comment (lib, "Ws2_32.lib")
 
-#define DEFAULT_PORT "8686"
 #define DEFAULT_BUFLEN 1024
 
-// TODO: should fail be exit(1), or should it be handled silently?
 Client::Client(const char* server_addr, const char* server_port)
 {
-	// initialize WinSock
+	// initialize Winsock 2.2
 	WSADATA wsaData;
 	int startupStatus = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (startupStatus != 0)
-	{
+	if (startupStatus != 0) {
 		printf("WSAStartup failed: %d\n", startupStatus);
 		exit(1);
 	}
 
-	// prepare addrinfo request for server
+	// hints for request to get server address
 	struct addrinfo hints;
 	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
+	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP; /* Establish TCP connection */
+	hints.ai_protocol = IPPROTO_TCP;
 
-	/* get addrinfo for server */
-	struct addrinfo* lookup_result = NULL; // result is the address info of the server
-	int getaddrStatus = getaddrinfo(server_addr, server_port, &hints, &lookup_result);
-	if (getaddrStatus != 0) {
+	// resolve server address and port info
+	struct addrinfo* result = NULL;
+	int getaddrStatus = getaddrinfo(server_addr, server_port, &hints, &result);
+	if (getaddrStatus != 0) { // can't resolve server hostname / IP address
 		printf("getaddrinfo failed: %d\n", getaddrStatus);
 		WSACleanup();
 		exit(1);
 	}
 
-	// initialize socket for client
-	for (struct addrinfo* s_addr_ptr = lookup_result; s_addr_ptr != NULL && ConnectSocket != INVALID_SOCKET; s_addr_ptr = s_addr_ptr->ai_next) {
-		// creating a socket for the client to connect to the server
-		ConnectSocket = socket(s_addr_ptr->ai_family, s_addr_ptr->ai_socktype, s_addr_ptr->ai_protocol);
+	// attempt all addresses from getaddrinfo's result
+	for (struct addrinfo* addr = result; addr != NULL; addr = addr->ai_next) {
+		// creating a socket for the client conforming to current address's protocols
+		ConnectSocket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 		if (ConnectSocket == INVALID_SOCKET) {
 			printf("socket failed with error: %ld\n", WSAGetLastError());
 			WSACleanup();
-			exit(1);
+			continue;
 		}
 
-		// connect to the server
-		int connectStatus = connect(ConnectSocket, s_addr_ptr->ai_addr, (int)s_addr_ptr->ai_addrlen);
+		// connect to the current address
+		int connectStatus = connect(ConnectSocket, addr->ai_addr, (int)addr->ai_addrlen);
 		if (connectStatus == SOCKET_ERROR) {
 			closesocket(ConnectSocket);
 			ConnectSocket = INVALID_SOCKET;
 		}
+		else {
+			break;
+		}
 	}
 
-	freeaddrinfo(lookup_result);
+	freeaddrinfo(result); // no longer needed
 
 	// if connection failed
 	if (ConnectSocket == INVALID_SOCKET) {
@@ -97,7 +93,7 @@ Client::~Client(void)
 		printf("shutdown failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);
 		WSACleanup();
-		exit(1);
+		return;
 	}
 
 	// TODO deal with remaining data, before server also closes connection
@@ -106,42 +102,38 @@ Client::~Client(void)
 	WSACleanup();
 }
 
-// TODO more graceful error handling
-void Client::syncWithServer(std::function<void()> callback) {
-	int recvStatus;
-	do {
-		// sending data (inputs)
-		const char* dummyData = "CSE 125 Group 3 Network Team";
-		int sendStatus = send(ConnectSocket, dummyData, strlen(dummyData), 0);
-		if (sendStatus == SOCKET_ERROR) {
-			printf("send failed: %d\n", WSAGetLastError());
-			closesocket(ConnectSocket);
-			WSACleanup();
-			exit(1);
-		}
-		else {
-			printf("Bytes Sent: %ld\n", sendStatus);
-		}
+/*
+ * Returns bytes received from server. If return value is 0, server has closed connection.
+ * Delete the client object immediately.
+ */
+int Client::syncWithServer(const char* send_buf, size_t send_len,
+	std::function<void(const char* recv_buf, size_t recv_len)> callback)
+{
+	// sending data (inputs)
+	int sendStatus = send(ConnectSocket, send_buf, send_len, 0);
+	if (sendStatus == SOCKET_ERROR) {
+		printf("send failed: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		exit(1); // TODO more gracful error handling
+	}
+	else {
+		printf("Client bytes sent: %ld\n", sendStatus);
+	}
 
-		//receiving data (updated state)
-		char recvbuf[DEFAULT_BUFLEN];
-		recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
-		if (recvStatus < 0)
-		{
-			printf("recv failed: %d\n", WSAGetLastError());
-		}
-		else if (recvStatus == 0)
-		{
-			printf("Connection closed\n");
-			closesocket(ConnectSocket);
-			WSACleanup();
-			exit(1);
-		}
-		else
-		{
-			printf("Bytes Received: %ld\n", recvStatus);
-		}
+	//receiving data (updated state)
+	char recvbuf[DEFAULT_BUFLEN];
+	int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+	if (recvStatus == SOCKET_ERROR) {
+		printf("recv failed: %d\n", WSAGetLastError());
+	}
+	else if (recvStatus == 0) {
+		printf("Connection closed by server\n");
+	}
+	else {
+		printf("Client bytes received: %ld\n", recvStatus);
+		callback(recvbuf, recvStatus);
+	}
 
-		callback();
-	} while (recvStatus > 0);
+	return recvStatus;
 }
