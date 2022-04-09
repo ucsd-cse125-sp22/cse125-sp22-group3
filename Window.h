@@ -15,7 +15,8 @@ public:
 	static const char* windowTitle;
 
 	// Objects to Render
-	static Model* model;
+	static Model* idle;
+	static Model* walking;
 	static Player* player;
 
 	// Camera Matrices

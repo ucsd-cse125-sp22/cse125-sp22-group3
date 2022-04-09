@@ -24,6 +24,8 @@ class Player {
 
 		// Current model to display
 		Model* current;
+		Model* idle;
+		Model* walking;
 
 		// Moving player
 		void move();
@@ -42,19 +44,23 @@ class Player {
 
 	public:
 		Player();
+
+		/* Curr should be idle */
 		Player(Model * curr);
 
+		// Animations / Modes
+		void addIdle(Model* idle);
+		void addWalking(Model* walking);
+
+		// Rendering
 		void update();
 		void draw(glm::mat4 view, glm::mat4 projection, GLuint shader);
 
+		// Movement
 		void Forward();
 		void Backward();
 		void Left();
 		void Right();
-
-		void StopMoving();
-		void StopTurning();
-
 		void StopMovingForward();
 		void StopMovingBackward();
 		void StopTurningLeft();

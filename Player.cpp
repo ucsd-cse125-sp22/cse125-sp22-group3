@@ -1,8 +1,20 @@
 #include "Player.h"
 
+Player::Player() {
+	translate = glm::vec3(0.0f);
+	rotate = glm::vec3(0.0f);
+	scale = glm::vec3(0.0f);
+
+	forward = false;
+	backward = false;
+	left = false;
+	right = false;;
+}
+
 Player::Player(Model * curr) {
 	// Set initial values
 	current = curr;
+	idle = curr;
 
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
@@ -12,6 +24,14 @@ Player::Player(Model * curr) {
 	backward = false;
 	left = false;
 	right = false;;
+}
+
+void Player::addIdle(Model* i) {
+	idle = i;
+}
+
+void Player::addWalking(Model* w) {
+	walking = w;
 }
 
 void Player::update() {
@@ -54,7 +74,16 @@ void Player::update() {
 	lastTime = currTime;
 	currTime = glfwGetTime();
 
-	move();
+	// not moving, set curr model to be idle
+	if (currSpeed == 0.f && currTurn == 0.f) {
+		current = idle;
+	}
+
+	// apply moving transformation, set curr model to walking
+	else {
+		current = walking;
+		move();
+	}
 }
 
 void Player::move() {

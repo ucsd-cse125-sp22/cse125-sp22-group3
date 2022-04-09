@@ -7,7 +7,8 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Model * Window::model;
+Model * Window::idle;
+Model * Window::walking;
 Player* Window::player;
 
 // Camera Matrices 
@@ -57,9 +58,13 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	// model = new Model("models/Chef Bear/NpcChefBear.fbx");
-	model = new Model("models/bumbus/walking.fbx");
-	player = new Player(model);
+	// load models
+	idle = new Model("models/bumbus/idle.fbx");
+	walking = new Model("models/bumbus/walking.fbx");
+
+	// load models into player
+	player = new Player(idle);
+	player->addWalking(walking);
 
 	return true;
 }
