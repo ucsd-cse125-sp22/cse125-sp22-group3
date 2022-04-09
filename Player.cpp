@@ -41,19 +41,31 @@ void Player::update() {
 	if (right) move_dir += glm::vec3(1,0,0);
 	if (left) move_dir += glm::vec3(-1,0,0);
 
-	currVel = RUN_OFFSET * move_dir;
+	// If no movement is given apply friction (epsilon to account for FP errors)
+	if (glm::length(move_dir) < glm::epsilon<float>()) {
+		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
+		else {
+			curr_vel_ -= (glm::normalize(curr_vel_) * friction_);
+		}
+		current = idle;
 
+	}
+	else {
+		// Accelerate in our inputted direction
+		curr_vel_ += base_accel_ * move_dir;
+		// Cap our speed at some max velocity
+		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
+		
+		current = walking;
+	}
+	
 	// get current and last time to get delta
 	lastTime = currTime;
 	currTime = glfwGetTime();
 
-	if (glm::length(currVel) > 0) {
-		current = walking;
-		move();
-	}
-	else {
-		current = idle;
-	}
+	if (glm::length(curr_vel_) > 0) move();
+	
+
 	/*
 	// get current speed and turn based on offsets
 	currTurn = 0.f; currSpeed = 0.f;
@@ -106,12 +118,20 @@ void Player::update() {
 	}*/
 }
 
+float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
+{
+	return a + f * (b - a);
+}
+
+
 void Player::move() {
-	const float delta = (float)currTime - lastTime;
-	const glm::vec3 distance = delta * currVel;
+	const float delta = (float)currTime - lastTime; //TODO this should be more global
+	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;
 
-	rotate.y = atan2(currVel.x, currVel.z);
+	
+	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
+	
 	/*
 	const float delta = (float)currTime - lastTime;
 	rotate.y += currTurn * delta;
