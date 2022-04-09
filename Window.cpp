@@ -15,6 +15,8 @@ Player* Window::player;
 // Projection matrix:
 glm::mat4 Window::projection; 
 
+constexpr float camera_angle = glm::radians(45.0f);
+constexpr float camera_dist = 20;
 // View Matrix:
 glm::vec3 Window::eyePos(0, 0, 20);	// Camera position.
 glm::vec3 Window::lookAtPoint(0, 0, 0);		// The point we are looking at.
@@ -164,6 +166,10 @@ void Window::displayCallback(GLFWwindow* window)
 {	
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+
+	eyePos = player->GetPosition() + camera_dist;	// TODO implement angle.
+	lookAtPoint = player->GetPosition();		// The point we are looking at.
+	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
 
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);

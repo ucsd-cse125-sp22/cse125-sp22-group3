@@ -65,6 +65,10 @@ class Player {
 		void StopMovingBackward();
 		void StopTurningLeft();
 		void StopTurningRight();
+
+		// Information
+		glm::vec3 GetPosition() const;
+
 };
 
 #endif

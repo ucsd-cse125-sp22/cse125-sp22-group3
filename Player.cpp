@@ -139,6 +139,11 @@ glm::mat4 Player::GetScale() {
 	return glm::translate(scale);
 }
 
+glm::vec3 Player::GetPosition() const
+{
+	return translate;
+}
+
 void Player::StopMovingForward() {
 	forward = false;
 }
