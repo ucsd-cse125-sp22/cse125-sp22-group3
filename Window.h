@@ -1,12 +1,9 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
-#include "Model.h"
+#include "Player.h"
 #include "main.h"
 #include "shader.h"
-#include "Object.h"
-#include "Cube.h"
-#include "PointCloud.h"
 
 class Window
 {
@@ -18,10 +15,9 @@ public:
 	static const char* windowTitle;
 
 	// Objects to Render
-	static Cube* cube;
-	static PointCloud * cubePoints;
-	static Model* model;
-	static Mesh* mesh;
+	static Model* idle;
+	static Model* walking;
+	static Player* player;
 
 	// Camera Matrices
 	static glm::mat4 projection;
@@ -31,6 +27,8 @@ public:
 	// Shader Program ID
 	static GLuint shaderProgram;
 	static GLuint modelShaderProgram;
+	static GLuint animationShaderProgram;
+
 
 	// Constructors and Destructors
 	static bool initializeProgram();
@@ -46,9 +44,16 @@ public:
 	static void displayCallback(GLFWwindow*);
 
 	// Callbacks
+
+	/*
+	 * Where we take user input from the keyboard
+	 */
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
-	static glm::vec3 convert_points(double xpos, double ypos);
+
+	/*
+	 * Where we take user input from the mouse
+	 */
+	static void cursorCallback(GLFWwindow* window, double xpos, double ypos);
 
 };
 
