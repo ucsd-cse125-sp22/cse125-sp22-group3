@@ -35,6 +35,26 @@ void Player::addWalking(Model* w) {
 }
 
 void Player::update() {
+	auto move_dir = glm::vec3(0,0,0);
+	if (forward) move_dir += glm::vec3(0,0,-1);
+	if (backward) move_dir += glm::vec3(0,0,1);
+	if (right) move_dir += glm::vec3(1,0,0);
+	if (left) move_dir += glm::vec3(-1,0,0);
+
+	currVel = RUN_OFFSET * move_dir;
+
+	// get current and last time to get delta
+	lastTime = currTime;
+	currTime = glfwGetTime();
+
+	if (glm::length(currVel) > 0) {
+		current = walking;
+		move();
+	}
+	else {
+		current = idle;
+	}
+	/*
 	// get current speed and turn based on offsets
 	currTurn = 0.f; currSpeed = 0.f;
 
@@ -83,16 +103,23 @@ void Player::update() {
 	else {
 		current = walking;
 		move();
-	}
+	}*/
 }
 
 void Player::move() {
-	float delta = (float)currTime - lastTime;
+	const float delta = (float)currTime - lastTime;
+	const glm::vec3 distance = delta * currVel;
+	translate += distance;
+
+	rotate.y = atan2(currVel.x, currVel.z);
+	/*
+	const float delta = (float)currTime - lastTime;
 	rotate.y += currTurn * delta;
 
 	float distance = currSpeed * delta;
 	translate.x += (float)(distance * glm::sin(rotate.y));
 	translate.z += (float)(distance * glm::cos(rotate.y));
+	*/
 }
 
 void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
