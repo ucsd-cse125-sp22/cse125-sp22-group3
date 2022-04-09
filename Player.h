@@ -22,6 +22,11 @@ class Player {
 		float currTurn = 0.f;
 		float currSpeed = 0.f;
 
+		const float friction_ = 0.15f;
+		const float base_accel_ = 1;
+		const float max_velocity_ = 20;
+		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
+
 		// Current model to display
 		Model* current;
 		Model* idle;
@@ -65,6 +70,10 @@ class Player {
 		void StopMovingBackward();
 		void StopTurningLeft();
 		void StopTurningRight();
+
+		// Information
+		glm::vec3 GetPosition() const;
+
 };
 
 #endif

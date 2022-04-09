@@ -35,6 +35,38 @@ void Player::addWalking(Model* w) {
 }
 
 void Player::update() {
+	auto move_dir = glm::vec3(0,0,0);
+	if (forward) move_dir += glm::vec3(0,0,-1);
+	if (backward) move_dir += glm::vec3(0,0,1);
+	if (right) move_dir += glm::vec3(1,0,0);
+	if (left) move_dir += glm::vec3(-1,0,0);
+
+	// If no movement is given apply friction (epsilon to account for FP errors)
+	if (glm::length(move_dir) < glm::epsilon<float>()) {
+		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
+		else {
+			curr_vel_ -= (glm::normalize(curr_vel_) * friction_);
+		}
+		current = idle;
+
+	}
+	else {
+		// Accelerate in our inputted direction
+		curr_vel_ += base_accel_ * move_dir;
+		// Cap our speed at some max velocity
+		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
+		
+		current = walking;
+	}
+	
+	// get current and last time to get delta
+	lastTime = currTime;
+	currTime = glfwGetTime();
+
+	if (glm::length(curr_vel_) > 0) move();
+	
+
+	/*
 	// get current speed and turn based on offsets
 	currTurn = 0.f; currSpeed = 0.f;
 
@@ -83,16 +115,31 @@ void Player::update() {
 	else {
 		current = walking;
 		move();
-	}
+	}*/
 }
 
+float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
+{
+	return a + f * (b - a);
+}
+
+
 void Player::move() {
-	float delta = (float)currTime - lastTime;
+	const float delta = (float)currTime - lastTime; //TODO this should be more global
+	const glm::vec3 distance = delta * curr_vel_;
+	translate += distance;
+
+	
+	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
+	
+	/*
+	const float delta = (float)currTime - lastTime;
 	rotate.y += currTurn * delta;
 
 	float distance = currSpeed * delta;
 	translate.x += (float)(distance * glm::sin(rotate.y));
 	translate.z += (float)(distance * glm::cos(rotate.y));
+	*/
 }
 
 void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
@@ -137,6 +184,11 @@ glm::mat4 Player::GetTranslation() {
 
 glm::mat4 Player::GetScale() {
 	return glm::translate(scale);
+}
+
+glm::vec3 Player::GetPosition() const
+{
+	return translate;
 }
 
 void Player::StopMovingForward() {
