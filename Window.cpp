@@ -7,18 +7,18 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Cube * Window::cube;
-PointCloud * Window::cubePoints;
-Model * Window::model;
-Mesh * Window::mesh;
-Object* currObj;
+Model * Window::idle;
+Model * Window::walking;
+Player* Window::player;
 
 // Camera Matrices 
 // Projection matrix:
 glm::mat4 Window::projection; 
 
+constexpr float camera_angle = glm::radians(45.0f);
+constexpr float camera_dist = 30;
 // View Matrix:
-glm::vec3 Window::eyePos(0, 0, 20);			// Camera position.
+glm::vec3 Window::eyePos(0, 0, 20);	// Camera position.
 glm::vec3 Window::lookAtPoint(0, 0, 0);		// The point we are looking at.
 glm::vec3 Window::upVector(0, 1, 0);		// The up direction of the camera.
 glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
@@ -26,13 +26,14 @@ glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window
 // Shader Program ID
 GLuint Window::shaderProgram; 
 GLuint Window::modelShaderProgram; 
+GLuint Window::animationShaderProgram; 
 
-glm::vec3 lastPos(0.0, 0.0, 0.0);
 
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
-	modelShaderProgram = LoadShaders("modelShader.vert", "modelShader.frag");
+	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
+	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
 
 	// Check the shader program.
 	if (!shaderProgram)
@@ -48,23 +49,24 @@ bool Window::initializeProgram() {
 		return false;
 	}
 
+	if (!animationShaderProgram)
+	{
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
 bool Window::initializeObjects()
 {
-	// model = new Model("models/bunny.obj");
-	// mesh = new Mesh();
-	model = new Model("models/Chef Bear/NpcChefBear.fbx");
-	//model = new Model("models/backpack/backpack.obj");
-	// Create a cube of size 5.
-	cube = new Cube(5.0f);
+	// load models
+	idle = new Model("models/bumbus/idle.fbx");
+	walking = new Model("models/bumbus/walking.fbx");
 
-	// Create a point cloud consisting of cube vertices.
-	cubePoints = new PointCloud("foo", 100);
-
-	// Set cube to be the first to display
-	currObj = cube;
+	// load models into player
+	player = new Player(idle);
+	player->addWalking(walking);
 
 	return true;
 }
@@ -72,13 +74,12 @@ bool Window::initializeObjects()
 void Window::cleanUp()
 {
 	// Deallcoate the objects.
-	delete cube;
-	delete cubePoints;
-	// delete model;
+	// delete player;
 
 	// Delete the shader program.
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(modelShaderProgram);
+	glDeleteProgram(animationShaderProgram);
 }
 
 GLFWwindow* Window::createWindow(int width, int height)
@@ -158,7 +159,7 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 void Window::idleCallback()
 {
 	// Perform any necessary updates here 
-	//currObj->update();
+	player->update();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -166,9 +167,16 @@ void Window::displayCallback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
+	eyePos = player->GetPosition() + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
+	lookAtPoint = player->GetPosition();		// The point we are looking at.
+	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
+
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);
-	model->draw(view, projection, modelShaderProgram);
+	player->draw(view, projection, animationShaderProgram);
+
+	// Adding for reference so we can walk around something
+	idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
@@ -179,76 +187,62 @@ void Window::displayCallback(GLFWwindow* window)
 
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*
-	 * TODO: Modify below to add your key callbacks.
-	 */
-	
-	// Check for a key press.
-	if (action == GLFW_PRESS)
+	// Check for a key release.
+	if (action == GLFW_RELEASE)
 	{
-		switch (key)
-		{
-		case GLFW_KEY_ESCAPE:
-			// Close the window. This causes the program to also terminate.
-			glfwSetWindowShouldClose(window, GL_TRUE);				
-			break;
+		// move player forward/backward
+		if (key == GLFW_KEY_W) {
+			player->StopMovingForward();
+		}
 
-		// switch between the cube and the cube pointCloud
-		case GLFW_KEY_1:
-			currObj = cube;
-			break;
-		case GLFW_KEY_2:
-			currObj = cubePoints;
-			break;
+		else if (key == GLFW_KEY_S) {
+			player->StopMovingBackward();
+		}
 
-		default:
-			break;
+		if (key == GLFW_KEY_A) {
+			player->StopTurningLeft();
+		}
+
+		else if (key == GLFW_KEY_D) {
+			player->StopTurningRight();
+		}
+	}
+
+	// Check for a key press.
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	{
+		if (key == GLFW_KEY_ESCAPE) {
+			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.
+		}
+
+		else {
+			// move player forward/backward/left/right
+			if (key == GLFW_KEY_W) {
+				player->Forward();
+			}
+
+			else if (key == GLFW_KEY_S) {
+				player->Backward();
+			}
+
+			if (key == GLFW_KEY_A) {
+				player->Left();
+			}
+
+			else if (key == GLFW_KEY_D) {
+				player->Right();
+			}
 		}
 	}
 }
 
-void Window::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) 
+void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
 {
-	glm::vec3 mouseLoc = convert_points(xpos, ypos);
-
-
-	if (lastPos.x == 0.0f && lastPos.y == 0.0f && lastPos.z == 0.0f) {
-		lastPos = mouseLoc;
-	}
-
-	glm::vec3 direction = mouseLoc - lastPos;
-
 	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)) {
-		float movem = glm::length(direction);
-
-		float angle = 0.0f;
-		glm::vec3 rot(0.0f, 0.0f, 0.0f);
-		// Prevent too little movement
-		if (movem > 0.001) {
-			rot = glm::cross((lastPos), (mouseLoc));
-			angle = movem * 100;
-
-			model->rotate(angle, rot);
-		}
-	}
-	lastPos = mouseLoc;
-}
-
-glm::vec3 Window::convert_points(double xpos, double ypos) {
-	glm::vec3 mouseLoc;
-
-	mouseLoc.x = ((2 * xpos) - width) / width;
-	mouseLoc.y = (height - (2 * ypos)) / height;
-	mouseLoc.z = 0.0;
-
-	double dis = glm::length(mouseLoc);
-
-	// Do not want values above 1.0
-	if (dis > 1.0) {
-		dis = 1.0;
+		std::cout << "RIGHT_CLICK" << std::endl;
 	}
 
-	mouseLoc.z = (double)(sqrtf(1.001 - (dis * dis)));
-	mouseLoc = glm::normalize(mouseLoc);
-	return mouseLoc;
+	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)) {
+		std::cout << "LEFT_CLICK" << std::endl;
+	}
 }
