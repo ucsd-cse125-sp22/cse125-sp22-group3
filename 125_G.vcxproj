@@ -124,13 +124,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Harvestable.cpp" />
+    <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Plot.cpp" />
+    <ClCompile Include="SabotageItem.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,11 +147,16 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="NPC.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Plot.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Tools.h" />
+    <ClInclude Include="Vegetable.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +167,12 @@
     <None Include="shaders\model.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="NewFile.txt" />
+    <Text Include="NewFile1.txt" />
+    <Text Include="NewFile2.txt" />
+    <Text Include="NewFile3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

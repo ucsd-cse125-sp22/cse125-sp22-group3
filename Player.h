@@ -1,10 +1,9 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
-
-
+#include "Drawable.h"
 #include "Model.h"
 
-class Player {
+class Player : public Drawable {
 	private:
 		const float RUN_OFFSET = 20;
 		const float TURN_OFFSET = 10;

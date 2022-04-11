@@ -1,0 +1,3 @@
+﻿Vegetable:: Vegetable(){
+
+}
