@@ -2,9 +2,9 @@
 
 class Interactable {
 	public:
-		virtual bool canInteract(Player* player) {};
-		virtual void interact(Player* player) {};
+		virtual bool canInteract(Player* player) = 0;
+		virtual void interact(Player* player) = 0;
 
 		// Is this holdable
-		virtual bool isHoldable;
+		bool isHoldable;
 };

@@ -125,7 +125,6 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Collidable.cpp" />
-    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Harvestable.cpp" />
     <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="main.cpp" />
@@ -144,7 +143,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Map.h" />
@@ -167,12 +165,6 @@
     <None Include="shaders\model.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="NewFile.txt" />
-    <Text Include="NewFile1.txt" />
-    <Text Include="NewFile2.txt" />
-    <Text Include="NewFile3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

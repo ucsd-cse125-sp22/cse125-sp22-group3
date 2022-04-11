@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -22,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Mesh.h" />
@@ -45,11 +43,5 @@
     <None Include="shaders\model.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="NewFile.txt" />
-    <Text Include="NewFile1.txt" />
-    <Text Include="NewFile2.txt" />
-    <Text Include="NewFile3.txt" />
   </ItemGroup>
 </Project>
