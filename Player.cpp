@@ -42,7 +42,7 @@ void Player::Update() {
 	if (glm::length(move_input) < glm::epsilon<float>()) {
 		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
 		else {
-			curr_vel_ -= (glm::normalize(curr_vel_) * friction_);
+			curr_vel_ -= (glm::normalize(curr_vel_) * friction_ * static_cast<float>(GameManager::GetFixedDeltaTime()));
 		}
 		current = idle;
 

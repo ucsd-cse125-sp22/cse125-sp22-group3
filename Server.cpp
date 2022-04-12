@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctime>
 
 // Networking libraries
 #include <winsock2.h>
@@ -11,6 +12,7 @@
 
 #define DEFAULT_PORT "8686" // TODO change default port
 #define DEFAULT_BUFLEN 1024
+#define TICK_MS 30
 
 Server::Server(void)
 {
@@ -118,11 +120,24 @@ void Server::mainLoop(void)
 	// sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
 	char buffer[DEFAULT_BUFLEN];
-	while (true) { // TODO 
+	while (true) { // TODO
+		double begin_time = std::time(0);
 		// receive data from client
+		if (ClientSocket == INVALID_SOCKET)
+		{
+			printf("No client connected...\n");
+			ClientSocket = accept(ListenSocket, NULL, NULL);
+			continue;
+		}
 		int recvStatus = recv(ClientSocket, buffer, DEFAULT_BUFLEN, 0);
 		if (recvStatus == SOCKET_ERROR) {
 			printf("recv failed: %d\n", WSAGetLastError());
+			// Connection Reset Error
+			if (WSAGetLastError() == 10054)
+			{
+				closesocket(ClientSocket);
+				ClientSocket = INVALID_SOCKET;
+			}
 			continue;
 		}
 		else if (recvStatus == 0) {
@@ -134,6 +149,8 @@ void Server::mainLoop(void)
 			printf("Server bytes received: %ld\n", recvStatus);
 		}
 
+
+
 		// echo back the data received to the client 
 		int sendStatus = send(ClientSocket, buffer, recvStatus, 0);
 		if (sendStatus == SOCKET_ERROR) {
@@ -143,5 +160,7 @@ void Server::mainLoop(void)
 		else {
 			printf("Server bytes sent: %ld\n", sendStatus);
 		}
+		double end_time = std::time(0);
+		Sleep(TICK_MS - (end_time - begin_time));
 	}
 }

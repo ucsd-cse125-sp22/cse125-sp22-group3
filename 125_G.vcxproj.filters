@@ -19,6 +19,8 @@
     <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="Harvestable.cpp" />
     <ClCompile Include="Holdable.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
@@ -36,6 +38,14 @@
     <ClInclude Include="Plot.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="Harvestable.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Interactable.h" />
+    <ClInclude Include="Sabotageable.h" />
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
