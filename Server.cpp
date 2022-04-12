@@ -5,10 +5,13 @@
 #include <chrono>
 
 // Networking libraries
+#include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <iphlpapi.h>
 
 #pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Iphlpapi.lib")
 
 #define DEFAULT_PORT "8686" // TODO change default port
 #define DEFAULT_BUFLEN 1024
@@ -77,6 +80,8 @@ Server::Server(void)
 	// no longer need address information
 	freeaddrinfo(result);
 
+	printf("Server done initializing.\n");
+
 	// start listening for new clients attempting to connect
 	int listenStatus = listen(ListenSocket, SOMAXCONN);
 	if (listenStatus == SOCKET_ERROR) {
@@ -84,6 +89,44 @@ Server::Server(void)
 		closesocket(ListenSocket);
 		WSACleanup();
 		exit(1);
+	}
+
+	this->printActiveAdapterAddresses();
+}
+
+void Server::printActiveAdapterAddresses() {
+	ULONG outBufLen = 15000;
+	PIP_ADAPTER_ADDRESSES pAddresses = (IP_ADAPTER_ADDRESSES*)malloc(outBufLen);
+	if (pAddresses == NULL) {
+		return;
+	}
+
+	ULONG family = AF_INET;
+	ULONG flags = GAA_FLAG_INCLUDE_PREFIX;
+	DWORD dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
+
+	if (dwRetVal == ERROR_BUFFER_OVERFLOW) {
+		free(pAddresses);
+		pAddresses = NULL;
+		return;
+	}
+
+	printf("Now listening for client connection at:\n");
+	if (dwRetVal == NO_ERROR) {
+		for (PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses; pCurrAddresses != NULL; pCurrAddresses = pCurrAddresses->Next) {
+			for (PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pCurrAddresses->FirstUnicastAddress; pUnicast != NULL; pUnicast = pUnicast->Next) {
+				if (pCurrAddresses->OperStatus == IfOperStatusUp) {
+					sockaddr_in* temp_addr = (sockaddr_in*)(pUnicast->Address.lpSockaddr);
+					char s[INET6_ADDRSTRLEN];
+					inet_ntop(temp_addr->sin_family, &(temp_addr->sin_addr), s, INET6_ADDRSTRLEN);
+					printf("\t%wS: %s\n", pCurrAddresses->FriendlyName, s);
+				}
+			}
+		}
+	}
+
+	if (pAddresses) {
+		free(pAddresses);
 	}
 }
 
@@ -162,7 +205,7 @@ void Server::mainLoop(void)
 
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time: %d\n", elapsed_time_ms);
+		printf("Elapsed time: %lld\n", elapsed_time_ms);
 
 		if (elapsed_time_ms < TICK_MS) {
 			Sleep(TICK_MS - elapsed_time_ms);
