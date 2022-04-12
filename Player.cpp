@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include "GameManager.h"
+
 Player::Player() {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
@@ -61,8 +63,6 @@ void Player::update() {
 	}
 	
 	// get current and last time to get delta
-	lastTime = currTime;
-	currTime = glfwGetTime();
 
 	if (glm::length(curr_vel_) > 0) move();
 }
@@ -74,7 +74,7 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 
 
 void Player::move() {
-	const float delta = (float)currTime - lastTime; //TODO this should be more global
+	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;
 	

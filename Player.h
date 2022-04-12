@@ -5,11 +5,6 @@
 
 class Player : public Drawable {
 	private:
-	
-		// Keep track of time for movement
-		float currTime;
-		float lastTime;
-
 		// Transformations for our player
 		glm::vec3 translate;
 		glm::vec3 rotate;

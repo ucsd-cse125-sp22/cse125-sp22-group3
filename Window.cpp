@@ -158,7 +158,9 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 
 void Window::idleCallback()
 {
-	// Perform any necessary updates here 
+	// Perform any necessary updates here
+	GameManager::UpdateFixedDeltaTime();
+
 	player->update();
 }
 
