@@ -161,7 +161,7 @@ void Window::idleCallback()
 	// Perform any necessary updates here
 	GameManager::UpdateFixedDeltaTime();
 
-	player->update();
+	player->Update();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -192,48 +192,46 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	// Check for a key release.
 	if (action == GLFW_RELEASE)
 	{
-		// move player forward/backward
-		if (key == GLFW_KEY_W) {
-			player->StopMovingForward();
-		}
-
-		else if (key == GLFW_KEY_S) {
-			player->StopMovingBackward();
-		}
-
-		if (key == GLFW_KEY_A) {
-			player->StopTurningLeft();
-		}
-
-		else if (key == GLFW_KEY_D) {
-			player->StopTurningRight();
+		switch (key)
+		{
+			case GLFW_KEY_W:
+				player->move_input -= glm::vec2(0,1);
+				break;
+			case GLFW_KEY_S:
+				player->move_input -= glm::vec2(0,-1);
+				break;
+			case GLFW_KEY_A:
+				player->move_input -= glm::vec2(-1,0);
+				break;
+			case GLFW_KEY_D:
+				player->move_input -= glm::vec2(1,0);
+				break;
+			default: break;
 		}
 	}
 
 	// Check for a key press.
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	if (action == GLFW_PRESS)
 	{
 		if (key == GLFW_KEY_ESCAPE) {
 			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.
 		}
 
-		else {
-			// move player forward/backward/left/right
-			if (key == GLFW_KEY_W) {
-				player->Forward();
-			}
-
-			else if (key == GLFW_KEY_S) {
-				player->Backward();
-			}
-
-			if (key == GLFW_KEY_A) {
-				player->Left();
-			}
-
-			else if (key == GLFW_KEY_D) {
-				player->Right();
-			}
+		switch (key)
+		{
+			case GLFW_KEY_W:
+				player->move_input += glm::vec2(0,1);
+				break;
+			case GLFW_KEY_S:
+				player->move_input += glm::vec2(0,-1);
+				break;
+			case GLFW_KEY_A:
+				player->move_input += glm::vec2(-1,0);
+				break;
+			case GLFW_KEY_D:
+				player->move_input += glm::vec2(1,0);
+				break;
+			default: break;
 		}
 	}
 }

@@ -47,18 +47,11 @@ class Player : public Drawable {
 		void addWalking(Model* walking);
 
 		// Rendering
-		void update();
+		void Update();
 		void draw(glm::mat4 view, glm::mat4 projection, GLuint shader);
 
 		// Movement
-		void Forward();
-		void Backward();
-		void Left();
-		void Right();
-		void StopMovingForward();
-		void StopMovingBackward();
-		void StopTurningLeft();
-		void StopTurningRight();
+		glm::vec2 move_input{0,0};
 
 		// Information
 		glm::vec3 GetPosition() const;
