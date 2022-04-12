@@ -125,8 +125,10 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Collidable.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Harvestable.cpp" />
     <ClCompile Include="Holdable.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -135,6 +137,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="SabotageItem.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Tools.cpp" />
@@ -144,6 +147,13 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="assimpConvert.h" />
+    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Harvestable.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Interactable.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mesh.h" />
@@ -151,6 +161,8 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Plot.h" />
+    <ClInclude Include="Sabotageable.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Tools.h" />

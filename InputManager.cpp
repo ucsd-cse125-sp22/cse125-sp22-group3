@@ -8,22 +8,22 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		// move player forward/backward
 		if (key == GLFW_KEY_W) {
 			//player->StopMovingForward();
-            cout<<"stop moving forward\n";
+			std::cout<<"stop moving forward\n";
 		}
 
 		else if (key == GLFW_KEY_S) {
 			//player->StopMovingBackward();
-            cout<<"stop moving backward\n";
+			std::cout<<"stop moving backward\n";
 		}
 
 		if (key == GLFW_KEY_A) {
 			//player->StopTurningLeft();
-            cout<<"stop moving left\n";
+			std::cout<<"stop moving left\n";
 		}
 
 		else if (key == GLFW_KEY_D) {
 			//player->StopTurningRight();
-            cout<<"stop moving right\n";
+            std::cout<<"stop moving right\n";
 		}
 	}
 
@@ -38,22 +38,22 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			// move player forward/backward/left/right
 			if (key == GLFW_KEY_W) {
 				//player->Forward();
-                cout<<"moving forward\n");
+                std::cout<<"moving forward\n";
 			}
 
 			else if (key == GLFW_KEY_S) {
 				//player->Backward();
-                cout<<"moving backward\n");
+                std::cout<<"moving backward\n";
 			}
 
 			if (key == GLFW_KEY_A) {
 				//player->Left();
-                cout<<"moving left\n");
+                std::cout<<"moving left\n";
 			}
 
 			else if (key == GLFW_KEY_D) {
 				//player->Right();
-                cout<<"moving right\n");
+                std::cout<<"moving right\n";
 			}
 		}
 	}

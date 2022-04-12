@@ -1,5 +1,6 @@
 #ifndef INPUT_MANAGER_H
 #define INPUT_MANAGER_H
+#include "Window.h"
 
 class InputManager {
 	public:
