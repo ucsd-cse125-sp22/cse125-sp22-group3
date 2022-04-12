@@ -20,7 +20,7 @@ We've divided our group into 7 core components each with a component Lead: <br/>
 **Art**: Cher<br/>
 **Graphics**: Cynthia<br/>
 **Integration testing**: Jennie<br/>
-**Game Logic/Physics**: Aarushi<br/>
+**Game Logic/Physics**: Leon<br/>
 **Audio**: Jakob<br/>
 Ofcourse everyone is allowed to work on any other part of the game, but component leads will keep track of and document progress.
 Everyone is responsible for testing and making sure their components are working.<br/>
