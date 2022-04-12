@@ -310,7 +310,7 @@ void Model::SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::v
 
 void Model::CalculateBoneTransform(float time)
 {
-	float time_tick = time * ticks;
+	float time_tick = time * ticks * anim_speed;
 	// Get current frame
 	float at = fmod(time_tick, scene->mAnimations[0]->mDuration);
 

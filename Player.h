@@ -5,9 +5,7 @@
 
 class Player : public Drawable {
 	private:
-		const float RUN_OFFSET = 20;
-		const float TURN_OFFSET = 10;
-
+	
 		// Keep track of time for movement
 		float currTime;
 		float lastTime;
@@ -17,12 +15,9 @@ class Player : public Drawable {
 		glm::vec3 rotate;
 		glm::vec3 scale;
 
-		// speed and turn of player
-		float currTurn = 0.f;
-		float currSpeed = 0.f;
-
+		// Player Movement Attributes
 		const float friction_ = 0.15f;
-		const float base_accel_ = 1;
+		const float base_accel_ = 0.5;
 		const float max_velocity_ = 20;
 		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
 

@@ -1,4 +1,4 @@
 class GameEntity {
 	public:
-		virtual void fixedUpdate() {};
+		virtual void FixedUpdate() {};
 };

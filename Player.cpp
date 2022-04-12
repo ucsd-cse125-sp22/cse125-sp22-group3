@@ -32,6 +32,7 @@ void Player::addIdle(Model* i) {
 
 void Player::addWalking(Model* w) {
 	walking = w;
+	walking->anim_speed = 2;
 }
 
 void Player::update() {
@@ -64,58 +65,6 @@ void Player::update() {
 	currTime = glfwGetTime();
 
 	if (glm::length(curr_vel_) > 0) move();
-	
-
-	/*
-	// get current speed and turn based on offsets
-	currTurn = 0.f; currSpeed = 0.f;
-
-	// Both pressed simutaneously, move with the one last pressed
-	if (forward && backward) {
-		currSpeed = lastMove ? RUN_OFFSET : -RUN_OFFSET;
-	}
-
-	// Only one pressed
-	else {
-		if (forward)  { 
-			currSpeed = RUN_OFFSET;  
-		}
-
-		if (backward) {
-			currSpeed = -RUN_OFFSET;
-		}
-	}
-
-	// Both pressed simutaneously, turn with the one last pressed
-	if (left && right) {
-		currTurn = lastTurn ? TURN_OFFSET : -TURN_OFFSET;
-	}
-	
-	// Only one pressed
-	else {
-		if (left) {
-			currTurn = -TURN_OFFSET;
-		}
-
-		if (right) {
-			currTurn = TURN_OFFSET;
-		}
-	}
-
-	// get current and last time to get delta
-	lastTime = currTime;
-	currTime = glfwGetTime();
-
-	// not moving, set curr model to be idle
-	if (currSpeed == 0.f && currTurn == 0.f) {
-		current = idle;
-	}
-
-	// apply moving transformation, set curr model to walking
-	else {
-		current = walking;
-		move();
-	}*/
 }
 
 float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
@@ -128,18 +77,8 @@ void Player::move() {
 	const float delta = (float)currTime - lastTime; //TODO this should be more global
 	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;
-
 	
 	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
-	
-	/*
-	const float delta = (float)currTime - lastTime;
-	rotate.y += currTurn * delta;
-
-	float distance = currSpeed * delta;
-	translate.x += (float)(distance * glm::sin(rotate.y));
-	translate.z += (float)(distance * glm::cos(rotate.y));
-	*/
 }
 
 void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {

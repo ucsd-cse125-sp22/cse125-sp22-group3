@@ -60,6 +60,9 @@ public:
 	Model(std::string filePath);
 	~Model();
 
+	// Animation Speed
+	float anim_speed = 1;
+
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
 	void update();
