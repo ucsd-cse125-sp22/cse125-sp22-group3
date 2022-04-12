@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctime>
+#include <chrono>
 
 // Networking libraries
 #include <winsock2.h>
@@ -121,7 +121,8 @@ void Server::mainLoop(void)
 
 	char buffer[DEFAULT_BUFLEN];
 	while (true) { // TODO
-		double begin_time = std::time(0);
+		auto begin_time = std::chrono::steady_clock::now();
+
 		// receive data from client
 		if (ClientSocket == INVALID_SOCKET)
 		{
@@ -149,8 +150,6 @@ void Server::mainLoop(void)
 			printf("Server bytes received: %ld\n", recvStatus);
 		}
 
-
-
 		// echo back the data received to the client 
 		int sendStatus = send(ClientSocket, buffer, recvStatus, 0);
 		if (sendStatus == SOCKET_ERROR) {
@@ -160,7 +159,13 @@ void Server::mainLoop(void)
 		else {
 			printf("Server bytes sent: %ld\n", sendStatus);
 		}
-		double end_time = std::time(0);
-		Sleep(TICK_MS - (end_time - begin_time));
+
+		auto end_time = std::chrono::steady_clock::now();
+		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
+		printf("Elapsed time: %d\n", elapsed_time_ms);
+
+		if (elapsed_time_ms < TICK_MS) {
+			Sleep(TICK_MS - elapsed_time_ms);
+		}
 	}
 }

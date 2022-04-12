@@ -83,7 +83,7 @@ int main(void)
 
 	// Loop while GLFW window should stay open.
 	int status = 1;
-	long long begin_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	auto begin_time = std::chrono::steady_clock::now();
 	while (!glfwWindowShouldClose(window) || status > 0)
 	{
 		char* dummy_data = "Hello :)))) ****";
@@ -96,8 +96,9 @@ int main(void)
 				// Idle callback. Updating objects, etc. can be done here. (Update)
 				Window::idleCallback();
 			});
-		long long end_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		printf("Milliseconds passed: %d\n", end_time - begin_time);
+		auto end_time = std::chrono::steady_clock::now(); 
+		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
+		printf("Milliseconds passed: %d\n", elapsed_time_ms);
 		begin_time = end_time;
 	}
 
