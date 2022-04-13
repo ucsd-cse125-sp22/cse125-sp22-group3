@@ -6,11 +6,6 @@ Player::Player() {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
 Player::Player(Model * curr) {
@@ -21,11 +16,6 @@ Player::Player(Model * curr) {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
 void Player::addIdle(Model* i) {
@@ -57,7 +47,7 @@ void Player::Update() {
 		current = walking;
 	}
 	
-	if (glm::length(curr_vel_) > 0) move();
+	if (glm::length(curr_vel_) > 0) Move();
 }
 
 float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
@@ -66,7 +56,7 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 }
 
 
-void Player::move() {
+void Player::Move() {
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;

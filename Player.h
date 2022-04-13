@@ -22,15 +22,8 @@ class Player : public Drawable {
 		Model* walking;
 
 		// Moving player
-		void move();
-		bool backward;
-		bool forward;
-		bool lastMove; // 0 - backward, 1 - forward
-
-		bool left;
-		bool right;
-		bool lastTurn; // 0 - left, 1 - right
-
+		void Move();
+	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
 		glm::mat4 GetTranslation();
