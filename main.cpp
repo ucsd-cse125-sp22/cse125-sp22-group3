@@ -88,11 +88,10 @@ int main(void)
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
-		/*
 		char* dummy_data = "Hello from the Networking Team";
 		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
 			{
-				// printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 				
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
@@ -102,15 +101,17 @@ int main(void)
 			});
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		// printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
+		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
-		*/
 
+		// uncomment for testing
+		/*
 		// Main render display callback. Rendering of objects is done here. (Draw)
 		Window::displayCallback(window);
 
 		// Idle callback. Updating objects, etc. can be done here. (Update)
 		Window::idleCallback();
+		*/
 	}
 
 	// destroy objects created
