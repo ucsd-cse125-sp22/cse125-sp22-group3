@@ -17,6 +17,13 @@
 #include "stb_image.h"
 #include "Mesh.h"
 
+enum AniMode {
+	IDLE_HOLD,
+	IDLE_WALK,
+	IDLE,
+	WALK,
+};
+
 struct AssimpNodeData
 {
 	glm::mat4 transformation;
@@ -40,6 +47,16 @@ private:
 	// Bone information for animation
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
+
+	std::map<AniMode, int> animationMap = { 
+		{IDLE_HOLD, 1},
+		{IDLE_WALK, 2},
+		{IDLE, 3},
+		{WALK, 4},
+	};
+
+	AniMode curr;
+	AniMode last;
 
 	// Holds transformations for this model
 	glm::mat4 model;
@@ -65,7 +82,6 @@ public:
 
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
-	void update();
 
 	// Loading meshes of model
 	void processNode(aiNode * root, const aiScene* scene);
@@ -88,8 +104,10 @@ public:
 	int GetScaleIndex(float time, const aiNodeAnim* animationNode);
 	int GetRotationIndex(float time, const aiNodeAnim* animationNode);
 
+	// Set or get animation data
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
+	void setAnimationMode(AniMode ani);
 };
 
 #endif

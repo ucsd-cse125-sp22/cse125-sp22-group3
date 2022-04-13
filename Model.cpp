@@ -1,6 +1,10 @@
 #include "Model.h"
 
 Model::Model(std::string filePath) {
+	// Set current animation mode
+	last = IDLE;
+	curr = IDLE;
+
 	// Load model at file path
 	scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	
@@ -30,6 +34,7 @@ Model::Model(std::string filePath) {
 	// Set initial transformation matrices
 	model = glm::mat4(1.0f);
 
+	std::cout << scene->mNumAnimations << std::endl;
 	// Get directory from filepah to get materials
 	directory = filePath.substr(0, filePath.find_last_of('/'));
 	processNode(scene->mRootNode, scene);
@@ -312,7 +317,7 @@ void Model::CalculateBoneTransform(float time)
 {
 	float time_tick = time * ticks * anim_speed;
 	// Get current frame
-	float at = fmod(time_tick, scene->mAnimations[0]->mDuration);
+	float at = fmod(time_tick, scene->mAnimations[animationMap[curr]]->mDuration);
 
 	// Start at root, make transformation as you go down to children
 	ReadHierarchyData(at, scene->mRootNode, glm::mat4(1.0f));
@@ -322,7 +327,7 @@ void Model::CalculateBoneTransform(float time)
 void Model::ReadHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform) {
 	std::string node_name(node->mName.data);
 
-	const aiAnimation* animation = scene->mAnimations[0];
+	const aiAnimation* animation = scene->mAnimations[animationMap[curr]];
 	glm::mat4 node_transform = AssimpConvert::ConvertMatrixToGLMFormat(node->mTransformation);
 
 	const aiNodeAnim* node_anim = findNodeAnim(animation, node_name);
@@ -464,4 +469,9 @@ int Model::GetRotationIndex(float time, const aiNodeAnim* animationNode) {
 
 	assert(0);
 	return 0;
+}
+
+void Model::setAnimationMode(AniMode ani) {
+	last = curr;
+	curr = ani;
 }

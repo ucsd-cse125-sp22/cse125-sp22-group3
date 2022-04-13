@@ -15,8 +15,7 @@ Player::Player() {
 
 Player::Player(Model * curr) {
 	// Set initial values
-	current = curr;
-	idle = curr;
+	model = curr;
 
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
@@ -28,15 +27,6 @@ Player::Player(Model * curr) {
 	right = false;;
 }
 
-void Player::addIdle(Model* i) {
-	idle = i;
-}
-
-void Player::addWalking(Model* w) {
-	walking = w;
-	walking->anim_speed = 2;
-}
-
 void Player::Update() {
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) < glm::epsilon<float>()) {
@@ -44,7 +34,7 @@ void Player::Update() {
 		else {
 			curr_vel_ -= (glm::normalize(curr_vel_) * friction_ * static_cast<float>(GameManager::GetFixedDeltaTime()));
 		}
-		current = idle;
+		model->setAnimationMode(IDLE);
 
 	}
 	else {
@@ -54,7 +44,7 @@ void Player::Update() {
 		// Cap our speed at some max velocity
 		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
 		
-		current = walking;
+		model->setAnimationMode(WALK);
 	}
 	
 	if (glm::length(curr_vel_) > 0) move();
@@ -76,7 +66,7 @@ void Player::move() {
 
 void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	current->draw(view, projection, parent, shader);
+	model->draw(view, projection, parent, shader);
 }
 
 glm::mat4 Player::GetRotation() {

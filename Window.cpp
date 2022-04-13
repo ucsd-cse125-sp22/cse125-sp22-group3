@@ -7,8 +7,7 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Model * Window::idle;
-Model * Window::walking;
+Model* Window::bumbus;
 Player* Window::player;
 
 // Camera Matrices 
@@ -61,12 +60,10 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// load models
-	idle = new Model("models/bumbus/idle.fbx");
-	walking = new Model("models/bumbus/walking.fbx");
+	bumbus = new Model("models/bumbus/bumbus.fbx");
 
 	// load models into player
-	player = new Player(idle);
-	player->addWalking(walking);
+	player = new Player(bumbus);
 
 	return true;
 }
@@ -178,7 +175,7 @@ void Window::displayCallback(GLFWwindow* window)
 	player->draw(view, projection, animationShaderProgram);
 
 	// Adding for reference so we can walk around something
-	idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
+	// idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
