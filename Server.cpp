@@ -187,7 +187,9 @@ void Server::mainLoop(void)
 		else if (recvStatus == 0) {
 			printf("Connection closed\n");
 			closesocket(ClientSocket);
-			return; // TODO only terminate for this client, not others
+			ClientSocket = INVALID_SOCKET;
+			continue; // TODO Remove This Later, I just want the server to stay running for testing purposes.
+			// return; // TODO only terminate for this client, not others
 		}
 		else {
 			printf("Server bytes received: %ld\n", recvStatus);
