@@ -1,9 +1,9 @@
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#pragma once
 #include "Drawable.h"
+#include "GameEntity.h"
 #include "Model.h"
 
-class Player : public Drawable {
+class Player : public Drawable, public GameEntity {
 	private:
 		// Transformations for our player
 		glm::vec3 translate;
@@ -11,9 +11,9 @@ class Player : public Drawable {
 		glm::vec3 scale;
 
 		// Player Movement Attributes
-		const float friction_ = 50;
-		const float base_accel_ = 200;
-		const float max_velocity_ = 20;
+		float friction_ = 50; // Resistance in Units/Sec
+		float base_accel_ = 200; // Acceleration in Units/Sec^2
+		float max_velocity_ = 20; // Max Velocity in Units/Sec
 		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
@@ -40,8 +40,8 @@ class Player : public Drawable {
 		void addWalking(Model* walking);
 
 		// Rendering
-		void Update();
-		void draw(glm::mat4 view, glm::mat4 projection, GLuint shader);
+		void FixedUpdate() override;
+		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 
 		// Movement
 		glm::vec2 move_input{0,0};
@@ -50,5 +50,3 @@ class Player : public Drawable {
 		glm::vec3 GetPosition() const;
 
 };
-
-#endif

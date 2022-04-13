@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "main.h"
 #include "shader.h"
+#include "GameManager.h"
 
 class Window
 {
@@ -14,10 +15,15 @@ public:
 	static int height;
 	static const char* windowTitle;
 
+	// Game Manager
+	static GameManager* game; //TODO move all of this somewhere else
+	
+	// Window Input
+	static glm::vec2 move_input; //TODO move this somewhere else
+	
 	// Objects to Render
 	static Model* idle;
 	static Model* walking;
-	static Player* player;
 
 	// Camera Matrices
 	static glm::mat4 projection;

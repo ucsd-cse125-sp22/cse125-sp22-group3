@@ -4,5 +4,5 @@
 
 class Drawable {
 	public:
-		virtual void draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {}
+		virtual void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) = 0;
 };

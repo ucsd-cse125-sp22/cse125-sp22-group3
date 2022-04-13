@@ -1,5 +1,10 @@
 #include "Window.h"
 
+// Game Manager
+GameManager* Window::game = nullptr;
+
+// Window input
+glm::vec2 Window::move_input{0,0};
 
 // Window Properties
 int Window::width;
@@ -9,7 +14,6 @@ const char* Window::windowTitle = "GLFW Starter Project";
 // Objects to Render
 Model * Window::idle;
 Model * Window::walking;
-Player* Window::player;
 
 // Camera Matrices 
 // Projection matrix:
@@ -64,10 +68,14 @@ bool Window::initializeObjects()
 	idle = new Model("models/bumbus/idle.fbx");
 	walking = new Model("models/bumbus/walking.fbx");
 
-	// load models into player
-	player = new Player(idle);
-	player->addWalking(walking);
+	Player player_1{idle};
+	player_1.addWalking(walking);
 
+	Player player_2{idle};
+	player_2.addWalking(walking);
+	
+	game = new GameManager({player_1, player_2});
+	
 	return true;
 }
 
@@ -160,8 +168,7 @@ void Window::idleCallback()
 {
 	// Perform any necessary updates here
 	GameManager::UpdateFixedDeltaTime();
-
-	player->Update();
+	game->FixedUpdate();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -169,13 +176,13 @@ void Window::displayCallback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
-	eyePos = player->GetPosition() + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
-	lookAtPoint = player->GetPosition();		// The point we are looking at.
+	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
+	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
 	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
 
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);
-	player->draw(view, projection, animationShaderProgram);
+	game->Draw(view, projection, animationShaderProgram);
 
 	// Adding for reference so we can walk around something
 	idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
@@ -195,16 +202,16 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		switch (key)
 		{
 			case GLFW_KEY_W:
-				player->move_input -= glm::vec2(0,1);
+				move_input -= glm::vec2(0,1);
 				break;
 			case GLFW_KEY_S:
-				player->move_input -= glm::vec2(0,-1);
+				move_input -= glm::vec2(0,-1);
 				break;
 			case GLFW_KEY_A:
-				player->move_input -= glm::vec2(-1,0);
+				move_input -= glm::vec2(-1,0);
 				break;
 			case GLFW_KEY_D:
-				player->move_input -= glm::vec2(1,0);
+				move_input -= glm::vec2(1,0);
 				break;
 			default: break;
 		}
@@ -220,20 +227,22 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 		switch (key)
 		{
 			case GLFW_KEY_W:
-				player->move_input += glm::vec2(0,1);
+				move_input += glm::vec2(0,1);
 				break;
 			case GLFW_KEY_S:
-				player->move_input += glm::vec2(0,-1);
+				move_input += glm::vec2(0,-1);
 				break;
 			case GLFW_KEY_A:
-				player->move_input += glm::vec2(-1,0);
+				move_input += glm::vec2(-1,0);
 				break;
 			case GLFW_KEY_D:
-				player->move_input += glm::vec2(1,0);
+				move_input += glm::vec2(1,0);
 				break;
 			default: break;
 		}
 	}
+
+	game->SetPlayerInput(move_input, 0);
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

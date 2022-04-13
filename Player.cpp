@@ -27,7 +27,7 @@ void Player::addWalking(Model* w) {
 	walking->anim_speed = 2;
 }
 
-void Player::Update() {
+void Player::FixedUpdate() {
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) < glm::epsilon<float>()) {
@@ -65,7 +65,7 @@ void Player::Move() {
 	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
 }
 
-void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
+void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
 	current->draw(view, projection, parent, shader);
 }
