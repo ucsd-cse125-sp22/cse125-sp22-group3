@@ -11,8 +11,8 @@ class Player : public Drawable {
 		glm::vec3 scale;
 
 		// Player Movement Attributes
-		const float friction_ = 1;
-		const float base_accel_ = 0.5;
+		const float friction_ = 50;
+		const float base_accel_ = 200;
 		const float max_velocity_ = 20;
 		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
 

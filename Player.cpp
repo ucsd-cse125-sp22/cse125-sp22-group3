@@ -28,11 +28,12 @@ void Player::addWalking(Model* w) {
 }
 
 void Player::Update() {
+	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) < glm::epsilon<float>()) {
-		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
+		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec3(0,0,0);
 		else {
-			curr_vel_ -= (glm::normalize(curr_vel_) * friction_ * static_cast<float>(GameManager::GetFixedDeltaTime()));
+			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
 		current = idle;
 
@@ -40,7 +41,7 @@ void Player::Update() {
 	else {
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
-		curr_vel_ += base_accel_ * glm::vec3(move_input[0], 0, -move_input[1]);
+		curr_vel_ += delta * base_accel_ * glm::vec3(move_input[0], 0, -move_input[1]);
 		// Cap our speed at some max velocity
 		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
 		
