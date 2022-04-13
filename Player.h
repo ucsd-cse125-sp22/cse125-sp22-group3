@@ -48,5 +48,6 @@ class Player : public Drawable, public GameEntity {
 
 		// Information
 		glm::vec3 GetPosition() const;
+		void SetPosition(glm::vec3 position);
 
 };

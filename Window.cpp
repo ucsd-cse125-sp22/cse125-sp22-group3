@@ -183,10 +183,7 @@ void Window::displayCallback(GLFWwindow* window)
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);
 	game->Draw(view, projection, animationShaderProgram);
-
-	// Adding for reference so we can walk around something
-	idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
-
+	
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 
@@ -243,6 +240,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	}
 
 	game->SetPlayerInput(move_input, 0);
+	game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

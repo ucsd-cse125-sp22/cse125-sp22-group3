@@ -9,8 +9,13 @@ GameManager::GameManager(std::vector<Player> players)
 {
 	// Initialize Players
 	players_ = players;
+	int i = 0;
 	for (Player& player : players_) {
+		// Set Player Positions
+		player.SetPosition({i * 10,0,0});
+		// Add Players to Entities list
 		game_entities.push_back(&player);
+		i++;
 	}
 	
 	// Get all the game entities in the world
