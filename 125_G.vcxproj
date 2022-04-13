@@ -123,6 +123,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CollidableAABB.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="SabotageItem.cpp" />
@@ -145,6 +147,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CollidableAABB.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="Collidable.h" />
@@ -159,6 +162,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NPC.h" />
+    <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Plot.h" />
     <ClInclude Include="Sabotageable.h" />
