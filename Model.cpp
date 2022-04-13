@@ -237,6 +237,7 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
 	if (scene->HasAnimations()) {
 		float currTime = glfwGetTime();
+	
 		CalculateBoneTransform(currTime);
 
 		for each (Mesh mesh in meshes)
@@ -319,8 +320,20 @@ void Model::CalculateBoneTransform(float time)
 	// Get current frame
 	float at = fmod(time_tick, scene->mAnimations[animationMap[curr]]->mDuration);
 
-	// Start at root, make transformation as you go down to children
-	ReadHierarchyData(at, scene->mRootNode, glm::mat4(1.0f));
+	/**
+	 * Start at root, make transformation as you go down to children
+	 */
+
+	//ReadHierarchyData(at, scene->mRootNode, glm::mat4(1.0f));
+	// If we are not transitioning, use one animation node
+	if (curr == last) {
+		ReadHierarchyData(at, scene->mRootNode, glm::mat4(1.0f));
+	}
+
+	// Else, blend
+	else {
+		ReadBlendedHierarchyData(at, scene->mRootNode, glm::mat4(1.0f));
+	}
 
 }
 
@@ -352,6 +365,69 @@ void Model::ReadHierarchyData(float time, const aiNode* node, glm::mat4 parentTr
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		ReadHierarchyData(time, node->mChildren[i], global);
+	}
+}
+
+void Model::ReadBlendedHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform) {
+	// std::cout << blend << std::endl;
+	if (blend <= 1.f) {
+		std::string node_name(node->mName.data);
+
+		const aiAnimation* thisAnimation = scene->mAnimations[animationMap[last]];
+		glm::mat4 this_node_transform = AssimpConvert::ConvertMatrixToGLMFormat(node->mTransformation);
+
+		const aiNodeAnim* this_node_anim = findNodeAnim(thisAnimation, node_name);
+
+		const aiAnimation* nextAnimation = scene->mAnimations[animationMap[curr]];
+		glm::mat4 next_node_transform = AssimpConvert::ConvertMatrixToGLMFormat(node->mTransformation);
+
+		const aiNodeAnim* next_node_anim = findNodeAnim(nextAnimation, node_name);
+
+		if (this_node_anim) {
+			// get transformations at this time
+			glm::mat4 scaling = InterpolateScale(time, this_node_anim);
+			glm::mat4 rotation = InterpolateRotation(time, this_node_anim);
+			glm::mat4 translation = InterpolatePosition(time, this_node_anim);
+
+			this_node_transform = translation * rotation * scaling;
+		}
+
+		if (next_node_anim) {
+			// get transformations at this time
+			glm::mat4 scaling = InterpolateScale(time, next_node_anim);
+			glm::mat4 rotation = InterpolateRotation(time, next_node_anim);
+			glm::mat4 translation = InterpolatePosition(time, next_node_anim);
+
+			next_node_transform = translation * rotation * scaling;
+		}
+
+		// Interpolate between both
+		glm::quat thisInterpolatedBlend = glm::quat_cast(this_node_transform);
+		glm::quat nextInterpolatedBlend = glm::quat_cast(next_node_transform);
+		glm::quat blendedRotationTransform = glm::slerp(thisInterpolatedBlend, nextInterpolatedBlend, blend);
+		glm::mat4 blendedTransform = glm::toMat4(blendedRotationTransform);
+		blendedTransform[3] = glm::mix(this_node_transform[3], next_node_transform[3], blend);
+
+		glm::mat4 global = parentTransform * blendedTransform;
+		// find the bone associated with this node
+		if (boneInfoMap.find(node_name) != boneInfoMap.end()) // true if node_name exist in bone_mapping
+		{
+			int bone_index = boneInfoMap[node_name].id;
+			finalBoneMatrices[bone_index] = git * global * boneInfoMap[node_name].offset;
+		}
+
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+		{
+			ReadBlendedHierarchyData(time, node->mChildren[i], global);
+		}
+
+		blend += 0.00005f;
+	}
+
+	else {
+		// Reset vals
+		last = curr;
+		blend = 0.f;
 	}
 }
 
@@ -472,6 +548,9 @@ int Model::GetRotationIndex(float time, const aiNodeAnim* animationNode) {
 }
 
 void Model::setAnimationMode(AniMode ani) {
-	last = curr;
-	curr = ani;
+	// If we are not in the process of blending anything
+	if (ani != curr || blend == 0.0f) {
+		last = curr;
+		curr = ani;
+	}
 }

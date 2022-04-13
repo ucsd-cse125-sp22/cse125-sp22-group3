@@ -55,8 +55,12 @@ private:
 		{WALK, 4},
 	};
 
+	// Get previous and current blending
 	AniMode curr;
 	AniMode last;
+
+	// Blend factor for blending animations
+	float blend = 0.f;
 
 	// Holds transformations for this model
 	glm::mat4 model;
@@ -95,7 +99,9 @@ public:
 	void SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::vec4>& weights,
 		int vertexId, int boneID, float weight);
 	void CalculateBoneTransform(float time);
+
 	void ReadHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
+	void ReadBlendedHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
 	const aiNodeAnim* findNodeAnim(const aiAnimation* animation, const std::string node_name);
 	glm::mat4 InterpolatePosition(float time, const aiNodeAnim* animationNode);
 	glm::mat4 InterpolateScale(float time, const aiNodeAnim* animationNode);

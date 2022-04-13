@@ -105,8 +105,8 @@ int main(void)
 		begin_time = end_time;
 
 		// uncomment for testing
-		/*
 		// Main render display callback. Rendering of objects is done here. (Draw)
+		/*
 		Window::displayCallback(window);
 
 		// Idle callback. Updating objects, etc. can be done here. (Update)
