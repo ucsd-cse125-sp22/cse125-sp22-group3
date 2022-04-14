@@ -240,10 +240,12 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 	
 		CalculateBoneTransform(currTime);
 
+		
 		for each (Mesh mesh in meshes)
 		{
 			mesh.draw(view, projection, parent, finalBoneMatrices, shader);
 		}
+		
 	}
 
 	else {
@@ -421,7 +423,7 @@ void Model::ReadBlendedHierarchyData(float time, const aiNode* node, glm::mat4 p
 			ReadBlendedHierarchyData(time, node->mChildren[i], global);
 		}
 
-		blend += 0.00005f;
+		blend += blendOffset;
 	}
 
 	else {

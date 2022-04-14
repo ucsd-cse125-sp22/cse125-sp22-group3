@@ -12,7 +12,6 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Model* Window::bumbus;
 Player* Window::player;
 
 // Camera Matrices 
@@ -65,10 +64,11 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// load models
-	bumbus = new Model("models/bumbus/bumbus.fbx");
+	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
+	Model * pogo = new Model("models/pogo/pogo.fbx");
 
 	Player player_1{bumbus};
-	Player player_2{bumbus};
+	Player player_2{pogo};
 	
 	game = new GameManager({player_1, player_2});
 	

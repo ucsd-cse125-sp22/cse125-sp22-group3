@@ -48,6 +48,8 @@ private:
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
 
+	const float blendOffset = 0.0005f;
+
 	std::map<AniMode, int> animationMap = { 
 		{IDLE_HOLD, 1},
 		{IDLE_WALK, 2},
