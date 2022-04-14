@@ -162,7 +162,7 @@ void Server::mainLoop(void)
 	// sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
 	/*char buffer[DEFAULT_BUFLEN];
-	while (true) { // TODO 
+	while (true) { // TODO
 		// receive data from client
 		if (ClientSocket == INVALID_SOCKET)
 		{
@@ -192,7 +192,7 @@ void Server::mainLoop(void)
 			printf("Server bytes received: %ld\n", recvStatus);
 		}
 
-		// echo back the data received to the client 
+		// echo back the data received to the client
 		int sendStatus = send(ClientSocket, buffer, recvStatus, 0);
 		if (sendStatus == SOCKET_ERROR) {
 			printf("send failed: %d\n", WSAGetLastError());
@@ -203,9 +203,9 @@ void Server::mainLoop(void)
 		}
 	}*/
 	while (true) { // TODO
-    auto begin_time = std::chrono::steady_clock::now();
-    
-	  // receive data from client
+		auto begin_time = std::chrono::steady_clock::now();
+
+		// receive data from client
 		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
 		// recvStatus will be the actual length of data recieve instead of buffer size
 		if (recvStatus == SOCKET_ERROR) {
@@ -221,7 +221,7 @@ void Server::mainLoop(void)
 		printf("Server bytes received: %ld\n", recvStatus);
 		ClientPacket cpacket;
 		int i = 0;
-		while (i < (unsigned int) recvStatus) {
+		while (i < (unsigned int)recvStatus) {
 			cpacket.deserialize(&(network_data[i]));
 			i += sizeof(ClientPacket);
 			printf("Server recieve move: %d", cpacket.move);
@@ -241,13 +241,13 @@ void Server::mainLoop(void)
 				printf("Server bytes sent: %ld\n", sendStatus);
 			}
 
-		auto end_time = std::chrono::steady_clock::now();
-		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time: %lld\n", elapsed_time_ms);
+			auto end_time = std::chrono::steady_clock::now();
+			long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
+			printf("Elapsed time: %lld\n", elapsed_time_ms);
 
-		if (elapsed_time_ms < TICK_MS) {
-			Sleep(TICK_MS - elapsed_time_ms);
+			if (elapsed_time_ms < TICK_MS) {
+				Sleep(TICK_MS - elapsed_time_ms);
+			}
 		}
 	}
 }
-
