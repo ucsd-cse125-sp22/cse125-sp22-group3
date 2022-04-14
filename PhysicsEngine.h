@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Collidable.h"
+#include "PhysicsObject.h"
 #include <vector>
 
 class BVHNode
@@ -10,14 +10,14 @@ class BVHNode
 class PhysicsEngine
 {
 public:
-    explicit PhysicsEngine(std::vector<Collidable*> collidables);
+    explicit PhysicsEngine(std::vector<PhysicsObject*> collidables);
 
-    void AddCollidable(Collidable* collidable);
+    void AddCollidable(PhysicsObject* collidable);
     void Compute();
 
 private:
-    std::vector<Collidable*> static_collidables_;
-    std::vector<Collidable*> moving_collidables_;
+    std::vector<PhysicsObject*> static_collidables_;
+    std::vector<PhysicsObject*> moving_collidables_;
 
     BVHNode root_node;
 };

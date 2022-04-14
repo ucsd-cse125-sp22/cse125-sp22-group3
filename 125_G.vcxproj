@@ -150,7 +150,7 @@
     <ClInclude Include="ColliderAABB.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="assimpConvert.h" />
-    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderCircle.h" />
     <ClInclude Include="Drawable.h" />
