@@ -1,5 +1,9 @@
 ﻿#include "ColliderAABB.h"
 
+#include <glm/detail/func_geometric.inl>
+
+#include "ColliderCircle.h"
+
 ColliderAABB::ColliderAABB() = default;
 
 ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, const bool is_static)
@@ -11,9 +15,22 @@ ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, const boo
 
 bool ColliderAABB::CollidesWith(Collider* other_collider) const
 {
-    //TODO Perform a sub-case for AABB - AABB collision
+    switch (other_collider->GetColliderShape()) {
+        case AABB_SHAPE: {
+            const auto other_aab = dynamic_cast<ColliderAABB*>(other_collider);
+            //Cooky! Crazy!
+            return  minimum[0] <= other_aab->minimum[0] && maximum[0] >= other_aab->minimum[0] &&
+                    minimum[1] <= other_aab->minimum[1] && maximum[1] >= other_aab->minimum[1];
+        }
+        case CIRCLE: {
+            const auto circle = dynamic_cast<ColliderCircle*>(other_collider);
+            const float x = fmaxf(minimum[0], fminf(circle->center[0], maximum[0]));
+            const float y = fmaxf(minimum[1], fminf(circle->center[1], maximum[1]));
 
-    //TODO Perform a sub-case for AABB - Circle collision
+            // Check if closest point on AABB (x,y) is inside sphere radius.
+            return glm::length(glm::vec2(x,y) - circle->center) < circle->radius;
+        }
+    }
     
     return false;
 }

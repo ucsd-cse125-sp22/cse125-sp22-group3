@@ -20,8 +20,8 @@ bool ColliderCircle::CollidesWith(Collider* other_collider) const
         }
         case AABB_SHAPE: {
             const auto aabb = dynamic_cast<ColliderAABB*>(other_collider);
-            float x = fmaxf(aabb->minimum[0], fminf(center[0], aabb->maximum[0]));
-            float y = fmaxf(aabb->minimum[1], fminf(center[1], aabb->maximum[1]));
+            const float x = fmaxf(aabb->minimum[0], fminf(center[0], aabb->maximum[0]));
+            const float y = fmaxf(aabb->minimum[1], fminf(center[1], aabb->maximum[1]));
 
             // Check if closest point on AABB (x,y) is inside sphere radius.
             return glm::length(glm::vec2(x,y) - center) < radius;

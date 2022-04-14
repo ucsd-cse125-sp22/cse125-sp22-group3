@@ -21,6 +21,7 @@ GameManager::GameManager(std::vector<Player> players)
 	// Get all the game entities in the world
 	//gameEntities
 }
+
 void GameManager::FixedUpdate()
 {
 	for (GameEntity* entity : game_entities) {
