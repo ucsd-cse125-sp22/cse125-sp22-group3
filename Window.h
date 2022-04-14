@@ -22,8 +22,8 @@ public:
 	static glm::vec2 move_input; //TODO move this somewhere else
 	
 	// Objects to Render
-	static Model* idle;
-	static Model* walking;
+	static Model* bumbus;
+	static Player* player;
 
 	// Camera Matrices
 	static glm::mat4 projection;

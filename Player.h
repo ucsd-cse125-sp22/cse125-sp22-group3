@@ -17,9 +17,7 @@ class Player : public Drawable, public GameEntity {
 		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
-		Model* current;
-		Model* idle;
-		Model* walking;
+		Model* model;
 
 		// Moving player
 		void Move();
@@ -34,10 +32,6 @@ class Player : public Drawable, public GameEntity {
 
 		/* Curr should be idle */
 		Player(Model * curr);
-
-		// Animations / Modes
-		void addIdle(Model* idle);
-		void addWalking(Model* walking);
 
 		// Rendering
 		void FixedUpdate() override;

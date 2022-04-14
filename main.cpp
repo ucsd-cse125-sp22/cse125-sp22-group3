@@ -94,7 +94,7 @@ int main(void)
 				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 				
 				// Main render display callback. Rendering of objects is done here. (Draw)
-				Window::displayCallback(window);
+				Window::displayCallback(window);	
 
 				// Idle callback. Updating objects, etc. can be done here. (Update)
 				Window::idleCallback();
@@ -103,6 +103,15 @@ int main(void)
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
 		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
+
+		// uncomment for testing
+		// Main render display callback. Rendering of objects is done here. (Draw)
+		/*
+		Window::displayCallback(window);
+
+		// Idle callback. Updating objects, etc. can be done here. (Update)
+		Window::idleCallback();
+		*/
 	}
 
 	// destroy objects created

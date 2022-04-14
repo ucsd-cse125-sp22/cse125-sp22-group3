@@ -10,21 +10,11 @@ Player::Player() {
 
 Player::Player(Model * curr) {
 	// Set initial values
-	current = curr;
-	idle = curr;
+	model = curr;
 
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-}
-
-void Player::addIdle(Model* i) {
-	idle = i;
-}
-
-void Player::addWalking(Model* w) {
-	walking = w;
-	walking->anim_speed = 2; //TODO This affects all uses of this animation
 }
 
 void Player::FixedUpdate() {
@@ -36,7 +26,7 @@ void Player::FixedUpdate() {
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		current = idle;
+		model->setAnimationMode(IDLE);
 
 	}
 	else {
@@ -48,7 +38,7 @@ void Player::FixedUpdate() {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
 		}
 		
-		current = walking;
+		model->setAnimationMode(WALK);
 	}
 	
 	if (glm::length(curr_vel_) > 0) Move();
@@ -70,7 +60,7 @@ void Player::Move() {
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	current->draw(view, projection, parent, shader);
+	model->draw(view, projection, parent, shader);
 }
 
 glm::mat4 Player::GetRotation() {

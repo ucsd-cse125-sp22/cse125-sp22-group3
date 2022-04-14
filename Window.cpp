@@ -12,8 +12,8 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Model * Window::idle;
-Model * Window::walking;
+Model* Window::bumbus;
+Player* Window::player;
 
 // Camera Matrices 
 // Projection matrix:
@@ -65,14 +65,10 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// load models
-	idle = new Model("models/bumbus/idle.fbx");
-	walking = new Model("models/bumbus/walking.fbx");
+	bumbus = new Model("models/bumbus/bumbus.fbx");
 
-	Player player_1{idle};
-	player_1.addWalking(walking);
-
-	Player player_2{idle};
-	player_2.addWalking(walking);
+	Player player_1{bumbus};
+	Player player_2{bumbus};
 	
 	game = new GameManager({player_1, player_2});
 	
