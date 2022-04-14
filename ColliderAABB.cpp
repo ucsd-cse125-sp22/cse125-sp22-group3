@@ -18,7 +18,7 @@ bool ColliderAABB::CollidesWith(Collider* other_collider) const
     switch (other_collider->GetColliderShape()) {
         case AABB_SHAPE: {
             const auto other_aab = dynamic_cast<ColliderAABB*>(other_collider);
-            //Cooky! Crazy!
+            //Kooky! Crazy!
             return  minimum[0] <= other_aab->minimum[0] && maximum[0] >= other_aab->minimum[0] &&
                     minimum[1] <= other_aab->minimum[1] && maximum[1] >= other_aab->minimum[1];
         }
