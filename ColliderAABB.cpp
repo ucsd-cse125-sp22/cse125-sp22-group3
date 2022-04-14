@@ -1,38 +1,38 @@
-﻿#include "CollidableAABB.h"
+﻿#include "ColliderAABB.h"
 
-CollidableAABB::CollidableAABB() = default;
+ColliderAABB::ColliderAABB() = default;
 
-CollidableAABB::CollidableAABB(const glm::vec2& min, const glm::vec2& max, bool is_static)
+ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, bool is_static)
 {
     minimum = min;
     maximum = max;
     collider_is_static = is_static;
 }
 
-bool CollidableAABB::CollidesWith(Collidable* other_collidable) const
+bool ColliderAABB::CollidesWith(Collider* other_collider) const
 {
     //TODO Perform a sub-case for AABB - AABB collision
 
     //TODO Perform a sub-case for AABB - Circle collision
     return false;
 }
-CollidableAABB* CollidableAABB::BoundingBox()
+ColliderAABB* ColliderAABB::BoundingBox()
 {
     return this;
 }
 
-Collidable::Shape CollidableAABB::GetColliderShape()
+Collider::Shape ColliderAABB::GetColliderShape()
 {
     return AABB_SHAPE;
 }
 
-bool CollidableAABB::GetColliderIsStatic()
+bool ColliderAABB::GetColliderIsStatic()
 {
     //TODO
     return false;
 }
 
-CollidableAABB* CollidableAABB::SurroundingBox(const CollidableAABB& first, const CollidableAABB& second)
+ColliderAABB* ColliderAABB::SurroundingBox(const ColliderAABB& first, const ColliderAABB& second)
 {
     const glm::vec2 small(fminf(first.minimum[0],second.minimum[0]),
                           fminf(first.minimum[1],second.minimum[1]));
@@ -40,6 +40,6 @@ CollidableAABB* CollidableAABB::SurroundingBox(const CollidableAABB& first, cons
     const glm::vec2 big(fmaxf(first.maximum[0],second.maximum[0]),
                         fmaxf(first.maximum[1],second.maximum[1]));
 
-    return new CollidableAABB(small,big,
+    return new ColliderAABB(small,big,
         first.collider_is_static && second.collider_is_static);
 }

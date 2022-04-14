@@ -123,9 +123,8 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CollidableAABB.cpp" />
+    <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Harvestable.cpp" />
     <ClCompile Include="Holdable.cpp" />
@@ -147,10 +146,11 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CollidableAABB.h" />
+    <ClInclude Include="ColliderAABB.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="Collidable.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="GameManager.h" />
