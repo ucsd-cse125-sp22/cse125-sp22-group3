@@ -9,4 +9,5 @@ public:
 
     virtual enum Shape{CIRCLE, AABB_SHAPE} GetColliderShape() = 0;
     virtual bool GetColliderIsStatic() = 0; // Is Object Static? (Stationary)
+    
 };
