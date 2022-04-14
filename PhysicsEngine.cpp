@@ -10,7 +10,8 @@ PhysicsEngine::PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects)
 	// Add physic objects to lists
 	for (PhysicsObject* object : phys_objects)
 	{
-		if(object->GetCollider()->GetColliderIsStatic())
+		//TODO fix this
+		if(object->GetColliders()[0]->GetColliderIsStatic())
 		{
 			static_collidables_.push_back(object);
 		}
@@ -33,8 +34,9 @@ void PhysicsEngine::Compute()
 			PhysicsObject* object_1 = moving_collidables_[i];
 			PhysicsObject* object_2 = moving_collidables_[j];
 
-			Collider* collider_1 = object_1->GetCollider();
-			Collider* collider_2 = object_2->GetCollider();
+			//TODO fix this to be more general for objects with more than one collider
+			Collider* collider_1 = object_1->GetColliders()[0];
+			Collider* collider_2 = object_2->GetColliders()[0];
 			if (collider_1->CollidesWith(collider_2))
 			{
 				object_1->OnCollide();
@@ -75,10 +77,11 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 	//TODO Not implemented
 }
 
+//TODO take in Colliders instead of Physics Objects
 void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second)
 {
-	Collider* col_1 = first->GetCollider();
-	Collider* col_2 = second->GetCollider();
+	Collider* col_1 = first->GetColliders()[0];
+	Collider* col_2 = second->GetColliders()[0];
 
 	glm::vec2* pos_1 = first->GetWorldPosition();
 	glm::vec2* pos_2 = second->GetWorldPosition();

@@ -49,6 +49,11 @@ bool ColliderAABB::GetColliderIsStatic()
     return collider_is_static;
 }
 
+bool ColliderAABB::GetColliderIsTrigger()
+{
+    return collider_is_trigger;
+}
+
 ColliderAABB* ColliderAABB::SurroundingBox(const ColliderAABB& first, const ColliderAABB& second)
 {
     const glm::vec2 small(fminf(first.minimum[0],second.minimum[0]),

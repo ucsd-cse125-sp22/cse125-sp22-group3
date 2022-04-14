@@ -47,7 +47,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// PhysicsObject
 		void OnCollide() override {};
-		Collider* GetCollider() override;
+		std::vector<Collider*> GetColliders() override;
 		glm::vec2* GetWorldPosition() override;
 		
 		// Movement

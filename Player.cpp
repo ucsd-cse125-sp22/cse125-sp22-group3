@@ -60,9 +60,9 @@ void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	model->draw(view, projection, parent, shader);
 }
 
-Collider* Player::GetCollider()
+std::vector<Collider*> Player::GetColliders()
 {
-	return collider_;
+	return { collider_ };
 }
 
 glm::vec2* Player::GetWorldPosition()
