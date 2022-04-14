@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{71369EBE-0FC6-40AA-9D1B-8BE5AD451039}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -124,25 +124,49 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Collidable.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Harvestable.cpp" />
+    <ClCompile Include="Holdable.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Plot.cpp" />
+    <ClCompile Include="SabotageItem.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Tools.cpp" />
+    <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="assimpConvert.h" />
+    <ClInclude Include="Collidable.h" />
+    <ClInclude Include="Drawable.h" />
+    <ClInclude Include="GameEntity.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Harvestable.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Interactable.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="NPC.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Plot.h" />
+    <ClInclude Include="Sabotageable.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Tools.h" />
+    <ClInclude Include="Vegetable.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

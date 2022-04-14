@@ -1,47 +1,27 @@
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
-
-
+#pragma once
+#include "Drawable.h"
+#include "GameEntity.h"
 #include "Model.h"
 
-class Player {
+class Player : public Drawable, public GameEntity {
 	private:
-		const float RUN_OFFSET = 20;
-		const float TURN_OFFSET = 10;
-
-		// Keep track of time for movement
-		float currTime;
-		float lastTime;
-
 		// Transformations for our player
 		glm::vec3 translate;
 		glm::vec3 rotate;
 		glm::vec3 scale;
 
-		// speed and turn of player
-		float currTurn = 0.f;
-		float currSpeed = 0.f;
-
-		const float friction_ = 0.15f;
-		const float base_accel_ = 1;
-		const float max_velocity_ = 20;
+		// Player Movement Attributes
+		float friction_ = 50; // Resistance in Units/Sec
+		float base_accel_ = 200; // Acceleration in Units/Sec^2
+		float max_velocity_ = 20; // Max Velocity in Units/Sec
 		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
-		Model* current;
-		Model* idle;
-		Model* walking;
+		Model* model;
 
 		// Moving player
-		void move();
-		bool backward;
-		bool forward;
-		bool lastMove; // 0 - backward, 1 - forward
-
-		bool left;
-		bool right;
-		bool lastTurn; // 0 - left, 1 - right
-
+		void Move();
+	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
 		glm::mat4 GetTranslation();
@@ -53,27 +33,15 @@ class Player {
 		/* Curr should be idle */
 		Player(Model * curr);
 
-		// Animations / Modes
-		void addIdle(Model* idle);
-		void addWalking(Model* walking);
-
 		// Rendering
-		void update();
-		void draw(glm::mat4 view, glm::mat4 projection, GLuint shader);
+		void FixedUpdate() override;
+		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 
 		// Movement
-		void Forward();
-		void Backward();
-		void Left();
-		void Right();
-		void StopMovingForward();
-		void StopMovingBackward();
-		void StopTurningLeft();
-		void StopTurningRight();
+		glm::vec2 move_input{0,0};
 
 		// Information
 		glm::vec3 GetPosition() const;
+		void SetPosition(glm::vec3 position);
 
 };
-
-#endif

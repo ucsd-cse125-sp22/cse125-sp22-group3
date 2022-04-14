@@ -12,5 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Window.h"
+#include "InputManager.h"
+#include "GameManager.h"
 
 #endif
