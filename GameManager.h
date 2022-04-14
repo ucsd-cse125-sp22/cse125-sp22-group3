@@ -8,7 +8,6 @@ class GameManager : GameEntity, Drawable
 {
 public:
     explicit GameManager(std::vector<Player> players);
-    ~GameManager();
 
     // Call Updates on GameState
     void FixedUpdate() override;
