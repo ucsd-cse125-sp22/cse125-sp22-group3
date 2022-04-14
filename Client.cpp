@@ -1,5 +1,5 @@
 #include "Client.h"
-
+#include "NetworkPacket.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <functional>
@@ -137,3 +137,4 @@ int Client::syncWithServer(const char* send_buf, size_t send_len,
 
 	return recvStatus;
 }
+

@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "NetworkPacket.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,8 +14,6 @@
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Iphlpapi.lib")
 
-#define DEFAULT_PORT "8686" // TODO change default port
-#define DEFAULT_BUFLEN 1024
 #define TICK_MS 30
 
 Server::Server(void)
@@ -162,10 +161,8 @@ void Server::mainLoop(void)
 	// TODO insert new client into session id table
 	// sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
-	char buffer[DEFAULT_BUFLEN];
-	while (true) { // TODO
-		auto begin_time = std::chrono::steady_clock::now();
-
+	/*char buffer[DEFAULT_BUFLEN];
+	while (true) { // TODO 
 		// receive data from client
 		if (ClientSocket == INVALID_SOCKET)
 		{
@@ -204,6 +201,45 @@ void Server::mainLoop(void)
 		else {
 			printf("Server bytes sent: %ld\n", sendStatus);
 		}
+	}*/
+	while (true) { // TODO
+    auto begin_time = std::chrono::steady_clock::now();
+    
+	  // receive data from client
+		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
+		// recvStatus will be the actual length of data recieve instead of buffer size
+		if (recvStatus == SOCKET_ERROR) {
+			printf("recv failed: %d\n", WSAGetLastError());
+			continue;
+		}
+		else if (recvStatus == 0) {
+			printf("Connection closed\n");
+			closesocket(ClientSocket);
+			return; // TODO only terminate for this client, not others
+		}
+
+		printf("Server bytes received: %ld\n", recvStatus);
+		ClientPacket cpacket;
+		int i = 0;
+		while (i < (unsigned int) recvStatus) {
+			cpacket.deserialize(&(network_data[i]));
+			i += sizeof(ClientPacket);
+			printf("Server recieve move: %d", cpacket.move);
+
+			//TODO: do stuff with the packet recieve, now just send the packet back; 
+			ServerPacket spacket;
+			spacket.move = cpacket.move;
+			spacket.valid = true;
+			char packet_data[sizeof(ServerPacket)];
+			spacket.serialize(packet_data);
+			int sendStatus = send(ClientSocket, packet_data, sizeof(ServerPacket), 0);
+			if (sendStatus == SOCKET_ERROR) {
+				printf("send failed: %d\n", WSAGetLastError());
+				return; // TODO ideally retry transmission
+			}
+			else {
+				printf("Server bytes sent: %ld\n", sendStatus);
+			}
 
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
@@ -214,3 +250,4 @@ void Server::mainLoop(void)
 		}
 	}
 }
+
