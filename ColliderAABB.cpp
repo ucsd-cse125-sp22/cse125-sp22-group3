@@ -14,7 +14,6 @@ bool ColliderAABB::CollidesWith(Collider* other_collider) const
     //TODO Perform a sub-case for AABB - AABB collision
 
     //TODO Perform a sub-case for AABB - Circle collision
-    
     return false;
 }
 ColliderAABB* ColliderAABB::BoundingBox()
