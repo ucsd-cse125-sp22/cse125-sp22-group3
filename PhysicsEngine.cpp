@@ -74,6 +74,24 @@ inline void ResolveCircleToCircleCollision(ColliderCircle* circle_1, ColliderCir
 
 //TODO I'm not sure if we're even going to need this, but if we add a moving AABB object we potentially would.
 inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_2, glm::vec2* pos_1, glm::vec2* pos_2) {
+	const glm::vec2 center_1 = (aabb_1->maximum + aabb_1->minimum) / 2.f;
+	const glm::vec2 center_2 = (aabb_2->maximum + aabb_2->minimum) / 2.f;
+
+	const float x_1 = fmaxf(aabb_1->minimum[0], fminf(center_2[0], aabb_1->maximum[0]));
+	const float y_1 = fmaxf(aabb_1->minimum[1], fminf(center_2[1], aabb_1->maximum[1]));
+
+	const float x_2 = fmaxf(aabb_2->minimum[0], fminf(center_1[0], aabb_2->maximum[0]));
+	const float y_2 = fmaxf(aabb_2->minimum[1], fminf(center_1[1], aabb_2->maximum[1]));
+
+	const glm::vec2 closest_point_1{ x_1,y_1 };
+	const glm::vec2 closest_point_2{ x_2,y_2 };
+
+	const float dist_to_move = glm::length(closest_point_2 - center_2) + glm::length(closest_point_1 - center_1) - glm::length(center_1 - center_2);
+	const glm::vec2 dir_to_move = glm::normalize(center_1 - center_2) * dist_to_move / 2.f;
+
+	*pos_1 += dir_to_move;
+	*pos_2 -= dir_to_move;
+
 	//TODO Not implemented
 }
 

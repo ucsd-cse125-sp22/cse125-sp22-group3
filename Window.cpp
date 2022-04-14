@@ -66,16 +66,14 @@ bool Window::initializeObjects()
 	// load models
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
+	Model * pogo_2 = new Model("models/pogo/pogo.fbx");
 
 
 	Player* player_1 = new Player(bumbus);
 	Player* player_2 = new Player(pogo);
-/**
-	Player player_1{bumbus};
-	Player player_2{pogo};
-*/
+	Player* player_3 = new Player(pogo_2);
 	
-	game = new GameManager({player_1, player_2});
+	game = new GameManager({player_1, player_2, player_3});
 	
 	return true;
 }
