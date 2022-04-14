@@ -1,4 +1,7 @@
 ﻿#include "ColliderCircle.h"
+
+#include <glm/detail/func_geometric.inl>
+
 #include "ColliderAABB.h"
 
 ColliderCircle::ColliderCircle(const glm::vec2 center, const float radius, const bool is_static)
@@ -10,12 +13,23 @@ ColliderCircle::ColliderCircle(const glm::vec2 center, const float radius, const
 
 bool ColliderCircle::CollidesWith(Collider* other_collider) const
 {
-    //TODO Perform a sub-case for Circle - Circle collision
+    switch (other_collider->GetColliderShape()) {
+        case CIRCLE: {
+            const auto other_circle = dynamic_cast<ColliderCircle*>(other_collider);
+            return glm::length(this->center - other_circle->center) < this->radius + other_circle->radius;
+        }
+        case AABB_SHAPE: {
+            const auto aabb = dynamic_cast<ColliderAABB*>(other_collider);
+            float x = fmaxf(aabb->minimum[0], fminf(center[0], aabb->maximum[0]));
+            float y = fmaxf(aabb->minimum[1], fminf(center[1], aabb->maximum[1]));
 
-    
-    //TODO Perform a sub-case for Circle - AABB collision
+            // Check if closest point on AABB (x,y) is inside sphere radius.
+            return glm::length(glm::vec2(x,y) - center) < radius;
+        }
+    }
 
-    
+    // You would never actually reach this but it gives me a warning if I don't put it smh
+    return false;
 }
 
 ColliderAABB* ColliderCircle::BoundingBox()
@@ -25,7 +39,7 @@ ColliderAABB* ColliderCircle::BoundingBox()
 
 Collider::Shape ColliderCircle::GetColliderShape()
 {
-    
+    return Shape::CIRCLE;
 }
 
 bool ColliderCircle::GetColliderIsStatic()

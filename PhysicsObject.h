@@ -2,10 +2,10 @@
 
 class ColliderAABB;
 
-class Collidable
+class PhysicsObject
 {
 public:
-    virtual ~Collidable() = default;
+    virtual ~PhysicsObject() = default;
     virtual void OnCollide() = 0;
 };
 
