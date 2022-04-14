@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include "PhysicsObject.h"
+
+class ColliderAABB;
 
 class Collider
 {

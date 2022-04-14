@@ -67,8 +67,8 @@ bool Window::initializeObjects()
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
 
-	Player player_1{bumbus};
-	Player player_2{pogo};
+	Player* player_1 = new Player(bumbus);
+	Player* player_2 = new Player(pogo);
 	
 	game = new GameManager({player_1, player_2});
 	
@@ -167,10 +167,16 @@ void Window::idleCallback()
 	game->FixedUpdate();
 }
 
+float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
+{
+	return a + f * (b - a);
+}
+
 void Window::displayCallback(GLFWwindow* window)
 {	
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+
 
 	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
 	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.

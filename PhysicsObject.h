@@ -1,11 +1,13 @@
 #pragma once
+#include <glm/vec2.hpp>
 
-class ColliderAABB;
+#include "Collider.h"
 
 class PhysicsObject
 {
 public:
-    virtual ~PhysicsObject() = default;
     virtual void OnCollide() = 0;
+    virtual Collider* GetCollider() = 0;
+    virtual glm::vec2* GetWorldPosition() = 0;
 };
 

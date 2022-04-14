@@ -10,10 +10,13 @@ class BVHNode
 class PhysicsEngine
 {
 public:
-    explicit PhysicsEngine(std::vector<PhysicsObject*> collidables);
+    PhysicsEngine() = default;
+    explicit PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects);
 
-    void AddCollidable(PhysicsObject* collidable);
+    void AddPhysObject(PhysicsObject* phys_object);
+    void ConstructBVH();
     void Compute();
+    void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
 
 private:
     std::vector<PhysicsObject*> static_collidables_;

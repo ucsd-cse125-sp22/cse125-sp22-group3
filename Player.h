@@ -1,12 +1,14 @@
 #pragma once
+#include "ColliderCircle.h"
 #include "Drawable.h"
 #include "GameEntity.h"
 #include "Model.h"
+#include "PhysicsObject.h"
 
-class Player : public Drawable, public GameEntity {
+class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
 		// Transformations for our player
-		glm::vec3 translate;
+		glm::vec2* translate = nullptr;
 		glm::vec3 rotate;
 		glm::vec3 scale;
 
@@ -14,10 +16,14 @@ class Player : public Drawable, public GameEntity {
 		float friction_ = 50; // Resistance in Units/Sec
 		float base_accel_ = 200; // Acceleration in Units/Sec^2
 		float max_velocity_ = 20; // Max Velocity in Units/Sec
-		glm::vec3 curr_vel_ = glm::vec3(0,0,0);
+		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
-		Model* model;
+		Model* model = nullptr;
+
+		// Current Player Collider
+		// Player will use a Circle Collider
+		ColliderCircle* collider_;
 
 		// Moving player
 		void Move();
@@ -33,10 +39,17 @@ class Player : public Drawable, public GameEntity {
 		/* Curr should be idle */
 		Player(Model * curr);
 
-		// Rendering
+		// GameEntity
 		void FixedUpdate() override;
+
+		// Drawable
 		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 
+		// PhysicsObject
+		void OnCollide() override {};
+		Collider* GetCollider() override;
+		glm::vec2* GetWorldPosition() override;
+		
 		// Movement
 		glm::vec2 move_input{0,0};
 
