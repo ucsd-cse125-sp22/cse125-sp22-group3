@@ -2,7 +2,7 @@
 
 ColliderAABB::ColliderAABB() = default;
 
-ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, bool is_static)
+ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, const bool is_static)
 {
     minimum = min;
     maximum = max;
@@ -14,6 +14,7 @@ bool ColliderAABB::CollidesWith(Collider* other_collider) const
     //TODO Perform a sub-case for AABB - AABB collision
 
     //TODO Perform a sub-case for AABB - Circle collision
+    
     return false;
 }
 ColliderAABB* ColliderAABB::BoundingBox()
@@ -28,8 +29,7 @@ Collider::Shape ColliderAABB::GetColliderShape()
 
 bool ColliderAABB::GetColliderIsStatic()
 {
-    //TODO
-    return false;
+    return collider_is_static;
 }
 
 ColliderAABB* ColliderAABB::SurroundingBox(const ColliderAABB& first, const ColliderAABB& second)

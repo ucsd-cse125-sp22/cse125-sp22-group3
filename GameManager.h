@@ -3,7 +3,6 @@
 
 #include "Player.h"
 #include "GameEntity.h"
-#include "./chrono"
 
 class GameManager : GameEntity, Drawable
 {
