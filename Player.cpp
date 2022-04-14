@@ -1,121 +1,47 @@
 #include "Player.h"
 
+#include "GameManager.h"
+
 Player::Player() {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
 Player::Player(Model * curr) {
 	// Set initial values
-	current = curr;
-	idle = curr;
+	model = curr;
 
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
-void Player::addIdle(Model* i) {
-	idle = i;
-}
-
-void Player::addWalking(Model* w) {
-	walking = w;
-}
-
-void Player::update() {
-	auto move_dir = glm::vec3(0,0,0);
-	if (forward) move_dir += glm::vec3(0,0,-1);
-	if (backward) move_dir += glm::vec3(0,0,1);
-	if (right) move_dir += glm::vec3(1,0,0);
-	if (left) move_dir += glm::vec3(-1,0,0);
-
+void Player::FixedUpdate() {
+	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
+	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	if (glm::length(move_dir) < glm::epsilon<float>()) {
-		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
+	if (glm::length(move_input) < glm::epsilon<float>()) {
+		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec3(0,0,0);
 		else {
-			curr_vel_ -= (glm::normalize(curr_vel_) * friction_);
+			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		current = idle;
+		model->setAnimationMode(IDLE);
 
 	}
 	else {
 		// Accelerate in our inputted direction
-		curr_vel_ += base_accel_ * move_dir;
+		// Transform input from 2D to 3D Plane
+		curr_vel_ += delta * base_accel_ * glm::vec3(move_input[0], 0, -move_input[1]);
 		// Cap our speed at some max velocity
-		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
+		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
+			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
+		}
 		
-		current = walking;
+		model->setAnimationMode(WALK);
 	}
 	
-	// get current and last time to get delta
-	lastTime = currTime;
-	currTime = glfwGetTime();
-
-	if (glm::length(curr_vel_) > 0) move();
-	
-
-	/*
-	// get current speed and turn based on offsets
-	currTurn = 0.f; currSpeed = 0.f;
-
-	// Both pressed simutaneously, move with the one last pressed
-	if (forward && backward) {
-		currSpeed = lastMove ? RUN_OFFSET : -RUN_OFFSET;
-	}
-
-	// Only one pressed
-	else {
-		if (forward)  { 
-			currSpeed = RUN_OFFSET;  
-		}
-
-		if (backward) {
-			currSpeed = -RUN_OFFSET;
-		}
-	}
-
-	// Both pressed simutaneously, turn with the one last pressed
-	if (left && right) {
-		currTurn = lastTurn ? TURN_OFFSET : -TURN_OFFSET;
-	}
-	
-	// Only one pressed
-	else {
-		if (left) {
-			currTurn = -TURN_OFFSET;
-		}
-
-		if (right) {
-			currTurn = TURN_OFFSET;
-		}
-	}
-
-	// get current and last time to get delta
-	lastTime = currTime;
-	currTime = glfwGetTime();
-
-	// not moving, set curr model to be idle
-	if (currSpeed == 0.f && currTurn == 0.f) {
-		current = idle;
-	}
-
-	// apply moving transformation, set curr model to walking
-	else {
-		current = walking;
-		move();
-	}*/
+	if (glm::length(curr_vel_) > 0) Move();
 }
 
 float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
@@ -124,52 +50,19 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 }
 
 
-void Player::move() {
-	const float delta = (float)currTime - lastTime; //TODO this should be more global
+void Player::Move() {
+	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;
-
 	
 	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
-	
-	/*
-	const float delta = (float)currTime - lastTime;
-	rotate.y += currTurn * delta;
-
-	float distance = currSpeed * delta;
-	translate.x += (float)(distance * glm::sin(rotate.y));
-	translate.z += (float)(distance * glm::cos(rotate.y));
-	*/
 }
 
-void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
+void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	current->draw(view, projection, parent, shader);
+	model->draw(view, projection, parent, shader);
 }
 
-void Player::Forward() {
-	forward = true;
-	lastMove = true;
-	// currSpeed = RUN_OFFSET;
-}
-
-void Player::Backward() {
-	backward = true;
-	lastMove = false;
-	//currSpeed = -RUN_OFFSET;
-}
-
-void Player::Right() {
-	right = true;
-	lastTurn = true;
-	//currTurn = TURN_OFFSET;
-}
-
-void Player::Left() {
-	left = true;
-	lastTurn = false;
-	//currTurn = -TURN_OFFSET;
-}
 glm::mat4 Player::GetRotation() {
 	/*
 	return glm::rotate(rotate.z, glm::vec3(0.0f, 0.0f, 1.0f)) 
@@ -191,18 +84,7 @@ glm::vec3 Player::GetPosition() const
 	return translate;
 }
 
-void Player::StopMovingForward() {
-	forward = false;
-}
-
-void Player::StopMovingBackward() {
-	backward = false;
-}
-
-void Player::StopTurningLeft() {
-	left = false;
-}
-
-void Player::StopTurningRight() {
-	right = false;
+void Player::SetPosition(const glm::vec3 position)
+{
+	translate = position;
 }

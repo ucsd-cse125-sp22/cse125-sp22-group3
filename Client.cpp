@@ -115,7 +115,7 @@ int Client::syncWithServer(const char* send_buf, size_t send_len,
 		printf("send failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);
 		WSACleanup();
-		exit(1); // TODO more gracful error handling
+		exit(1); // TODO more graceful error handling
 	}
 	else {
 		printf("Client bytes sent: %ld\n", sendStatus);

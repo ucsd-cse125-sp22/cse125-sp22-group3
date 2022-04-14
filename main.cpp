@@ -1,5 +1,11 @@
 #include "main.h"
 
+#include "Client.h"
+#include <chrono>
+
+#define SERVER_ADDRESS "127.0.0.1"
+#define SERVER_PORT "8686"
+
 void error_callback(int error, const char* description)
 {
 	// Print error.
@@ -10,7 +16,7 @@ void setup_callbacks(GLFWwindow* window)
 {
 	// Set the error callback.
 	glfwSetErrorCallback(error_callback);
-	
+
 	// Set the window resize callback.
 	glfwSetWindowSizeCallback(window, Window::resizeCallback);
 
@@ -40,23 +46,21 @@ void print_versions()
 {
 	// Get info of GPU and supported OpenGL version.
 	std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
-	std::cout << "OpenGL version supported: " << glGetString(GL_VERSION) 
+	std::cout << "OpenGL version supported: " << glGetString(GL_VERSION)
 		<< std::endl;
 
 	//If the shading language symbol is defined.
 #ifdef GL_SHADING_LANGUAGE_VERSION
-	std::cout << "Supported GLSL version is: " << 
+	std::cout << "Supported GLSL version is: " <<
 		glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
 }
-
-
 
 int main(void)
 {
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
-	if (!window) 
+	if (!window)
 		exit(EXIT_FAILURE);
 
 	// Print OpenGL and GLSL versions.
@@ -69,21 +73,45 @@ int main(void)
 	setup_opengl_settings();
 
 	// Initialize the shader program; exit if initialization fails.
-	if (!Window::initializeProgram()) 
+	if (!Window::initializeProgram())
 		exit(EXIT_FAILURE);
 
 	// Initialize objects/pointers for rendering; exit if initialization fails.
-	if (!Window::initializeObjects()) 
+	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
-	
-	// Loop while GLFW window should stay open.
-	while (!glfwWindowShouldClose(window))
+
+	// Initialize network client interface
+	Client* client = new Client(SERVER_ADDRESS, SERVER_PORT);
+
+	auto begin_time = std::chrono::steady_clock::now();
+	int status = 1;
+	// Loop while GLFW window should stay open and server han't closed connection
+	while (!glfwWindowShouldClose(window) && status > 0)
 	{
+		char* dummy_data = "Hello from the Networking Team";
+		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
+			{
+				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+				
+				// Main render display callback. Rendering of objects is done here. (Draw)
+				Window::displayCallback(window);	
+
+				// Idle callback. Updating objects, etc. can be done here. (Update)
+				Window::idleCallback();
+			});
+		auto end_time = std::chrono::steady_clock::now();
+		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
+		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
+		begin_time = end_time;
+
+		// uncomment for testing
 		// Main render display callback. Rendering of objects is done here. (Draw)
+		/*
 		Window::displayCallback(window);
 
 		// Idle callback. Updating objects, etc. can be done here. (Update)
 		Window::idleCallback();
+		*/
 	}
 
 	// destroy objects created
@@ -94,6 +122,8 @@ int main(void)
 
 	// Terminate GLFW.
 	glfwTerminate();
+
+	delete client;
 
 	exit(EXIT_SUCCESS);
 }

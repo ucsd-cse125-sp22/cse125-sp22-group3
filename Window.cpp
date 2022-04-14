@@ -1,5 +1,10 @@
 #include "Window.h"
 
+// Game Manager
+GameManager* Window::game = nullptr;
+
+// Window input
+glm::vec2 Window::move_input{0,0};
 
 // Window Properties
 int Window::width;
@@ -7,8 +12,7 @@ int Window::height;
 const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
-Model * Window::idle;
-Model * Window::walking;
+Model* Window::bumbus;
 Player* Window::player;
 
 // Camera Matrices 
@@ -61,13 +65,13 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// load models
-	idle = new Model("models/bumbus/idle.fbx");
-	walking = new Model("models/bumbus/walking.fbx");
+	bumbus = new Model("models/bumbus/bumbus.fbx");
 
-	// load models into player
-	player = new Player(idle);
-	player->addWalking(walking);
-
+	Player player_1{bumbus};
+	Player player_2{bumbus};
+	
+	game = new GameManager({player_1, player_2});
+	
 	return true;
 }
 
@@ -158,8 +162,9 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 
 void Window::idleCallback()
 {
-	// Perform any necessary updates here 
-	player->update();
+	// Perform any necessary updates here
+	GameManager::UpdateFixedDeltaTime();
+	game->FixedUpdate();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -167,17 +172,14 @@ void Window::displayCallback(GLFWwindow* window)
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
-	eyePos = player->GetPosition() + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
-	lookAtPoint = player->GetPosition();		// The point we are looking at.
+	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
+	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
 	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
 
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);
-	player->draw(view, projection, animationShaderProgram);
-
-	// Adding for reference so we can walk around something
-	idle->draw(view, projection, glm::mat4(1), animationShaderProgram);
-
+	game->Draw(view, projection, animationShaderProgram);
+	
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 
@@ -190,50 +192,51 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	// Check for a key release.
 	if (action == GLFW_RELEASE)
 	{
-		// move player forward/backward
-		if (key == GLFW_KEY_W) {
-			player->StopMovingForward();
-		}
-
-		else if (key == GLFW_KEY_S) {
-			player->StopMovingBackward();
-		}
-
-		if (key == GLFW_KEY_A) {
-			player->StopTurningLeft();
-		}
-
-		else if (key == GLFW_KEY_D) {
-			player->StopTurningRight();
+		switch (key)
+		{
+			case GLFW_KEY_W:
+				move_input -= glm::vec2(0,1);
+				break;
+			case GLFW_KEY_S:
+				move_input -= glm::vec2(0,-1);
+				break;
+			case GLFW_KEY_A:
+				move_input -= glm::vec2(-1,0);
+				break;
+			case GLFW_KEY_D:
+				move_input -= glm::vec2(1,0);
+				break;
+			default: break;
 		}
 	}
 
 	// Check for a key press.
-	if (action == GLFW_PRESS || action == GLFW_REPEAT)
+	if (action == GLFW_PRESS)
 	{
 		if (key == GLFW_KEY_ESCAPE) {
 			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.
 		}
 
-		else {
-			// move player forward/backward/left/right
-			if (key == GLFW_KEY_W) {
-				player->Forward();
-			}
-
-			else if (key == GLFW_KEY_S) {
-				player->Backward();
-			}
-
-			if (key == GLFW_KEY_A) {
-				player->Left();
-			}
-
-			else if (key == GLFW_KEY_D) {
-				player->Right();
-			}
+		switch (key)
+		{
+			case GLFW_KEY_W:
+				move_input += glm::vec2(0,1);
+				break;
+			case GLFW_KEY_S:
+				move_input += glm::vec2(0,-1);
+				break;
+			case GLFW_KEY_A:
+				move_input += glm::vec2(-1,0);
+				break;
+			case GLFW_KEY_D:
+				move_input += glm::vec2(1,0);
+				break;
+			default: break;
 		}
 	}
+
+	game->SetPlayerInput(move_input, 0);
+	game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

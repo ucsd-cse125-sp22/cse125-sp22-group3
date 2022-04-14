@@ -17,6 +17,13 @@
 #include "stb_image.h"
 #include "Mesh.h"
 
+enum AniMode {
+	IDLE_HOLD,
+	IDLE_WALK,
+	IDLE,
+	WALK,
+};
+
 struct AssimpNodeData
 {
 	glm::mat4 transformation;
@@ -41,6 +48,20 @@ private:
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
 
+	std::map<AniMode, int> animationMap = { 
+		{IDLE_HOLD, 1},
+		{IDLE_WALK, 2},
+		{IDLE, 3},
+		{WALK, 4},
+	};
+
+	// Get previous and current blending
+	AniMode curr;
+	AniMode last;
+
+	// Blend factor for blending animations
+	float blend = 0.f;
+
 	// Holds transformations for this model
 	glm::mat4 model;
 	bool left = false;
@@ -60,9 +81,11 @@ public:
 	Model(std::string filePath);
 	~Model();
 
+	// Animation Speed
+	float anim_speed = 1;
+
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
-	void update();
 
 	// Loading meshes of model
 	void processNode(aiNode * root, const aiScene* scene);
@@ -76,7 +99,9 @@ public:
 	void SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::vec4>& weights,
 		int vertexId, int boneID, float weight);
 	void CalculateBoneTransform(float time);
+
 	void ReadHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
+	void ReadBlendedHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
 	const aiNodeAnim* findNodeAnim(const aiAnimation* animation, const std::string node_name);
 	glm::mat4 InterpolatePosition(float time, const aiNodeAnim* animationNode);
 	glm::mat4 InterpolateScale(float time, const aiNodeAnim* animationNode);
@@ -85,8 +110,10 @@ public:
 	int GetScaleIndex(float time, const aiNodeAnim* animationNode);
 	int GetRotationIndex(float time, const aiNodeAnim* animationNode);
 
+	// Set or get animation data
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
+	void setAnimationMode(AniMode ani);
 };
 
 #endif
