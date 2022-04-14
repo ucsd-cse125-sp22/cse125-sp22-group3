@@ -1,4 +1,6 @@
+#pragma once
+
 class GameEntity {
 	public:
-		virtual void FixedUpdate() {};
+	virtual void FixedUpdate() = 0;
 };

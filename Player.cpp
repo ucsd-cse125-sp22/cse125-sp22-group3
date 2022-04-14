@@ -6,11 +6,6 @@ Player::Player() {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
 Player::Player(Model * curr) {
@@ -20,19 +15,16 @@ Player::Player(Model * curr) {
 	translate = glm::vec3(0.0f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
-
-	forward = false;
-	backward = false;
-	left = false;
-	right = false;;
 }
 
-void Player::Update() {
+void Player::FixedUpdate() {
+	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
+	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) < glm::epsilon<float>()) {
-		if (glm::length(curr_vel_) < friction_) curr_vel_ = glm::vec3(0,0,0);
+		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec3(0,0,0);
 		else {
-			curr_vel_ -= (glm::normalize(curr_vel_) * friction_ * static_cast<float>(GameManager::GetFixedDeltaTime()));
+			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
 		model->setAnimationMode(IDLE);
 
@@ -40,14 +32,16 @@ void Player::Update() {
 	else {
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
-		curr_vel_ += base_accel_ * glm::vec3(move_input[0], 0, -move_input[1]);
+		curr_vel_ += delta * base_accel_ * glm::vec3(move_input[0], 0, -move_input[1]);
 		// Cap our speed at some max velocity
-		if (glm::length(curr_vel_) > max_velocity_) curr_vel_ = glm::normalize(curr_vel_) * max_velocity_;
+		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
+			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
+		}
 		
 		model->setAnimationMode(WALK);
 	}
 	
-	if (glm::length(curr_vel_) > 0) move();
+	if (glm::length(curr_vel_) > 0) Move();
 }
 
 float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
@@ -56,7 +50,7 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 }
 
 
-void Player::move() {
+void Player::Move() {
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	const glm::vec3 distance = delta * curr_vel_;
 	translate += distance;
@@ -64,7 +58,7 @@ void Player::move() {
 	rotate.y = atan2(curr_vel_.x, curr_vel_.z);
 }
 
-void Player::draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
+void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
 	model->draw(view, projection, parent, shader);
 }
@@ -88,4 +82,9 @@ glm::mat4 Player::GetScale() {
 glm::vec3 Player::GetPosition() const
 {
 	return translate;
+}
+
+void Player::SetPosition(const glm::vec3 position)
+{
+	translate = position;
 }
