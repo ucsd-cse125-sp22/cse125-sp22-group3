@@ -91,8 +91,11 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 
 	*pos_1 += dir_to_move;
 	*pos_2 -= dir_to_move;
+}
 
-	//TODO Not implemented
+inline void ResolveTriggerCollision(ColliderCircle* circle_1, ColliderCircle* circle_2, glm::vec2* pos_1, glm::vec2* pos_2) {
+	printf("Trigger Collision");
+	// TODO: handle the trigger collision and get closest trigger collider, maybe store these positions in a list?
 }
 
 //TODO take in Colliders instead of Physics Objects
@@ -110,7 +113,11 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 		if (col_2->GetColliderShape() == Collider::CIRCLE)
 		{
 			const auto circle_2 = dynamic_cast<ColliderCircle*>(col_2);
-			ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
+
+			if (circle_2->GetColliderIsTrigger()) 
+				ResolveTriggerCollision(circle_1, circle_2, pos_1, pos_2);
+			else
+				ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
 		}
 		if (col_2->GetColliderShape() == Collider::AABB_SHAPE) {
 			const auto aabb = dynamic_cast<ColliderAABB*>(col_2);

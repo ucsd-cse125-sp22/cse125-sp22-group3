@@ -2,6 +2,7 @@
 #define _WINDOW_H_
 
 #include "Player.h"
+#include "Vegetable.h"
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"

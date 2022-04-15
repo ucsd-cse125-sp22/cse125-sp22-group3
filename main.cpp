@@ -107,10 +107,7 @@ int main(void)
 				}
 				
 				InputManager::setMoved();
-					
-
-				
-
+			
 				//GameManager::SetPlayerInput(inCom, 0);
 
 				// Main render display callback. Rendering of objects is done here. (Draw)

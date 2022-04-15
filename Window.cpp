@@ -66,14 +66,22 @@ bool Window::initializeObjects()
 	// load models
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
-	Model * pogo_2 = new Model("models/pogo/pogo.fbx");
+	//Model * pogo_2 = new Model("models/pogo/pogo.fbx");
+	Model * carrot = new Model("models/pogo/pogo.fbx"); // PLACEHOLDER
+
 
 
 	Player* player_1 = new Player(bumbus);
 	Player* player_2 = new Player(pogo);
-	Player* player_3 = new Player(pogo_2);
+	//Player* player_3 = new Player(pogo_2);
+	Vegetable* vegetable_1 = new Vegetable(VegetableType::CARROT, carrot);
+	Vegetable* vegetable_2 = new Vegetable(VegetableType::CARROT, carrot);
 	
-	game = new GameManager({player_1, player_2, player_3});
+	//game = new GameManager({player_1, player_2, player_3});
+	//game = new GameManager({ player_1, player_2 }, {});
+	// 
+	// Changed GameManager to include a list of vegetables for testing, we can revert back
+	game = new GameManager({ player_1, player_2 }, { vegetable_1, vegetable_2 });
 	
 	return true;
 }
