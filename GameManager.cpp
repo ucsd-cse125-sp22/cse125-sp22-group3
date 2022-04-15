@@ -67,7 +67,7 @@ double GameManager::GetFixedDeltaTime() { return curr_time_ - last_time_; }
 
 glm::vec2 GameManager::calcMoveInput(InputCommands c)
 {
-	glm::vec2 move_input(0, 0);
+	//glm::vec2 move_input(0, 0);
 		switch (c)
 		{
 			
@@ -75,7 +75,7 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 			move_input = glm::vec2(0, 0);
 			break;
 			
-			/**
+			
 		case STOP_FORWARD:
 			move_input -= glm::vec2(0, 1);
 			break;
@@ -88,7 +88,7 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 		case STOP_RIGHT:
 			move_input -= glm::vec2(1, 0);
 			break;
-			*/
+			
 		case MOVE_FORWARD:
 			move_input += glm::vec2(0, 1);
 			break;
@@ -104,7 +104,19 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 		default: break;
 	}
 
-	
+		if (move_input.x > 1.0) {
+			move_input.x = 1.0;
+		}
+		else if (move_input.x < -1.0) {
+			move_input.x = -1.0;
+		}
+
+		if (move_input.y > 1.0) {
+			move_input.y = 1.0;
+		}
+		else if (move_input.y < -1.0) {
+			move_input.y = -1.0;
+		}
 	return move_input;
 }
 

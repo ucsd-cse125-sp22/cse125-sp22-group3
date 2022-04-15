@@ -66,7 +66,7 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 	}
 	
 	// Check for a key press.
-	if (action == GLFW_PRESS||action==GLFW_REPEAT)
+	if (action == GLFW_PRESS)
 	{
 		if (key == GLFW_KEY_ESCAPE) {
 			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.

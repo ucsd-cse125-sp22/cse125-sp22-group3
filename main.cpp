@@ -98,8 +98,9 @@ int main(void)
 				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 				
 				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-				InputCommands inCom = InputManager::getLastCommand();
+				
 				if (InputManager::getMoved) {
+					InputCommands inCom = InputManager::getLastCommand();
 					if (InputManager::checkIdle())
 						inCom = NONE;
 					GameManager::SetPlayerInput(inCom, 0);
