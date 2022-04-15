@@ -47,26 +47,26 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 		{
 		case GLFW_KEY_W:
 			moveF = false;
-			//lastCmd = STOP_FORWARD;
+			lastCmd = STOP_FORWARD;
 			break;
 		case GLFW_KEY_S:
 			moveB = false;
-			//lastCmd = STOP_BACKWARD;
+			lastCmd = STOP_BACKWARD;
 			break;
 		case GLFW_KEY_A:
 			moveL = false;
-			//lastCmd = STOP_LEFT;
+			lastCmd = STOP_LEFT;
 			break;
 		case GLFW_KEY_D:
 			moveR = false;
-			//lastCmd = STOP_RIGHT;
+			lastCmd = STOP_RIGHT;
 			break;
 		default: break;
 		}
 	}
 	
 	// Check for a key press.
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS||action==GLFW_REPEAT)
 	{
 		if (key == GLFW_KEY_ESCAPE) {
 			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.

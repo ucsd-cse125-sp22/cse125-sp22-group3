@@ -75,6 +75,7 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 			move_input = glm::vec2(0, 0);
 			break;
 			
+			/**
 		case STOP_FORWARD:
 			move_input -= glm::vec2(0, 1);
 			break;
@@ -87,6 +88,7 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 		case STOP_RIGHT:
 			move_input -= glm::vec2(1, 0);
 			break;
+			*/
 		case MOVE_FORWARD:
 			move_input += glm::vec2(0, 1);
 			break;
