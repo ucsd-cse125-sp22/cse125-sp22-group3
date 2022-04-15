@@ -67,8 +67,13 @@ bool Window::initializeObjects()
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
 
+
 	Player* player_1 = new Player(bumbus);
 	Player* player_2 = new Player(pogo);
+/**
+	Player player_1{bumbus};
+	Player player_2{pogo};
+*/
 	
 	game = new GameManager({player_1, player_2});
 	
