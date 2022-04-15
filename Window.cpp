@@ -4,7 +4,7 @@
 GameManager* Window::game = nullptr;
 
 // Window input
-glm::vec2 Window::move_input{0,0};
+//glm::vec2 Window::move_input{0,0};
 
 // Window Properties
 int Window::width;
@@ -67,8 +67,13 @@ bool Window::initializeObjects()
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
 
+
+	Player* player_1 = new Player(bumbus);
+	Player* player_2 = new Player(pogo);
+/**
 	Player player_1{bumbus};
 	Player player_2{pogo};
+*/
 	
 	game = new GameManager({player_1, player_2});
 	
@@ -167,10 +172,16 @@ void Window::idleCallback()
 	game->FixedUpdate();
 }
 
+float Lerp(const float a, const float b, const float f) //TODO move to a more global scope
+{
+	return a + f * (b - a);
+}
+
 void Window::displayCallback(GLFWwindow* window)
 {	
 	// Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+
 
 	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
 	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
@@ -190,6 +201,7 @@ void Window::displayCallback(GLFWwindow* window)
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key release.
+	/**
 	if (action == GLFW_RELEASE)
 	{
 		switch (key)
@@ -236,7 +248,8 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	}
 
 	game->SetPlayerInput(move_input, 0);
-	game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
+	*/
+	//game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

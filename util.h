@@ -1,0 +1,16 @@
+#pragma once
+#ifndef UTIL_H
+#define UTIL_H
+enum InputCommands {
+	NONE,
+	MOVE_FORWARD,
+	MOVE_BACKWARD,
+	MOVE_LEFT,
+	MOVE_RIGHT,
+	STOP_FORWARD,
+	STOP_BACKWARD,
+	STOP_LEFT,
+	STOP_RIGHT,
+	USE
+};
+#endif

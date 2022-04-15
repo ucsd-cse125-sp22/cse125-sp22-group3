@@ -3,6 +3,7 @@
 #include "Client.h"
 #include <chrono>
 
+
 #define SERVER_ADDRESS "127.0.0.1"
 #define SERVER_PORT "8686"
 
@@ -21,7 +22,8 @@ void setup_callbacks(GLFWwindow* window)
 	glfwSetWindowSizeCallback(window, Window::resizeCallback);
 
 	// Set the key callback.
-	glfwSetKeyCallback(window, Window::keyCallback);
+	//glfwSetKeyCallback(window, Window::keyCallback);
+	glfwSetKeyCallback(window, InputManager::keyCallback);
 
 	// Set cursor callback
 	glfwSetCursorPosCallback(window, Window::cursorCallback);
@@ -85,6 +87,8 @@ int main(void)
 
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
+	
+
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -93,6 +97,22 @@ int main(void)
 			{
 				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 				
+				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+				
+				if (InputManager::getMoved) {
+					InputCommands inCom = InputManager::getLastCommand();
+					if (InputManager::checkIdle())
+						inCom = NONE;
+					GameManager::SetPlayerInput(inCom, 0);
+				}
+				
+				InputManager::setMoved();
+					
+
+				
+
+				//GameManager::SetPlayerInput(inCom, 0);
+
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
 

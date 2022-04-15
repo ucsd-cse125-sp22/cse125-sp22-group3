@@ -19,7 +19,7 @@ public:
 	static GameManager* game; //TODO move all of this somewhere else
 	
 	// Window Input
-	static glm::vec2 move_input; //TODO move this somewhere else
+	//static glm::vec2 move_input; //TODO move this somewhere else
 	
 	// Objects to Render
 	static Player* player;
@@ -47,6 +47,8 @@ public:
 	// Draw and Update functions
 	static void idleCallback();
 	static void displayCallback(GLFWwindow*);
+
+	void setMoveInput(glm::vec2 v);
 
 	// Callbacks
 
