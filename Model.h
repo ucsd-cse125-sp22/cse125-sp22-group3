@@ -16,6 +16,7 @@
 #include "assimpConvert.h"
 #include "stb_image.h"
 #include "Mesh.h"
+#include "util.h"
 
 enum AniMode {
 	IDLE_HOLD,

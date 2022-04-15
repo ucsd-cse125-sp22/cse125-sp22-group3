@@ -4,7 +4,7 @@
 GameManager* Window::game = nullptr;
 
 // Window input
-glm::vec2 Window::move_input{0,0};
+//glm::vec2 Window::move_input{0,0};
 
 // Window Properties
 int Window::width;
@@ -196,6 +196,7 @@ void Window::displayCallback(GLFWwindow* window)
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key release.
+	/**
 	if (action == GLFW_RELEASE)
 	{
 		switch (key)
@@ -242,7 +243,8 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	}
 
 	game->SetPlayerInput(move_input, 0);
-	game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
+	*/
+	//game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

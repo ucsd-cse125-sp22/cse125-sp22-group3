@@ -16,11 +16,13 @@
     <ClCompile Include="SabotageItem.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="Vegetable.cpp" />
-    <ClCompile Include="Collidable.cpp" />
     <ClCompile Include="Harvestable.cpp" />
     <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="ColliderAABB.cpp" />
+    <ClCompile Include="ColliderCircle.cpp" />
+    <ClCompile Include="PhysicsEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
@@ -38,7 +40,6 @@
     <ClInclude Include="Plot.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="Collidable.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="Harvestable.h" />
@@ -46,6 +47,12 @@
     <ClInclude Include="Interactable.h" />
     <ClInclude Include="Sabotageable.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="ColliderAABB.h" />
+    <ClInclude Include="PhysicsObject.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="ColliderCircle.h" />
+    <ClInclude Include="PhysicsEngine.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

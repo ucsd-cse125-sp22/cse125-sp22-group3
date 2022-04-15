@@ -2,8 +2,11 @@
 
 #include <utility>
 
+
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
+glm::vec2 move_input(0, 0);
+std::vector<Player*> GameManager::players_;
 
 GameManager::GameManager(std::vector<Player*> players)
 {
@@ -46,9 +49,13 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 		player->Draw(view, projection, shader);
 	}
 }
-void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)
+
+
+
+void GameManager::SetPlayerInput(InputCommands c, const int player_index)
 {
-	players_[player_index]->move_input = move_input;
+	//players_[player_index]->move_input = move_input;
+	players_[player_index]->move_input = calcMoveInput(c);
 }
 
 glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
@@ -57,6 +64,45 @@ glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 }
 
 double GameManager::GetFixedDeltaTime() { return curr_time_ - last_time_; }
+
+glm::vec2 GameManager::calcMoveInput(InputCommands c)
+{
+	glm::vec2 move_input(0, 0);
+		switch (c)
+		{
+		case NONE:
+			//move_input = glm::vec2(0, 0);
+			break;
+		case STOP_FORWARD:
+			move_input = glm::vec2(0, 1);
+			break;
+		case STOP_BACKWARD:
+			move_input = glm::vec2(0, -1);
+			break;
+		case STOP_LEFT:
+			move_input = glm::vec2(-1, 0);
+			break;
+		case STOP_RIGHT:
+			move_input = glm::vec2(1, 0);
+			break;
+		case MOVE_FORWARD:
+			move_input += glm::vec2(0, 1);
+			break;
+		case MOVE_BACKWARD:
+			move_input += glm::vec2(0, -1);
+			break;
+		case MOVE_LEFT:
+			move_input += glm::vec2(-1, 0);
+			break;
+		case MOVE_RIGHT:
+			move_input += glm::vec2(1, 0);
+			break;
+		default: break;
+	}
+
+	
+	return move_input;
+}
 
 void GameManager::UpdateFixedDeltaTime()
 {
