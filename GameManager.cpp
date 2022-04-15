@@ -5,7 +5,7 @@
 
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
-glm::vec2 move_input(0, 0);
+glm::vec2 GameManager::move_input(0, 0);
 std::vector<Player*> GameManager::players_;
 
 GameManager::GameManager(std::vector<Player*> players)
@@ -70,20 +70,22 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 	glm::vec2 move_input(0, 0);
 		switch (c)
 		{
+			
 		case NONE:
-			//move_input = glm::vec2(0, 0);
+			move_input = glm::vec2(0, 0);
 			break;
+			
 		case STOP_FORWARD:
-			move_input = glm::vec2(0, 1);
+			move_input -= glm::vec2(0, 1);
 			break;
 		case STOP_BACKWARD:
-			move_input = glm::vec2(0, -1);
+			move_input -= glm::vec2(0, -1);
 			break;
 		case STOP_LEFT:
-			move_input = glm::vec2(-1, 0);
+			move_input -= glm::vec2(-1, 0);
 			break;
 		case STOP_RIGHT:
-			move_input = glm::vec2(1, 0);
+			move_input -= glm::vec2(1, 0);
 			break;
 		case MOVE_FORWARD:
 			move_input += glm::vec2(0, 1);

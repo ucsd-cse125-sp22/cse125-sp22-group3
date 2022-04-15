@@ -97,14 +97,20 @@ int main(void)
 			{
 				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 				
+				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
 				InputCommands inCom = InputManager::getLastCommand();
-				//if (InputManager::checkIdle())
-					//inCom = NONE;
-				std::cout << "INPUT: " << inCom << "\n";
+				if (InputManager::getMoved) {
+					if (InputManager::checkIdle())
+						inCom = NONE;
+					GameManager::SetPlayerInput(inCom, 0);
+				}
+				
+				InputManager::setMoved();
+					
 
 				
 
-				GameManager::SetPlayerInput(inCom, 0);
+				//GameManager::SetPlayerInput(inCom, 0);
 
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	

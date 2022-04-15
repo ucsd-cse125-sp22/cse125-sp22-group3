@@ -10,12 +10,16 @@ class InputManager {
         ~InputManager();
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static InputCommands getLastCommand();
+        static bool getMoved();
+        static void setMoved();
         static bool checkIdle();
 
-        static bool moveF;
-        static bool moveB;
-        static bool moveL;
-        static bool moveR;
+        static bool justMoved;
+
+        static bool InputManager::moveL;
+        static bool InputManager::moveR;
+        static bool InputManager::moveF;
+        static bool InputManager::moveB;
 
 	private:
        
