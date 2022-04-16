@@ -77,16 +77,16 @@ glm::vec2 GameManager::calcMoveInput(InputCommands c)
 			
 			
 		case STOP_FORWARD:
-			move_input -= glm::vec2(0, 1);
+			move_input = glm::vec2(move_input.x, 0);
 			break;
 		case STOP_BACKWARD:
-			move_input -= glm::vec2(0, -1);
+			move_input = glm::vec2(move_input.x, 0);
 			break;
 		case STOP_LEFT:
-			move_input -= glm::vec2(-1, 0);
+			move_input = glm::vec2(0, move_input.y);
 			break;
 		case STOP_RIGHT:
-			move_input -= glm::vec2(1, 0);
+			move_input = glm::vec2(0, move_input.y);
 			break;
 			
 		case MOVE_FORWARD:
