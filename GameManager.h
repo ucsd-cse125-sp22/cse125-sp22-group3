@@ -3,7 +3,7 @@
 
 #include "Player.h"
 #include "GameEntity.h"
-#include "../../../../../Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.29.30133/include/chrono"
+#include <chrono>
 
 class GameManager : GameEntity, Drawable
 {
