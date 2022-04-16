@@ -116,6 +116,8 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
         // and finally bind the texture n
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+    // Does not have animations
+    glUniform1i(glGetUniformLocation(shaderProgram, "hasAnimation"), 0);
 
     // Get the shader variable locations and send the uniform data to the shader 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, false, glm::value_ptr(view));
@@ -181,6 +183,9 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
         // and finally bind the texture n
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+    // Has animations
+    glUniform1i(glGetUniformLocation(shaderProgram, "hasAnimation"), 1);
 
     // Get the shader variable locations and send the uniform data to the shader 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, false, glm::value_ptr(view));

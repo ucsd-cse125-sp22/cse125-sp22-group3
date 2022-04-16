@@ -41,7 +41,7 @@ void setup_opengl_settings()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Set clear color to black.
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(212.f/255, 242.f/255, 148.f/255, 1.0);
 }
 
 void print_versions()
@@ -107,10 +107,7 @@ int main(void)
 				}
 				
 				InputManager::setMoved();
-					
-
-				
-
+			
 				//GameManager::SetPlayerInput(inCom, 0);
 
 				// Main render display callback. Rendering of objects is done here. (Draw)

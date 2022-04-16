@@ -2,6 +2,7 @@
 #define GAME_MANAGER_H
 
 #include "Player.h"
+#include "Vegetable.h"
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
 #include "util.h"
@@ -10,7 +11,7 @@
 class GameManager : GameEntity, Drawable
 {
 public:
-    explicit GameManager(std::vector<Player*> players);
+    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables);
 
     // Call Updates on GameState
     void FixedUpdate() override;
@@ -35,6 +36,8 @@ public:
 
 private:
     static std::vector<Player*> players_;
+    //std::vector<Player*> players_{}; //TODO what the heck
+    std::vector<Vegetable*> vegetables_{};
     
     static double last_time_;
     static double curr_time_;

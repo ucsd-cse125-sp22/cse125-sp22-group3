@@ -8,7 +8,7 @@ double GameManager::last_time_ = 0;
 glm::vec2 GameManager::move_input(0, 0);
 std::vector<Player*> GameManager::players_;
 
-GameManager::GameManager(std::vector<Player*> players)
+GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
 {
 	// Initialize Players
 	players_ = players;
@@ -18,16 +18,27 @@ GameManager::GameManager(std::vector<Player*> players)
 		player->SetPosition({i * 10,0,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
+		game_entities.back()->type = EntityType::PLAYER;
 		i++;
 	}
-	
-	// Get all the game entities in the world
-	//gameEntities
+
+	// Testing vegetables, eventually would want to include a vector of GameEntities instead of separating each?
+	vegetables_ = vegetables;
+	for (Vegetable* vegetable : vegetables_) {
+		// Set Player Positions
+		vegetable->SetPosition({ i * 15,5,0 });
+		game_entities.push_back(vegetable);
+		game_entities.back()->type = EntityType::VEGETABLE;
+		i++;
+	}
 
 	// Instantiate Physics Engine
 	std::vector<PhysicsObject*> physics_objects;
 	for (Player* player : players_) {
 		physics_objects.push_back(player);
+	}
+	for (Vegetable* vegetable : vegetables_) {
+		physics_objects.push_back(vegetable);
 	}
 	physics_ = PhysicsEngine(physics_objects);
 
@@ -44,9 +55,13 @@ void GameManager::FixedUpdate()
 }
 void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
 {
-	// TODO don't do this. Figure out how to draw all Drawable GameEntities.
-	for (Player* player : players_) {
-		player->Draw(view, projection, shader);
+	for (auto entity : game_entities) {
+		if (entity->type == EntityType::PLAYER) {
+			dynamic_cast<Player*>(entity)->Draw(view, projection, shader);
+		}
+		else if (entity->type == EntityType::VEGETABLE) {
+			dynamic_cast<Vegetable*>(entity)->Draw(view, projection, shader);
+		}
 	}
 }
 

@@ -17,6 +17,7 @@ const int MAX_BONE_INFLUENCE = 4;
 
 // Uniform variables can be updated by fetching their location and passing values to that location
 uniform mat4 projection;
+uniform bool hasAnimation;
 uniform mat4 view;
 uniform mat4 model;
 uniform mat4 finalBonesMatrices[MAX_BONES];
@@ -31,27 +32,37 @@ out vec2 TexCoords;
 
 void main()
 {
-    vec4 totalPosition = vec4(0.0f);
-    for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
-    {
-        if(boneIds[i] == -1) 
-            continue;
-
-        if(boneIds[i] >= 100) 
+    if(hasAnimation) {
+        vec4 totalPosition = vec4(0.0f);
+        for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
         {
-            totalPosition = vec4(positions,1.0f);
-            break;
+            if(boneIds[i] == -1) 
+                continue;
+
+            if(boneIds[i] >= 100) 
+            {
+                totalPosition = vec4(positions,1.0f);
+                break;
+            }
+        
+        
+            vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(positions,1.0f);
+            totalPosition += localPosition * weights[i];
+            vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normals;
         }
-        
-        
-        vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(positions,1.0f);
-        totalPosition += localPosition * weights[i];
-        vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normals;
+    
+        FragPos = vec3(model * totalPosition);
+        Normal = mat3(transpose(inverse(model))) * normals;  
+        TexCoords = uvs;
+    
+        gl_Position = projection * view * model * totalPosition;
     }
+
+    else {
+       FragPos = vec3(model * vec4(positions, 1.0));
+       Normal = mat3(transpose(inverse(model))) * normals;  
+       TexCoords = uvs;
     
-    FragPos = vec3(model * totalPosition);
-    Normal = mat3(transpose(inverse(model))) * normals;  
-    TexCoords = uvs;
-    
-    gl_Position = projection * view * model * totalPosition;
+       gl_Position = projection * view * vec4(FragPos, 1.0);
+    }
 }

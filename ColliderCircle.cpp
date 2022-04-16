@@ -46,3 +46,8 @@ bool ColliderCircle::GetColliderIsStatic()
 {
     return collider_is_static;
 }
+
+bool ColliderCircle::GetColliderIsTrigger()
+{
+    return collider_is_trigger;
+}
