@@ -1,13 +1,7 @@
 #include "main.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw_gl3.h"
-#include "./Network/Client.h"
-#include "./Network/NetworkPacket.h"
-#include "./Network/ServerMain.cpp"
-#include "Model.h"
 
+#include "./Network/Client.h"
 #include <chrono>
-#include <map>
 
 #define SERVER_ADDRESS "127.0.0.1"
 #define SERVER_PORT "8686"
@@ -46,7 +40,7 @@ void setup_opengl_settings()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Set clear color to black.
-	glClearColor(212.f/255, 242.f/255, 148.f/255, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
 void print_versions()
@@ -63,13 +57,31 @@ void print_versions()
 #endif
 }
 
-int main(int argc, char* argv[])
+int main(void)
 {
-	if (argc > 1 && (std::string(argv[1]) == "server-build")) { //TODO Add Seperate Project
-		ServerMain();
-		return 0;
-	}
-	
+	// Decide GL+GLSL versions
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+	// GL ES 2.0 + GLSL 100
+	const char* glsl_version = "#version 100";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+#elif defined(__APPLE__)
+	// GL 3.2 + GLSL 150
+	const char* glsl_version = "#version 150";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+#else
+	// GL 3.0 + GLSL 130
+	const char* glsl_version = "#version 130";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+#endif
+
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
 	if (!window)
@@ -93,14 +105,19 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 
 	/*IMGUI Initialize*/
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-	ImGui_ImplGlfwGL3_Init(window, true);
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-	// Setup style
+	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsClassic();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
 	/*END of IMGUI initialize*/
 
 	// Initialize network client interface
@@ -109,70 +126,10 @@ int main(int argc, char* argv[])
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-	//TODO remove test
-	// load models
-	Model bumbus = Model(CHAR_BUMBUS);
-	Model pogo = Model(CHAR_POGO);
-	Model swainky = Model(CHAR_SWAINKY);
-	Model gilma = Model(CHAR_GILMAN);
-	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
-	
-	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
-		// outgoing packet initialization
-		ClientPacket out_packet;
-
-		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-		if (InputManager::getMoved()) { // TODO determine when to send packet and when to skip
-			out_packet.justMoved = InputManager::getMoved();
-			out_packet.movement = InputManager::getLastMovement();
-			out_packet.lastCommand = InputManager::getLastCommand();
-		}
-		InputManager::resetMoved();
-		out_packet.player_index = 0;
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len)
-			{
-				ServerHeader* sheader;
-				ModelInfo* model_arr;
-				serverDeserialize(recv_buf, &sheader, &model_arr);
-
-				//Rendering Code
-				const glm::mat4 player_transform = sheader->player_transform;
-				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
-				
-				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
-				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
-				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
-
-				for (int i = 0; i < sheader->num_models; i++)
-				{
-					const ModelInfo model_info = model_arr[i];
-
-					if (model_map.count(model_info.model_id) == 0) {
-						model_map[model_info.model_id] = new Model(model_info.model);
-					}
-
-					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
-				}
-
-				free(sheader);
-				free(model_arr);
-			});
-		
-		// Gets events, including input such as keyboard and mouse or window resizing
-		glfwPollEvents();
-
-		// Swap buffers.
-		glfwSwapBuffers(window);
-        
-		/*
 		char* dummy_data = "Hello from the Networking Team";
 		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
 		{
@@ -191,36 +148,45 @@ int main(int argc, char* argv[])
 			//GameManager::SetPlayerInput(inCom, 0);
 
 			//IMGUI rendering
-			ImGui_ImplGlfwGL3_NewFrame();
-			
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
 			ImGui::Begin("My Name is Window, IMGUI Window");
 			ImGui::Text("Hello there adeventurer!");
 			ImGui::End();
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 
 			// Main render display callback. Rendering of objects is done here. (Draw)
 			Window::displayCallback(window);
 
 			// Idle callback. Updating objects, etc. can be done here. (Update)
-			
-
 			Window::idleCallback();
 		});
-		*/
-
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
+		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
+
+		// uncomment for testing
+		// Main render display callback. Rendering of objects is done here. (Draw)
+		/*
+		Window::displayCallback(window);
+
+		// Idle callback. Updating objects, etc. can be done here. (Update)
+		Window::idleCallback();
+		*/
 	}
 
 	// destroy objects created
 	Window::cleanUp();
-	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
-		delete iter->second;
-	}
 
 	// Cleanup ImGui
-	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
 	// Destroy the window.

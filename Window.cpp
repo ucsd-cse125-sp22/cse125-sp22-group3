@@ -1,7 +1,9 @@
 #include "Window.h"
-
 #include "Model.h"
 
+#include "main.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
 // Game Manager
 GameManager* Window::game = nullptr;
 
@@ -195,6 +197,9 @@ void Window::displayCallback(GLFWwindow* window)
 	// Render the objects
 	game->Draw(view, projection, animationShaderProgram);
 	// renderDepthMap();
+
+	ImGui::Render();
+	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
