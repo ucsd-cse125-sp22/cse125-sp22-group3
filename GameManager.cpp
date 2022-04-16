@@ -6,7 +6,6 @@
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
 glm::vec2 GameManager::move_input(0, 0);
-std::vector<Player*> GameManager::players_;
 
 GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
 {

@@ -96,21 +96,15 @@ int main(void)
 		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
 			{
 				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
-				
-				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-				
-				if (InputManager::getMoved) {
-					GameManager::SetPlayerInput(InputManager::getLastMovement(), 0);
-				}
-				
-				InputManager::setMoved();
-			
 
+				// Get input from client and send it to the game manager
+				Window::calculateInput();
+			
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
 
 				// Idle callback. Updating objects, etc. can be done here. (Update)
-				Window::idleCallback();
+				Window::logicCallback();
 			});
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();

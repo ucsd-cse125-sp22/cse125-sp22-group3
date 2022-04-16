@@ -171,7 +171,7 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 								double(width) / (double)height, 1.0, 1000.0);
 }
 
-void Window::idleCallback()
+void Window::logicCallback()
 {
 	// Perform any necessary updates here
 	GameManager::UpdateFixedDeltaTime();
@@ -203,6 +203,16 @@ void Window::displayCallback(GLFWwindow* window)
 	// Swap buffers.
 	glfwSwapBuffers(window);
 }
+
+void Window::calculateInput()
+{
+	// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+	if (InputManager::getMoved) {
+		game->SetPlayerInput(InputManager::getLastMovement(), 0);
+	}
+	InputManager::setMoved();
+}
+
 
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
