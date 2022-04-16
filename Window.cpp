@@ -67,7 +67,7 @@ bool Window::initializeObjects()
 	Model * bumbus = new Model("models/bumbus/bumbus.fbx");
 	Model * pogo = new Model("models/pogo/pogo.fbx");
 	//Model * pogo_2 = new Model("models/pogo/pogo.fbx");
-	Model * carrot = new Model("models/pogo/pogo.fbx"); // PLACEHOLDER
+	Model * carrot = new Model("models/carrot/carrot.fbx"); // PLACEHOLDER
 
 
 
