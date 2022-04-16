@@ -100,15 +100,11 @@ int main(void)
 				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
 				
 				if (InputManager::getMoved) {
-					InputCommands inCom = InputManager::getLastCommand();
-					if (InputManager::checkIdle())
-						inCom = NONE;
-					GameManager::SetPlayerInput(inCom, 0);
+					GameManager::SetPlayerInput(InputManager::getLastMovement(), 0);
 				}
 				
 				InputManager::setMoved();
 			
-				//GameManager::SetPlayerInput(inCom, 0);
 
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	

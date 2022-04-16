@@ -18,7 +18,7 @@ public:
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 
     // Player Properties
-    static void SetPlayerInput(InputCommands c, int player_index);
+    static void SetPlayerInput(glm::vec2 move_input, int player_index);
     
     glm::vec3 GetPlayerPosition(int player_index) const;
 
@@ -32,7 +32,7 @@ public:
     // Typically 30ms, but you never know
     static void UpdateFixedDeltaTime();
     static double GetFixedDeltaTime();
-    static glm::vec2 calcMoveInput(InputCommands c);
+    
 
 private:
     static std::vector<Player*> players_;

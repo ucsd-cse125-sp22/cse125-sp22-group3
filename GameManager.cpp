@@ -67,10 +67,10 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 
 
 
-void GameManager::SetPlayerInput(InputCommands c, const int player_index)
+void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 {
 	//players_[player_index]->move_input = move_input;
-	players_[player_index]->move_input = calcMoveInput(c);
+	players_[player_index]->move_input = move_input;
 }
 
 glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
@@ -80,60 +80,6 @@ glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 
 double GameManager::GetFixedDeltaTime() { return curr_time_ - last_time_; }
 
-glm::vec2 GameManager::calcMoveInput(InputCommands c)
-{
-	//glm::vec2 move_input(0, 0);
-		switch (c)
-		{
-			
-		case NONE:
-			move_input = glm::vec2(0, 0);
-			break;
-			
-			
-		case STOP_FORWARD:
-			move_input = glm::vec2(move_input.x, 0);
-			break;
-		case STOP_BACKWARD:
-			move_input = glm::vec2(move_input.x, 0);
-			break;
-		case STOP_LEFT:
-			move_input = glm::vec2(0, move_input.y);
-			break;
-		case STOP_RIGHT:
-			move_input = glm::vec2(0, move_input.y);
-			break;
-			
-		case MOVE_FORWARD:
-			move_input += glm::vec2(0, 1);
-			break;
-		case MOVE_BACKWARD:
-			move_input += glm::vec2(0, -1);
-			break;
-		case MOVE_LEFT:
-			move_input += glm::vec2(-1, 0);
-			break;
-		case MOVE_RIGHT:
-			move_input += glm::vec2(1, 0);
-			break;
-		default: break;
-	}
-
-		if (move_input.x > 1.0) {
-			move_input.x = 1.0;
-		}
-		else if (move_input.x < -1.0) {
-			move_input.x = -1.0;
-		}
-
-		if (move_input.y > 1.0) {
-			move_input.y = 1.0;
-		}
-		else if (move_input.y < -1.0) {
-			move_input.y = -1.0;
-		}
-	return move_input;
-}
 
 void GameManager::UpdateFixedDeltaTime()
 {
