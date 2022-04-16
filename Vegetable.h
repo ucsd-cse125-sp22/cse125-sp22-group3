@@ -1,4 +1,5 @@
 ﻿#include "Interactable.h"
+#include "Harvestable.h"
 
 enum VegetableType {
     TOMATO,
@@ -8,9 +9,10 @@ enum VegetableType {
     RADISH
 };
 
-class Vegetable : public Interactable {
-    public:
-        Vegetable(VegetableType type);
-        ~Vegetable();
-
+class Vegetable : public Interactable, public Harvestable{
+private:
+    VegetableType vtype;
+public:
+    Vegetable(VegetableType type);
+    ~Vegetable();
 };
