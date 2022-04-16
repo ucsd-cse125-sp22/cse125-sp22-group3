@@ -40,7 +40,6 @@ private:
     
     static double last_time_;
     static double curr_time_;
-    static glm::vec2 move_input;
 };
 
 #endif

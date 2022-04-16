@@ -5,7 +5,6 @@
 
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
-glm::vec2 GameManager::move_input(0, 0);
 
 GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
 {
@@ -68,7 +67,6 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 
 void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 {
-	//players_[player_index]->move_input = move_input;
 	players_[player_index]->move_input = move_input;
 }
 
