@@ -46,8 +46,9 @@ public:
 	static void resizeCallback(GLFWwindow* window, int width, int height);
 
 	// Draw and Update functions
-	static void idleCallback();
+	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
+	static void calculateInput();
 
 	void setMoveInput(glm::vec2 v);
 

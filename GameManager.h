@@ -18,7 +18,7 @@ public:
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 
     // Player Properties
-    static void SetPlayerInput(glm::vec2 move_input, int player_index);
+    void SetPlayerInput(glm::vec2 move_input, int player_index);
     
     glm::vec3 GetPlayerPosition(int player_index) const;
 
@@ -35,13 +35,11 @@ public:
     
 
 private:
-    static std::vector<Player*> players_;
-    //std::vector<Player*> players_{}; //TODO what the heck
+    std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
     
     static double last_time_;
     static double curr_time_;
-    static glm::vec2 move_input;
 };
 
 #endif
