@@ -13,7 +13,7 @@ enum class VegetableType {
 
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity {
     public:
-        Vegetable(VegetableType type, Model * curr);
+        Vegetable(VegetableType type, Model curr);
         ~Vegetable();
         VegetableType type;
 
@@ -42,7 +42,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		glm::vec2* translate = nullptr;
 
 		// Current model to display
-		Model* model = nullptr;
+		Model model;
 
 		ColliderCircle* collider_;
 

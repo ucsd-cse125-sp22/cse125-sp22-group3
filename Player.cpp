@@ -3,8 +3,6 @@
 #include "GameManager.h"
 
 Player::Player() {
-	model = nullptr;
-	
 	translate = new glm::vec2(0.f,0.f);
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
@@ -12,9 +10,10 @@ Player::Player() {
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
 }
 
-Player::Player(Model * curr) : Player() {
+Player::Player(Model curr) : Player() {
 	// Set initial values
 	model = curr;
+	std::cout << model.getBoneCount() << std::endl;
 }
 
 void Player::FixedUpdate() {
@@ -26,7 +25,7 @@ void Player::FixedUpdate() {
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		model->setAnimationMode(IDLE);
+		model.setAnimationMode(IDLE);
 
 	}
 	else {
@@ -38,7 +37,7 @@ void Player::FixedUpdate() {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
 		}
 		
-		model->setAnimationMode(WALK);
+		model.setAnimationMode(WALK);
 	}
 	
 	if (glm::length(curr_vel_) > 0) Move();
@@ -57,7 +56,7 @@ void Player::Move() {
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	model->draw(view, projection, parent, shader);
+	model.draw(view, projection, parent, shader);
 }
 
 std::vector<Collider*> Player::GetColliders()

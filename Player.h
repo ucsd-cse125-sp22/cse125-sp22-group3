@@ -19,7 +19,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
-		Model* model = nullptr;
+		Model model;
 
 		// Current Player Collider
 		// Player will use a Circle Collider
@@ -37,7 +37,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		Player();
 
 		/* Curr should be idle */
-		Player(Model * curr);
+		Player(Model curr);
 
 		// GameEntity
 		void FixedUpdate() override;

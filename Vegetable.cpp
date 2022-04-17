@@ -1,6 +1,6 @@
 ﻿#include "Vegetable.h"
 
-Vegetable:: Vegetable(VegetableType vegetable, Model * curr) {
+Vegetable:: Vegetable(VegetableType vegetable, Model curr) {
 	model = curr;
 
 	type = vegetable;
@@ -28,7 +28,7 @@ void Vegetable::FixedUpdate()
 void Vegetable::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader)
 {
 	glm::mat4 parent = GetTranslation();
-	model->draw(view, projection, parent, shader);
+	model.draw(view, projection, parent, shader);
 }
 
 std::vector<Collider*> Vegetable::GetColliders()
