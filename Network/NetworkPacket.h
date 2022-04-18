@@ -6,6 +6,7 @@
 struct ClientPacket {
 	bool justMoved = false;
 	glm::vec2 movement{ 0,0 };
+	InputCommands lastCommand;
 
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ClientPacket));
@@ -18,9 +19,9 @@ struct ClientPacket {
 
 // the Packet struct that sent by server to client
 struct ServerPacket {
-	bool valid;
 	bool justMoved = false;
 	glm::vec2 movement{ 0,0 };
+	InputCommands lastCommand;
 
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ServerPacket));

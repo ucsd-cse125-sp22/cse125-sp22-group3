@@ -205,11 +205,6 @@ void Window::displayCallback(GLFWwindow* window)
 	glfwSwapBuffers(window);
 }
 
-void Window::setPlayerInput(glm::vec2 move_input)
-{
-	game->SetPlayerInput(move_input, 0);
-}
-
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
 {
 	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)) {

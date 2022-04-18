@@ -103,6 +103,7 @@ int main(void)
 		}
 		InputManager::resetMoved();
 		
+		out_packet.lastCommand = InputManager::getLastCommand();
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [window](const void* recv_buf, size_t recv_len)
 			{
 				ServerPacket in_packet;
@@ -111,6 +112,17 @@ int main(void)
 				if (in_packet.justMoved) {
 					Window::setPlayerInput(in_packet.movement);
 				}
+				
+				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+                if (in_packet.justMoved) { // TODO conditional possibly redundant (remove from packet)
+                    Window::game->SetPlayerInput(InputManager::getLastMovement(), 0);
+                }
+                if (in_packet.lastCommand == InputCommands::USE) {
+                    Window::game->SetPlayerUse(0);
+                }
+                else if (in_packet.lastCommand == InputCommands::DROP) {
+                    Window::game->SetPlayerDrop(0);
+                }
 
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
@@ -118,19 +130,11 @@ int main(void)
 				// Idle callback. Updating objects, etc. can be done here. (Update)
 				Window::logicCallback();
 			});
+        
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		//printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
+		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
-
-		// uncomment for testing
-		// Main render display callback. Rendering of objects is done here. (Draw)
-		/*
-		Window::displayCallback(window);
-
-		// Idle callback. Updating objects, etc. can be done here. (Update)
-		Window::idleCallback();
-		*/
 	}
 
 	// destroy objects created
