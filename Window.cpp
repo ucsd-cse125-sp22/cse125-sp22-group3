@@ -205,74 +205,9 @@ void Window::displayCallback(GLFWwindow* window)
 	glfwSwapBuffers(window);
 }
 
-void Window::calculateInput()
+void Window::setPlayerInput(glm::vec2 move_input)
 {
-	// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-	if (InputManager::getMoved) {
-		game->SetPlayerInput(InputManager::getLastMovement(), 0);
-	}
-	if (InputManager::getLastCommand() == InputCommands::USE) {
-		game->SetPlayerUse(0);
-	}
-	else if (InputManager::getLastCommand() == InputCommands::DROP) {
-		game->SetPlayerDrop(0);
-	}
-	InputManager::setMoved();
-}
-
-
-void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	// Check for a key release.
-	/**
-	if (action == GLFW_RELEASE)
-	{
-		switch (key)
-		{
-			case GLFW_KEY_W:
-				move_input -= glm::vec2(0,1);
-				break;
-			case GLFW_KEY_S:
-				move_input -= glm::vec2(0,-1);
-				break;
-			case GLFW_KEY_A:
-				move_input -= glm::vec2(-1,0);
-				break;
-			case GLFW_KEY_D:
-				move_input -= glm::vec2(1,0);
-				break;
-			default: break;
-		}
-	}
-
-	// Check for a key press.
-	if (action == GLFW_PRESS)
-	{
-		if (key == GLFW_KEY_ESCAPE) {
-			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.
-		}
-
-		switch (key)
-		{
-			case GLFW_KEY_W:
-				move_input += glm::vec2(0,1);
-				break;
-			case GLFW_KEY_S:
-				move_input += glm::vec2(0,-1);
-				break;
-			case GLFW_KEY_A:
-				move_input += glm::vec2(-1,0);
-				break;
-			case GLFW_KEY_D:
-				move_input += glm::vec2(1,0);
-				break;
-			default: break;
-		}
-	}
-
 	game->SetPlayerInput(move_input, 0);
-	*/
-	//game->SetPlayerInput(glm::vec2{0, 0.25}, 1); //TODO test NPC
 }
 
 void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 

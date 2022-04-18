@@ -1,28 +1,32 @@
 #pragma once
-using namespace std;
-#include <string.h>
+#include <cstring>
+#include <glm/vec2.hpp>
+
 // the Packet struct that sent by client to server
 struct ClientPacket {
-	int move; 
-    void serialize(char* data) {
-        memcpy(data, this, sizeof(ClientPacket));
-    }
+	bool justMoved = false;
+	glm::vec2 movement{ 0,0 };
 
-    void deserialize(char* data) {
-        memcpy(this, data, sizeof(ClientPacket));
-    }
+	void serializeTo(void* data) {
+		memcpy(data, this, sizeof(ClientPacket));
+	}
+
+	void deserializeFrom(const void* data) {
+		memcpy(this, data, sizeof(ClientPacket));
+	}
 };
 
 // the Packet struct that sent by server to client
-
 struct ServerPacket {
-	int move;
-	bool valid; 
-    void serialize(char* data) {
-        memcpy(data, this, sizeof(ServerPacket));
-    }
+	bool valid;
+	bool justMoved = false;
+	glm::vec2 movement{ 0,0 };
 
-    void deserialize(char* data) {
-        memcpy(this, data, sizeof(ServerPacket));
-    }
+	void serializeTo(void* data) {
+		memcpy(data, this, sizeof(ServerPacket));
+	}
+
+	void deserializeFrom(const void* data) {
+		memcpy(this, data, sizeof(ServerPacket));
+	}
 };

@@ -222,16 +222,18 @@ void Server::mainLoop(void)
 		ClientPacket cpacket;
 		int i = 0;
 		while (i < (unsigned int)recvStatus) {
-			cpacket.deserialize(&(network_data[i]));
+			cpacket.deserializeFrom(&(network_data[i]));
 			i += sizeof(ClientPacket);
-			printf("Server recieve move: %d", cpacket.move);
 
 			//TODO: do stuff with the packet recieve, now just send the packet back; 
 			ServerPacket spacket;
-			spacket.move = cpacket.move;
 			spacket.valid = true;
+			spacket.justMoved = cpacket.justMoved;
+			spacket.movement = cpacket.movement;
+			
 			char packet_data[sizeof(ServerPacket)];
-			spacket.serialize(packet_data);
+			spacket.serializeTo(packet_data);
+
 			int sendStatus = send(ClientSocket, packet_data, sizeof(ServerPacket), 0);
 			if (sendStatus == SOCKET_ERROR) {
 				printf("send failed: %d\n", WSAGetLastError());

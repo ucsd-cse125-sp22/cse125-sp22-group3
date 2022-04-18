@@ -13,7 +13,7 @@ class InputManager {
         static glm::vec2 getLastMovement();
 
         static bool getMoved();
-        static void setMoved();
+        static void resetMoved();
 
         static bool justMoved;
         static glm::vec2 lastMovement;
