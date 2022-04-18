@@ -66,13 +66,14 @@ bool Window::initializeObjects()
 	// load models
 	Model bumbus = Model("models/bumbus/bumbus.fbx");
 	Model pogo = Model("models/pogo/pogo.fbx");
+	Model swainky = Model("models/swainky/swainky.fbx");
 	Model frog = Model("models/swainky/swainky.fbx");
 	//Model * pogo_2 = new Model("models/pogo/pogo.fbx");
 	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
 
 	Player* player_1 = new Player(bumbus);
 	Player* player_2 = new Player(pogo);
-	Player* player_3 = new Player(bumbus);
+	Player* player_3 = new Player(swainky);
 	//Player* player_3 = new Player(pogo_2);
 	Vegetable* vegetable_1 = new Vegetable(VegetableType::CARROT, carrot);
 	Vegetable* vegetable_2 = new Vegetable(VegetableType::CARROT, carrot);
