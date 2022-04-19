@@ -53,7 +53,7 @@ void Vegetable::SetPosition(glm::vec3 position)
 
 bool Vegetable::canInteract(Player* player)
 {
-	return false;
+	return true;
 }
 
 void Vegetable::interact(Player* player)

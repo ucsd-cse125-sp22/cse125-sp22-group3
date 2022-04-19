@@ -19,6 +19,7 @@ public:
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);
+    void SetPlayerUse(int player_index);
     
     glm::vec3 GetPlayerPosition(int player_index) const;
 

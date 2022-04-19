@@ -94,6 +94,16 @@ void Player::SetPosition(const glm::vec3 position)
 	*translate = glm::vec2(position[0], -position[2]);
 }
 
+void Player::SetTriggeringEntity(GameEntity* entity)
+{
+	entityTriggered = entity;
+}
+
+GameEntity* Player::GetTriggeringEntity()
+{
+	return entityTriggered;
+}
+
 void Player::SetHoldEntity(GameEntity* entity)
 {
 	isHolding = true;

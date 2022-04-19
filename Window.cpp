@@ -211,6 +211,9 @@ void Window::calculateInput()
 	if (InputManager::getMoved) {
 		game->SetPlayerInput(InputManager::getLastMovement(), 0);
 	}
+	if (InputManager::getLastCommand() == InputCommands::USE) {
+		game->SetPlayerUse(0);
+	}
 	InputManager::setMoved();
 }
 
