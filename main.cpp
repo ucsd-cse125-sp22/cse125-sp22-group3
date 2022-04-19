@@ -95,7 +95,7 @@ int main(void)
 		char* dummy_data = "Hello from the Networking Team";
 		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
 			{
-				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+				//printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
 
 				// Get input from client and send it to the game manager
 				Window::calculateInput();
@@ -108,7 +108,7 @@ int main(void)
 			});
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
+		//printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
 
 		// uncomment for testing

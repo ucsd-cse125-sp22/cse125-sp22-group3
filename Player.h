@@ -23,6 +23,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Currently holding
 		GameEntity* entityHeld;
+		GameEntity* entityTriggered;
 
 		// Current Player Collider
 		// Player will use a Circle Collider
@@ -61,5 +62,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void SetPosition(glm::vec3 position);
 		void SetHoldEntity(GameEntity* entity);
 		bool isHolding = false;
+		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
+		GameEntity* GetTriggeringEntity();
 
 };

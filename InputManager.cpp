@@ -80,6 +80,10 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 				lastMovement += glm::vec2(1,0);
 				lastCmd = MOVE_RIGHT;
 				break;
+			case GLFW_KEY_F:
+				lastCmd = USE;
+				justMoved = false;
+				break;
 			default: break;
 		}
 	}
