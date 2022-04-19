@@ -44,6 +44,7 @@ void main()
             if(boneIds[i] >= 100) 
             {
                 totalPosition = vec4(positions,1.0f);
+                totalNormal = normals;
                 break;
             }
         
@@ -51,7 +52,7 @@ void main()
             vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(positions,1.0f);
             totalPosition += localPosition * weights[i];
             vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normals;
-            totalNormal += localNormal * weights[i];
+            totalNormal += localNormal * vec3(weights[i]);
         }
     
         FragPos = vec3(model * totalPosition);

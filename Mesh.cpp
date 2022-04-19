@@ -198,7 +198,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
 
     // Camera position --- TO DO: just get eyePos from windows or just create a camera class? Inverse can be a expensive operation
         // transformations
-    // glUniform3fv(glGetUniformLocation(shaderProgram, "finalBonesMatrices"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
+    glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
 
     // Bind the VAO
     glBindVertexArray(VAO);
