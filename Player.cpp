@@ -24,7 +24,10 @@ void Player::FixedUpdate() {
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		model.setAnimationMode(IDLE);
+		if (isHolding)
+			model.setAnimationMode(IDLE_HOLD);
+		else
+			model.setAnimationMode(IDLE);
 
 	}
 	else {
@@ -35,8 +38,10 @@ void Player::FixedUpdate() {
 		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
 		}
-		
-		model.setAnimationMode(WALK);
+		if (isHolding)
+			model.setAnimationMode(IDLE_WALK);
+		else
+			model.setAnimationMode(WALK);
 	}
 	
 	if (glm::length(curr_vel_) > 0) Move();
@@ -51,6 +56,15 @@ void Player::Move() {
 	*translate += distance;
 	
 	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+	if (isHolding && entityHeld->type==EntityType::VEGETABLE) {
+		// might move this to a different function later
+		auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
+
+
+		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
+		
+	}
 }
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {

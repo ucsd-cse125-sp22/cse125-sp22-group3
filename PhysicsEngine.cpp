@@ -101,6 +101,7 @@ inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second)
 	player->SetTriggeringEntity(vegetable);
 	printf("triggering");
 
+	
 	if (vegetable->canInteract(player) && vegetable->isHoldable) {
 		vegetable->interact(player);
 		player->SetHoldEntity(vegetable); // So we can get the vegetable type later

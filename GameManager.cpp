@@ -81,7 +81,7 @@ void GameManager::SetPlayerUse(const int player_index) {
 		// TESTING...
 		// TODO: Remove/hide the vegetable from the scene?
 		auto pos = vegetable->GetPosition();
-		vegetable->SetPosition(glm::vec3(pos.x + 5, pos.y + 5, pos.z + 5));
+		//vegetable->SetPosition(glm::vec3(pos.x + 5, pos.y + 5, pos.z + 5));
 	}
 }
 
