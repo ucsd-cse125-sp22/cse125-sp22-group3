@@ -91,10 +91,18 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
 
+
+    vec4 tex = texture(texture_diffuse1, TexCoords);
     // combine results
-    vec3 ambient = vec3(0.5f, 0.5f, 0.5f) * vec3(texture(texture_diffuse1, TexCoords));
-    vec3 diffuse = vec3(0.6f, 0.6f, 0.6f) * diff * vec3(texture(texture_diffuse1, TexCoords));
-    vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(texture(texture_diffuse1, TexCoords));
+    vec3 ambient = vec3(0.5f, 0.5f, 0.5f) * vec3(tex);
+    vec3 diffuse = vec3(0.6f, 0.6f, 0.6f) * diff * vec3(tex);
+    vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(tex);
+
+    if(tex.a < 0.8) {
+        discard;
+    }
+
+    // check for transparency;
     fragColor = vec4(ambient + diffuse + specular, 1.0f);
 
     /*
