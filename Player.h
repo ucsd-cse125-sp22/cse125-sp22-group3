@@ -21,6 +21,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Current model to display
 		Model model;
 
+		// Currently holding
+		GameEntity* entityHeld;
+
 		// Current Player Collider
 		// Player will use a Circle Collider
 		ColliderCircle* collider_;
@@ -56,5 +59,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Information
 		glm::vec3 GetPosition() const;
 		void SetPosition(glm::vec3 position);
+		void SetHoldEntity(GameEntity* entity);
+		bool isHolding = false;
 
 };

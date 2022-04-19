@@ -1,5 +1,4 @@
 #include "Player.h"
-
 #include "GameManager.h"
 
 Player::Player() {
@@ -93,4 +92,11 @@ glm::vec3 Player::GetPosition() const
 void Player::SetPosition(const glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
+}
+
+void Player::SetHoldEntity(GameEntity* entity)
+{
+	isHolding = true;
+	entityHeld = entity;
+	// Switch models here?
 }

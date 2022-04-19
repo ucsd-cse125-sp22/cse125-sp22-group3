@@ -1,10 +1,5 @@
 ﻿#include "PhysicsEngine.h"
 
-#include <glm/detail/func_geometric.inl>
-
-#include "ColliderCircle.h"
-#include "ColliderAABB.h"
-
 PhysicsEngine::PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects)
 {
 	// Add physic objects to lists
@@ -93,9 +88,20 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 	*pos_2 -= dir_to_move;
 }
 
-inline void ResolveTriggerCollision(ColliderCircle* circle_1, ColliderCircle* circle_2, glm::vec2* pos_1, glm::vec2* pos_2) {
+inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
 	printf("Trigger Collision");
-	// TODO: handle the trigger collision and get closest trigger collider, maybe store these positions in a list?
+	// TODO: Get closest trigger collider, maybe store these positions in a list?
+
+	// Eventually move this stuff below when the player presses a key to interact
+	auto player = dynamic_cast<Player*>(first);
+	if (player->isHolding) return;  // If player is already holding something do nothing
+
+	// I think this is safe to do since it'll only go this function if the second collider is a trigger AKA an interactable
+	auto vegetable = dynamic_cast<Vegetable*>(second);
+	if (vegetable->canInteract(player) && vegetable->isHoldable) {
+		vegetable->interact(player);
+		player->SetHoldEntity(vegetable); // So we can get the vegetable type later
+	}
 }
 
 //TODO take in Colliders instead of Physics Objects
@@ -115,7 +121,7 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 			const auto circle_2 = dynamic_cast<ColliderCircle*>(col_2);
 
 			if (circle_2->GetColliderIsTrigger()) 
-				ResolveTriggerCollision(circle_1, circle_2, pos_1, pos_2);
+				ResolveTriggerCollision(first, second);
 			else
 				ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
 		}
