@@ -86,6 +86,14 @@ void GameManager::SetPlayerUse(const int player_index) {
 	}
 }
 
+void GameManager::SetPlayerDrop(const int player_index) {
+	// Get the triggered entity within the interact region
+	Player* player = players_[player_index];
+	auto entity_ = player->GetTriggeringEntity();
+
+	players_[player_index]->SetDropEntity();
+}
+
 glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 {
 	return players_[player_index]->GetPosition();

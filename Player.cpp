@@ -56,16 +56,9 @@ void Player::Move() {
 	*translate += distance;
 	
 	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
-	if (isHolding && entityHeld->type==EntityType::VEGETABLE) {
-		// might move this to a different function later
-		auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
-
-
-		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
-		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
-		
-	}
+	MoveHeld();
 }
+
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
@@ -123,4 +116,22 @@ void Player::SetHoldEntity(GameEntity* entity)
 	isHolding = true;
 	entityHeld = entity;
 	// Switch models here?
+}
+
+void Player::SetDropEntity()
+{
+	isHolding = false;
+	entityHeld = nullptr;
+	// Switch models here?
+}
+
+void Player::MoveHeld() {
+	if (isHolding && entityHeld->type == EntityType::VEGETABLE) {
+		auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
+
+
+		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), -1, (-1) * translate->y - (vegetableLocation.z)));
+
+	}
 }

@@ -11,6 +11,7 @@ enum InputCommands {
 	STOP_BACKWARD,
 	STOP_LEFT,
 	STOP_RIGHT,
-	USE
+	USE,
+	DROP
 };
 #endif

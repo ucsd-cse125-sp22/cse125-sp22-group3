@@ -214,6 +214,9 @@ void Window::calculateInput()
 	if (InputManager::getLastCommand() == InputCommands::USE) {
 		game->SetPlayerUse(0);
 	}
+	else if (InputManager::getLastCommand() == InputCommands::DROP) {
+		game->SetPlayerDrop(0);
+	}
 	InputManager::setMoved();
 }
 

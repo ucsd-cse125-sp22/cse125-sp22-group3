@@ -62,8 +62,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec3 GetPosition() const;
 		void SetPosition(glm::vec3 position);
 		void SetHoldEntity(GameEntity* entity);
+		void SetDropEntity();
 		bool isHolding = false;
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
+		void MoveHeld();
 		GameEntity* GetTriggeringEntity();
 
 };
