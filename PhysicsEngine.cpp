@@ -94,17 +94,6 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 	*pos_2 -= dir_to_move;
 }
 
-inline void ResolvePlayerVegetableCollision(Player* player, Vegetable* vegetable)
-{
-	// TODO: Get closest trigger collider, maybe store these positions in a list?
-	// Eventually move this stuff below when the player presses a key to interact
-	if (player->isHolding) return;  // If player is already holding something do nothing
-
-	// I think this is safe to do since it'll only go this function if the second collider is a trigger AKA an interactable
-	player->SetTriggeringEntity(vegetable);
-
-}
-
 void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
 	if (first->GetColliders()[0]->GetColliderIsTrigger()) {
 		second->OnTrigger(first);
