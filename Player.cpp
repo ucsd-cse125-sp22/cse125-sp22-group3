@@ -131,7 +131,7 @@ void Player::MoveHeld() {
 
 
 		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
-		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), -1, (-1) * translate->y - (vegetableLocation.z)));
+		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
 
 	}
 }
