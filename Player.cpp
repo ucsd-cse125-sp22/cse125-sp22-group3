@@ -44,7 +44,10 @@ void Player::FixedUpdate() {
 			model.setAnimationMode(WALK);
 	}
 	
-	if (glm::length(curr_vel_) > 0) Move();
+	if (glm::length(curr_vel_) > 0) {
+		Move();
+		MoveHeld();
+	}
 
 	collider_->center = *translate;
 }
@@ -56,7 +59,6 @@ void Player::Move() {
 	*translate += distance;
 	
 	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
-	MoveHeld();
 }
 
 
@@ -69,7 +71,18 @@ void Player::OnTrigger(PhysicsObject* object)
 {
 	auto veggie = dynamic_cast<Vegetable*>(object);
 	if (veggie != nullptr && !isHolding) {
-		SetTriggeringEntity(veggie);
+		if (entityTriggered == nullptr) {
+			SetTriggeringEntity(veggie);
+		}
+		else {
+			auto phys_entity = dynamic_cast<PhysicsObject*>(entityTriggered);
+			const float dist = glm::length(*veggie->GetWorldPosition() - *GetWorldPosition());
+			const float curr_dist = glm::length(*phys_entity->GetWorldPosition() - *GetWorldPosition());
+			if (dist < curr_dist) {
+				SetTriggeringEntity(veggie);
+			}
+		}
+		
 	}
 }
 
@@ -84,13 +97,20 @@ glm::vec2* Player::GetWorldPosition()
 }
 void Player::Use()
 {
-	auto entity = GetTriggeringEntity();
-	if (entity != nullptr) {
-		SetHoldEntity(entity);
-		
-		auto vegetable = dynamic_cast<Vegetable*>(entity);
-		if (vegetable->CanInteract(this) && vegetable->isHoldable) {
-			vegetable->OnInteract(this);
+	if (isHolding) return;
+	
+	auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
+	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
+		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
+		if (interactable != nullptr && interactable->CanInteract(this)) {
+			interactable->OnInteract(this);
+
+			//VEGGIE SPECIFIC CODE
+			//TODO Maybe change to holdable to make more general?
+			auto vegetable = dynamic_cast<Vegetable*>(entityTriggered);
+			if (vegetable != nullptr) {
+				SetHoldEntity(entityTriggered);
+			}
 		}
 	}
 }
@@ -149,6 +169,5 @@ void Player::MoveHeld() {
 		
 		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
 		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
-
 	}
 }

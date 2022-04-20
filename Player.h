@@ -24,7 +24,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Currently holding
 		GameEntity* entityHeld = nullptr;
-		GameEntity* entityTriggered;
+		GameEntity* entityTriggered = nullptr;
 
 		// Current Player Collider
 		// Player will use a Circle Collider
@@ -32,6 +32,11 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Moving player
 		void Move();
+		void MoveHeld();
+		void SetHoldEntity(GameEntity* entity);
+		bool isHolding = false;
+		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
+		GameEntity* GetTriggeringEntity();
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
@@ -64,10 +69,6 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Information
 		glm::vec3 GetPosition() const;
 		void SetWorldPosition(glm::vec3 position);
-		void SetHoldEntity(GameEntity* entity);
-		bool isHolding = false;
-		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
-		void MoveHeld();
-		GameEntity* GetTriggeringEntity();
+		bool GetIsHolding() const { return isHolding; }
 
 };

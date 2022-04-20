@@ -38,16 +38,18 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         bool CanInteract(Player* player) override;
         void OnInteract(Player* player) override;
         bool isHoldable = true;
+		bool isHeld = false;
 
 	private:
 		// Transformations
 		glm::vec2* translate = nullptr;
+		glm::mat4 hold_transformation_{};
 
 		// Current model to display
 		Model model;
 
 		ColliderCircle* collider_;
 
-		// Get matrix transformationa
-		glm::mat4 GetTranslation();
+		// Get matrix transformation
+		glm::mat4 GetTransformation();
 };

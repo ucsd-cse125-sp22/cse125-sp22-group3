@@ -1,5 +1,7 @@
 ﻿#include "Vegetable.h"
 
+#include <stdbool.h>
+
 Vegetable:: Vegetable(VegetableType vegetable, Model curr) {
 	model = curr;
 
@@ -13,13 +15,6 @@ Vegetable:: Vegetable(VegetableType vegetable, Model curr) {
 
 Vegetable::~Vegetable() {}
 
-//implement virtual function of Interface Interactable
-bool canInteract(Player* player) {
-	return true; //TODO: return true by default 
-}
-
-void interact(Player* player) {}
-
 void Vegetable::FixedUpdate()
 {
 	collider_->center = *translate;
@@ -27,7 +22,7 @@ void Vegetable::FixedUpdate()
 
 void Vegetable::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader)
 {
-	glm::mat4 parent = GetTranslation();
+	glm::mat4 parent = GetTransformation();
 	model.draw(view, projection, parent, shader);
 }
 
@@ -51,17 +46,14 @@ void Vegetable::SetPosition(glm::vec3 position)
 	*translate = glm::vec2(position[0], -position[2]);
 }
 
-bool Vegetable::CanInteract(Player* player)
-{
-	return true;
-}
+bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }
 
-void Vegetable::OnInteract(Player* player)
-{
-}
+void Vegetable::OnInteract(Player* player) { isHeld = true;}
 
-glm::mat4 Vegetable::GetTranslation()
+glm::mat4 Vegetable::GetTransformation()
 {
-	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
+	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
+	
+	return trans;
 
 }
