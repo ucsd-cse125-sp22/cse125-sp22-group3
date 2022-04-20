@@ -164,6 +164,7 @@ void Player::SetHoldEntity(GameEntity* entity)
 {
 	isHolding = true;
 	entityHeld = entity;
+	MoveHeld();
 	// Switch models here?
 }
 
