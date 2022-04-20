@@ -116,6 +116,10 @@ void Player::Use()
 }
 void Player::Drop()
 {
+	auto holdable = dynamic_cast<Holdable*>(entityTriggered);
+	if (holdable != nullptr) {
+		holdable->OnDrop();
+	}
 	isHolding = false;
 	entityHeld = nullptr;
 }

@@ -11,6 +11,8 @@ Vegetable:: Vegetable(VegetableType vegetable, Model curr) {
 
 	collider_ = new ColliderCircle(glm::vec2(0, 0), 3, false);
 	collider_->collider_is_trigger = true;
+
+	hold_transformation_ = glm::rotate(90.f, glm::vec3(1,0,0));
 }
 
 Vegetable::~Vegetable() {}
@@ -49,11 +51,11 @@ void Vegetable::SetPosition(glm::vec3 position)
 bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }
 
 void Vegetable::OnInteract(Player* player) { isHeld = true;}
+void Vegetable::OnDrop() { isHeld = false; }
+glm::mat4 Vegetable::GetHoldTransform() { return hold_transformation_; }
 
 glm::mat4 Vegetable::GetTransformation()
 {
 	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
-	
-	return trans;
-
+	return isHeld ? trans * hold_transformation_ : trans;
 }

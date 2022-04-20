@@ -2,6 +2,7 @@
 
 #include "Interactable.h"
 #include "Harvestable.h"
+#include "Holdable.h"
 
 enum class VegetableType {
     TOMATO,
@@ -11,7 +12,7 @@ enum class VegetableType {
     RADISH
 };
 
-class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity {
+class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
     public:
         Vegetable(VegetableType type, Model curr);
         ~Vegetable();
@@ -37,6 +38,8 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         // Interactable
         bool CanInteract(Player* player) override;
         void OnInteract(Player* player) override;
+		void OnDrop() override;
+		glm::mat4 GetHoldTransform() override;
         bool isHoldable = true;
 		bool isHeld = false;
 
