@@ -72,16 +72,17 @@ void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 
 void GameManager::SetPlayerUse(const int player_index) {
 	// Get the triggered entity within the interact region
-	auto entity_ = players_[player_index]->GetTriggeringEntity();
+	Player* player = players_[player_index];
+	auto entity_ = player->GetTriggeringEntity();
 
 	if (entity_ != nullptr) {
 		players_[player_index]->SetHoldEntity(entity_);
 		auto vegetable = dynamic_cast<Vegetable*>(entity_);
 
-		// TESTING...
-		// TODO: Remove/hide the vegetable from the scene?
-		auto pos = vegetable->GetPosition();
-		//vegetable->SetPosition(glm::vec3(pos.x + 5, pos.y + 5, pos.z + 5));
+		if (vegetable->canInteract(player) && vegetable->isHoldable) {
+			vegetable->interact(player);
+			player->SetHoldEntity(vegetable); // So we can get the vegetable type later
+		}
 	}
 }
 

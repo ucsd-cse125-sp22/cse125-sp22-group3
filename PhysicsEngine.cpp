@@ -89,7 +89,6 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 }
 
 inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
-	//printf("Trigger Collision");
 	// TODO: Get closest trigger collider, maybe store these positions in a list?
 
 	// Eventually move this stuff below when the player presses a key to interact
@@ -99,13 +98,6 @@ inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second)
 	// I think this is safe to do since it'll only go this function if the second collider is a trigger AKA an interactable
 	auto vegetable = dynamic_cast<Vegetable*>(second);
 	player->SetTriggeringEntity(vegetable);
-	printf("triggering");
-
-	
-	if (vegetable->canInteract(player) && vegetable->isHoldable) {
-		vegetable->interact(player);
-		player->SetHoldEntity(vegetable); // So we can get the vegetable type later
-	}
 }
 
 //TODO take in Colliders instead of Physics Objects
