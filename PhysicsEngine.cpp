@@ -88,16 +88,34 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 	*pos_2 -= dir_to_move;
 }
 
-inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
+inline void ResolvePlayerVegetableCollision(Player* player, Vegetable* vegetable)
+{
 	// TODO: Get closest trigger collider, maybe store these positions in a list?
-
 	// Eventually move this stuff below when the player presses a key to interact
-	auto player = dynamic_cast<Player*>(first);
 	if (player->isHolding) return;  // If player is already holding something do nothing
 
 	// I think this is safe to do since it'll only go this function if the second collider is a trigger AKA an interactable
-	auto vegetable = dynamic_cast<Vegetable*>(second);
 	player->SetTriggeringEntity(vegetable);
+
+}
+
+inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
+	auto player = dynamic_cast<Player*>(first);
+	if (player != nullptr) {
+		auto vegetable = dynamic_cast<Vegetable*>(second);
+		if (vegetable != nullptr) {
+			ResolvePlayerVegetableCollision(player, vegetable);
+		}
+		return;
+	}
+	player = dynamic_cast<Player*>(second);
+	if (player != nullptr) {
+		auto vegetable = dynamic_cast<Vegetable*>(first);
+		if (vegetable != nullptr) {
+			ResolvePlayerVegetableCollision(player, vegetable);
+		}
+		return;
+	}
 }
 
 //TODO take in Colliders instead of Physics Objects
@@ -106,6 +124,11 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 	Collider* col_1 = first->GetColliders()[0];
 	Collider* col_2 = second->GetColliders()[0];
 
+	if (col_1->GetColliderIsTrigger() || col_2->GetColliderIsTrigger()) {
+		ResolveTriggerCollision(first, second);
+		return;
+	}
+	
 	glm::vec2* pos_1 = first->GetWorldPosition();
 	glm::vec2* pos_2 = second->GetWorldPosition();
 
@@ -115,11 +138,7 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 		if (col_2->GetColliderShape() == Collider::CIRCLE)
 		{
 			const auto circle_2 = dynamic_cast<ColliderCircle*>(col_2);
-
-			if (circle_2->GetColliderIsTrigger()) 
-				ResolveTriggerCollision(first, second);
-			else
-				ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
+			ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
 		}
 		if (col_2->GetColliderShape() == Collider::AABB_SHAPE) {
 			const auto aabb = dynamic_cast<ColliderAABB*>(col_2);
