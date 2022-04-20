@@ -21,7 +21,7 @@ public:
     void ConstructBVH();
     void Compute();
     static void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second);
-    void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
+    static void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
 
 private:
     std::vector<PhysicsObject*> static_collidables_;

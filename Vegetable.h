@@ -35,8 +35,8 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         void SetPosition(glm::vec3 position);
 
         // Interactable
-        bool canInteract(Player* player) override;
-        void interact(Player* player) override;
+        bool CanInteract(Player* player) override;
+        void OnInteract(Player* player) override;
         bool isHoldable = true;
 
 	private:

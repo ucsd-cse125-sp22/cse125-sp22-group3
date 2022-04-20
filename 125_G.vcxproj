@@ -127,7 +127,6 @@
     <ClCompile Include="Network\Client.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -147,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColliderAABB.h" />
+    <ClInclude Include="Holdable.h" />
     <ClInclude Include="Network\Client.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="PhysicsObject.h" />

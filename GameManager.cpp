@@ -13,7 +13,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	int i = 0;
 	for (Player* player : players_) {
 		// Set Player Positions
-		player->SetPosition({i * 10,0,0});
+		player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
 		game_entities.back()->type = EntityType::PLAYER;
@@ -70,28 +70,13 @@ void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 	players_[player_index]->move_input = move_input;
 }
 
+//TODO Merge these two with SetPlayerInput when NetworkPacket.h is updated
 void GameManager::SetPlayerUse(const int player_index) {
-	// Get the triggered entity within the interact region
-	Player* player = players_[player_index];
-	auto entity_ = player->GetTriggeringEntity();
-
-	if (entity_ != nullptr) {
-		players_[player_index]->SetHoldEntity(entity_);
-		auto vegetable = dynamic_cast<Vegetable*>(entity_);
-
-		if (vegetable->canInteract(player) && vegetable->isHoldable) {
-			vegetable->interact(player);
-			player->SetHoldEntity(vegetable); // So we can get the vegetable type later
-		}
-	}
+	players_[player_index]->Use();
 }
 
 void GameManager::SetPlayerDrop(const int player_index) {
-	// Get the triggered entity within the interact region
-	Player* player = players_[player_index];
-	auto entity_ = player->GetTriggeringEntity();
-
-	players_[player_index]->SetDropEntity();
+	players_[player_index]->Drop();
 }
 
 glm::vec3 GameManager::GetPlayerPosition(const int player_index) const

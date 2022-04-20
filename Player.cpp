@@ -82,6 +82,23 @@ glm::vec2* Player::GetWorldPosition()
 {
 	return translate;
 }
+void Player::Use()
+{
+	auto entity = GetTriggeringEntity();
+	if (entity != nullptr) {
+		SetHoldEntity(entity);
+		
+		auto vegetable = dynamic_cast<Vegetable*>(entity);
+		if (vegetable->CanInteract(this) && vegetable->isHoldable) {
+			vegetable->OnInteract(this);
+		}
+	}
+}
+void Player::Drop()
+{
+	isHolding = false;
+	entityHeld = nullptr;
+}
 
 glm::mat4 Player::GetRotation() {
 	/*
@@ -104,7 +121,7 @@ glm::vec3 Player::GetPosition() const
 	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
 }
 
-void Player::SetPosition(const glm::vec3 position)
+void Player::SetWorldPosition(const glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
 }
@@ -126,18 +143,10 @@ void Player::SetHoldEntity(GameEntity* entity)
 	// Switch models here?
 }
 
-void Player::SetDropEntity()
-{
-	isHolding = false;
-	entityHeld = nullptr;
-	// Switch models here?
-}
-
 void Player::MoveHeld() {
 	if (isHolding && entityHeld->type == EntityType::VEGETABLE) {
 		auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
-
-
+		
 		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
 		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
 

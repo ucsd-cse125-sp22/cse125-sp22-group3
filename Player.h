@@ -56,14 +56,15 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		std::vector<Collider*> GetColliders() override;
 		glm::vec2* GetWorldPosition() override;
 		
-		// Movement
+		// Input
 		glm::vec2 move_input{0,0};
+		void Use();
+		void Drop();
 
 		// Information
 		glm::vec3 GetPosition() const;
-		void SetPosition(glm::vec3 position);
+		void SetWorldPosition(glm::vec3 position);
 		void SetHoldEntity(GameEntity* entity);
-		void SetDropEntity();
 		bool isHolding = false;
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 		void MoveHeld();

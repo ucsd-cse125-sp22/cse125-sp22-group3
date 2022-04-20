@@ -51,12 +51,12 @@ void Vegetable::SetPosition(glm::vec3 position)
 	*translate = glm::vec2(position[0], -position[2]);
 }
 
-bool Vegetable::canInteract(Player* player)
+bool Vegetable::CanInteract(Player* player)
 {
 	return true;
 }
 
-void Vegetable::interact(Player* player)
+void Vegetable::OnInteract(Player* player)
 {
 }
 

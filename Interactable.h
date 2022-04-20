@@ -4,8 +4,8 @@
 
 class Interactable {
 	public:
-		virtual bool canInteract(Player* player) = 0;
-		virtual void interact(Player* player) = 0;
+		virtual bool CanInteract(Player* player) = 0;
+		virtual void OnInteract(Player* player) = 0;
 
 		// Is this holdable
 		bool isHoldable;
