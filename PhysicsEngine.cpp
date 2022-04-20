@@ -34,9 +34,15 @@ void PhysicsEngine::Compute()
 			Collider* collider_2 = object_2->GetColliders()[0];
 			if (collider_1->CollidesWith(collider_2))
 			{
-				object_1->OnCollide();
-				object_2->OnCollide();
+				object_1->OnCollide(object_2);
+				object_2->OnCollide(object_1);
 
+				if (object_1->GetColliders()[0]->GetColliderIsTrigger() ||
+					object_2->GetColliders()[0]->GetColliderIsTrigger()) {
+					ResolveTriggerCollision(object_1, object_2);
+					continue;
+				}
+				
 				ResolveCollision(object_1, object_2);
 			}
 		}
@@ -99,22 +105,19 @@ inline void ResolvePlayerVegetableCollision(Player* player, Vegetable* vegetable
 
 }
 
-inline void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
-	auto player = dynamic_cast<Player*>(first);
-	if (player != nullptr) {
-		auto vegetable = dynamic_cast<Vegetable*>(second);
-		if (vegetable != nullptr) {
-			ResolvePlayerVegetableCollision(player, vegetable);
-		}
-		return;
+void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
+	if (first->GetColliders()[0]->GetColliderIsTrigger()) {
+		second->OnTrigger(first);
 	}
-	player = dynamic_cast<Player*>(second);
-	if (player != nullptr) {
-		auto vegetable = dynamic_cast<Vegetable*>(first);
-		if (vegetable != nullptr) {
-			ResolvePlayerVegetableCollision(player, vegetable);
-		}
-		return;
+	else {
+		second->OnCollide(first);
+	}
+
+	if (second->GetColliders()[0]->GetColliderIsTrigger()) {
+		first->OnTrigger(second);
+	}
+	else {
+		first->OnCollide(second);
 	}
 }
 
@@ -123,11 +126,6 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 {
 	Collider* col_1 = first->GetColliders()[0];
 	Collider* col_2 = second->GetColliders()[0];
-
-	if (col_1->GetColliderIsTrigger() || col_2->GetColliderIsTrigger()) {
-		ResolveTriggerCollision(first, second);
-		return;
-	}
 	
 	glm::vec2* pos_1 = first->GetWorldPosition();
 	glm::vec2* pos_2 = second->GetWorldPosition();

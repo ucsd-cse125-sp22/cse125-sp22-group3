@@ -20,6 +20,7 @@ public:
     void AddPhysObject(PhysicsObject* phys_object);
     void ConstructBVH();
     void Compute();
+    static void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second);
     void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
 
 private:

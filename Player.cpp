@@ -65,6 +65,14 @@ void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	model.draw(view, projection, parent, shader);
 }
 
+void Player::OnTrigger(PhysicsObject* object)
+{
+	auto veggie = dynamic_cast<Vegetable*>(object);
+	if (veggie != nullptr && !isHolding) {
+		SetTriggeringEntity(veggie);
+	}
+}
+
 std::vector<Collider*> Player::GetColliders()
 {
 	return { collider_ };
