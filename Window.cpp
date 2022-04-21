@@ -14,7 +14,6 @@ const char* Window::windowTitle = "GLFW Starter Project";
 // Objects to Render
 Player* Window::player;
 DepthMap* Window::dm;
-Model* Window::plane;
 
 // Camera Matrices 
 // Projection matrix:
@@ -75,7 +74,6 @@ bool Window::initializeObjects()
 {
 	dm = new DepthMap(-20.0f, 20.0f);
 	// load models
-	plane = new Model("models/plane/plane.fbx");
 	Model bumbus = Model("models/bumbus/bumbus.fbx");
 	Model pogo = Model("models/pogo/pogo.fbx");
 	Model swainky = Model("models/swainky/swainky.fbx");
@@ -202,31 +200,41 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 
 void Window::displayCallback(GLFWwindow* window)
 {
-	dm->draw();
-
-	/*
-	plane->draw(glm::translate(glm::vec3(0.f, -5.0f, 0.f)) * glm::scale(glm::vec3(5.0f)) * 
-		glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)), shadowShaderProgram);
-	*/
-
+	// render Depth map for shadows
+	dm->draw();	
 	game->Draw(shadowShaderProgram);
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// reset viewport
+	// reset viewport and render actual scene
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	//eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
-	//lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
-	//view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
+	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
+	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
+	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
 	
 	// Render the objects
-	// plane->draw(glm::translate(glm::vec3(0.f, -5.0f, 0.f)) * glm::scale(glm::vec3(5.0f)) * glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)), animationShaderProgram);
-	// game->Draw(view, projection, animationShaderProgram);
-	
+	game->Draw(view, projection, animationShaderProgram);
 
-	
+	// Gets events, including input such as keyboard and mouse or window resizing
+	glfwPollEvents();
+
+	// Swap buffers.
+	glfwSwapBuffers(window);
+}
+
+void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
+{
+	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)) {
+		std::cout << "RIGHT_CLICK" << std::endl;
+	}
+
+	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)) {
+		std::cout << "LEFT_CLICK" << std::endl;
+	}
+}
+
+void Window::renderDepthMap() {
 	glUseProgram(modelShaderProgram);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -259,21 +267,4 @@ void Window::displayCallback(GLFWwindow* window)
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
 	glUseProgram(0);
-
-	// Gets events, including input such as keyboard and mouse or window resizing
-	glfwPollEvents();
-
-	// Swap buffers.
-	glfwSwapBuffers(window);
-}
-
-void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos) 
-{
-	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)) {
-		std::cout << "RIGHT_CLICK" << std::endl;
-	}
-
-	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)) {
-		std::cout << "LEFT_CLICK" << std::endl;
-	}
 }

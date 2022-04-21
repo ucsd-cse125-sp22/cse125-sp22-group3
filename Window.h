@@ -24,7 +24,6 @@ public:
 	
 	// Objects to Render
 	static Player* player;
-	static Model* plane;
 
 	// Camera Matrices
 	static glm::mat4 projection;
@@ -53,7 +52,14 @@ public:
 	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
 
+	static void renderDepthMap();
+
 	// Callbacks
+	/*
+	 * Where we take user input from the keyboard
+	 */
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 	/*
 	 * Where we take user input from the mouse
 	 */

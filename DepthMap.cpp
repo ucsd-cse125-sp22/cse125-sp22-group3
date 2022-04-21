@@ -6,8 +6,9 @@ glm::mat4 DepthMap::lightSpaceMatrix;
 DepthMap::DepthMap() {}
 
 DepthMap::DepthMap(float np, float fp) {
-	glm::mat4 projection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, np, fp);
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 5.0f, 5.0f),
+	glm::mat4 projection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, np, fp);
+
+	glm::mat4 view = glm::lookAt(glm::vec3(-2.0f, 2.0f, -1.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
