@@ -113,6 +113,9 @@ public:
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
 
+	// Shadow map
+	void draw(glm::mat4 parent, GLuint shader);
+
 	// Loading meshes of model
 	void processNode(aiNode * root, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);

@@ -48,6 +48,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Drawable
 		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
+		void Draw(GLuint shader) override;
 
 		// PhysicsObject
 		void OnCollide() override {};

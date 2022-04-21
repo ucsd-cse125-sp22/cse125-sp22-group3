@@ -16,6 +16,7 @@ public:
     // Call Updates on GameState
     void FixedUpdate() override;
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
+    void Draw(GLuint shader) override;
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);

@@ -58,6 +58,11 @@ void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	model.draw(view, projection, parent, shader);
 }
 
+void Player::Draw(GLuint shader) {
+	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
+	model.draw(parent, shader);
+}
+
 std::vector<Collider*> Player::GetColliders()
 {
 	return { collider_ };

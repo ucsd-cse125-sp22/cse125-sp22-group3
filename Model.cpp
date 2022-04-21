@@ -262,6 +262,27 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 	}
 }
 
+void Model::draw(glm::mat4 parent, GLuint shader) {
+	if (hasAni) {
+		float currTime = glfwGetTime();
+
+		CalculateBoneTransform(currTime);
+
+		for each (Mesh mesh in meshes)
+		{
+			mesh.draw(finalBoneMatrices, parent, shader);
+		}
+
+	}
+
+	else {
+		for each (Mesh mesh in meshes)
+		{
+			mesh.draw(parent, shader);
+		}
+	}
+}
+
 void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::vector<glm::vec4>& vWeights, aiMesh* mesh, const aiScene* scene)
 {
 	for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)

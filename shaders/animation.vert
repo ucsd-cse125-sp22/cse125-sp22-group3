@@ -20,6 +20,7 @@ uniform mat4 projection;
 uniform bool hasAnimation;
 uniform mat4 view;
 uniform mat4 model;
+uniform mat4 lightSpaceMatrix;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 
 // Outputs of the vertex shader are the inputs of the same name of the fragment shader.
@@ -29,6 +30,7 @@ out float sampleExtraOutput;
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 TexCoords;
+out vec4 FragPosLightSpace;
 
 void main()
 {
@@ -58,6 +60,8 @@ void main()
         FragPos = vec3(model * totalPosition);
         Normal = mat3(transpose(inverse(model))) * totalNormal;  
         TexCoords = uvs;
+
+        FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     
         gl_Position = projection * view * model * totalPosition;
     }
@@ -66,6 +70,8 @@ void main()
        FragPos = vec3(model * vec4(positions, 1.0));
        Normal = mat3(transpose(inverse(model))) * normals;  
        TexCoords = uvs;
+
+       FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     
        gl_Position = projection * view * vec4(FragPos, 1.0);
     }

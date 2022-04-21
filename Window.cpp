@@ -13,6 +13,8 @@ const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
 Player* Window::player;
+DepthMap* Window::dm;
+Model* Window::plane;
 
 // Camera Matrices 
 // Projection matrix:
@@ -30,6 +32,7 @@ glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window
 GLuint Window::shaderProgram; 
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
+GLuint Window::shadowShaderProgram; 
 
 
 bool Window::initializeProgram() {
@@ -37,6 +40,7 @@ bool Window::initializeProgram() {
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
+	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag");
 
 	// Check the shader program.
 	if (!shaderProgram)
@@ -58,31 +62,42 @@ bool Window::initializeProgram() {
 		return false;
 	}
 
+	if (!shadowShaderProgram)
+	{
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
 bool Window::initializeObjects()
 {
+	dm = new DepthMap(1.0f, 1000.0f);
 	// load models
+	plane = new Model("models/plane/plane.fbx");
 	Model bumbus = Model("models/bumbus/bumbus.fbx");
 	Model pogo = Model("models/pogo/pogo.fbx");
 	Model swainky = Model("models/swainky/swainky.fbx");
-	Model frog = Model("models/swainky/swainky.fbx");
-	//Model * pogo_2 = new Model("models/pogo/pogo.fbx");
+	Model gilma = Model("models/gilma/char4.fbx");
 	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
+	Model corn = Model("models/corn/corn.fbx"); // PLACEHOLDER
+	Model tree = Model("models/tree/tree.fbx"); // PLACEHOLDER
 
 	Player* player_1 = new Player(bumbus);
 	Player* player_2 = new Player(pogo);
 	Player* player_3 = new Player(swainky);
+	Player* player_4 = new Player(gilma);
 	//Player* player_3 = new Player(pogo_2);
 	Vegetable* vegetable_1 = new Vegetable(VegetableType::CARROT, carrot);
-	Vegetable* vegetable_2 = new Vegetable(VegetableType::CARROT, carrot);
+	Vegetable* vegetable_2 = new Vegetable(VegetableType::CORN, corn);
+	Vegetable* vegetable_3 = new Vegetable(VegetableType::CORN, tree);
 	
 	//game = new GameManager({player_1, player_2, player_3});
 	//game = new GameManager({ player_1, player_2 }, {});
 	// 
 	// Changed GameManager to include a list of vegetables for testing, we can revert back
-	game = new GameManager({ player_1, player_2, player_3 }, { vegetable_1, vegetable_2 });
+	game = new GameManager({ player_1, player_2, player_3, player_4 }, { vegetable_1, vegetable_2, vegetable_3 });
 	
 	return true;
 }
@@ -96,6 +111,7 @@ void Window::cleanUp()
 	glDeleteProgram(shaderProgram);
 	glDeleteProgram(modelShaderProgram);
 	glDeleteProgram(animationShaderProgram);
+	glDeleteProgram(shadowShaderProgram);
 }
 
 GLFWwindow* Window::createWindow(int width, int height)
@@ -185,19 +201,69 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 }
 
 void Window::displayCallback(GLFWwindow* window)
-{	
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	/*
+	dm->draw();
+	plane->draw(glm::translate(glm::vec3(0.f, -5.0f, 0.f)) * glm::scale(glm::vec3(5.0f)) * glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)), shadowShaderProgram);
+	game->Draw(shadowShaderProgram);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// Clear the color and depth buffers
+	 // reset viewport
+	glViewport(0, 0, width, height);
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	*/
 
-
+	
 	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
 	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
 	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
-
+	
 	// Render the objects
 	// currObj->draw(view, projection, shaderProgram);
+	// plane->draw(glm::translate(glm::vec3(0.f, -5.0f, 0.f)) * glm::scale(glm::vec3(5.0f)) * glm::rotate(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)), animationShaderProgram);
 	game->Draw(view, projection, animationShaderProgram);
 	
+
+	glUseProgram(modelShaderProgram);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+	glUniform1i(glGetUniformLocation(shadowShaderProgram, "shadowMap"), 0);
+
+	/*
+	unsigned int quadVAO = 0;
+	unsigned int quadVBO;
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+	glUseProgram(0);
+	*/
+
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 
