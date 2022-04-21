@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ColliderAABB.cpp" />
+    <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="Network\Client.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="ColliderAABB.h" />
     <ClInclude Include="Holdable.h" />
+    <ClInclude Include="DepthMap.h" />
     <ClInclude Include="Network\Client.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="Network\NetworkPacket.h" />
@@ -186,6 +188,8 @@
     <None Include="shaders\model.vert" />
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
+    <None Include="shaders\shadows.frag" />
+    <None Include="shaders\shadows.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

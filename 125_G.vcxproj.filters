@@ -21,6 +21,7 @@
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
+    <ClCompile Include="DepthMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="SabotageItem.h" />
     <ClInclude Include="Network\NetworkPacket.h" />
     <ClInclude Include="Holdable.h" />
+    <ClInclude Include="DepthMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -64,5 +66,7 @@
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
     <None Include="ClassDiagram.cd" />
+    <None Include="shaders\shadows.frag" />
+    <None Include="shaders\shadows.vert" />
   </ItemGroup>
 </Project>

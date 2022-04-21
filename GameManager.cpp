@@ -63,7 +63,17 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 	}
 }
 
-
+void GameManager::Draw(const GLuint shader)
+{
+	for (auto entity : game_entities) {
+		if (entity->type == EntityType::PLAYER) {
+			dynamic_cast<Player*>(entity)->Draw(shader);
+		}
+		else if (entity->type == EntityType::VEGETABLE) {
+			dynamic_cast<Vegetable*>(entity)->Draw(shader);
+		}
+	}
+}
 
 void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 {

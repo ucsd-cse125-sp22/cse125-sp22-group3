@@ -29,6 +29,11 @@ void Vegetable::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader)
 	model.draw(view, projection, parent, shader);
 }
 
+void Vegetable::Draw(GLuint shader) {
+	glm::mat4 parent = GetTranslation();
+	model.draw(parent, shader);
+}
+
 std::vector<Collider*> Vegetable::GetColliders()
 {
 	return { collider_ };

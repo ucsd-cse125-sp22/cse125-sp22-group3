@@ -23,6 +23,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 
         // Drawable
         void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
+        void Draw(GLuint shader) override;
 
         // PhysicsObject
         void OnCollide(PhysicsObject* object) override {};

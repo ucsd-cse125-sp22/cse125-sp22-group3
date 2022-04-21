@@ -84,6 +84,10 @@ void Player::OnTrigger(PhysicsObject* object)
 		}
 		
 	}
+
+void Player::Draw(GLuint shader) {
+	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
+	model.draw(parent, shader);
 }
 
 std::vector<Collider*> Player::GetColliders()

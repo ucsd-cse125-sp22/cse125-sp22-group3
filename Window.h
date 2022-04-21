@@ -24,15 +24,19 @@ public:
 	
 	// Objects to Render
 	static Player* player;
+	static Model* plane;
 
 	// Camera Matrices
 	static glm::mat4 projection;
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
+	static DepthMap* dm;
+
 	// Shader Program ID
 	static GLuint shaderProgram;
 	static GLuint modelShaderProgram;
+	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;
 
 
