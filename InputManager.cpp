@@ -77,11 +77,11 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 				break;
 			case GLFW_KEY_F:
 				lastCmd = USE;
-				justMoved = false;
+				//justMoved = false;
 				break;
 			case GLFW_KEY_G:
 				lastCmd = DROP;
-				justMoved = false;
+				//justMoved = false;
 				printf("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
 				break;
 			default: break;

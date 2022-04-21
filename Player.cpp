@@ -63,8 +63,13 @@ void Player::Move() {
 
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
-	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
+	glm::mat4 parent = GetParentTransform();
 	model.draw(view, projection, parent, shader);
+}
+
+glm::mat4 Player::GetParentTransform()
+{
+	return GetTranslation() * GetRotation() * GetScale();
 }
 
 void Player::OnTrigger(PhysicsObject* object)

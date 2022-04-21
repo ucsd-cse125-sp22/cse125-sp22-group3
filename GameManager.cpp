@@ -6,6 +6,10 @@
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
 
+GameManager::GameManager()
+{
+	physics_ = PhysicsEngine();
+}
 GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
 {
 	// Initialize Players
@@ -51,6 +55,20 @@ void GameManager::FixedUpdate()
 	// Check collisions
 	physics_.Compute();
 }
+char* GameManager::GetServerBuf()
+{
+	std::vector<ModelInfo> model_infos;
+	model_infos.push_back(ModelInfo{ 0, CHAR_POGO, players_[0]->GetParentTransform() });
+
+	ServerHeader sheader{};
+	sheader.num_models = model_infos.size();
+	sheader.player_model_id = 0;
+	
+	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
+	serverSerialize(server_buf, &sheader, model_infos.data());
+	return server_buf;
+}
+
 void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
 {
 	for (auto entity : game_entities) {

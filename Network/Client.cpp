@@ -107,7 +107,7 @@ Client::~Client(void)
  * Delete the client object immediately.
  */
 int Client::syncWithServer(const void* send_buf, size_t send_len,
-	std::function<void(const void* recv_buf, size_t recv_len)> callback)
+	std::function<void(char* recv_buf, size_t recv_len)> callback)
 {
 	// sending data (inputs)
 	int sendStatus = send(ConnectSocket, static_cast<const char*>(send_buf), send_len, 0);

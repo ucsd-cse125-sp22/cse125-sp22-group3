@@ -8,13 +8,17 @@
 #include "util.h"
 #include <chrono>
 
+#include "Network/NetworkPacket.h"
+
 class GameManager : GameEntity, Drawable
 {
 public:
+    GameManager();
     explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables);
 
     // Call Updates on GameState
     void FixedUpdate() override;
+    char* GetServerBuf();
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
     void Draw(GLuint shader) override;
 

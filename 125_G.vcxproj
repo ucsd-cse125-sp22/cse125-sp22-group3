@@ -133,6 +133,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Network\ServerMain.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -147,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColliderAABB.h" />
+    <ClInclude Include="glm.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
     <ClInclude Include="Network\Client.h" />

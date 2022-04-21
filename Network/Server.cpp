@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "NetworkPacket.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,7 +144,7 @@ Server::~Server(void)
 	WSACleanup();
 }
 
-void Server::mainLoop(void)
+void Server::mainLoop(std::function<char*(ClientPacket cpacket)> main_code)
 {
 	ClientSocket = INVALID_SOCKET;
 	ClientSocket = accept(ListenSocket, NULL, NULL); // TODO ClientSocket handling can be multithreaded
@@ -184,16 +183,10 @@ void Server::mainLoop(void)
 			cpacket.deserializeFrom(&(network_data[i]));
 			i += sizeof(ClientPacket);
 
-			//TODO: change echo with actual update logic 
-			ServerPacket spacket;
-			spacket.justMoved = cpacket.justMoved;
-			spacket.movement = cpacket.movement;
-			spacket.lastCommand = cpacket.lastCommand;
-			
-			char packet_data[sizeof(ServerPacket)];
-			spacket.serializeTo(packet_data);
+			// calls passed-in code
+			char* packet_data = main_code(cpacket);
 
-			int sendStatus = send(ClientSocket, packet_data, sizeof(ServerPacket), 0);
+			int sendStatus = send(ClientSocket, packet_data, GetBufSize(reinterpret_cast<ServerHeader*>(packet_data)), 0);
 			if (sendStatus == SOCKET_ERROR) {
 				printf("send failed: %d\n", WSAGetLastError());
 				return; // TODO ideally retry transmission

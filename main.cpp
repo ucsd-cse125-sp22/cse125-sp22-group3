@@ -88,8 +88,10 @@ int main(void)
 
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
-	
 
+	//TODO remove test
+	Model pogo{"models/pogo/pogo.fbx"};
+	
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -105,8 +107,35 @@ int main(void)
 		
 		out_packet.lastCommand = InputManager::getLastCommand();
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [window](const void* recv_buf, size_t recv_len)
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, window](char* recv_buf, size_t recv_len)
 			{
+				ServerHeader sheader{};
+				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
+				serverDeserialize(recv_buf, &sheader, model_arr);
+
+				const glm::mat4 player_transform = model_arr[sheader.player_model_id].parent_transform;
+				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
+				
+				const glm::vec3 eye_pos = player_pos + glm::vec3(0,20,20);	// TODO implement angle.
+				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
+				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
+
+				for (int i = 0; i < sheader.num_models; i++)
+				{
+					const ModelInfo model_info = model_arr[i];
+					switch (model_info.model)
+					{
+					case CHAR_POGO:
+						pogo.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+						break;
+					case CHAR_BUMBUS: break;
+					case CHAR_SWAINKY: break;
+					case CHAR_GILMAN: break;
+					case VEG_CARROT: break;
+					case VEG_CORN: break;
+					}
+				}
+				/*
 				ServerPacket in_packet;
 				in_packet.deserializeFrom(recv_buf);
 
@@ -125,7 +154,7 @@ int main(void)
 				Window::displayCallback(window);	
 
 				// Idle callback. Updating objects, etc. can be done here. (Update)
-				Window::logicCallback();
+				Window::logicCallback();*/
 			});
         
 		auto end_time = std::chrono::steady_clock::now();

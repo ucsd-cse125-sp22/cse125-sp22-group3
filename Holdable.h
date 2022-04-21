@@ -1,5 +1,6 @@
 ﻿#pragma once
-#include <glm/fwd.hpp>
+
+#include "glm.h"
 
 class Holdable
 {
