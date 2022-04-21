@@ -16,7 +16,6 @@
     <ClCompile Include="SabotageItem.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="Vegetable.cpp" />
-    <ClCompile Include="Holdable.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Network\Server.cpp" />
     <ClCompile Include="ColliderAABB.cpp" />
@@ -54,6 +53,7 @@
     <ClInclude Include="util.h" />
     <ClInclude Include="SabotageItem.h" />
     <ClInclude Include="Network\NetworkPacket.h" />
+    <ClInclude Include="Holdable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

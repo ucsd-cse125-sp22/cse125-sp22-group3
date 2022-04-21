@@ -16,7 +16,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		float friction_ = 50; // Resistance in Units/Sec
 		float base_accel_ = 200; // Acceleration in Units/Sec^2
 		float max_velocity_ = 20; // Max Velocity in Units/Sec
-		float entityHeldDist = 4; // distance of entity from player
+		float entityHeldDist = 2.5f; // distance of entity from player
 		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display

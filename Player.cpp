@@ -172,7 +172,9 @@ void Player::MoveHeld() {
 	if (isHolding && entityHeld->type == EntityType::VEGETABLE) {
 		auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
 		
-		glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+		const glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+		const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
 		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
+		vegetable->SetRotation(held_rotation);
 	}
 }

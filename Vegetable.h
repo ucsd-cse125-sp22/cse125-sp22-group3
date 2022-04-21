@@ -34,6 +34,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         // Information
         glm::vec3 GetPosition() const;
         void SetPosition(glm::vec3 position);
+        void SetRotation(glm::mat4 rotation);
 
         // Interactable
         bool CanInteract(Player* player) override;
@@ -46,6 +47,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 	private:
 		// Transformations
 		glm::vec2* translate = nullptr;
+        glm::mat4 rotation{};
 		glm::mat4 hold_transformation_{};
 
 		// Current model to display
