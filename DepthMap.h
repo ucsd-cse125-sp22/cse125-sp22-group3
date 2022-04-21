@@ -31,7 +31,9 @@ class DepthMap {
 
 		DepthMap();
 		DepthMap(float np, float fp);
+		// void draw(GameManager * gm, GLuint shader);
 		void draw();
+		// void draw(GameManager * gm, Model * m, GLuint shader);
 };
 
 #endif

@@ -133,6 +133,9 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
+        glm::value_ptr(DepthMap::lightSpaceMatrix));
+
     // Bind the VAO
     glBindVertexArray(VAO);
 
@@ -202,6 +205,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
         }
     }
 
+    // std::cout << glm::to_string(DepthMap::lightSpaceMatrix) << std::endl;
     // Has animations
     glUniform1i(glGetUniformLocation(shaderProgram, "hasAnimation"), 1);
 
@@ -213,6 +217,10 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
     // transformations
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "finalBonesMatrices"), transforms.size(), 
         GL_FALSE, glm::value_ptr(transforms[0]));
+
+    // for shadows
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
+        glm::value_ptr(DepthMap::lightSpaceMatrix));
 
     // Camera position --- TO DO: just get eyePos from windows or just create a camera class? Inverse can be a expensive operation
         // transformations
@@ -275,6 +283,7 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
         glm::value_ptr(m));
     glUniformMatrix4fv(glGetUniformLocation(shader, "lightSpaceMatrix"), 1, GL_FALSE,
         glm::value_ptr(DepthMap::lightSpaceMatrix));
+
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
     // Bind the VAO
     glBindVertexArray(VAO);

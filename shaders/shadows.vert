@@ -11,16 +11,16 @@ layout (location = 4) in vec4 weights;
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 
-// uniform mat4 finalBonesMatrices[MAX_BONES];
+uniform mat4 finalBonesMatrices[MAX_BONES];
 uniform mat4 lightSpaceMatrix;
 uniform mat4 model;
 
-// uniform bool hasAnimation;
+uniform bool hasAnimation;
 
 void main()
 {
-    gl_Position = lightSpaceMatrix * model * vec4(positions, 1.0);
-    /*
+    // gl_Position = lightSpaceMatrix * model * vec4(positions, 1.0);
+
     if(!hasAnimation) {
         gl_Position = lightSpaceMatrix * model * vec4(positions, 1.0);
     }
@@ -44,5 +44,4 @@ void main()
 
         gl_Position = lightSpaceMatrix * model * vec4(totalPosition);
     }
-    */
 } 
