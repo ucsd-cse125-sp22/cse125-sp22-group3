@@ -1,9 +1,9 @@
 #include "Window.h"
 #include "Model.h"
 
+#include "UI/GUI.h"
 #include "main.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw_gl3.h"
+
 // Game Manager
 GameManager* Window::game = nullptr;
 
@@ -200,19 +200,7 @@ void Window::displayCallback(GLFWwindow* window)
 	// renderDepthMap();
 
 	//IMGUI rendering
-	ImGui_ImplGlfwGL3_NewFrame();
-
-	if (Window::show_GUI == true) {
-		if (ImGui::Button("Close Me")) {
-			Window::show_GUI = false;
-		}
-		ImGui::Begin("My Name is Window, IMGUI Window");
-		ImGui::Text("Hello there adeventurer!");
-		ImGui::End();
-		ImGui::Render();
-		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-	}
-	
+	Window::show_GUI = GUI::renderUI(Window::show_GUI);
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();

@@ -1,6 +1,5 @@
 #include "main.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw_gl3.h"
+#include "UI/GUI.h"
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
@@ -92,16 +91,9 @@ int main(int argc, char* argv[])
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
 
-	/*IMGUI Initialize*/
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;   // Enable Gamepad Controls
-	ImGui_ImplGlfwGL3_Init(window, true);
-
-	// Setup style
-	ImGui::StyleColorsDark();
-	/*END of IMGUI initialize*/
+	// initialize IMGUI 
+	GUI::initializeGUI(window);
+	GUI::initializeImage("./UI/Pictures");
 
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, SERVER_PORT);
@@ -220,8 +212,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Cleanup ImGui
-	ImGui_ImplGlfwGL3_Shutdown();
-	ImGui::DestroyContext();
+	GUI::cleanUp();
 
 	// Destroy the window.
 	glfwDestroyWindow(window);

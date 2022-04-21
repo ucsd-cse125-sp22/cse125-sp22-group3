@@ -189,6 +189,14 @@
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="UI\GUI.cpp" />
+    <ClCompile Include="UI\imgui\imgui.cpp" />
+    <ClCompile Include="UI\imgui\imgui_demo.cpp" />
+    <ClCompile Include="UI\imgui\imgui_draw.cpp" />
+    <ClCompile Include="UI\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="UI\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="UI\imgui\imgui_tables.cpp" />
+    <ClCompile Include="UI\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Network\Client.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -221,6 +229,20 @@
     <ClInclude Include="imgui\stb_rect_pack.h" />
     <ClInclude Include="imgui\stb_textedit.h" />
     <ClInclude Include="imgui\stb_truetype.h" />
+    <ClInclude Include="UI\GUI.h" />
+    <ClInclude Include="UI\imgui\imconfig.h" />
+    <ClInclude Include="UI\imgui\imgui.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="UI\imgui\imgui_internal.h" />
+    <ClInclude Include="UI\imgui\imstb_rectpack.h" />
+    <ClInclude Include="UI\imgui\imstb_textedit.h" />
+    <ClInclude Include="UI\imgui\imstb_truetype.h" />
+    <ClInclude Include="UI\imgui\stb_rect_pack.h" />
+    <ClInclude Include="UI\imgui\stb_textedit.h" />
+    <ClInclude Include="UI\imgui\stb_truetype.h" />
     <ClInclude Include="Network\Client.h" />
     <ClInclude Include="assimpConvert.h" />
     <ClInclude Include="Network\NetworkPacket.h" />
@@ -262,6 +284,10 @@
     <None Include="shaders\shader.vert" />
     <None Include="shaders\shadows.frag" />
     <None Include="shaders\shadows.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="UI\Pictures\p1.jpg" />
+    <Image Include="UI\Pictures\p2.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
