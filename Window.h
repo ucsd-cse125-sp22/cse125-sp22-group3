@@ -24,7 +24,6 @@ public:
 	
 	// Objects to Render
 	static Player* player;
-	static Model* plane;
 
 	// Camera Matrices
 	static glm::mat4 projection;
@@ -56,8 +55,10 @@ public:
 
 	void setMoveInput(glm::vec2 v);
 
-	// Callbacks
 
+	static void renderDepthMap();
+
+	// Callbacks
 	/*
 	 * Where we take user input from the keyboard
 	 */
