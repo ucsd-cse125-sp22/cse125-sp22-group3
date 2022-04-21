@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{71369EBE-0FC6-40AA-9D1B-8BE5AD451039}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -149,6 +149,7 @@
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="Network\Client.h" />
     <ClInclude Include="assimpConvert.h" />
+    <ClInclude Include="Network\NetworkPacket.h" />
     <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="ColliderCircle.h" />

@@ -48,17 +48,8 @@ public:
 	// Draw and Update functions
 	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
-	static void calculateInput();
-
-	void setMoveInput(glm::vec2 v);
 
 	// Callbacks
-
-	/*
-	 * Where we take user input from the keyboard
-	 */
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
 	/*
 	 * Where we take user input from the mouse
 	 */

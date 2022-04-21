@@ -161,47 +161,6 @@ void Server::mainLoop(void)
 	// TODO insert new client into session id table
 	// sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
-	/*char buffer[DEFAULT_BUFLEN];
-	while (true) { // TODO
-		// receive data from client
-		if (ClientSocket == INVALID_SOCKET)
-		{
-			printf("No client connected...\n");
-			ClientSocket = accept(ListenSocket, NULL, NULL);
-			continue;
-		}
-		int recvStatus = recv(ClientSocket, buffer, DEFAULT_BUFLEN, 0);
-		if (recvStatus == SOCKET_ERROR) {
-			printf("recv failed: %d\n", WSAGetLastError());
-			// Connection Reset Error
-			if (WSAGetLastError() == 10054)
-			{
-				closesocket(ClientSocket);
-				ClientSocket = INVALID_SOCKET;
-			}
-			continue;
-		}
-		else if (recvStatus == 0) {
-			printf("Connection closed\n");
-			closesocket(ClientSocket);
-			ClientSocket = INVALID_SOCKET;
-			continue; // TODO Remove This Later, I just want the server to stay running for testing purposes.
-			// return; // TODO only terminate for this client, not others
-		}
-		else {
-			printf("Server bytes received: %ld\n", recvStatus);
-		}
-
-		// echo back the data received to the client
-		int sendStatus = send(ClientSocket, buffer, recvStatus, 0);
-		if (sendStatus == SOCKET_ERROR) {
-			printf("send failed: %d\n", WSAGetLastError());
-			return; // TODO ideally retry transmission
-		}
-		else {
-			printf("Server bytes sent: %ld\n", sendStatus);
-		}
-	}*/
 	while (true) { // TODO
 		auto begin_time = std::chrono::steady_clock::now();
 
@@ -222,16 +181,18 @@ void Server::mainLoop(void)
 		ClientPacket cpacket;
 		int i = 0;
 		while (i < (unsigned int)recvStatus) {
-			cpacket.deserialize(&(network_data[i]));
+			cpacket.deserializeFrom(&(network_data[i]));
 			i += sizeof(ClientPacket);
-			printf("Server recieve move: %d", cpacket.move);
 
-			//TODO: do stuff with the packet recieve, now just send the packet back; 
+			//TODO: change echo with actual update logic 
 			ServerPacket spacket;
-			spacket.move = cpacket.move;
-			spacket.valid = true;
+			spacket.justMoved = cpacket.justMoved;
+			spacket.movement = cpacket.movement;
+			spacket.lastCommand = cpacket.lastCommand;
+			
 			char packet_data[sizeof(ServerPacket)];
-			spacket.serialize(packet_data);
+			spacket.serializeTo(packet_data);
+
 			int sendStatus = send(ClientSocket, packet_data, sizeof(ServerPacket), 0);
 			if (sendStatus == SOCKET_ERROR) {
 				printf("send failed: %d\n", WSAGetLastError());

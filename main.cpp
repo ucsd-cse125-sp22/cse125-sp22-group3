@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "./Network/Client.h"
+#include "./Network/NetworkPacket.h"
 #include <chrono>
 
 
@@ -92,33 +93,45 @@ int main(void)
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
-		char* dummy_data = "Hello from the Networking Team";
-		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
-			{
-				//printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+		// outgoing packet initialization
+		struct ClientPacket out_packet;
 
-				// Get input from client and send it to the game manager
-				Window::calculateInput();
-			
+		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+		if (InputManager::getMoved()) { // TODO determine when to send packet and when to skip
+			out_packet.justMoved = InputManager::getMoved();
+			out_packet.movement = InputManager::getLastMovement();
+		}
+		InputManager::resetMoved();
+		
+		out_packet.lastCommand = InputManager::getLastCommand();
+
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [window](const void* recv_buf, size_t recv_len)
+			{
+				ServerPacket in_packet;
+				in_packet.deserializeFrom(recv_buf);
+
+				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+                if (in_packet.justMoved) { // TODO conditional possibly redundant (remove from packet)
+                    Window::game->SetPlayerInput(InputManager::getLastMovement(), 0);
+                }
+                if (in_packet.lastCommand == InputCommands::USE) {
+                    Window::game->SetPlayerUse(0);
+                }
+                else if (in_packet.lastCommand == InputCommands::DROP) {
+                    Window::game->SetPlayerDrop(0);
+                }
+
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
 
 				// Idle callback. Updating objects, etc. can be done here. (Update)
 				Window::logicCallback();
 			});
+        
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		//printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
+		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
-
-		// uncomment for testing
-		// Main render display callback. Rendering of objects is done here. (Draw)
-		/*
-		Window::displayCallback(window);
-
-		// Idle callback. Updating objects, etc. can be done here. (Update)
-		Window::idleCallback();
-		*/
 	}
 
 	// destroy objects created
