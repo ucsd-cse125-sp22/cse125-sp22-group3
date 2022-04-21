@@ -1,6 +1,7 @@
 #pragma once
 #include <cstring>
 #include "..\packages\glm.0.9.9.800\build\native\include\glm\vec2.hpp"
+#include "..\util.h"
 
 // the Packet struct that sent by client to server
 struct ClientPacket {

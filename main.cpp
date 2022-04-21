@@ -104,15 +104,12 @@ int main(void)
 		InputManager::resetMoved();
 		
 		out_packet.lastCommand = InputManager::getLastCommand();
+
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [window](const void* recv_buf, size_t recv_len)
 			{
 				ServerPacket in_packet;
 				in_packet.deserializeFrom(recv_buf);
 
-				if (in_packet.justMoved) {
-					Window::setPlayerInput(in_packet.movement);
-				}
-				
 				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
                 if (in_packet.justMoved) { // TODO conditional possibly redundant (remove from packet)
                     Window::game->SetPlayerInput(InputManager::getLastMovement(), 0);

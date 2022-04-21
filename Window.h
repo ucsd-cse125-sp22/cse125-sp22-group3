@@ -48,7 +48,6 @@ public:
 	// Draw and Update functions
 	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
-	static void setPlayerInput(glm::vec2 move_input);
 
 	// Callbacks
 	/*
