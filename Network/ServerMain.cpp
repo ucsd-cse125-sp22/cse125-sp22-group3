@@ -6,9 +6,10 @@ inline int ServerMain(){
 	Server* server = new Server();
 	Player pogo{CHAR_POGO};
 	Player bumbus{CHAR_BUMBUS};
-	GameManager game({&pogo, &bumbus}, {});
-	GameManager *gamePtr = &game;
-	server->mainLoop([](ClientPacket packet){ return nullptr; });/*([&game](ClientPacket cpacket) {
+	Player bumbus_2{CHAR_BUMBUS};
+	Player swainky{CHAR_SWAINKY};
+	GameManager game({&pogo, &bumbus, &bumbus_2, &swainky}, {});
+	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)
 		{
 			game.SetPlayerInput(cpacket.movement, cpacket.player_index);
@@ -25,7 +26,7 @@ inline int ServerMain(){
 		game.FixedUpdate();
 		
 		return game.GetServerBuf();
-	});*/
+	});
 	//delete server;
 	
 	return 0;

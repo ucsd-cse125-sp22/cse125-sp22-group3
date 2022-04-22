@@ -8,8 +8,6 @@ Player::Player() {
 	scale = glm::vec3(0.0f);
 
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
-
-	printf("Curr_vel is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 }
 
 Player::Player(ModelEnum curr) : Player() {
@@ -33,7 +31,6 @@ void Player::FixedUpdate() {
 		else
 			model.setAnimationMode(IDLE);
 		*/
-		fprintf(stderr, "After friction, current velocity is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 	}
 	else {
 		// Accelerate in our inputted direction
@@ -49,11 +46,9 @@ void Player::FixedUpdate() {
 		else
 			model.setAnimationMode(WALK);
 		*/
-		fprintf(stderr, "Current velocity is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 	}
 	
 	if (glm::length(curr_vel_) > 0) {
-		fprintf(stderr, "Adjusting positions with move()\n");
 		Move();
 		MoveHeld();
 	}

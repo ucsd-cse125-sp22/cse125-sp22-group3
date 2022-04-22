@@ -90,12 +90,6 @@ Server::Server(void)
 	}
 
 	this->printActiveAdapterAddresses();
-
-	//TODO REMOVE
-	Player* pogo = new Player( CHAR_POGO );
-	Player* bumbus = new Player(CHAR_BUMBUS);
-	game = new GameManager({ pogo, bumbus }, {});
-
 }
 
 void Server::printActiveAdapterAddresses() {
@@ -190,33 +184,7 @@ void Server::mainLoop(std::function<char*(ClientPacket cpacket)> main_code)
 			i += sizeof(ClientPacket);
 
 			// calls passed-in code
-			//char* packet_data = main_code(cpacket);
-			if (cpacket.justMoved)
-			{
-				game->SetPlayerInput(cpacket.movement, cpacket.player_index);
-				if (cpacket.lastCommand == InputCommands::USE)
-				{
-					game->SetPlayerUse(cpacket.player_index);
-				}
-				else if (cpacket.lastCommand == InputCommands::DROP)
-				{
-					game->SetPlayerDrop(cpacket.player_index);
-				}
-			}
-
-			GameManager::UpdateFixedDeltaTime();
-			game->FixedUpdate();
-
-			char *packet_data = game->GetServerBuf();
-			// printf("justMoved: %d, (%f, %f)\n", cpacket.justMoved, cpacket.movement[0], cpacket.movement[1]);
-			/*int printSize = GetBufSize(reinterpret_cast<ServerHeader*>(packet_data));
-			for (int i = 0; i < printSize; i++) {
-				printf("%x ", packet_data[i] & 0xff);
-				if (i % 4 == 1) {
-					printf(" | ");
-				}
-			}
-			printf("\n");*/
+			char* packet_data = main_code(cpacket);
 
 			int sendStatus = send(ClientSocket, packet_data, GetBufSize(reinterpret_cast<ServerHeader*>(packet_data)), 0);
 			if (sendStatus == SOCKET_ERROR) {

@@ -23,9 +23,5 @@ public:
 	Server(void);
 	~Server(void);
 	void mainLoop(std::function<char*(ClientPacket cpacket)> main_code);
-
-
-	//TODO REMOVE
-	GameManager* game;
 };
 

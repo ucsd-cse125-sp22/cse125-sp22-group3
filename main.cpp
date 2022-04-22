@@ -101,11 +101,10 @@ int main(int argc, char* argv[])
 	Model bumbus = Model("models/bumbus/bumbus.fbx");
 	Model pogo = Model("models/pogo/pogo.fbx");
 	Model swainky = Model("models/swainky/swainky.fbx");
-	Model gilma = Model("models/gilma/char4.fbx");
+	Model gilman = Model("models/gilma/char4.fbx");
 	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
 	Model corn = Model("models/corn/corn.fbx"); // PLACEHOLDER
 	Model tree = Model("models/tree/tree.fbx"); // PLACEHOLDER
-
 	
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
@@ -124,7 +123,7 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, &bumbus, window](char* recv_buf, size_t recv_len)
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, &bumbus, &swainky, window](char* recv_buf, size_t recv_len)
 			{
 				ServerHeader sheader{};
 				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
@@ -134,7 +133,7 @@ int main(int argc, char* argv[])
 				const glm::mat4 player_transform = model_arr[sheader.player_model_id].parent_transform;
 				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 				
-				const glm::vec3 eye_pos = player_pos + glm::vec3(0,20,20);	// TODO implement angle.
+				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
@@ -149,7 +148,8 @@ int main(int argc, char* argv[])
 					case CHAR_BUMBUS:
 						bumbus.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 						break;
-					case CHAR_SWAINKY: break;
+					case CHAR_SWAINKY:
+						swainky.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 					case CHAR_GILMAN: break;
 					case VEG_CARROT: break;
 					case VEG_CORN: break;

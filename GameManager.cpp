@@ -47,6 +47,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 
 void GameManager::FixedUpdate()
 {
+	GameManager::UpdateFixedDeltaTime();
 	for (GameEntity* entity : game_entities) {
 		entity->FixedUpdate();
 	}
@@ -97,20 +98,17 @@ void GameManager::Draw(const GLuint shader)
 	}
 }
 
-void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
+void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)
 {
-	fprintf(stderr, "Player move input being adjusted into (%f, %f)\n", move_input[0], move_input[1]);
 	players_[player_index]->move_input = move_input;
 }
 
 //TODO Merge these two with SetPlayerInput when NetworkPacket.h is updated
 void GameManager::SetPlayerUse(const int player_index) {
-	fprintf(stderr, "Player use being adjusted\n");
 	players_[player_index]->Use();
 }
 
 void GameManager::SetPlayerDrop(const int player_index) {
-	fprintf(stderr, "Player drop being adjusted\n");
 	players_[player_index]->Drop();
 }
 
@@ -119,8 +117,8 @@ glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 	return players_[player_index]->GetPosition();
 }
 
-double GameManager::GetFixedDeltaTime() { 
-	std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
+double GameManager::GetFixedDeltaTime() {
+	const std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
     return elapsed_seconds.count();
 }
 
