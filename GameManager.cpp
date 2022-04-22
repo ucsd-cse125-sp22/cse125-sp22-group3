@@ -13,7 +13,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	int i = 0;
 	for (Player* player : players_) {
 		// Set Player Positions
-		player->SetPosition({i * 10,0,0});
+		player->SetPosition({i * 10,i * -8,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
 		game_entities.back()->type = EntityType::PLAYER;
