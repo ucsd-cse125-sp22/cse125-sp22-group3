@@ -200,7 +200,7 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 
 void Window::displayCallback(GLFWwindow* window)
 {
-	// render Depth map for shadows
+	// render depth map for shadows
 	dm->draw();	
 	game->Draw(shadowShaderProgram);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -215,6 +215,7 @@ void Window::displayCallback(GLFWwindow* window)
 	
 	// Render the objects
 	game->Draw(view, projection, animationShaderProgram);
+	// renderDepthMap();
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
