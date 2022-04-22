@@ -2,6 +2,8 @@
 
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
+#include "./Network/ServerMain.cpp"
+#include "Model.h"
 #include <chrono>
 
 
@@ -59,8 +61,13 @@ void print_versions()
 #endif
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
+	if (argc > 1 && (std::string(argv[1]) == "server-build")) { //TODO Add Seperate Project
+		ServerMain();
+		return 0;
+	}
+	
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
 	if (!window)
@@ -90,22 +97,32 @@ int main(void)
 	int status = 1;
 
 	//TODO remove test
-	Model pogo{"models/pogo/pogo.fbx"};
+	// load models
+	Model bumbus = Model("models/bumbus/bumbus.fbx");
+	Model pogo = Model("models/pogo/pogo.fbx");
+	Model swainky = Model("models/swainky/swainky.fbx");
+	Model gilma = Model("models/gilma/char4.fbx");
+	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
+	Model corn = Model("models/corn/corn.fbx"); // PLACEHOLDER
+	Model tree = Model("models/tree/tree.fbx"); // PLACEHOLDER
+
 	
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
 		// outgoing packet initialization
-		struct ClientPacket out_packet;
+		ClientPacket out_packet;
 
 		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
 		if (InputManager::getMoved()) { // TODO determine when to send packet and when to skip
 			out_packet.justMoved = InputManager::getMoved();
 			out_packet.movement = InputManager::getLastMovement();
+			out_packet.lastCommand = InputManager::getLastCommand();
 		}
 		InputManager::resetMoved();
-		
-		out_packet.lastCommand = InputManager::getLastCommand();
+		out_packet.player_index = 0;
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, window](char* recv_buf, size_t recv_len)
 			{
@@ -113,6 +130,7 @@ int main(void)
 				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
 				serverDeserialize(recv_buf, &sheader, model_arr);
 
+				//Rendering Code
 				const glm::mat4 player_transform = model_arr[sheader.player_model_id].parent_transform;
 				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 				
@@ -135,27 +153,21 @@ int main(void)
 					case VEG_CORN: break;
 					}
 				}
-				/*
-				ServerPacket in_packet;
-				in_packet.deserializeFrom(recv_buf);
-
-				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-                if (in_packet.justMoved) { // TODO conditional possibly redundant (remove from packet)
-                    Window::game->SetPlayerInput(InputManager::getLastMovement(), 0);
-                }
-                if (in_packet.lastCommand == InputCommands::USE) {
-                    Window::game->SetPlayerUse(0);
-                }
-                else if (in_packet.lastCommand == InputCommands::DROP) {
-                    Window::game->SetPlayerDrop(0);
-                }
-
+			
+			/* TODO figure out what to do with these
 				// Main render display callback. Rendering of objects is done here. (Draw)
 				Window::displayCallback(window);	
 
 				// Idle callback. Updating objects, etc. can be done here. (Update)
-				Window::logicCallback();*/
+				Window::logicCallback();
+				*/
 			});
+		
+		// Gets events, including input such as keyboard and mouse or window resizing
+		glfwPollEvents();
+
+		// Swap buffers.
+		glfwSwapBuffers(window);
         
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();

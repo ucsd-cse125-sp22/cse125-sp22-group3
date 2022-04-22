@@ -1,4 +1,5 @@
-#include <GL/glew.h>
+#pragma once
+
 #include "glm.h"
 
 class Drawable {

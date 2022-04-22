@@ -1,9 +1,11 @@
 #pragma once
+
+#include "glm.h"
 #include "ColliderCircle.h"
 #include "Drawable.h"
 #include "GameEntity.h"
-#include "Model.h"
 #include "PhysicsObject.h"
+#include "util.h"
 
 class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
@@ -20,7 +22,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
 
 		// Current model to display
-		Model model;
+		ModelEnum model;
 
 		// Currently holding
 		GameEntity* entityHeld = nullptr;
@@ -47,7 +49,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		Player();
 
 		/* Curr should be idle */
-		Player(Model curr);
+		Player(ModelEnum curr);
 
 		// GameEntity
 		void FixedUpdate() override;

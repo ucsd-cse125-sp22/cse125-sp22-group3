@@ -1,7 +1,6 @@
 #include "GameManager.h"
 
-#include <utility>
-
+#include "Network/NetworkPacket.h"
 
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;

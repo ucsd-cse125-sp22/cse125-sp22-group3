@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Model.h"
+
 // Game Manager
 GameManager* Window::game = nullptr;
 
@@ -73,30 +75,7 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	dm = new DepthMap(-20.0f, 20.0f);
-	// load models
-	Model bumbus = Model("models/bumbus/bumbus.fbx");
-	Model pogo = Model("models/pogo/pogo.fbx");
-	Model swainky = Model("models/swainky/swainky.fbx");
-	Model gilma = Model("models/gilma/char4.fbx");
-	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
-	Model corn = Model("models/corn/corn.fbx"); // PLACEHOLDER
-	Model tree = Model("models/tree/tree.fbx"); // PLACEHOLDER
-
-	Player* player_1 = new Player(bumbus);
-	Player* player_2 = new Player(pogo);
-	Player* player_3 = new Player(swainky);
-	Player* player_4 = new Player(gilma);
-	//Player* player_3 = new Player(pogo_2);
-	Vegetable* vegetable_1 = new Vegetable(VegetableType::CARROT, carrot);
-	Vegetable* vegetable_2 = new Vegetable(VegetableType::CORN, corn);
-	Vegetable* vegetable_3 = new Vegetable(VegetableType::CORN, tree);
-	
-	//game = new GameManager({player_1, player_2, player_3});
-	//game = new GameManager({ player_1, player_2 }, {});
-	// 
-	// Changed GameManager to include a list of vegetables for testing, we can revert back
-	game = new GameManager({ player_1, player_2, player_3, player_4 }, { vegetable_1, vegetable_2, vegetable_3 });
-	
+		
 	return true;
 }
 

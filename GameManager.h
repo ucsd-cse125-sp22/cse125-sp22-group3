@@ -5,10 +5,7 @@
 #include "Vegetable.h"
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
-#include "util.h"
 #include <chrono>
-
-#include "Network/NetworkPacket.h"
 
 class GameManager : GameEntity, Drawable
 {
