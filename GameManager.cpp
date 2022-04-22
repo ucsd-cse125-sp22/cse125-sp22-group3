@@ -2,8 +2,8 @@
 
 #include "Network/NetworkPacket.h"
 
-double GameManager::curr_time_ = 0;
-double GameManager::last_time_ = 0;
+std::chrono::steady_clock::time_point GameManager::curr_time_ = std::chrono::steady_clock::now();
+std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::steady_clock::now();
 
 GameManager::GameManager()
 {
@@ -57,7 +57,12 @@ void GameManager::FixedUpdate()
 char* GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
-	model_infos.push_back(ModelInfo{ 0, CHAR_POGO, players_[0]->GetParentTransform() });
+	int i = 0;
+	for (Player* player : players_)
+	{
+		model_infos.push_back(ModelInfo{ i, player->GetModel(), player->GetParentTransform() });
+		i++;
+	}
 
 	ServerHeader sheader{};
 	sheader.num_models = model_infos.size();
@@ -94,15 +99,18 @@ void GameManager::Draw(const GLuint shader)
 
 void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
 {
+	fprintf(stderr, "Player move input being adjusted into (%f, %f)\n", move_input[0], move_input[1]);
 	players_[player_index]->move_input = move_input;
 }
 
 //TODO Merge these two with SetPlayerInput when NetworkPacket.h is updated
 void GameManager::SetPlayerUse(const int player_index) {
+	fprintf(stderr, "Player use being adjusted\n");
 	players_[player_index]->Use();
 }
 
 void GameManager::SetPlayerDrop(const int player_index) {
+	fprintf(stderr, "Player drop being adjusted\n");
 	players_[player_index]->Drop();
 }
 
@@ -111,12 +119,13 @@ glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 	return players_[player_index]->GetPosition();
 }
 
-double GameManager::GetFixedDeltaTime() { return curr_time_ - last_time_; }
-
+double GameManager::GetFixedDeltaTime() { 
+	std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
+    return elapsed_seconds.count();
+}
 
 void GameManager::UpdateFixedDeltaTime()
 {
 	last_time_ = curr_time_;
-	curr_time_ = glfwGetTime();
-
+	curr_time_ = std::chrono::steady_clock::now();
 }

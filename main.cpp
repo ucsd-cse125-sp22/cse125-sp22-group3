@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, window](char* recv_buf, size_t recv_len)
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, &bumbus, window](char* recv_buf, size_t recv_len)
 			{
 				ServerHeader sheader{};
 				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
@@ -146,7 +146,9 @@ int main(int argc, char* argv[])
 					case CHAR_POGO:
 						pogo.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 						break;
-					case CHAR_BUMBUS: break;
+					case CHAR_BUMBUS:
+						bumbus.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+						break;
 					case CHAR_SWAINKY: break;
 					case CHAR_GILMAN: break;
 					case VEG_CARROT: break;

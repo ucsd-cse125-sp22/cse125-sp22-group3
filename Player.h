@@ -15,11 +15,11 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec3 scale;
 
 		// Player Movement Attributes
-		float friction_ = 50; // Resistance in Units/Sec
-		float base_accel_ = 200; // Acceleration in Units/Sec^2
-		float max_velocity_ = 20; // Max Velocity in Units/Sec
+		float friction_ = 50.f; // Resistance in Units/Sec
+		float base_accel_ = 200.f; // Acceleration in Units/Sec^2
+		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
 		float entityHeldDist = 2.5f; // distance of entity from player
-		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
+		glm::vec2 curr_vel_ = glm::vec2(0,0);
 
 		// Current model to display
 		ModelEnum model;
@@ -58,6 +58,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
 		void Draw(GLuint shader) override;
 		glm::mat4 GetParentTransform();
+		ModelEnum GetModel();
 
 		// PhysicsObject
 		void OnCollide(PhysicsObject* object) override {}

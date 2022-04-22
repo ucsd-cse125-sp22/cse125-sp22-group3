@@ -8,6 +8,8 @@ Player::Player() {
 	scale = glm::vec3(0.0f);
 
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
+
+	printf("Curr_vel is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 }
 
 Player::Player(ModelEnum curr) : Player() {
@@ -20,7 +22,7 @@ void Player::FixedUpdate() {
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	if (glm::length(move_input) < 0.001f) {
+	if (glm::length(move_input) <= 0) {
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
@@ -31,11 +33,12 @@ void Player::FixedUpdate() {
 		else
 			model.setAnimationMode(IDLE);
 		*/
+		fprintf(stderr, "After friction, current velocity is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 	}
 	else {
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
-		curr_vel_ += delta * base_accel_ * move_input;
+		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
 		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
@@ -46,9 +49,11 @@ void Player::FixedUpdate() {
 		else
 			model.setAnimationMode(WALK);
 		*/
+		fprintf(stderr, "Current velocity is (%f, %f)\n", curr_vel_[0], curr_vel_[1]);
 	}
 	
 	if (glm::length(curr_vel_) > 0) {
+		fprintf(stderr, "Adjusting positions with move()\n");
 		Move();
 		MoveHeld();
 	}
@@ -74,6 +79,11 @@ void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 glm::mat4 Player::GetParentTransform()
 {
 	return GetTranslation() * GetRotation() * GetScale();
+}
+
+ModelEnum Player::GetModel()
+{
+	return model;
 }
 
 void Player::OnTrigger(PhysicsObject* object)

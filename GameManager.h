@@ -42,8 +42,8 @@ private:
     std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
     
-    static double last_time_;
-    static double curr_time_;
+    static std::chrono::steady_clock::time_point last_time_;
+    static std::chrono::steady_clock::time_point curr_time_;
 };
 
 #endif

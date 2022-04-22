@@ -3,6 +3,7 @@
 #include <winsock2.h>
 
 #include "NetworkPacket.h"
+#include "../GameManager.h"
 
 #define DEFAULT_PORT "8686" // TODO change default port
 #define DEFAULT_BUFLEN 1024
@@ -22,5 +23,9 @@ public:
 	Server(void);
 	~Server(void);
 	void mainLoop(std::function<char*(ClientPacket cpacket)> main_code);
+
+
+	//TODO REMOVE
+	GameManager* game;
 };
 

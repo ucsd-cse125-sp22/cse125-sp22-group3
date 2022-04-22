@@ -5,26 +5,27 @@
 inline int ServerMain(){
 	Server* server = new Server();
 	Player pogo{CHAR_POGO};
-	GameManager game({&pogo}, {});
+	Player bumbus{CHAR_BUMBUS};
+	GameManager game({&pogo, &bumbus}, {});
 	GameManager *gamePtr = &game;
-	server->mainLoop([gamePtr](ClientPacket cpacket) {
+	server->mainLoop([](ClientPacket packet){ return nullptr; });/*([&game](ClientPacket cpacket) {
 		if (cpacket.justMoved)
 		{
-			gamePtr->SetPlayerInput(cpacket.movement, cpacket.player_index);
+			game.SetPlayerInput(cpacket.movement, cpacket.player_index);
 			if (cpacket.lastCommand == InputCommands::USE)
 			{
-				gamePtr->SetPlayerUse(cpacket.player_index);
+				game.SetPlayerUse(cpacket.player_index);
 			}
 			else if (cpacket.lastCommand == InputCommands::DROP)
 			{
-				gamePtr->SetPlayerDrop(cpacket.player_index);
+				game.SetPlayerDrop(cpacket.player_index);
 			}
 		}
 
-		gamePtr->FixedUpdate();
+		game.FixedUpdate();
 		
-		return gamePtr->GetServerBuf();
-	});
+		return game.GetServerBuf();
+	});*/
 	//delete server;
 	
 	return 0;
