@@ -7,7 +7,7 @@
 #include "PhysicsEngine.h" 
 #include <chrono>
 
-class GameManager : GameEntity, Drawable
+class GameManager : GameEntity, public Drawable
 {
 public:
     GameManager();
