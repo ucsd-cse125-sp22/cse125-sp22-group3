@@ -126,19 +126,19 @@ int main(int argc, char* argv[])
 
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len)
 			{
-				ServerHeader sheader{};
-				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
-				serverDeserialize(recv_buf, &sheader, model_arr);
+				ServerHeader* sheader;
+				ModelInfo* model_arr;
+				serverDeserialize(recv_buf, &sheader, &model_arr);
 
 				//Rendering Code
-				const glm::mat4 player_transform = sheader.player_transform;
+				const glm::mat4 player_transform = sheader->player_transform;
 				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 				
 				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-				for (int i = 0; i < sheader.num_models; i++)
+				for (int i = 0; i < sheader->num_models; i++)
 				{
 					const ModelInfo model_info = model_arr[i];
 
@@ -149,6 +149,9 @@ int main(int argc, char* argv[])
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}
+
+				free(sheader);
+				free(model_arr);
 			});
 		
 		// Gets events, including input such as keyboard and mouse or window resizing

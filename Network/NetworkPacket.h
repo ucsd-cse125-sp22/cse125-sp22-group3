@@ -37,25 +37,18 @@ inline void serverSerialize(char* out_buf, struct ServerHeader *head, struct Mod
 	memcpy(out_buf + sizeof(struct ServerHeader), model_arr, head->num_models * sizeof(struct ModelInfo));
 }
 
-inline void serverDeserialize(char* in_buf, struct ServerHeader *head_buf, struct ModelInfo *model_arr_buf) {
+// client should free memory returned from head_buf_ptr and model_arr_buf_ptr (TODO potentially use smart pointers)
+inline void serverDeserialize(char* in_buf, struct ServerHeader **head_buf_ptr, struct ModelInfo **model_arr_buf_ptr) {
+	struct ServerHeader* head_buf = reinterpret_cast<struct ServerHeader*>(malloc(sizeof(struct ServerHeader)));
 	memcpy(head_buf, in_buf, sizeof(struct ServerHeader));
-	memcpy(model_arr_buf, in_buf + sizeof(struct ServerHeader), head_buf->num_models * sizeof(struct ModelInfo));
+	(*head_buf_ptr) = head_buf;
+
+	int num_models = head_buf->num_models;
+	struct ModelInfo* model_arr_buf = reinterpret_cast<struct ModelInfo*>(malloc(num_models * sizeof(struct ModelInfo)));
+	memcpy(model_arr_buf, in_buf + sizeof(struct ServerHeader), num_models * sizeof(struct ModelInfo));
+	(*model_arr_buf_ptr) =model_arr_buf;
 }
 
 inline size_t GetBufSize(struct ServerHeader *head) {
 	return sizeof(struct ServerHeader) + head->num_models * sizeof(ModelInfo);
 }
-
-
-/*
-struct ModelInfo {
-  int model_id;
-  ModelEnum model;
-  glm::mat4 parent_transform;
-}
-
-struct ServerPacket {
-  int player_model_id;
-  int num_models;
-//   ModelInfo[num_models] models; since not fixed size, goes outside the struct
-}*/
