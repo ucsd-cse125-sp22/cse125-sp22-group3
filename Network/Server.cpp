@@ -144,7 +144,7 @@ Server::~Server(void)
 	WSACleanup();
 }
 
-void Server::mainLoop(std::function<char*(ClientPacket cpacket)> main_code)
+void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code)
 {
 	ClientSocket = INVALID_SOCKET;
 	ClientSocket = accept(ListenSocket, NULL, NULL); // TODO ClientSocket handling can be multithreaded
@@ -164,7 +164,7 @@ void Server::mainLoop(std::function<char*(ClientPacket cpacket)> main_code)
 		auto begin_time = std::chrono::steady_clock::now();
 
 		// receive data from client
-		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
+		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0); // TODO edge case for receiving partial packet
 		// recvStatus will be the actual length of data recieve instead of buffer size
 		if (recvStatus == SOCKET_ERROR) {
 			printf("recv failed: %d\n", WSAGetLastError());
@@ -184,9 +184,9 @@ void Server::mainLoop(std::function<char*(ClientPacket cpacket)> main_code)
 			i += sizeof(ClientPacket);
 
 			// calls passed-in code
-			char* packet_data = main_code(cpacket);
+			std::pair<char*, int> out_data = main_code(cpacket);
 
-			int sendStatus = send(ClientSocket, packet_data, GetBufSize(reinterpret_cast<ServerHeader*>(packet_data)), 0);
+			int sendStatus = send(ClientSocket, out_data.first, out_data.second, 0);
 			if (sendStatus == SOCKET_ERROR) {
 				printf("send failed: %d\n", WSAGetLastError());
 				return; // TODO ideally retry transmission

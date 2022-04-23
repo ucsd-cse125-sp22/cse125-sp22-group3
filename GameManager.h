@@ -15,7 +15,7 @@ public:
 
     // Call Updates on GameState
     void FixedUpdate() override;
-    char* GetServerBuf();
+    std::pair<char*, int> GetServerBuf();
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
     void Draw(GLuint shader) override;
 

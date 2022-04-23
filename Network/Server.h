@@ -22,6 +22,6 @@ private:
 public:
 	Server(void);
 	~Server(void);
-	void mainLoop(std::function<char*(ClientPacket cpacket)> main_code);
+	void mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code);
 };
 

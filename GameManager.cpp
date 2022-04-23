@@ -55,7 +55,7 @@ void GameManager::FixedUpdate()
 	// Check collisions
 	physics_.Compute();
 }
-char* GameManager::GetServerBuf()
+std::pair<char*, int> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
 	int i = 0;
@@ -71,7 +71,7 @@ char* GameManager::GetServerBuf()
 	
 	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 	serverSerialize(server_buf, &sheader, model_infos.data());
-	return server_buf;
+	return std::make_pair(server_buf, GetBufSize(&sheader));
 }
 
 void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
