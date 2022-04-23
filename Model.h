@@ -20,13 +20,6 @@
 #include "Mesh.h"
 #include "util.h"
 
-enum AniMode {
-	IDLE_HOLD,
-	IDLE_WALK,
-	IDLE,
-	WALK,
-};
-
 struct KeyPosition
 {
 	glm::vec3 position;

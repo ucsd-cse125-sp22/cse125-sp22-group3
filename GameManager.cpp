@@ -60,7 +60,12 @@ std::pair<char*, int> GameManager::GetServerBuf()
 	std::vector<ModelInfo> model_infos;
 	for (Player* player : players_)
 	{
-		model_infos.push_back(ModelInfo{ reinterpret_cast<uintptr_t>(player), player->GetModel(), player->GetParentTransform() });
+		model_infos.push_back(ModelInfo{
+			reinterpret_cast<uintptr_t>(player),
+			player->GetModel(),
+			player->modelAnim,
+			player->GetParentTransform()
+		});
 	}
 
 	ServerHeader sheader{};

@@ -26,4 +26,11 @@ enum ModelEnum
 	VEG_CORN
 };
 
+enum AniMode {
+	IDLE_HOLD,
+	IDLE_WALK,
+	IDLE,
+	WALK,
+};
+
 #endif

@@ -22,6 +22,7 @@ struct ClientPacket {
 struct ModelInfo {
 	uintptr_t model_id;
 	ModelEnum model;
+	AniMode modelAnim;
 	glm::mat4 parent_transform;
 };
 

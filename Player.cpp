@@ -25,12 +25,11 @@ void Player::FixedUpdate() {
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		/* TODO update
+
 		if (isHolding) 
-			model.setAnimationMode(IDLE_HOLD);
+			this->modelAnim = IDLE_HOLD;
 		else
-			model.setAnimationMode(IDLE);
-		*/
+			this->modelAnim = IDLE;
 	}
 	else {
 		// Accelerate in our inputted direction
@@ -40,12 +39,11 @@ void Player::FixedUpdate() {
 		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
 		}
-		/* TODO update
+		
 		if (isHolding)
-			model.setAnimationMode(IDLE_WALK);
+			this->modelAnim = IDLE_WALK;
 		else
-			model.setAnimationMode(WALK);
-		*/
+			this->modelAnim = WALK;
 	}
 	
 	if (glm::length(curr_vel_) > 0) {

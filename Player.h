@@ -46,6 +46,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::mat4 GetScale();
 
 	public:
+		// current animation, no custom get/set logic so is set as public field
+		AniMode modelAnim;
+
 		Player();
 
 		/* Curr should be idle */

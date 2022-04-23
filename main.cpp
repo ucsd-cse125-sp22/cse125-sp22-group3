@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
 
+					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}
 			});
