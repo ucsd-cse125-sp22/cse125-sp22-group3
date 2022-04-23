@@ -4,8 +4,9 @@
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
 #include "Model.h"
-#include <chrono>
 
+#include <chrono>
+#include <map>
 
 #define SERVER_ADDRESS "127.0.0.1"
 #define SERVER_PORT "8686"
@@ -98,14 +99,14 @@ int main(int argc, char* argv[])
 
 	//TODO remove test
 	// load models
-	Model bumbus = Model("models/bumbus/bumbus.fbx");
-	Model pogo = Model("models/pogo/pogo.fbx");
-	Model swainky = Model("models/swainky/swainky.fbx");
-	Model gilman = Model("models/gilma/char4.fbx");
-	Model carrot = Model("models/carrot/carrot.fbx"); // PLACEHOLDER
-	Model corn = Model("models/corn/corn.fbx"); // PLACEHOLDER
-	Model tree = Model("models/tree/tree.fbx"); // PLACEHOLDER
+	Model bumbus = Model(CHAR_BUMBUS);
+	Model pogo = Model(CHAR_POGO);
+	Model swainky = Model(CHAR_SWAINKY);
+	Model gilma = Model(CHAR_GILMAN);
+	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
 	
+	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
+
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -123,14 +124,14 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&pogo, &bumbus, &swainky, window](char* recv_buf, size_t recv_len)
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len)
 			{
 				ServerHeader sheader{};
 				const auto model_arr = static_cast<ModelInfo*>(malloc(reinterpret_cast<ServerHeader*>(recv_buf)->num_models * sizeof(ModelInfo)));
 				serverDeserialize(recv_buf, &sheader, model_arr);
 
 				//Rendering Code
-				const glm::mat4 player_transform = model_arr[sheader.player_model_id].parent_transform;
+				const glm::mat4 player_transform = sheader.player_transform;
 				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 				
 				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
@@ -140,29 +141,13 @@ int main(int argc, char* argv[])
 				for (int i = 0; i < sheader.num_models; i++)
 				{
 					const ModelInfo model_info = model_arr[i];
-					switch (model_info.model)
-					{
-					case CHAR_POGO:
-						pogo.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
-						break;
-					case CHAR_BUMBUS:
-						bumbus.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
-						break;
-					case CHAR_SWAINKY:
-						swainky.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
-					case CHAR_GILMAN: break;
-					case VEG_CARROT: break;
-					case VEG_CORN: break;
-					}
-				}
-			
-			/* TODO figure out what to do with these
-				// Main render display callback. Rendering of objects is done here. (Draw)
-				Window::displayCallback(window);	
 
-				// Idle callback. Updating objects, etc. can be done here. (Update)
-				Window::logicCallback();
-				*/
+					if (model_map.count(model_info.model_id) == 0) {
+						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+
+					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+				}
 			});
 		
 		// Gets events, including input such as keyboard and mouse or window resizing
@@ -179,6 +164,9 @@ int main(int argc, char* argv[])
 
 	// destroy objects created
 	Window::cleanUp();
+	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
+		delete iter->second;
+	}
 
 	// Destroy the window.
 	glfwDestroyWindow(window);

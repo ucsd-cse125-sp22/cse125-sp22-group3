@@ -58,16 +58,14 @@ void GameManager::FixedUpdate()
 std::pair<char*, int> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
-	int i = 0;
 	for (Player* player : players_)
 	{
-		model_infos.push_back(ModelInfo{ i, player->GetModel(), player->GetParentTransform() });
-		i++;
+		model_infos.push_back(ModelInfo{ reinterpret_cast<uintptr_t>(player), player->GetModel(), player->GetParentTransform() });
 	}
 
 	ServerHeader sheader{};
 	sheader.num_models = model_infos.size();
-	sheader.player_model_id = 0;
+	sheader.player_transform = players_[0]->GetParentTransform(); // TODO assumes player index 0
 	
 	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 	serverSerialize(server_buf, &sheader, model_infos.data());

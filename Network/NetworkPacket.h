@@ -20,14 +20,14 @@ struct ClientPacket {
 };
 
 struct ModelInfo {
-	int model_id;
+	uintptr_t model_id;
 	ModelEnum model;
 	glm::mat4 parent_transform;
 };
 
 // the Packet struct that sent by server to client
 struct ServerHeader {
-	int player_model_id;
+	glm::mat4 player_transform;
 	int num_models;
 };
 
