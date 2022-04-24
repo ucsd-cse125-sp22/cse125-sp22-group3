@@ -9,6 +9,11 @@ Player::Player() {
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
 }
 
+GameEntity* Player::GetHoldEntity()
+{
+	return entityHeld;
+}
+
 Player::Player(Model curr) : Player() {
 	// Set initial values
 	model = curr;
@@ -69,20 +74,38 @@ void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 
 void Player::OnTrigger(PhysicsObject* object)
 {
-	auto veggie = dynamic_cast<Vegetable*>(object);
-	if (veggie != nullptr && !isHolding) {
-		if (entityTriggered == nullptr) {
-			SetTriggeringEntity(veggie);
-		}
-		else {
-			auto phys_entity = dynamic_cast<PhysicsObject*>(entityTriggered);
-			const float dist = glm::length(*veggie->GetWorldPosition() - *GetWorldPosition());
-			const float curr_dist = glm::length(*phys_entity->GetWorldPosition() - *GetWorldPosition());
-			if (dist < curr_dist) {
+	auto entity = dynamic_cast<GameEntity*>(object);
+	if (entity->type == EntityType::VEGETABLE) {
+		auto veggie = dynamic_cast<Vegetable*>(object);
+		if (veggie != nullptr && !isHolding) {
+			if (entityTriggered == nullptr) {
 				SetTriggeringEntity(veggie);
 			}
+			else {
+				auto phys_entity = dynamic_cast<PhysicsObject*>(entityTriggered);
+				const float dist = glm::length(*veggie->GetWorldPosition() - *GetWorldPosition());
+				const float curr_dist = glm::length(*phys_entity->GetWorldPosition() - *GetWorldPosition());
+				if (dist < curr_dist) {
+					SetTriggeringEntity(veggie);
+				}
+			}
 		}
-		
+	}
+	else if (entity->type == EntityType::PLOT) {
+		auto plot = dynamic_cast<Plot*>(object);
+		if (plot != nullptr && isHolding) {
+			if (entityTriggered == nullptr) {
+				SetTriggeringEntity(plot);
+			}
+			else {
+				auto phys_entity = dynamic_cast<PhysicsObject*>(entityTriggered);
+				const float dist = glm::length(*plot ->GetWorldPosition() - *GetWorldPosition());
+				const float curr_dist = glm::length(*phys_entity->GetWorldPosition() - *GetWorldPosition());
+				if (dist < curr_dist) {
+					SetTriggeringEntity(plot);
+				}
+			}
+		}
 	}
 }
 
@@ -96,9 +119,7 @@ glm::vec2* Player::GetWorldPosition()
 	return translate;
 }
 void Player::Use()
-{
-	if (isHolding) return;
-	
+{	
 	auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
@@ -107,16 +128,37 @@ void Player::Use()
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
-			auto vegetable = dynamic_cast<Vegetable*>(entityTriggered);
-			if (vegetable != nullptr) {
-				SetHoldEntity(entityTriggered);
+			if (entityTriggered->type == EntityType::VEGETABLE) {
+				auto vegetable = dynamic_cast<Vegetable*>(entityTriggered);
+				if (vegetable != nullptr && !isHolding) {
+					SetHoldEntity(entityTriggered);
+					SetTriggeringEntity(nullptr);
+				}
+			}
+			else if (entityTriggered->type == EntityType::PLOT) {
+				auto plot = dynamic_cast<Plot*>(entityTriggered);
+				if (plot != nullptr) {
+					if (isHolding && !plot->isPlanted) {
+						printf("PLOT");
+						auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
+						plot->isPlanted = true;
+						plot->SetPlantedVegetable(vegetable);
+						this->Drop();
+						SetTriggeringEntity(nullptr);
+					}
+					else if (!isHolding && plot->isPlanted) {
+						printf("UNPLOT");
+						plot->isPlanted = false;
+						SetTriggeringEntity(nullptr);
+					}
+				}
 			}
 		}
 	}
 }
 void Player::Drop()
 {
-	auto holdable = dynamic_cast<Holdable*>(entityTriggered);
+	auto holdable = dynamic_cast<Holdable*>(entityHeld);
 	if (holdable != nullptr) {
 		holdable->OnDrop();
 	}

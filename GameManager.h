@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Vegetable.h"
+#include "Plot.h"
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
 #include "util.h"
@@ -11,7 +12,7 @@
 class GameManager : GameEntity, Drawable
 {
 public:
-    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables);
+    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots);
 
     // Call Updates on GameState
     void FixedUpdate() override;
@@ -39,6 +40,7 @@ public:
 private:
     std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
+    std::vector<Plot*> plots_{};
     
     static double last_time_;
     static double curr_time_;

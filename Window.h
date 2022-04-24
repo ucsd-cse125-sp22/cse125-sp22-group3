@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Vegetable.h"
+#include "Plot.h"
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"

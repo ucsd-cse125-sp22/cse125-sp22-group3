@@ -37,6 +37,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		bool isHolding = false;
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 		GameEntity* GetTriggeringEntity();
+		GameEntity* GetHoldEntity();
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();

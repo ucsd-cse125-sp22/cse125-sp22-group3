@@ -6,7 +6,7 @@
 double GameManager::curr_time_ = 0;
 double GameManager::last_time_ = 0;
 
-GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
+GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots)
 {
 	// Initialize Players
 	players_ = players;
@@ -20,14 +20,19 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 		i++;
 	}
 
-	// Testing vegetables, eventually would want to include a vector of GameEntities instead of separating each?
+	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
 	vegetables_ = vegetables;
 	for (Vegetable* vegetable : vegetables_) {
-		// Set Player Positions
 		vegetable->SetPosition({ i * 15,5,0 });
 		game_entities.push_back(vegetable);
 		game_entities.back()->type = EntityType::VEGETABLE;
 		i++;
+	}
+	plots_ = plots;
+	for (Plot* plot : plots_) {
+		plot->SetPosition({ 80,30,0 });
+		game_entities.push_back(plot);
+		game_entities.back()->type = EntityType::PLOT;
 	}
 
 	// Instantiate Physics Engine
@@ -37,6 +42,9 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	}
 	for (Vegetable* vegetable : vegetables_) {
 		physics_objects.push_back(vegetable);
+	}
+	for (Plot* plot : plots_) {
+		physics_objects.push_back(plot);
 	}
 	physics_ = PhysicsEngine(physics_objects);
 
@@ -59,6 +67,9 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 		}
 		else if (entity->type == EntityType::VEGETABLE) {
 			dynamic_cast<Vegetable*>(entity)->Draw(view, projection, shader);
+		}
+		else if (entity->type == EntityType::PLOT) {
+			dynamic_cast<Plot*>(entity)->Draw(view, projection, shader);
 		}
 	}
 }
