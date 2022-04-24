@@ -6,6 +6,7 @@
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"
+#include "DepthMap.h"
 
 class Window
 {

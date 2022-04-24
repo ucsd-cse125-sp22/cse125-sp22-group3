@@ -94,12 +94,13 @@ void Player::OnTrigger(PhysicsObject* object)
 				SetTriggeringEntity(veggie);
 			}
 		}
-		
+
 	}
+}
 
 void Player::Draw(GLuint shader) {
 	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	model.draw(parent, shader);
+	//model.draw(parent, shader); TODO
 }
 
 std::vector<Collider*> Player::GetColliders()
