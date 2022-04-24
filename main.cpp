@@ -161,6 +161,9 @@ int main(int argc, char* argv[])
 		// Gets events, including input such as keyboard and mouse or window resizing
 		glfwPollEvents();
 
+		//IMGUI rendering
+		Window::show_GUI = GUI::renderUI(Window::show_GUI);
+
 		// Swap buffers.
 		glfwSwapBuffers(window);
         

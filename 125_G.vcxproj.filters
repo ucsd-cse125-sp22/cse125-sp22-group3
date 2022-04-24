@@ -23,10 +23,6 @@
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="Network\ServerMain.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="UI\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="UI\imgui\imgui_tables.cpp" />
     <ClCompile Include="UI\imgui\imgui_widgets.cpp" />

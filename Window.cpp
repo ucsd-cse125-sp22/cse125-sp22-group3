@@ -199,8 +199,7 @@ void Window::displayCallback(GLFWwindow* window)
 	game->Draw(view, projection, animationShaderProgram);
 	// renderDepthMap();
 
-	//IMGUI rendering
-	Window::show_GUI = GUI::renderUI(Window::show_GUI);
+	
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
