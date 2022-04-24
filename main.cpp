@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
 
 	// initialize IMGUI 
 	GUI::initializeGUI(window);
-	GUI::initializeImage("./UI/Pictures");
+	GUI::initializeImage();
 
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, SERVER_PORT);

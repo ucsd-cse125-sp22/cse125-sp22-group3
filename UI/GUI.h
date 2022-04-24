@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "../stb_image.h"
+#include <string>
 
 using namespace std;
 
@@ -19,15 +20,22 @@ public:
 	int my_image_width = 0;
 	int my_image_height = 0;
 	GLuint my_image_texture = 0;
+	
+
 };
 class GUI {
 public:
-	static vector<GUIImage> images_list;
+	static string picture_dir;
+	static GUIImage score_background;
+	static int rack_image_idx;
+	static float rack_size_ratio; 
+	static vector<GUIImage> rack_images_list;
+	static vector<GUIImage> icon_images_list; 
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI(bool show_GUI);
 	static void cleanUp();
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
-	static void initializeImage(char* dir);
+	static void initializeImage();
 };
 
 

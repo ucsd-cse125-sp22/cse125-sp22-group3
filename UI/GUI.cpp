@@ -3,8 +3,12 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
-vector<GUIImage> GUI::images_list;
-
+vector<GUIImage> GUI::rack_images_list;
+vector<GUIImage> GUI::icon_images_list;
+GUIImage GUI::score_background; 
+int GUI::rack_image_idx; 
+string GUI::picture_dir;
+float GUI::rack_size_ratio; 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -33,9 +37,12 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	picture_dir = "./UI/Pictures";
+	rack_size_ratio = 0.5f;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+	//io.Fonts->AddFontFromFileTTF("font.ttf", 18.0f);
+	
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 	//ImGui::StyleColorsClassic();
@@ -57,22 +64,59 @@ bool GUI::renderUI(bool show_GUI) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-
-	if (show_GUI == true) {
-		if (ImGui::Button("Close Me")) {
-			show_GUI = false;
-		}
-		GUIImage image = *(images_list.begin()); 
-		ImGui::Begin("My Name is Window, IMGUI Window");
-		ImGui::Text("Hello there adeventurer!");
-		ImGui::Text("pointer = %p", image.my_image_texture);
-		ImGui::Text("size = %d x %d", image.my_image_width, image.my_image_height);
-
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, 
-			ImVec2(image.my_image_width, image.my_image_height));
-		ImGui::End();
+	
+	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+		show_GUI = !show_GUI;
+		rack_image_idx = 0;
 
 	}
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove; 
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
+	//show scoreboard
+	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::Begin("ScoreBoard_bg", NULL, window_flags);
+	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width*0.5f, score_background.my_image_height*0.5f));
+	ImGui::End();
+	ImGui::SetNextWindowPos(ImVec2(80, 80), 0, ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::Begin("ScoreBoard_content", NULL, window_flags);
+	for (vector<GUIImage>::iterator it = icon_images_list.begin(); it != icon_images_list.end(); it++) {
+		GUIImage image = *(it);
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width, image.my_image_height));
+		ImGui::SameLine();
+		ImGui::Text("2000");
+	}
+	ImGui::End(); 
+
+	//show the sale page
+	if(show_GUI == true) {		
+		// etc.
+		bool open_ptr = true; 
+		ImGui::SetNextWindowSize(ImVec2(rack_images_list[0].my_image_width * rack_size_ratio, rack_images_list[0].my_image_height * rack_size_ratio));
+		ImGui::Begin("My Name is Window, IMGUI Window", &open_ptr, window_flags);
+		//ImGui::Text("Hello there adeventurer!");
+	
+		if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
+			if(rack_image_idx<rack_images_list.size()-1)
+				rack_image_idx++;
+		}
+		else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+			if(rack_image_idx>0)
+				rack_image_idx--; 
+		}
+		GUIImage image = rack_images_list[rack_image_idx];
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width*rack_size_ratio, image.my_image_height*rack_size_ratio));//image.my_image_width, image.my_image_height));
+		//ImGui::Text("image demension:%dx%d", image.my_image_width, image.my_image_height);
+		ImGui::End();
+	}
+
+	
+
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return show_GUI;
@@ -123,15 +167,29 @@ bool GUI::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* ou
 	return true;
 }
 
-void GUI::initializeImage(char* dir) {
-	for (const auto& entry : fs::directory_iterator(dir)) {
+void GUI::initializeImage() {
+	const char* rack_dir = (picture_dir + string("/rack")).c_str(); 
+	for (auto& entry : fs::directory_iterator(rack_dir)) {
 		std::cout << entry.path() << std::endl;
 		GUIImage image;
-		bool ret = LoadTextureFromFile("./UI/Pictures/p2.jpg", &(image.my_image_texture),
+		const char* epath = entry.path().string().c_str(); 
+		bool ret = LoadTextureFromFile(epath, &(image.my_image_texture),
 			&(image.my_image_width), &(image.my_image_height));
-		printf("image load:%b", ret);
-		//IM_ASSERT(ret);
-
-		images_list.push_back(image);
+		rack_images_list.push_back(image);
 	}
+	rack_image_idx = 0;
+
+	const char* icon_dir = (picture_dir + string("/icon")).c_str();
+	for (auto& entry : fs::directory_iterator(icon_dir)) {
+		std::cout << entry.path() << std::endl;
+		GUIImage image;
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image.my_image_texture),
+			&(image.my_image_width), &(image.my_image_height));
+		icon_images_list.push_back(image);
+	}
+
+	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();
+	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
+		&(score_background.my_image_width), &(score_background.my_image_height));
 }

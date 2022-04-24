@@ -286,6 +286,7 @@
     <None Include="shaders\shadows.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Downloads\saleboard.png" />
     <Image Include="UI\Pictures\p1.jpg" />
     <Image Include="UI\Pictures\p2.jpg" />
   </ItemGroup>

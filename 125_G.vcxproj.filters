@@ -107,5 +107,6 @@
   <ItemGroup>
     <Image Include="UI\Pictures\p1.jpg" />
     <Image Include="UI\Pictures\p2.jpg" />
+    <Image Include="..\..\..\Downloads\saleboard.png" />
   </ItemGroup>
 </Project>
