@@ -3,8 +3,8 @@
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
-vector<GUIImage> GUI::rack_images_list;
-vector<GUIImage> GUI::icon_images_list;
+GUIImage GUI::rack_images_list[NUM_RACK_IMG];
+GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
 int GUI::rack_image_idx; 
 string GUI::picture_dir;
@@ -85,8 +85,8 @@ bool GUI::renderUI(bool show_GUI) {
 	ImGui::SetNextWindowPos(ImVec2(80, 80), 0, ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
 	ImGui::Begin("ScoreBoard_content", NULL, window_flags);
-	for (vector<GUIImage>::iterator it = icon_images_list.begin(); it != icon_images_list.end(); it++) {
-		GUIImage image = *(it);
+	for (int i = 0; i < NUM_ICON; i++) {
+		GUIImage image = icon_images_list[i];
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width, image.my_image_height));
 		ImGui::SameLine();
 		ImGui::Text("2000");
@@ -101,11 +101,11 @@ bool GUI::renderUI(bool show_GUI) {
 		ImGui::Begin("My Name is Window, IMGUI Window", &open_ptr, window_flags);
 		//ImGui::Text("Hello there adeventurer!");
 	
-		if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if(rack_image_idx<rack_images_list.size()-1)
+		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+			if(rack_image_idx<NUM_RACK_IMG-1)
 				rack_image_idx++;
 		}
-		else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
 			if(rack_image_idx>0)
 				rack_image_idx--; 
 		}
@@ -169,24 +169,25 @@ bool GUI::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* ou
 
 void GUI::initializeImage() {
 	const char* rack_dir = (picture_dir + string("/rack")).c_str(); 
+	int i = 0;
 	for (auto& entry : fs::directory_iterator(rack_dir)) {
 		std::cout << entry.path() << std::endl;
-		GUIImage image;
+		GUIImage* image = &(rack_images_list[i]);
 		const char* epath = entry.path().string().c_str(); 
-		bool ret = LoadTextureFromFile(epath, &(image.my_image_texture),
-			&(image.my_image_width), &(image.my_image_height));
-		rack_images_list.push_back(image);
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		i++;
 	}
 	rack_image_idx = 0;
-
+	i = 0; 
 	const char* icon_dir = (picture_dir + string("/icon")).c_str();
 	for (auto& entry : fs::directory_iterator(icon_dir)) {
 		std::cout << entry.path() << std::endl;
-		GUIImage image;
+		GUIImage* image = &(icon_images_list[i]);
 		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image.my_image_texture),
-			&(image.my_image_width), &(image.my_image_height));
-		icon_images_list.push_back(image);
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		i++;
 	}
 
 	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();

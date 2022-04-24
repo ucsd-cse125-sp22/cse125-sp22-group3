@@ -13,6 +13,9 @@
 #include "../stb_image.h"
 #include <string>
 
+#define NUM_ICON 4
+#define NUM_RACK_IMG 6
+
 using namespace std;
 
 struct GUIImage {
@@ -29,8 +32,8 @@ public:
 	static GUIImage score_background;
 	static int rack_image_idx;
 	static float rack_size_ratio; 
-	static vector<GUIImage> rack_images_list;
-	static vector<GUIImage> icon_images_list; 
+	static GUIImage rack_images_list[NUM_RACK_IMG];
+	static GUIImage icon_images_list[NUM_ICON]; 
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI(bool show_GUI);
 	static void cleanUp();
