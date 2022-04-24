@@ -30,9 +30,12 @@ public:
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
+	static DepthMap* dm;
+
 	// Shader Program ID
 	static GLuint shaderProgram;
 	static GLuint modelShaderProgram;
+	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;
 
 
@@ -49,7 +52,14 @@ public:
 	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
 
+	static void renderDepthMap();
+
 	// Callbacks
+	/*
+	 * Where we take user input from the keyboard
+	 */
+	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 	/*
 	 * Where we take user input from the mouse
 	 */
