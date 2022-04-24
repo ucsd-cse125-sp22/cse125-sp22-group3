@@ -14,7 +14,7 @@ enum class VegetableType {
 
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
     public:
-        Vegetable(VegetableType type, Model curr);
+        Vegetable(VegetableType type, ModelEnum curr);
         ~Vegetable();
         VegetableType type;
 
@@ -52,7 +52,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		glm::mat4 hold_transformation_{};
 
 		// Current model to display
-		Model model;
+		ModelEnum model; //TODO Change ModelEnum to some other new DisplayData/Model struct
 
 		ColliderCircle* collider_;
 

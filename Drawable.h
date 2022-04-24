@@ -1,6 +1,6 @@
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#pragma once
+
+#include "glm.h"
 
 class Drawable {
 	public:

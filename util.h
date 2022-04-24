@@ -14,4 +14,23 @@ enum InputCommands {
 	USE,
 	DROP
 };
+
+enum ModelEnum
+{
+	CHAR_BUMBUS,
+	CHAR_POGO,
+	CHAR_SWAINKY,
+	CHAR_GILMAN,
+
+	VEG_CARROT,
+	VEG_CORN
+};
+
+enum AniMode {
+	IDLE_HOLD,
+	IDLE_WALK,
+	IDLE,
+	WALK,
+};
+
 #endif

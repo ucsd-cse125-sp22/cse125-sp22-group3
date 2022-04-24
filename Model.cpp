@@ -2,13 +2,14 @@
 
 Model::Model() {}
 
-Model::Model(std::string filePath) {
+Model::Model(ModelEnum model) {
 	// Set current animation mode
 	last = IDLE;
 	curr = IDLE;
 
 	// Load model at file path
 	Assimp::Importer importer;
+	std::string filePath = modelFilePathMap[model];
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	
 	// Potential errors opening model

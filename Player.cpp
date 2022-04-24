@@ -1,4 +1,5 @@
 #include "Player.h"
+
 #include "GameManager.h"
 
 Player::Player() {
@@ -9,39 +10,40 @@ Player::Player() {
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
 }
 
-Player::Player(Model curr) : Player() {
+Player::Player(ModelEnum curr) : Player() {
 	// Set initial values
 	model = curr;
-	std::cout << model.getBoneCount() << std::endl;
+	//std::cout << model.getBoneCount() << std::endl;
 }
 
 void Player::FixedUpdate() {
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	if (glm::length(move_input) < glm::epsilon<float>()) {
+	if (glm::length(move_input) <= 0) {
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
-		if (isHolding)
-			model.setAnimationMode(IDLE_HOLD);
-		else
-			model.setAnimationMode(IDLE);
 
+		if (isHolding) 
+			this->modelAnim = IDLE_HOLD;
+		else
+			this->modelAnim = IDLE;
 	}
 	else {
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
-		curr_vel_ += delta * base_accel_ * move_input;
+		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
 		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
 		}
+		
 		if (isHolding)
-			model.setAnimationMode(IDLE_WALK);
+			this->modelAnim = IDLE_WALK;
 		else
-			model.setAnimationMode(WALK);
+			this->modelAnim = WALK;
 	}
 	
 	if (glm::length(curr_vel_) > 0) {
@@ -63,8 +65,18 @@ void Player::Move() {
 
 
 void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
-	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	model.draw(view, projection, parent, shader);
+	glm::mat4 parent = GetParentTransform();
+	//model.draw(view, projection, parent, shader);
+}
+
+glm::mat4 Player::GetParentTransform()
+{
+	return GetTranslation() * GetRotation() * GetScale();
+}
+
+ModelEnum Player::GetModel()
+{
+	return model;
 }
 
 void Player::OnTrigger(PhysicsObject* object)

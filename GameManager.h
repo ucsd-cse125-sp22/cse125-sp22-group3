@@ -5,16 +5,17 @@
 #include "Vegetable.h"
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
-#include "util.h"
 #include <chrono>
 
-class GameManager : GameEntity, Drawable
+class GameManager : GameEntity, public Drawable
 {
 public:
+    GameManager();
     explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables);
 
     // Call Updates on GameState
     void FixedUpdate() override;
+    std::pair<char*, int> GetServerBuf();
     void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
     void Draw(GLuint shader) override;
 
@@ -41,8 +42,8 @@ private:
     std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
     
-    static double last_time_;
-    static double curr_time_;
+    static std::chrono::steady_clock::time_point last_time_;
+    static std::chrono::steady_clock::time_point curr_time_;
 };
 
 #endif
