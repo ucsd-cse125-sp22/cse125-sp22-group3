@@ -2,13 +2,13 @@
 
 InputCommands InputManager::lastCmd = NONE;
 bool InputManager::justMoved = false;
-glm::vec2 InputManager::lastMovement = glm::vec2(0,0);
+glm::vec2 InputManager::lastMovement = glm::vec2(0, 0);
 
-InputManager::InputManager(){}
+InputManager::InputManager() {}
 
-InputManager::~InputManager(){}
+InputManager::~InputManager() {}
 
-InputCommands InputManager::getLastCommand(){
+InputCommands InputManager::getLastCommand() {
 	return lastCmd;
 }
 
@@ -16,20 +16,16 @@ glm::vec2 InputManager::getLastMovement() {
 	return lastMovement;
 }
 
-bool InputManager::getMoved(){
+bool InputManager::getMoved() {
 	return justMoved;
 }
 
-void InputManager::setMoved() {
+void InputManager::resetMoved() {
 	justMoved = false;
 }
 
-
-void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
-	// Check for a key release.
+void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	justMoved = true;
-	
-	// Check for a key release.
 	
 	if (action == GLFW_RELEASE)
 	{
@@ -55,7 +51,6 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 		}
 	}
 
-	// Check for a key press.
 	if (action == GLFW_PRESS)
 	{
 		if (key == GLFW_KEY_ESCAPE) {
@@ -80,8 +75,16 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 				lastMovement += glm::vec2(1,0);
 				lastCmd = MOVE_RIGHT;
 				break;
+			case GLFW_KEY_F:
+				lastCmd = USE;
+				//justMoved = false;
+				break;
+			case GLFW_KEY_G:
+				lastCmd = DROP;
+				//justMoved = false;
+				printf("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+				break;
 			default: break;
 		}
 	}
-
 }

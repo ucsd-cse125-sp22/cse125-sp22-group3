@@ -1,13 +1,14 @@
 #include "GameManager.h"
 
-#include <utility>
+#include "Network/NetworkPacket.h"
 
+std::chrono::steady_clock::time_point GameManager::curr_time_ = std::chrono::steady_clock::now();
+std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::steady_clock::now();
 
-double GameManager::curr_time_ = 0;
-double GameManager::last_time_ = 0;
-glm::vec2 GameManager::move_input(0, 0);
-std::vector<Player*> GameManager::players_;
-
+GameManager::GameManager()
+{
+	physics_ = PhysicsEngine();
+}
 GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
 {
 	// Initialize Players
@@ -15,7 +16,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	int i = 0;
 	for (Player* player : players_) {
 		// Set Player Positions
-		player->SetPosition({i * 10,0,0});
+		player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
 		game_entities.back()->type = EntityType::PLAYER;
@@ -46,6 +47,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 
 void GameManager::FixedUpdate()
 {
+	GameManager::UpdateFixedDeltaTime();
 	for (GameEntity* entity : game_entities) {
 		entity->FixedUpdate();
 	}
@@ -53,6 +55,28 @@ void GameManager::FixedUpdate()
 	// Check collisions
 	physics_.Compute();
 }
+std::pair<char*, int> GameManager::GetServerBuf()
+{
+	std::vector<ModelInfo> model_infos;
+	for (Player* player : players_)
+	{
+		model_infos.push_back(ModelInfo{
+			reinterpret_cast<uintptr_t>(player),
+			player->GetModel(),
+			player->modelAnim,
+			player->GetParentTransform()
+		});
+	}
+
+	ServerHeader sheader{};
+	sheader.num_models = model_infos.size();
+	sheader.player_transform = players_[0]->GetParentTransform(); // TODO assumes player index 0
+	
+	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
+	serverSerialize(server_buf, &sheader, model_infos.data());
+	return std::make_pair(server_buf, GetBufSize(&sheader));
+}
+
 void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
 {
 	for (auto entity : game_entities) {
@@ -65,12 +89,30 @@ void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const G
 	}
 }
 
-
-
-void GameManager::SetPlayerInput(glm::vec2 move_input, const int player_index)
+void GameManager::Draw(const GLuint shader)
 {
-	//players_[player_index]->move_input = move_input;
+	for (auto entity : game_entities) {
+		if (entity->type == EntityType::PLAYER) {
+			dynamic_cast<Player*>(entity)->Draw(shader);
+		}
+		else if (entity->type == EntityType::VEGETABLE) {
+			dynamic_cast<Vegetable*>(entity)->Draw(shader);
+		}
+	}
+}
+
+void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)
+{
 	players_[player_index]->move_input = move_input;
+}
+
+//TODO Merge these two with SetPlayerInput when NetworkPacket.h is updated
+void GameManager::SetPlayerUse(const int player_index) {
+	players_[player_index]->Use();
+}
+
+void GameManager::SetPlayerDrop(const int player_index) {
+	players_[player_index]->Drop();
 }
 
 glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
@@ -78,12 +120,13 @@ glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
 	return players_[player_index]->GetPosition();
 }
 
-double GameManager::GetFixedDeltaTime() { return curr_time_ - last_time_; }
-
+double GameManager::GetFixedDeltaTime() {
+	const std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
+    return elapsed_seconds.count();
+}
 
 void GameManager::UpdateFixedDeltaTime()
 {
 	last_time_ = curr_time_;
-	curr_time_ = glfwGetTime();
-
+	curr_time_ = std::chrono::steady_clock::now();
 }

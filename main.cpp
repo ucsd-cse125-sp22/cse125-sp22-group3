@@ -1,8 +1,12 @@
 #include "main.h"
 
 #include "./Network/Client.h"
-#include <chrono>
+#include "./Network/NetworkPacket.h"
+#include "./Network/ServerMain.cpp"
+#include "Model.h"
 
+#include <chrono>
+#include <map>
 
 #define SERVER_ADDRESS "127.0.0.1"
 #define SERVER_PORT "8686"
@@ -58,8 +62,13 @@ void print_versions()
 #endif
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
+	if (argc > 1 && (std::string(argv[1]) == "server-build")) { //TODO Add Seperate Project
+		ServerMain();
+		return 0;
+	}
+	
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
 	if (!window)
@@ -87,48 +96,81 @@ int main(void)
 
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
+
+	//TODO remove test
+	// load models
+	Model bumbus = Model(CHAR_BUMBUS);
+	Model pogo = Model(CHAR_POGO);
+	Model swainky = Model(CHAR_SWAINKY);
+	Model gilma = Model(CHAR_GILMAN);
+	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
 	
+	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
-		char* dummy_data = "Hello from the Networking Team";
-		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
+		// outgoing packet initialization
+		ClientPacket out_packet;
+
+		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+		if (InputManager::getMoved()) { // TODO determine when to send packet and when to skip
+			out_packet.justMoved = InputManager::getMoved();
+			out_packet.movement = InputManager::getLastMovement();
+			out_packet.lastCommand = InputManager::getLastCommand();
+		}
+		InputManager::resetMoved();
+		out_packet.player_index = 0;
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len)
 			{
-				printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+				ServerHeader* sheader;
+				ModelInfo* model_arr;
+				serverDeserialize(recv_buf, &sheader, &model_arr);
+
+				//Rendering Code
+				const glm::mat4 player_transform = sheader->player_transform;
+				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 				
-				// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-				
-				if (InputManager::getMoved) {
-					GameManager::SetPlayerInput(InputManager::getLastMovement(), 0);
+				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
+				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
+				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
+
+				for (int i = 0; i < sheader->num_models; i++)
+				{
+					const ModelInfo model_info = model_arr[i];
+
+					if (model_map.count(model_info.model_id) == 0) {
+						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+
+					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
+					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}
-				
-				InputManager::setMoved();
-			
 
-				// Main render display callback. Rendering of objects is done here. (Draw)
-				Window::displayCallback(window);	
-
-				// Idle callback. Updating objects, etc. can be done here. (Update)
-				Window::idleCallback();
+				free(sheader);
+				free(model_arr);
 			});
+		
+		// Gets events, including input such as keyboard and mouse or window resizing
+		glfwPollEvents();
+
+		// Swap buffers.
+		glfwSwapBuffers(window);
+        
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time between ticks: %d ms\n\n", elapsed_time_ms);
+		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
 		begin_time = end_time;
-
-		// uncomment for testing
-		// Main render display callback. Rendering of objects is done here. (Draw)
-		/*
-		Window::displayCallback(window);
-
-		// Idle callback. Updating objects, etc. can be done here. (Update)
-		Window::idleCallback();
-		*/
 	}
 
 	// destroy objects created
 	Window::cleanUp();
+	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
+		delete iter->second;
+	}
 
 	// Destroy the window.
 	glfwDestroyWindow(window);

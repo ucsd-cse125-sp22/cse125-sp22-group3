@@ -12,50 +12,80 @@
 #include <assimp/postprocess.h>
 
 #include <map>
+#include <stack>
+#include <unordered_set>
 
 #include "assimpConvert.h"
 #include "stb_image.h"
 #include "Mesh.h"
 #include "util.h"
 
-enum AniMode {
-	IDLE_HOLD,
-	IDLE_WALK,
-	IDLE,
-	WALK,
+struct KeyPosition
+{
+	glm::vec3 position;
+	float timeStamp;
 };
 
-struct AssimpNodeData
+struct KeyRotation
 {
+	glm::quat orientation;
+	float timeStamp;
+};
+
+struct KeyScale
+{
+	glm::vec3 scale;
+	float timeStamp;
+};
+
+struct AnimationNode
+{
+	bool hasBone;
 	glm::mat4 transformation;
+	glm::mat4 bone_trans;
 	std::string name;
-	int childrenCount;
-	std::vector<AssimpNodeData> children;
+	int parent; 
+
+	std::vector<KeyPosition> positions;
+	std::vector<KeyRotation> rotations;
+	std::vector<KeyScale> scales;
+
+	int numPositions;
+	int numRotations;
+	int numScales;
 };
 
 class Model
 {
 private:
-	// Importing scene information
-	Assimp::Importer importer;
-	const aiScene* scene = nullptr;
-
 	// Texture + meshes
 	std::vector<Texture> textures_loaded;
 	std::vector<Mesh> meshes;
 	std::string directory;
 
-	// Bone information for animation
+	// Animation data
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
+	float blendOffset = 0.05f;
+	bool hasAni = false;
 
-	const float blendOffset = 0.0005f;
+	std::vector<std::vector<AnimationNode>> animationChannels;
 
 	std::map<AniMode, int> animationMap = { 
 		{IDLE_HOLD, 1},
 		{IDLE_WALK, 2},
 		{IDLE, 3},
 		{WALK, 4},
+	};
+
+	std::map<ModelEnum, std::string> modelFilePathMap = {
+		{CHAR_BUMBUS, "models/bumbus/bumbus.fbx"},
+		{CHAR_POGO, "models/pogo/pogo.fbx"},
+		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
+		{CHAR_GILMAN, "models/gilma/char4.fbx"}, // TODO rename
+
+		{VEG_CARROT, "models/carrot/carrot.fbx"},
+		{VEG_CORN, "models/carrot/carrot.fbx"}, // TODO no corn
 	};
 
 	// Get previous and current blending
@@ -65,12 +95,8 @@ private:
 	// Blend factor for blending animations
 	float blend = 0.f;
 
-	// Holds transformations for this model
-	glm::mat4 model;
-	bool left = false;
-	bool right = false;
-	bool up = false;
-	bool down = false;
+	// Duration of each animation (agreed to be the same val if multiple)
+	float duration = 0.f;
 
 	// Delta time for animation
 	glm::mat4 gt;
@@ -81,7 +107,8 @@ private:
 public:
 	// Constructor + Deconstructor
 	Model();
-	Model(std::string filePath);
+
+	Model(ModelEnum model);
 	~Model();
 
 	// Animation Speed
@@ -90,33 +117,39 @@ public:
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
 
+	// Shadow map
+	void draw(glm::mat4 parent, GLuint shader);
+
 	// Loading meshes of model
 	void processNode(aiNode * root, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 	unsigned int TextureFromFile(const char* path, const std::string& directory);
 
-	// Animation
+	// Load Animation Data
 	void ExtractBoneWeightForVertices(std::vector<glm::ivec4>& bones, std::vector<glm::vec4>& weights, 
 		aiMesh* mesh, const aiScene* scene);
 	void SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::vec4>& weights,
 		int vertexId, int boneID, float weight);
+	void LoadAnimationData(const aiScene* scene);
 	void CalculateBoneTransform(float time);
 
-	void ReadHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
-	void ReadBlendedHierarchyData(float time, const aiNode* node, glm::mat4 parentTransform);
-	const aiNodeAnim* findNodeAnim(const aiAnimation* animation, const std::string node_name);
-	glm::mat4 InterpolatePosition(float time, const aiNodeAnim* animationNode);
-	glm::mat4 InterpolateScale(float time, const aiNodeAnim* animationNode);
-	glm::mat4 InterpolateRotation(float time, const aiNodeAnim* animationNode);
-	int GetPositionIndex(float time, const aiNodeAnim * animationNode);
-	int GetScaleIndex(float time, const aiNodeAnim* animationNode);
-	int GetRotationIndex(float time, const aiNodeAnim* animationNode);
+	void ReadHierarchyData(float time);
+	void ReadBlendedHierarchyData(float time);
+	glm::mat4 InterpolatePosition(float time, AnimationNode animationNode);
+	glm::mat4 InterpolateScale(float time, AnimationNode animationNode);
+	glm::mat4 InterpolateRotation(float time, AnimationNode animationNode);
+	int GetPositionIndex(float time, AnimationNode animationNode);
+	int GetScaleIndex(float time, AnimationNode animationNode);
+	int GetRotationIndex(float time, AnimationNode animationNode);
 
 	// Set or get animation data
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);
+
+	// Operators
+	Model& operator=(const Model& t);
 };
 
 #endif

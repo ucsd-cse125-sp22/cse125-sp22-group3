@@ -6,6 +6,7 @@
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"
+#include "DepthMap.h"
 
 class Window
 {
@@ -30,9 +31,12 @@ public:
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
+	static DepthMap* dm;
+
 	// Shader Program ID
 	static GLuint shaderProgram;
 	static GLuint modelShaderProgram;
+	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;
 
 
@@ -46,13 +50,12 @@ public:
 	static void resizeCallback(GLFWwindow* window, int width, int height);
 
 	// Draw and Update functions
-	static void idleCallback();
+	static void logicCallback();
 	static void displayCallback(GLFWwindow*);
 
-	void setMoveInput(glm::vec2 v);
+	static void renderDepthMap();
 
 	// Callbacks
-
 	/*
 	 * Where we take user input from the keyboard
 	 */

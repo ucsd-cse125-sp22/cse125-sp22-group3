@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "NetworkPacket.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,7 +144,7 @@ Server::~Server(void)
 	WSACleanup();
 }
 
-void Server::mainLoop(void)
+void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code)
 {
 	ClientSocket = INVALID_SOCKET;
 	ClientSocket = accept(ListenSocket, NULL, NULL); // TODO ClientSocket handling can be multithreaded
@@ -161,52 +160,11 @@ void Server::mainLoop(void)
 	// TODO insert new client into session id table
 	// sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
-	/*char buffer[DEFAULT_BUFLEN];
-	while (true) { // TODO
-		// receive data from client
-		if (ClientSocket == INVALID_SOCKET)
-		{
-			printf("No client connected...\n");
-			ClientSocket = accept(ListenSocket, NULL, NULL);
-			continue;
-		}
-		int recvStatus = recv(ClientSocket, buffer, DEFAULT_BUFLEN, 0);
-		if (recvStatus == SOCKET_ERROR) {
-			printf("recv failed: %d\n", WSAGetLastError());
-			// Connection Reset Error
-			if (WSAGetLastError() == 10054)
-			{
-				closesocket(ClientSocket);
-				ClientSocket = INVALID_SOCKET;
-			}
-			continue;
-		}
-		else if (recvStatus == 0) {
-			printf("Connection closed\n");
-			closesocket(ClientSocket);
-			ClientSocket = INVALID_SOCKET;
-			continue; // TODO Remove This Later, I just want the server to stay running for testing purposes.
-			// return; // TODO only terminate for this client, not others
-		}
-		else {
-			printf("Server bytes received: %ld\n", recvStatus);
-		}
-
-		// echo back the data received to the client
-		int sendStatus = send(ClientSocket, buffer, recvStatus, 0);
-		if (sendStatus == SOCKET_ERROR) {
-			printf("send failed: %d\n", WSAGetLastError());
-			return; // TODO ideally retry transmission
-		}
-		else {
-			printf("Server bytes sent: %ld\n", sendStatus);
-		}
-	}*/
 	while (true) { // TODO
 		auto begin_time = std::chrono::steady_clock::now();
 
 		// receive data from client
-		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
+		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0); // TODO edge case for receiving partial packet
 		// recvStatus will be the actual length of data recieve instead of buffer size
 		if (recvStatus == SOCKET_ERROR) {
 			printf("recv failed: %d\n", WSAGetLastError());
@@ -222,17 +180,13 @@ void Server::mainLoop(void)
 		ClientPacket cpacket;
 		int i = 0;
 		while (i < (unsigned int)recvStatus) {
-			cpacket.deserialize(&(network_data[i]));
+			cpacket.deserializeFrom(&(network_data[i]));
 			i += sizeof(ClientPacket);
-			printf("Server recieve move: %d", cpacket.move);
 
-			//TODO: do stuff with the packet recieve, now just send the packet back; 
-			ServerPacket spacket;
-			spacket.move = cpacket.move;
-			spacket.valid = true;
-			char packet_data[sizeof(ServerPacket)];
-			spacket.serialize(packet_data);
-			int sendStatus = send(ClientSocket, packet_data, sizeof(ServerPacket), 0);
+			// calls passed-in code
+			std::pair<char*, int> out_data = main_code(cpacket);
+
+			int sendStatus = send(ClientSocket, out_data.first, out_data.second, 0);
 			if (sendStatus == SOCKET_ERROR) {
 				printf("send failed: %d\n", WSAGetLastError());
 				return; // TODO ideally retry transmission

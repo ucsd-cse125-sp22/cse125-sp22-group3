@@ -1,9 +1,11 @@
 #pragma once
+
+#include "glm.h"
 #include "ColliderCircle.h"
 #include "Drawable.h"
 #include "GameEntity.h"
-#include "Model.h"
 #include "PhysicsObject.h"
+#include "util.h"
 
 class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
@@ -13,13 +15,18 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec3 scale;
 
 		// Player Movement Attributes
-		float friction_ = 50; // Resistance in Units/Sec
-		float base_accel_ = 200; // Acceleration in Units/Sec^2
-		float max_velocity_ = 20; // Max Velocity in Units/Sec
-		glm::vec2 curr_vel_ = glm::vec3(0,0,0);
+		float friction_ = 50.f; // Resistance in Units/Sec
+		float base_accel_ = 200.f; // Acceleration in Units/Sec^2
+		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
+		float entityHeldDist = 2.5f; // distance of entity from player
+		glm::vec2 curr_vel_ = glm::vec2(0,0);
 
 		// Current model to display
-		Model* model = nullptr;
+		ModelEnum model;
+
+		// Currently holding
+		GameEntity* entityHeld = nullptr;
+		GameEntity* entityTriggered = nullptr;
 
 		// Current Player Collider
 		// Player will use a Circle Collider
@@ -27,6 +34,11 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Moving player
 		void Move();
+		void MoveHeld();
+		void SetHoldEntity(GameEntity* entity);
+		bool isHolding = false;
+		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
+		GameEntity* GetTriggeringEntity();
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
@@ -34,27 +46,37 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::mat4 GetScale();
 
 	public:
+		// current animation, no custom get/set logic so is set as public field
+		AniMode modelAnim;
+
 		Player();
 
 		/* Curr should be idle */
-		Player(Model * curr);
+		Player(ModelEnum curr);
 
 		// GameEntity
 		void FixedUpdate() override;
 
 		// Drawable
 		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
+		void Draw(GLuint shader) override;
+		glm::mat4 GetParentTransform();
+		ModelEnum GetModel();
 
 		// PhysicsObject
-		void OnCollide() override {};
+		void OnCollide(PhysicsObject* object) override {}
+		void OnTrigger(PhysicsObject* object) override;
 		std::vector<Collider*> GetColliders() override;
 		glm::vec2* GetWorldPosition() override;
 		
-		// Movement
+		// Input
 		glm::vec2 move_input{0,0};
+		void Use();
+		void Drop();
 
 		// Information
 		glm::vec3 GetPosition() const;
-		void SetPosition(glm::vec3 position);
+		void SetWorldPosition(glm::vec3 position);
+		bool GetIsHolding() const { return isHolding; }
 
 };

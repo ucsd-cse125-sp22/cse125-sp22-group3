@@ -1,10 +1,5 @@
 ﻿#include "PhysicsEngine.h"
 
-#include <glm/detail/func_geometric.inl>
-
-#include "ColliderCircle.h"
-#include "ColliderAABB.h"
-
 PhysicsEngine::PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects)
 {
 	// Add physic objects to lists
@@ -39,9 +34,15 @@ void PhysicsEngine::Compute()
 			Collider* collider_2 = object_2->GetColliders()[0];
 			if (collider_1->CollidesWith(collider_2))
 			{
-				object_1->OnCollide();
-				object_2->OnCollide();
+				object_1->OnCollide(object_2);
+				object_2->OnCollide(object_1);
 
+				if (object_1->GetColliders()[0]->GetColliderIsTrigger() ||
+					object_2->GetColliders()[0]->GetColliderIsTrigger()) {
+					ResolveTriggerCollision(object_1, object_2);
+					continue;
+				}
+				
 				ResolveCollision(object_1, object_2);
 			}
 		}
@@ -93,9 +94,20 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 	*pos_2 -= dir_to_move;
 }
 
-inline void ResolveTriggerCollision(ColliderCircle* circle_1, ColliderCircle* circle_2, glm::vec2* pos_1, glm::vec2* pos_2) {
-	printf("Trigger Collision");
-	// TODO: handle the trigger collision and get closest trigger collider, maybe store these positions in a list?
+void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
+	if (first->GetColliders()[0]->GetColliderIsTrigger()) {
+		second->OnTrigger(first);
+	}
+	else {
+		second->OnCollide(first);
+	}
+
+	if (second->GetColliders()[0]->GetColliderIsTrigger()) {
+		first->OnTrigger(second);
+	}
+	else {
+		first->OnCollide(second);
+	}
 }
 
 //TODO take in Colliders instead of Physics Objects
@@ -103,7 +115,7 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 {
 	Collider* col_1 = first->GetColliders()[0];
 	Collider* col_2 = second->GetColliders()[0];
-
+	
 	glm::vec2* pos_1 = first->GetWorldPosition();
 	glm::vec2* pos_2 = second->GetWorldPosition();
 
@@ -113,11 +125,7 @@ void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second
 		if (col_2->GetColliderShape() == Collider::CIRCLE)
 		{
 			const auto circle_2 = dynamic_cast<ColliderCircle*>(col_2);
-
-			if (circle_2->GetColliderIsTrigger()) 
-				ResolveTriggerCollision(circle_1, circle_2, pos_1, pos_2);
-			else
-				ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
+			ResolveCircleToCircleCollision(circle_1, circle_2, pos_1, pos_2);
 		}
 		if (col_2->GetColliderShape() == Collider::AABB_SHAPE) {
 			const auto aabb = dynamic_cast<ColliderAABB*>(col_2);

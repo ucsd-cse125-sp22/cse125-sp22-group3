@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include "PhysicsObject.h"
 #include <vector>
+//#include <glm/detail/func_geometric.inl>
+#include "ColliderCircle.h"
+#include "ColliderAABB.h"
+#include "Vegetable.h"
 
 class BVHNode
 {
@@ -16,7 +20,8 @@ public:
     void AddPhysObject(PhysicsObject* phys_object);
     void ConstructBVH();
     void Compute();
-    void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
+    static void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second);
+    static void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
 
 private:
     std::vector<PhysicsObject*> static_collidables_;

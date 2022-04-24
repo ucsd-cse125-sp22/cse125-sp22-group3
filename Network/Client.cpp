@@ -106,11 +106,11 @@ Client::~Client(void)
  * Returns bytes received from server. If return value is 0, server has closed connection.
  * Delete the client object immediately.
  */
-int Client::syncWithServer(const char* send_buf, size_t send_len,
-	std::function<void(const char* recv_buf, size_t recv_len)> callback)
+int Client::syncWithServer(const void* send_buf, size_t send_len,
+	std::function<void(char* recv_buf, size_t recv_len)> callback)
 {
 	// sending data (inputs)
-	int sendStatus = send(ConnectSocket, send_buf, send_len, 0);
+	int sendStatus = send(ConnectSocket, static_cast<const char*>(send_buf), send_len, 0);
 	if (sendStatus == SOCKET_ERROR) {
 		printf("send failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);

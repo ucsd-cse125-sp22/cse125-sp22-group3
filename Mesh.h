@@ -10,13 +10,15 @@
 #include <vector>
 #include <string>
 
-#include <glm/glm.hpp>
+#include "glm.h"
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtx/quaternion.hpp>
 
 #include <iostream>
+
+#include "DepthMap.h"
 
 // store texture info
 struct Texture {
@@ -77,6 +79,10 @@ class Mesh {
 		// Render mesh
 		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, GLuint shader);
 		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, std::vector<glm::mat4> transforms, GLuint shader);
+
+		// Render depth map
+		void draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shader);
+		void draw(glm::mat4 parent, GLuint shader);
 };
 
 #endif

@@ -1,6 +1,6 @@
 ﻿#include "ColliderAABB.h"
 
-#include <glm/detail/func_geometric.inl>
+#include "glm.h"
 
 #include "ColliderCircle.h"
 
