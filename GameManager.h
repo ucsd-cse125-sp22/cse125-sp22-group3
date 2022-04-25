@@ -12,7 +12,7 @@ class GameManager : GameEntity, public Drawable
 {
 public:
     GameManager();
-    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables);
+    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots);
 
     // Call Updates on GameState
     void FixedUpdate() override;

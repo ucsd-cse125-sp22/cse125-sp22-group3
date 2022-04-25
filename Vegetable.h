@@ -14,6 +14,9 @@ enum class VegetableType {
 
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
     public:
+        // current animation, no custom get/set logic so is set as public field
+        AniMode modelAnim;
+
         Vegetable(VegetableType type, ModelEnum curr);
         ~Vegetable();
         VegetableType type;
@@ -24,6 +27,8 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         // Drawable
         void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
         void Draw(GLuint shader) override;
+        glm::mat4 GetParentTransform();
+        ModelEnum GetModel();
 
         // PhysicsObject
         void OnCollide(PhysicsObject* object) override {};
@@ -36,6 +41,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
         glm::vec3 GetPosition() const;
         void SetPosition(glm::vec3 position);
         void SetRotation(glm::mat4 rotation);
+        glm::mat4 GetRotation() const;
 
         // Interactable
         bool CanInteract(Player* player) override;
@@ -58,4 +64,6 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
+        glm::mat4 GetTranslation();
+
 };

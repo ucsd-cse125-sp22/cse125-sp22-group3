@@ -2,6 +2,7 @@
 
 #include "Interactable.h"
 #include "Vegetable.h"
+#include "Model.h"
 
 class Plot : public Interactable, public Drawable, public PhysicsObject, public GameEntity {
 	public:

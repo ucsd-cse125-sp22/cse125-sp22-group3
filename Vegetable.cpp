@@ -4,8 +4,8 @@
 
 Vegetable:: Vegetable(VegetableType vegetable, ModelEnum curr) {
 	model = curr;
-
 	type = vegetable;
+	modelAnim = NO_ANI;
 
 	translate = new glm::vec2(0.f, 0.f);
 	rotation = glm::mat4(1);
@@ -34,6 +34,16 @@ void Vegetable::Draw(GLuint shader) {
 	//model.draw(parent, shader); TODO
 }
 
+glm::mat4 Vegetable::GetParentTransform()
+{
+	return GetTranslation() * rotation;
+}
+
+ModelEnum Vegetable::GetModel()
+{
+	return model;
+}
+
 std::vector<Collider*> Vegetable::GetColliders()
 {
 	return { collider_ };
@@ -49,6 +59,10 @@ glm::vec3 Vegetable::GetPosition() const
 	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
 }
 
+glm::mat4 Vegetable::GetTranslation() {
+	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
+}
+
 void Vegetable::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
@@ -57,6 +71,11 @@ void Vegetable::SetPosition(glm::vec3 position)
 void Vegetable::SetRotation(glm::mat4 rotation)
 {
 	this->rotation = rotation;
+}
+
+glm::mat4 Vegetable::GetRotation() const
+{
+	return rotation;
 }
 
 bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }

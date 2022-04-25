@@ -76,6 +76,7 @@ private:
 		{IDLE_WALK, 2},
 		{IDLE, 3},
 		{WALK, 4},
+		{NO_ANI, 5}
 	};
 
 	std::map<ModelEnum, std::string> modelFilePathMap = {

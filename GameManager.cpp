@@ -9,7 +9,7 @@ GameManager::GameManager()
 {
 	physics_ = PhysicsEngine();
 }
-GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables)
+GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots)
 {
 	// Initialize Players
 	players_ = players;
@@ -63,18 +63,48 @@ void GameManager::FixedUpdate()
 	// Check collisions
 	physics_.Compute();
 }
+
 std::pair<char*, int> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
-	for (Player* player : players_)
-	{
-		model_infos.push_back(ModelInfo{
-			reinterpret_cast<uintptr_t>(player),
-			player->GetModel(),
-			player->modelAnim,
-			player->GetParentTransform()
-		});
+	for (GameEntity* entity : game_entities) {
+		switch (entity->type) {
+			case EntityType::PLAYER: {
+				auto player = dynamic_cast<Player*>(entity);
+				if (player != nullptr) {
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(player),
+						player->GetModel(),
+						player->modelAnim,
+						player->GetParentTransform()
+					});
+				}
+			}
+			
+			case EntityType::VEGETABLE: {
+				auto vegetable = dynamic_cast<Vegetable*>(entity);
+				if (vegetable != nullptr) {
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(vegetable),
+						vegetable->GetModel(),
+						vegetable->modelAnim,
+						vegetable->GetParentTransform()
+						});
+				}
+			}
+
+		}
 	}
+
+	//for (Player* player : players_)
+	//{
+	//	model_infos.push_back(ModelInfo{
+	//		reinterpret_cast<uintptr_t>(player),
+	//		player->GetModel(),
+	//		player->modelAnim,
+	//		player->GetParentTransform()
+	//	});
+	//}
 
 	ServerHeader sheader{};
 	sheader.num_models = model_infos.size();

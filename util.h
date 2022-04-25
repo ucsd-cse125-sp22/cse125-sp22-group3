@@ -31,6 +31,7 @@ enum AniMode {
 	IDLE_WALK,
 	IDLE,
 	WALK,
+	NO_ANI
 };
 
 #endif

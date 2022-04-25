@@ -8,7 +8,8 @@ inline int ServerMain(){
 	Player bumbus{CHAR_BUMBUS};
 	Player bumbus_2{CHAR_BUMBUS};
 	Player swainky{CHAR_SWAINKY};
-	GameManager game({&pogo, &bumbus, &bumbus_2, &swainky}, {});
+	Vegetable carrot{VegetableType::CARROT, VEG_CARROT};
+	GameManager game({ &pogo, &bumbus, &bumbus_2, &swainky }, {&carrot}, {});
 	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)
 		{

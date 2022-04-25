@@ -15,7 +15,7 @@ GameEntity* Player::GetHoldEntity()
 	return entityHeld;
 }
 
-Player::Player(Model curr) : Player() {
+Player::Player(ModelEnum curr) : Player() {
 	// Set initial values
 	model = curr;
 	//std::cout << model.getBoneCount() << std::endl;
@@ -191,6 +191,7 @@ glm::mat4 Player::GetRotation() {
 	*/
 	return glm::rotate(rotate.y, glm::vec3(0.0f, 1.0f, 0.0f));
 }
+
 glm::mat4 Player::GetTranslation() {
 	return glm::translate(glm::vec3((* translate)[0], 0, -(*translate)[1]));
 }
