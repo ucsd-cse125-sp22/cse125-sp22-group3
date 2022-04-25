@@ -1,5 +1,5 @@
 #include "main.h"
-
+#include "UI/GUI.h"
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
@@ -91,6 +91,10 @@ int main(int argc, char* argv[])
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
 
+	// initialize IMGUI 
+	GUI::initializeGUI(window);
+	GUI::initializeImage();
+
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, SERVER_PORT);
 
@@ -157,9 +161,47 @@ int main(int argc, char* argv[])
 		// Gets events, including input such as keyboard and mouse or window resizing
 		glfwPollEvents();
 
+		//IMGUI rendering
+		Window::show_GUI = GUI::renderUI(Window::show_GUI);
+
 		// Swap buffers.
 		glfwSwapBuffers(window);
         
+		/*
+		char* dummy_data = "Hello from the Networking Team";
+		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
+		{
+			printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
+
+			// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+
+			if (InputManager::getMoved) {
+				InputCommands inCom = InputManager::getLastCommand();
+				if (InputManager::checkIdle())
+					inCom = NONE;
+				GameManager::SetPlayerInput(inCom, 0);
+			}
+
+			InputManager::setMoved();
+			//GameManager::SetPlayerInput(inCom, 0);
+
+			//IMGUI rendering
+			ImGui_ImplGlfwGL3_NewFrame();
+			
+			ImGui::Begin("My Name is Window, IMGUI Window");
+			ImGui::Text("Hello there adeventurer!");
+			ImGui::End();
+
+			// Main render display callback. Rendering of objects is done here. (Draw)
+			Window::displayCallback(window);
+
+			// Idle callback. Updating objects, etc. can be done here. (Update)
+			
+
+			Window::idleCallback();
+		});
+		*/
+
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
 		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
@@ -171,6 +213,9 @@ int main(int argc, char* argv[])
 	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
 		delete iter->second;
 	}
+
+	// Cleanup ImGui
+	GUI::cleanUp();
 
 	// Destroy the window.
 	glfwDestroyWindow(window);

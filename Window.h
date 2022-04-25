@@ -40,6 +40,8 @@ public:
 	static GLuint animationShaderProgram;
 
 
+	static bool show_GUI;
+
 	// Constructors and Destructors
 	static bool initializeProgram();
 	static bool initializeObjects();

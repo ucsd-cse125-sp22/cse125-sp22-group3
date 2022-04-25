@@ -1,6 +1,8 @@
 #include "Window.h"
-
 #include "Model.h"
+
+#include "UI/GUI.h"
+#include "main.h"
 
 // Game Manager
 GameManager* Window::game = nullptr;
@@ -36,6 +38,7 @@ GLuint Window::animationShaderProgram;
 GLuint Window::shadowShaderProgram; 
 
 
+bool Window::show_GUI = true; 
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
@@ -195,6 +198,8 @@ void Window::displayCallback(GLFWwindow* window)
 	// Render the objects
 	game->Draw(view, projection, animationShaderProgram);
 	// renderDepthMap();
+
+	
 
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
