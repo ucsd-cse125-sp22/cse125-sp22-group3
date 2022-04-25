@@ -1,5 +1,5 @@
 #pragma once
-#include <glm/vec2.hpp>
+#include "glm.h"
 
 #include "Collider.h"
 #include <vector>

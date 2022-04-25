@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-Vegetable:: Vegetable(VegetableType vegetable, Model curr) {
+Vegetable:: Vegetable(VegetableType vegetable, ModelEnum curr) {
 	model = curr;
 
 	type = vegetable;
@@ -26,7 +26,12 @@ void Vegetable::FixedUpdate()
 void Vegetable::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader)
 {
 	glm::mat4 parent = GetTransformation();
-	model.draw(view, projection, parent, shader);
+	//model.draw(view, projection, parent, shader); TODO remove Draw function from Drawable
+}
+
+void Vegetable::Draw(GLuint shader) {
+	glm::mat4 parent = GetTransformation();
+	//model.draw(parent, shader); TODO
 }
 
 std::vector<Collider*> Vegetable::GetColliders()

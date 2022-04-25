@@ -2,13 +2,14 @@
 
 Model::Model() {}
 
-Model::Model(std::string filePath) {
+Model::Model(ModelEnum model) {
 	// Set current animation mode
 	last = IDLE;
 	curr = IDLE;
 
 	// Load model at file path
 	Assimp::Importer importer;
+	std::string filePath = modelFilePathMap[model];
 	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	
 	// Potential errors opening model
@@ -258,6 +259,27 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 		for each (Mesh mesh in meshes)
 		{
 			mesh.draw(view, projection, parent, shader);
+		}
+	}
+}
+
+void Model::draw(glm::mat4 parent, GLuint shader) {
+	if (hasAni) {
+		float currTime = glfwGetTime();
+
+		CalculateBoneTransform(currTime);
+
+		for each (Mesh mesh in meshes)
+		{
+			mesh.draw(finalBoneMatrices, parent, shader);
+		}
+
+	}
+
+	else {
+		for each (Mesh mesh in meshes)
+		{
+			mesh.draw(parent, shader);
 		}
 	}
 }

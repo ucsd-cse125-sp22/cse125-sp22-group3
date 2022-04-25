@@ -18,13 +18,7 @@
 #include "assimpConvert.h"
 #include "stb_image.h"
 #include "Mesh.h"
-
-enum AniMode {
-	IDLE_HOLD,
-	IDLE_WALK,
-	IDLE,
-	WALK,
-};
+#include "util.h"
 
 struct KeyPosition
 {
@@ -84,6 +78,16 @@ private:
 		{WALK, 4},
 	};
 
+	std::map<ModelEnum, std::string> modelFilePathMap = {
+		{CHAR_BUMBUS, "models/bumbus/bumbus.fbx"},
+		{CHAR_POGO, "models/pogo/pogo.fbx"},
+		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
+		{CHAR_GILMAN, "models/gilma/char4.fbx"}, // TODO rename
+
+		{VEG_CARROT, "models/carrot/carrot.fbx"},
+		{VEG_CORN, "models/carrot/carrot.fbx"}, // TODO no corn
+	};
+
 	// Get previous and current blending
 	AniMode curr;
 	AniMode last;
@@ -104,7 +108,7 @@ public:
 	// Constructor + Deconstructor
 	Model();
 
-	Model(std::string filePath);
+	Model(ModelEnum model);
 	~Model();
 
 	// Animation Speed
@@ -112,6 +116,9 @@ public:
 
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
+
+	// Shadow map
+	void draw(glm::mat4 parent, GLuint shader);
 
 	// Loading meshes of model
 	void processNode(aiNode * root, const aiScene* scene);
