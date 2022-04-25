@@ -18,11 +18,19 @@
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Network\Server.cpp" />
-    <ClCompile Include="ColliderAABB.cpp" />
+    <ClCompile Include="ColliderAAsBB.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="Network\ServerMain.cpp" />
+    <ClCompile Include="UI\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="UI\imgui\imgui_tables.cpp" />
+    <ClCompile Include="UI\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="UI\imgui\imgui.cpp" />
+    <ClCompile Include="UI\imgui\imgui_demo.cpp" />
+    <ClCompile Include="UI\imgui\imgui_draw.cpp" />
+    <ClCompile Include="UI\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="UI\GUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -58,6 +66,27 @@
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
     <ClInclude Include="glm.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="imgui\stb_rect_pack.h" />
+    <ClInclude Include="imgui\stb_textedit.h" />
+    <ClInclude Include="imgui\stb_truetype.h" />
+    <ClInclude Include="UI\imgui\imgui_internal.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="UI\imgui\stb_rect_pack.h" />
+    <ClInclude Include="UI\imgui\stb_textedit.h" />
+    <ClInclude Include="UI\imgui\stb_truetype.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="UI\imgui\imstb_rectpack.h" />
+    <ClInclude Include="UI\imgui\imstb_textedit.h" />
+    <ClInclude Include="UI\imgui\imstb_truetype.h" />
+    <ClInclude Include="UI\imgui\imconfig.h" />
+    <ClInclude Include="UI\imgui\imgui.h" />
+    <ClInclude Include="UI\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="UI\GUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -70,5 +99,10 @@
     <None Include="ClassDiagram.cd" />
     <None Include="shaders\shadows.frag" />
     <None Include="shaders\shadows.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="UI\Pictures\p1.jpg" />
+    <Image Include="UI\Pictures\p2.jpg" />
+    <Image Include="..\..\..\Downloads\saleboard.png" />
   </ItemGroup>
 </Project>
