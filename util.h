@@ -27,6 +27,9 @@ enum ModelEnum
 	VEG_CORN,
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
+
+	WORLD_SEED,
+	WORLD_PLOT
 };
 
 enum AniMode {

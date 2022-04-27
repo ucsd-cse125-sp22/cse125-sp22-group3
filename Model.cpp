@@ -2,7 +2,9 @@
 
 Model::Model() {}
 
-Model::Model(ModelEnum model) {
+Model::Model(ModelEnum thisModel) {
+
+	model = thisModel;
 	// Set current animation mode
 	last = IDLE;
 	curr = IDLE;

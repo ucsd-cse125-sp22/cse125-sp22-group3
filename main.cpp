@@ -109,7 +109,9 @@ int main(int argc, char* argv[])
 	Model gilma = Model(CHAR_GILMAN);
 	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
 	Model corn = Model(VEG_CORN); 
-	
+	Model radish = Model(VEG_RADISH); 
+
+
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 
 	// Loop while GLFW window should stay open and server han't closed connection

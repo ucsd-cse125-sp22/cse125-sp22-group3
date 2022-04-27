@@ -71,6 +71,7 @@ private:
 
 	std::vector<std::vector<AnimationNode>> animationChannels;
 
+	// map to current animation
 	std::map<AniMode, int> animationMap = { 
 		{IDLE_HOLD, 1},
 		{IDLE_WALK, 2},
@@ -79,6 +80,7 @@ private:
 		{NO_ANI, 5}
 	};
 
+	// map to model file path
 	std::map<ModelEnum, std::string> modelFilePathMap = {
 		{CHAR_BUMBUS, "models/bumbus/bumbus.fbx"},
 		{CHAR_POGO, "models/pogo/pogo.fbx"},
@@ -92,9 +94,27 @@ private:
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
 	};
 
+	// map to texture (for models who share same mesh, but different textures)
+	std::map<ModelEnum, std::string> veggieTextures = {
+		{VEG_CABBAGE, "cabbage.png"},
+		{VEG_CARROT, "carrot.png"},
+		{VEG_CORN, "corn.png"},
+		{VEG_RADISH, "raddish.png"},
+		{VEG_TOMATO, "tomato.png"},
+	};
+
+	std::map<ModelEnum, std::string> plotColorTextures = {
+		{CHAR_BUMBUS, "plotBlue.png"},
+		{CHAR_GILMAN, "plotYellow.png"},
+		{CHAR_SWAINKY, "plotRed.png"},
+		{CHAR_POGO, "plotGreen.png"},
+	};
+
 	// Get previous and current blending
 	AniMode curr;
 	AniMode last;
+
+	ModelEnum model;
 
 	// Blend factor for blending animations
 	float blend = 0.f;
@@ -112,7 +132,7 @@ public:
 	// Constructor + Deconstructor
 	Model();
 
-	Model(ModelEnum model);
+	Model(ModelEnum thisModel);
 	~Model();
 
 	// Animation Speed
