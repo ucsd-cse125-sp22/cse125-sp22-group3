@@ -108,6 +108,7 @@ int main(int argc, char* argv[])
 	Model swainky = Model(CHAR_SWAINKY);
 	Model gilma = Model(CHAR_GILMAN);
 	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
+	Model corn = Model(VEG_CORN); 
 	
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 

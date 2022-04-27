@@ -182,25 +182,6 @@ float Lerp(const float a, const float b, const float f) //TODO move to a more gl
 
 void Window::displayCallback(GLFWwindow* window)
 {
-	// render depth map for shadows
-	dm->draw();	
-	game->Draw(shadowShaderProgram);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// reset viewport and render actual scene
-	glViewport(0, 0, width, height);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	eyePos = game->GetPlayerPosition(0) + glm::vec3(0,camera_dist,camera_dist);	// TODO implement angle.
-	lookAtPoint = game->GetPlayerPosition(0); // The point we are looking at.
-	view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
-	
-	// Render the objects
-	game->Draw(view, projection, animationShaderProgram);
-	// renderDepthMap();
-
-	
-
 	// Gets events, including input such as keyboard and mouse or window resizing
 	glfwPollEvents();
 

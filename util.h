@@ -22,8 +22,11 @@ enum ModelEnum
 	CHAR_SWAINKY,
 	CHAR_GILMAN,
 
+	VEG_CABBAGE,
 	VEG_CARROT,
-	VEG_CORN
+	VEG_CORN,
+	VEG_RADISH,
+	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
 };
 
 enum AniMode {

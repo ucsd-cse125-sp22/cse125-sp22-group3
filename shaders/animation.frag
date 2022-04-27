@@ -65,7 +65,8 @@ void main()
 
     // diffuse shading
     float NdotL = dot(norm, lightPos);
-    float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
+    // float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
+    float lightIntensity = smoothstep(0, 0.01, NdotL);
     vec4 light = lightIntensity * vec4(0.5f);
 
     // specular
@@ -79,7 +80,8 @@ void main()
     rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    fragColor = tex * vec4(0.5, 0.5, 0.5, 1.0) * (tex + light + specular + rim);
+    // fragColor = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
+    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + specular + rim);
 
     /*
     // Realistic

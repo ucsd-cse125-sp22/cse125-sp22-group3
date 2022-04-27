@@ -66,7 +66,7 @@ private:
 	// Animation data
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
-	float blendOffset = 0.05f;
+	float blendOffset = 0.1f;
 	bool hasAni = false;
 
 	std::vector<std::vector<AnimationNode>> animationChannels;
@@ -85,8 +85,11 @@ private:
 		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
 		{CHAR_GILMAN, "models/gilma/char4.fbx"}, // TODO rename
 
+		{VEG_CABBAGE, "models/cabbage/cabbage.fbx"},
 		{VEG_CARROT, "models/carrot/carrot.fbx"},
-		{VEG_CORN, "models/carrot/carrot.fbx"}, // TODO no corn
+		{VEG_CORN, "models/corn/corn.fbx"}, 
+		{VEG_RADISH, "models/raddish/raddish.fbx"},
+		{VEG_TOMATO, "models/tomato/tomato.fbx"},
 	};
 
 	// Get previous and current blending
