@@ -18,7 +18,6 @@
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Network\Server.cpp" />
-    <ClCompile Include="ColliderAAsBB.cpp" />
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="DepthMap.cpp" />
@@ -31,6 +30,7 @@
     <ClCompile Include="UI\imgui\imgui_draw.cpp" />
     <ClCompile Include="UI\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
+    <ClCompile Include="ColliderAABB.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -66,13 +66,6 @@
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
     <ClInclude Include="glm.h" />
-    <ClInclude Include="imgui\imgui_internal.h" />
-    <ClInclude Include="imgui\imconfig.h" />
-    <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imgui_impl_glfw_gl3.h" />
-    <ClInclude Include="imgui\stb_rect_pack.h" />
-    <ClInclude Include="imgui\stb_textedit.h" />
-    <ClInclude Include="imgui\stb_truetype.h" />
     <ClInclude Include="UI\imgui\imgui_internal.h" />
     <ClInclude Include="UI\imgui\imgui_impl_glfw_gl3.h" />
     <ClInclude Include="UI\imgui\stb_rect_pack.h" />
