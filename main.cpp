@@ -103,6 +103,8 @@ int main(int argc, char* argv[])
 
 	//TODO remove test
 	// load models
+
+	/*
 	Model bumbus = Model(CHAR_BUMBUS);
 	Model pogo = Model(CHAR_POGO);
 	Model swainky = Model(CHAR_SWAINKY);
@@ -110,7 +112,7 @@ int main(int argc, char* argv[])
 	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
 	Model corn = Model(VEG_CORN); 
 	Model radish = Model(VEG_RADISH); 
-
+	*/
 
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 

@@ -6,7 +6,10 @@
 
 class Plot : public Interactable, public Drawable, public PhysicsObject, public GameEntity {
 	public:
-		Plot(Model curr);
+		// current animation, no custom get/set logic so is set as public field
+		AniMode modelAnim;
+
+		Plot(ModelEnum curr);
 		~Plot();
 
 		// GameEntity
@@ -14,6 +17,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 
 		// Drawable
 		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
+		void Draw(GLuint shader) override;
 		
 		// PhysicsObject
         void OnCollide(PhysicsObject* object) override {};
@@ -23,6 +27,8 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 
 		// Information
 		glm::vec3 GetPosition() const;
+		glm::mat4 GetParentTransform();
+		ModelEnum GetModel();
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::mat4 rotation);
 		bool isPlanted = false;
@@ -40,7 +46,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		glm::mat4 rotation{};
 
 		// Current model to display
-		Model model;
+		ModelEnum model;
 
 		ColliderCircle* collider_;
 

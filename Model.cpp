@@ -55,8 +55,6 @@ Model::Model(ModelEnum thisModel) {
 	std::cout << "scene->mAnimations[0]->mDuration 1: " << scene->mAnimations[0]->mDuration << std::endl;
 	std::cout << "scene->mAnimations[0]->mTicksPerSecond 1: " << scene->mAnimations[0]->mTicksPerSecond << std::endl << std::endl;
 	*/
-
-	std::cout << boneCounter << std::endl;
 }
 
 Model::~Model() {
@@ -90,6 +88,8 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
+	std::cout << mesh->mName.C_Str() << std::endl;
+
 	// Has materials
 	bool hasMaterials = false;
 

@@ -1,6 +1,6 @@
 ﻿#include "Plot.h"
 
-Plot::Plot(Model curr) {
+Plot::Plot(ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
@@ -19,7 +19,11 @@ void Plot::FixedUpdate() {
 
 void Plot::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTransformation();
-	model.draw(view, projection, parent, shader);
+	// model.draw(view, projection, parent, shader);
+}
+
+void Plot::Draw(GLuint shader) {
+	glm::mat4 parent = GetTransformation();
 }
 
 glm::mat4 Plot::GetTransformation() {
@@ -37,6 +41,16 @@ glm::vec2* Plot::GetWorldPosition() {
 
 glm::vec3 Plot::GetPosition() const {
 	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
+}
+
+ModelEnum Plot::GetModel()
+{
+	return model;
+}
+
+glm::mat4 Plot::GetParentTransform()
+{
+	return GetTransformation() * rotation;
 }
 
 void Plot::SetPosition(glm::vec3 position)

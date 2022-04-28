@@ -92,22 +92,18 @@ private:
 		{VEG_CORN, "models/corn/corn.fbx"}, 
 		{VEG_RADISH, "models/raddish/raddish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
+
+		{WORLD_PLOT, "models/plots/plot.fbx"},
+		{WORLD_SEED, "models/seeds/seed.fbx"},
 	};
 
 	// map to texture (for models who share same mesh, but different textures)
-	std::map<ModelEnum, std::string> veggieTextures = {
-		{VEG_CABBAGE, "cabbage.png"},
-		{VEG_CARROT, "carrot.png"},
-		{VEG_CORN, "corn.png"},
-		{VEG_RADISH, "raddish.png"},
-		{VEG_TOMATO, "tomato.png"},
+	std::vector<std::string> veggieTextures{
+		{"cabbage.png", "carrot.png", "corn.png", "raddish.png", "tomato.png"},
 	};
 
-	std::map<ModelEnum, std::string> plotColorTextures = {
-		{CHAR_BUMBUS, "plotBlue.png"},
-		{CHAR_GILMAN, "plotYellow.png"},
-		{CHAR_SWAINKY, "plotRed.png"},
-		{CHAR_POGO, "plotGreen.png"},
+	std::vector<std::string> plotColorTextures{
+		"plotBlue.png","plotYellow.png","plotRed.png","plotGreen.png"
 	};
 
 	// Get previous and current blending

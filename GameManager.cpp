@@ -93,6 +93,18 @@ std::pair<char*, int> GameManager::GetServerBuf()
 				}
 			}
 
+			case EntityType::PLOT: {
+				auto plot = dynamic_cast<Plot*>(entity);
+				if (plot != nullptr) {
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(plot),
+						plot->GetModel(),
+						plot->modelAnim,
+						plot->GetParentTransform()
+						});
+				}
+			}
+
 		}
 	}
 
