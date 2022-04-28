@@ -9,6 +9,8 @@ GUIImage GUI::score_background;
 int GUI::rack_image_idx; 
 string GUI::picture_dir;
 float GUI::rack_size_ratio; 
+GLFWwindow* GUI::my_window;
+
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -37,8 +39,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
 	picture_dir = "./UI/Pictures";
 	rack_size_ratio = 0.5f;
+	my_window = window;
+
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	//io.Fonts->AddFontFromFileTTF("font.ttf", 18.0f);
@@ -51,6 +56,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	/*END of IMGUI initialize*/
+
 }
 
 /**
@@ -59,12 +65,18 @@ void GUI::initializeGUI(GLFWwindow* window) {
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
 bool GUI::renderUI(bool show_GUI) {
+	//get current main window size and calculate the ratio for dynamic resizing
+	int width, height; 
+	glfwGetWindowSize(my_window, &width, &height);
+	float display_ratio = 0.2f * width / 1280; 
 	//IMGUI rendering
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
+	ImGui::GetWindowSize(); 
+
 	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
 		show_GUI = !show_GUI;
 		rack_image_idx = 0;
@@ -78,39 +90,45 @@ bool GUI::renderUI(bool show_GUI) {
 	window_flags |= ImGuiWindowFlags_NoScrollbar;
 	//show scoreboard
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::Begin("ScoreBoard_bg", NULL, window_flags);
-	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width*0.5f, score_background.my_image_height*0.5f));
+	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::End();
-	ImGui::SetNextWindowPos(ImVec2(80, 80), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::SetNextWindowPos(ImVec2(190*display_ratio, 190*display_ratio), 0, ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::Begin("ScoreBoard_content", NULL, window_flags);
+
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+	
 	for (int i = 0; i < NUM_ICON; i++) {
 		GUIImage image = icon_images_list[i];
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width, image.my_image_height));
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
 		ImGui::SameLine();
 		ImGui::Text("2000");
 	}
+	ImGui::PopStyleColor();
 	ImGui::End(); 
 
 	//show the sale page
 	if(show_GUI == true) {		
-		// etc.
-		bool open_ptr = true; 
-		ImGui::SetNextWindowSize(ImVec2(rack_images_list[0].my_image_width * rack_size_ratio, rack_images_list[0].my_image_height * rack_size_ratio));
-		ImGui::Begin("My Name is Window, IMGUI Window", &open_ptr, window_flags);
-		//ImGui::Text("Hello there adeventurer!");
-	
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-			if(rack_image_idx<NUM_RACK_IMG-1)
+			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
 		}
 		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if(rack_image_idx>0)
-				rack_image_idx--; 
+			if (rack_image_idx > 0)
+				rack_image_idx--;
 		}
+		// etc.
+		bool open_ptr = true;
 		GUIImage image = rack_images_list[rack_image_idx];
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width*rack_size_ratio, image.my_image_height*rack_size_ratio));//image.my_image_width, image.my_image_height));
+
+		ImVec2 size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+		ImGui::SetNextWindowSize(ImVec2(width,height));
+		ImGui::Begin("Sale GUI", &open_ptr, window_flags);
+		ImGui::SetCursorPos((ImGui::GetContentRegionAvail() - size) * 0.5f);
+		//ImGui::Text("Hello there adeventurer!");	
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, size);//image.my_image_width, image.my_image_height));
 		//ImGui::Text("image demension:%dx%d", image.my_image_width, image.my_image_height);
 		ImGui::End();
 	}
@@ -187,6 +205,8 @@ void GUI::initializeImage() {
 		const char* epath = entry.path().string().c_str();
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 2.0f;
+		image->my_image_height *= 2.0f; 
 		i++;
 	}
 

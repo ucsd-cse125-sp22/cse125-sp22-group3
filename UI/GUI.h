@@ -12,6 +12,8 @@
 #include <vector>
 #include "../stb_image.h"
 #include <string>
+#define IMGUI_DEFINE_MATH_OPERATORS //include to use imVec2 math operation 
+#include "imgui/imgui_internal.h"
 
 #define NUM_ICON 4
 #define NUM_RACK_IMG 6
@@ -29,6 +31,7 @@ public:
 class GUI {
 public:
 	static string picture_dir;
+	static GLFWwindow* my_window;
 	static GUIImage score_background;
 	static int rack_image_idx;
 	static float rack_size_ratio; 
