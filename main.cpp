@@ -101,9 +101,6 @@ int main(int argc, char* argv[])
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-	//TODO remove test
-	// load models
-
 	/*
 	Model bumbus = Model(CHAR_BUMBUS);
 	Model pogo = Model(CHAR_POGO);

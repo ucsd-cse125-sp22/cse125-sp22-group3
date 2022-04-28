@@ -28,6 +28,9 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 
 		void FixedUpdate() override;
 
+		// PhysicsObject
+		void OnCollide(PhysicsObject* object) override {};
+		void OnTrigger(PhysicsObject* object) override {};
 		std::vector<Collider*> GetColliders() override;
 		glm::vec2* GetWorldPosition() override;
 

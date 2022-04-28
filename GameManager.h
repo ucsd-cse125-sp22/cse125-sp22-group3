@@ -6,6 +6,7 @@
 #include "Plot.h"
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
+#include "Seed.h"
 #include <chrono>
 
 class GameManager : GameEntity, public Drawable
@@ -13,6 +14,7 @@ class GameManager : GameEntity, public Drawable
 public:
     GameManager();
     explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots);
+    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots, std::vector<Seed*> seeds);
 
     // Call Updates on GameState
     void FixedUpdate() override;
@@ -43,6 +45,7 @@ private:
     std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
     std::vector<Plot*> plots_{};
+    std::vector<Seed*> seeds_{};
     
     static std::chrono::steady_clock::time_point last_time_;
     static std::chrono::steady_clock::time_point curr_time_;

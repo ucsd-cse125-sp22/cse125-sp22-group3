@@ -8,7 +8,7 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	translate = new glm::vec2(0.f, 0.f);
 	rotation = glm::mat4(1);
 
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 3, false);
+	collider_ = new ColliderCircle(glm::vec2(0, 0), 5, false);
 	collider_->collider_is_trigger = true;
 
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));

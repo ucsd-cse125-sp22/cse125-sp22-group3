@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-Vegetable:: Vegetable(VegetableType vegetable, ModelEnum curr) {
+Vegetable::Vegetable(VegetableType vegetable, ModelEnum curr) {
 	model = curr;
 	type = vegetable;
 	modelAnim = NO_ANI;
@@ -63,6 +63,11 @@ glm::mat4 Vegetable::GetTranslation() {
 	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
 }
 
+glm::mat4 Vegetable::GetRotation() const
+{
+	return rotation;
+}
+
 void Vegetable::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
@@ -71,11 +76,6 @@ void Vegetable::SetPosition(glm::vec3 position)
 void Vegetable::SetRotation(glm::mat4 rotation)
 {
 	this->rotation = rotation;
-}
-
-glm::mat4 Vegetable::GetRotation() const
-{
-	return rotation;
 }
 
 bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }

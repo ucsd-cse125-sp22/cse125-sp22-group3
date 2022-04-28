@@ -13,8 +13,9 @@ inline int ServerMain(){
 	Vegetable corn {VegetableType::CORN, VEG_CORN};
 	Vegetable radish{VegetableType::RADISH, VEG_RADISH};
 	Vegetable tomato{VegetableType::TOMATO, VEG_TOMATO};
-	Plot plot{ WORLD_PLOT };
-	GameManager game({&swainky}, {&cabbage, &corn, &radish}, {&plot});
+	Plot plot{WORLD_PLOT};
+	Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
+	GameManager game({ &swainky }, { &cabbage, &corn, &radish }, { &plot }, { &seed });
 
 	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)

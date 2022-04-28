@@ -53,6 +53,60 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 
 }
 
+GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots, std::vector<Seed*> seeds)
+{
+	// Initialize Players
+	players_ = players;
+	int i = 0;
+	for (Player* player : players_) {
+		// Set Player Positions
+		player->SetWorldPosition({ i * 10,0,0 });
+		// Add Players to Entities list
+		game_entities.push_back(player);
+		game_entities.back()->type = EntityType::PLAYER;
+		i++;
+	}
+
+	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
+	vegetables_ = vegetables;
+	for (Vegetable* vegetable : vegetables_) {
+		vegetable->SetPosition({ i * 15,5,0 });
+		game_entities.push_back(vegetable);
+		game_entities.back()->type = EntityType::VEGETABLE;
+		i++;
+	}
+	plots_ = plots;
+	for (Plot* plot : plots_) {
+		plot->SetPosition({ 80,30,0 });
+		game_entities.push_back(plot);
+		game_entities.back()->type = EntityType::PLOT;
+	}
+
+	seeds_ = seeds;
+	for (Seed* seed : seeds_) {
+		seed->SetPosition({ 100, 30, 0 });
+		game_entities.push_back(seed);
+		game_entities.back()->type = EntityType::SEED;
+	}
+
+	// Instantiate Physics Engine
+	std::vector<PhysicsObject*> physics_objects;
+	for (Player* player : players_) {
+		physics_objects.push_back(player);
+	}
+	for (Vegetable* vegetable : vegetables_) {
+		physics_objects.push_back(vegetable);
+	}
+	for (Plot* plot : plots_) {
+		physics_objects.push_back(plot);
+	}
+	for (Seed* seed : seeds_) {
+		physics_objects.push_back(seed);
+	}
+	physics_ = PhysicsEngine(physics_objects);
+
+}
+
 void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
@@ -105,6 +159,17 @@ std::pair<char*, int> GameManager::GetServerBuf()
 				}
 			}
 
+			case EntityType::SEED: {
+				auto player = dynamic_cast<Seed*>(entity);
+				if (player != nullptr) {
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(player),
+						player->GetModel(),
+						player->modelAnim,
+						player->GetParentTransform()
+						});
+				}
+			}
 		}
 	}
 

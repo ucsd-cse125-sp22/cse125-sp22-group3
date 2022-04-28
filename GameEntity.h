@@ -3,7 +3,8 @@
 enum class EntityType {
     PLAYER,
 	VEGETABLE,
-	PLOT
+	PLOT,
+	SEED
 };
 
 class GameEntity {

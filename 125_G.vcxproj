@@ -185,6 +185,7 @@
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Seed.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
     <ClCompile Include="UI\imgui\imgui_demo.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="glm.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
+    <ClInclude Include="Seed.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="UI\imgui\imconfig.h" />
     <ClInclude Include="UI\imgui\imgui.h" />
