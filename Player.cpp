@@ -119,6 +119,23 @@ void Player::OnTrigger(PhysicsObject* object)
 			}
 		}
 	}
+
+	else if (entity->type == EntityType::SEED) {
+		auto seed = dynamic_cast<Seed*>(object);
+		if (seed != nullptr && !isHolding) {
+			if (entityTriggered == nullptr) {
+				SetTriggeringEntity(seed);
+			}
+			else {
+				auto phys_entity = dynamic_cast<PhysicsObject*>(entityTriggered);
+				const float dist = glm::length(*seed->GetWorldPosition() - *GetWorldPosition());
+				const float curr_dist = glm::length(*phys_entity->GetWorldPosition() - *GetWorldPosition());
+				if (dist < curr_dist) {
+					SetTriggeringEntity(seed);
+				}
+			}
+		}
+	}
 }
 
 void Player::Draw(GLuint shader) {
@@ -168,6 +185,15 @@ void Player::Use()
 						plot->isPlanted = false;
 						SetTriggeringEntity(nullptr);
 					}
+				}
+			}
+
+			else if (entityTriggered->type == EntityType::SEED) {
+				std::cout << "Here" << std::endl;
+				auto seed = dynamic_cast<Seed*>(entityTriggered);
+				if (seed != nullptr && !isHolding) {
+					SetHoldEntity(entityTriggered);
+					SetTriggeringEntity(nullptr);
 				}
 			}
 		}
@@ -236,5 +262,14 @@ void Player::MoveHeld() {
 		const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
 		vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
 		vegetable->SetRotation(held_rotation);
+	}
+
+	if (isHolding && entityHeld->type == EntityType::SEED) {
+		auto seed = dynamic_cast<Seed*>(entityHeld);
+
+		const glm::vec4 seedLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+		const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
+		seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), 0, (-1) * translate->y - (seedLocation.z)));
+		seed->SetRotation(held_rotation);
 	}
 }
