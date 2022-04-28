@@ -1,0 +1,49 @@
+#pragma once
+
+#include "Vegetable.h"
+#include "Holdable.h"
+#include "Interactable.h"
+
+class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity {
+	
+	private:
+		VegetableType type;
+		ModelEnum model;
+
+		ColliderCircle* collider_;
+
+		// Transformations
+		glm::vec2* translate = nullptr;
+		glm::mat4 rotation{};
+		glm::mat4 hold_transformation_{};
+
+		bool isHoldable = true;
+		bool isHeld = false;
+
+	public:
+		AniMode modelAnim = NO_ANI;
+
+		Seed(VegetableType type, ModelEnum curr);
+		~Seed();
+
+		void FixedUpdate() override;
+
+		std::vector<Collider*> GetColliders() override;
+		glm::vec2* GetWorldPosition() override;
+
+		// Interactable
+		bool CanInteract(Player* player) override;
+		void OnInteract(Player* player) override;
+		void OnDrop() override;
+		glm::mat4 GetHoldTransform() override;
+
+		// Information
+		ModelEnum GetModel();
+		glm::mat4 GetParentTransform();
+		glm::mat4 GetTransformation();
+		glm::mat4 GetTranslation();
+		glm::vec3 GetPosition() const;
+		void SetPosition(glm::vec3 position);
+		void SetRotation(glm::mat4 rotation);
+		glm::mat4 GetRotation() const;
+};
