@@ -6,6 +6,8 @@ namespace fs = std::experimental::filesystem;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
+GUIImage GUI::loading_bg[NUM_LOAD_IMG];
+
 int GUI::rack_image_idx; 
 string GUI::picture_dir;
 float GUI::rack_size_ratio; 
@@ -213,4 +215,109 @@ void GUI::initializeImage() {
 	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
+
+	
+}
+
+//bool GUI::renderLoadScene(GLFWwindow* window) {
+//	glfwMakeContextCurrent(window);
+//	glfwSwapInterval(0); // Enable vsync
+//	initializeGUI(window);
+//	
+//	const char* loading_bg_path = (picture_dir + string("/loading_background.png")).c_str();
+//	LoadTextureFromFile(loading_bg_path, &(loading_bg.my_image_texture), &(loading_bg.my_image_width), &(loading_bg.my_image_height));
+//	while (!glfwWindowShouldClose(window) && show_loading) {
+//		glfwPollEvents();
+//		ImGui_ImplOpenGL3_NewFrame();
+//		ImGui_ImplGlfw_NewFrame();
+//		ImGui::NewFrame();
+//		int width, height;
+//		glfwGetWindowSize(window, &width, &height);
+//		float display_ratio = 0.2f * width / 1280;
+//
+//
+//		ImGui::SetNextWindowSize(ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
+//		ImGuiWindowFlags window_flags = 0;
+//		window_flags |= ImGuiWindowFlags_NoBackground;
+//		window_flags |= ImGuiWindowFlags_NoTitleBar;
+//		window_flags |= ImGuiWindowFlags_NoResize;
+//		window_flags |= ImGuiWindowFlags_NoMove;
+//		window_flags |= ImGuiWindowFlags_NoScrollbar;
+//
+//		ImGui::Begin("Loading Screen", NULL, window_flags);
+//		ImGui::Image((void*)(intptr_t)loading_bg.my_image_texture, ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
+//		ImGui::End();
+//		// Rendering
+//		int display_w, display_h;
+//		glfwGetFramebufferSize(window, &display_w, &display_h);
+//		glViewport(0, 0, display_w, display_h);
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		ImGui::Render();
+//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//		glfwSwapBuffers(window);
+//	}
+//	//ImGui_ImplOpenGL3_Shutdown();
+//	//ImGui_ImplGlfw_Shutdown();
+//	//ImGui::DestroyContext();
+//	return true; 
+//}
+bool GUI::renderLoadScene() {
+	const char* load_dir = (picture_dir + string("/loading")).c_str();
+	int i = 0; 
+	for (auto& entry : fs::directory_iterator(load_dir)) {
+		std::cout << entry.path() << std::endl;
+		GUIImage* image = &(loading_bg[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		i++;
+	}
+	int idx = 0; 
+	bool increase = true; 
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
+
+	while (!glfwWindowShouldClose(my_window) && show_loading) {
+		
+		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
+			increase = !increase; 
+		}
+
+		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		int width, height;
+		glfwGetWindowSize(my_window, &width, &height);
+		float display_ratio = 0.4f * width / 1280;
+		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
+		ImGui::SetNextWindowSize(size);
+		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
+		ImGui::Begin("Loading Screen", NULL, window_flags);
+		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
+		ImGui::End();
+
+		// Rendering
+		int display_w, display_h;
+		glfwGetFramebufferSize(my_window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(my_window);
+
+		if (increase) {
+			idx++;
+		}else {
+			idx--; 
+		}
+		this_thread::sleep_for(chrono::milliseconds(300));
+	}
+	return true; 
 }

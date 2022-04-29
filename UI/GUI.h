@@ -14,9 +14,12 @@
 #include <string>
 #define IMGUI_DEFINE_MATH_OPERATORS //include to use imVec2 math operation 
 #include "imgui/imgui_internal.h"
+#include <thread>         
+#include <chrono>
 
 #define NUM_ICON 4
 #define NUM_RACK_IMG 6
+#define NUM_LOAD_IMG 7
 
 using namespace std;
 
@@ -33,6 +36,8 @@ public:
 	static string picture_dir;
 	static GLFWwindow* my_window;
 	static GUIImage score_background;
+	static GUIImage loading_bg[NUM_LOAD_IMG]; 
+	static bool show_loading;
 	static int rack_image_idx;
 	static float rack_size_ratio; 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
@@ -42,6 +47,7 @@ public:
 	static void cleanUp();
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 	static void initializeImage();
+	static bool renderLoadScene();
 };
 
 
