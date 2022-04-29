@@ -124,12 +124,18 @@ private:
 	std::vector<glm::mat4> finalBoneMatrices;
 	float ticks;
 
+	void Model::constructorHelper(ModelEnum thisModel);
+
+	std::map<ModelEnum, Model> model_cache;
+
 public:
 	// Constructor + Deconstructor
 	Model();
 
 	Model(ModelEnum thisModel);
 	~Model();
+
+	Model::Model(const Model &other);
 
 	// Animation Speed
 	float anim_speed = 1;
@@ -170,6 +176,7 @@ public:
 
 	// Operators
 	Model& operator=(const Model& t);
+	void copyHelper(const Model& t);
 };
 
 #endif

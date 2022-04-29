@@ -3,7 +3,20 @@
 Model::Model() {}
 
 Model::Model(ModelEnum thisModel) {
+	if (model_cache.count(thisModel) == 0) {
+		constructorHelper(thisModel);
+		model_cache[thisModel] = *this;
+	}
+	else {
+		copyHelper(model_cache[thisModel]);
+	}
+}
 
+Model::Model(const Model &other) {
+	copyHelper(other);
+}
+
+void Model::constructorHelper(ModelEnum thisModel) {
 	model = thisModel;
 	// Set current animation mode
 	last = IDLE;
@@ -667,8 +680,7 @@ void Model::setAnimationMode(AniMode ani) {
 	}
 }
 
-Model& Model::operator=(const Model& t)
-{
+void Model::copyHelper(const Model& t) {
 	// Copy all values
 	curr = t.curr;
 	last = t.last;
@@ -691,6 +703,11 @@ Model& Model::operator=(const Model& t)
 
 	finalBoneMatrices = t.finalBoneMatrices;
 	ticks = t.ticks;
+}
+
+Model& Model::operator=(const Model& t)
+{
+	copyHelper(t);
 
 	return *this;
 }

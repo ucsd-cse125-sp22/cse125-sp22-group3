@@ -62,6 +62,23 @@ void print_versions()
 #endif
 }
 
+void load_models() 
+{
+	// Model constructor internally has logic to cache meshes
+	Model(CHAR_BUMBUS);
+	Model(CHAR_POGO);
+	Model(CHAR_SWAINKY);
+	Model(CHAR_GILMAN);
+	Model(VEG_CABBAGE);
+	Model(VEG_CARROT);
+	Model(VEG_CORN);
+	Model(VEG_RADISH);
+	Model(VEG_TOMATO);
+	Model(WORLD_PLOT);
+	Model(WORLD_SEED);
+
+}
+
 int main(int argc, char* argv[])
 {
 	if (argc > 1 && (std::string(argv[1]) == "server-build")) { //TODO Add Seperate Project
@@ -101,15 +118,7 @@ int main(int argc, char* argv[])
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-	/*
-	Model bumbus = Model(CHAR_BUMBUS);
-	Model pogo = Model(CHAR_POGO);
-	Model swainky = Model(CHAR_SWAINKY);
-	Model gilma = Model(CHAR_GILMAN);
-	Model carrot = Model(VEG_CARROT); // PLACEHOLDER
-	Model corn = Model(VEG_CORN); 
-	Model radish = Model(VEG_RADISH); 
-	*/
+	load_models();
 
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 
@@ -168,41 +177,6 @@ int main(int argc, char* argv[])
 
 		// Swap buffers.
 		glfwSwapBuffers(window);
-        
-		/*
-		char* dummy_data = "Hello from the Networking Team";
-		status = client->syncWithServer(dummy_data, strlen(dummy_data) + 1, [window](const char* recv_buf, size_t recv_len)
-		{
-			printf("Callback echo: %.*s\n", (unsigned int)recv_len, recv_buf);
-
-			// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-
-			if (InputManager::getMoved) {
-				InputCommands inCom = InputManager::getLastCommand();
-				if (InputManager::checkIdle())
-					inCom = NONE;
-				GameManager::SetPlayerInput(inCom, 0);
-			}
-
-			InputManager::setMoved();
-			//GameManager::SetPlayerInput(inCom, 0);
-
-			//IMGUI rendering
-			ImGui_ImplGlfwGL3_NewFrame();
-			
-			ImGui::Begin("My Name is Window, IMGUI Window");
-			ImGui::Text("Hello there adeventurer!");
-			ImGui::End();
-
-			// Main render display callback. Rendering of objects is done here. (Draw)
-			Window::displayCallback(window);
-
-			// Idle callback. Updating objects, etc. can be done here. (Update)
-			
-
-			Window::idleCallback();
-		});
-		*/
 
 		auto end_time = std::chrono::steady_clock::now();
 		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
