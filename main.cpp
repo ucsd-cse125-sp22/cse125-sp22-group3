@@ -93,7 +93,8 @@ void load_models()
 	Model(WORLD_FLAG_CABBAGE);
 	Model(WORLD_FLAG_RADDISH);
 	Model(WORLD_FLAG_TOMATO);
-
+	this_thread::sleep_for(chrono::milliseconds(5000));
+	GUI::show_loading = false; 
 
 }
 
