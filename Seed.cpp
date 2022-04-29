@@ -34,9 +34,11 @@ ModelEnum Seed::GetModel()
 
 void Seed::SetModel(ModelEnum newModel, glm::vec2 pos)
 {
-
 	model = newModel;
 	*translate = pos;
+	// rotate 90 degrees towards viewer
+	rotation = glm::rotate(glm::mat4(1.0f), 3.14f, glm::vec3(0,1,0));
+	//setModelChanged(true);
 }
 
 std::vector<Collider*> Seed::GetColliders()
@@ -73,8 +75,13 @@ glm::mat4 Seed::GetRotation() const
 	return rotation;
 }
 
+VegetableType Seed::GetType()
+{
+	return type;
+}
+
 bool Seed::CanInteract(Player* player) { 
-	return !player->GetIsHolding(); 
+	return !player->GetIsHolding() && !isPlanted; 
 }
 
 void Seed::OnInteract(Player* player) { 
@@ -87,6 +94,11 @@ void Seed::OnDrop() {
 
 glm::mat4 Seed::GetHoldTransform() { 
 	return hold_transformation_; 
+}
+
+void Seed::SetPlanted()
+{
+	isPlanted = true;
 }
 
 glm::mat4 Seed::GetTransformation() {

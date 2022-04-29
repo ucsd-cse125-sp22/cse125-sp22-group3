@@ -11,7 +11,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		ModelEnum model;
 
 		ColliderCircle* collider_;
-
+		bool isPlanted = false;
 		// Transformations
 		glm::vec2* translate = nullptr;
 		glm::mat4 rotation{};
@@ -39,6 +39,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		void OnInteract(Player* player) override;
 		void OnDrop() override;
 		glm::mat4 GetHoldTransform() override;
+		void SetPlanted();
 
 		// Information
 		ModelEnum GetModel();
@@ -50,4 +51,8 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::mat4 rotation);
 		glm::mat4 GetRotation() const;
+		VegetableType GetType();
+
+
+		
 };

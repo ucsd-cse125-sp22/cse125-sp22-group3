@@ -26,8 +26,15 @@ inline int ServerMain(){
 	Seed seedTomato{ VegetableType::TOMATO, WORLD_SEED_TOMATO };
 	Seed seedRadish{ VegetableType::RADISH, WORLD_SEED_RADISH };
 
+	Seed flagCarrot{ VegetableType::CARROT, WORLD_FLAG_CARROT };
+	Seed flagCabbage{ VegetableType::CABBAGE, WORLD_FLAG_CABBAGE };
+	Seed flagCorn{ VegetableType::CORN, WORLD_FLAG_CORN };
+	Seed flagTomato{ VegetableType::TOMATO, WORLD_FLAG_TOMATO };
+	Seed flagRadish{ VegetableType::RADISH, WORLD_FLAG_RADISH };
 
-	GameManager game({ &swainky }, { &cabbage, &corn, &radish}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
+
+
+	GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)

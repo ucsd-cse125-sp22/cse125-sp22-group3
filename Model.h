@@ -142,6 +142,7 @@ private:
 	void Model::constructorHelper(ModelEnum thisModel);
 
 	std::map<ModelEnum, Model> model_cache;
+	
 
 public:
 	// Constructor + Deconstructor
@@ -188,10 +189,13 @@ public:
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);
+	bool modelChanged = true;
 
 	// Operators
 	Model& operator=(const Model& t);
 	void copyHelper(const Model& t);
+
+	
 };
 
 #endif

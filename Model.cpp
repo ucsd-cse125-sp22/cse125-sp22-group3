@@ -200,7 +200,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 			if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
 			{
 				textures.push_back(textures_loaded[j]);
-				//skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+				skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
 				break;
 			}
 		}
@@ -680,6 +680,7 @@ void Model::setAnimationMode(AniMode ani) {
 		curr = ani;
 	}
 }
+
 
 void Model::copyHelper(const Model& t) {
 	// Copy all values

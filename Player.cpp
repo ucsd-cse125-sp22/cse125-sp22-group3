@@ -176,7 +176,29 @@ void Player::Use()
 						auto seed = dynamic_cast<Seed*>(entityHeld);
 						plot->isPlanted = true;
 						plot->SetPlantedVegetable(seed);
-						seed->SetModel(ModelEnum::VEG_CABBAGE, plot->GetTranslate());
+
+						// maybe move this to a helper method its kinda bulky here
+						switch (seed->GetType()) {
+						case VegetableType::CABBAGE:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
+							break;
+						case VegetableType::CORN:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
+							break;
+						case VegetableType::CARROT:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
+							break;
+						case VegetableType::RADISH:
+							seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
+							break;
+						case VegetableType::TOMATO:
+							seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
+							break;
+
+						default:
+							printf("Error seed to flag not found\n");
+						}
+						seed->SetPlanted();
 						this->Drop();
 						SetTriggeringEntity(nullptr);
 					}
