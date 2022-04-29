@@ -26,16 +26,17 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
 	vegetables_ = vegetables;
 	for (Vegetable* vegetable : vegetables_) {
-		vegetable->SetPosition({ i * 15,5,0 });
+		vegetable->SetPosition({ i * 10,5,0 });
 		game_entities.push_back(vegetable);
 		game_entities.back()->type = EntityType::VEGETABLE;
 		i++;
 	}
 	plots_ = plots;
 	for (Plot* plot : plots_) {
-		plot->SetPosition({ 80,30,0 });
+		plot->SetPosition({ i*10,30,0 });
 		game_entities.push_back(plot);
 		game_entities.back()->type = EntityType::PLOT;
+		i++;
 	}
 
 	// Instantiate Physics Engine
@@ -70,23 +71,26 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
 	vegetables_ = vegetables;
 	for (Vegetable* vegetable : vegetables_) {
-		vegetable->SetPosition({ i * 15,5,0 });
+		
+		vegetable->SetPosition({ i * 10,5,0 });
 		game_entities.push_back(vegetable);
 		game_entities.back()->type = EntityType::VEGETABLE;
 		i++;
 	}
 	plots_ = plots;
 	for (Plot* plot : plots_) {
-		plot->SetPosition({ 80,30,0 });
+		plot->SetPosition({ i*10,30,0 });
 		game_entities.push_back(plot);
 		game_entities.back()->type = EntityType::PLOT;
+		i++;
 	}
 
 	seeds_ = seeds;
 	for (Seed* seed : seeds_) {
-		seed->SetPosition({ 100, 30, 0 });
+		seed->SetPosition({ i*10, 30, 0 });
 		game_entities.push_back(seed);
 		game_entities.back()->type = EntityType::SEED;
+		i++;
 	}
 
 	// Instantiate Physics Engine
@@ -170,6 +174,17 @@ std::pair<char*, int> GameManager::GetServerBuf()
 						});
 				}
 			}
+			case EntityType::GROWTH: {
+				auto growth = dynamic_cast<Growth*>(entity);
+				if (growth != nullptr) {
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(growth),
+						growth->GetModel(),
+						growth->modelAnim,
+						growth->GetParentTransform()
+						});
+				}
+			}
 		}
 	}
 
@@ -188,6 +203,8 @@ std::pair<char*, int> GameManager::GetServerBuf()
 	sheader.player_transform = players_[0]->GetParentTransform(); // TODO assumes player index 0
 	
 	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
+
+	printf("server size %d", sheader.num_models);
 	serverSerialize(server_buf, &sheader, model_infos.data());
 	return std::make_pair(server_buf, GetBufSize(&sheader));
 }

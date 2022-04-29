@@ -6,7 +6,7 @@
 #include "../GameManager.h"
 
 #define DEFAULT_PORT "8686" // TODO change default port
-#define DEFAULT_BUFLEN 1024
+#define DEFAULT_BUFLEN 102400
 
 
 class Server

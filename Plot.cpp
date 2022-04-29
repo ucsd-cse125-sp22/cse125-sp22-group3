@@ -12,14 +12,14 @@ Plot::Plot(ModelEnum curr) {
 }
 
 Plot::~Plot() {}
-
+Plot::Plot() {}
 void Plot::FixedUpdate() {
 	collider_->center = *translate;
 }
 
 void Plot::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTransformation();
-	// model.draw(view, projection, parent, shader);
+	//model.draw(view, projection, parent, shader);
 }
 
 void Plot::Draw(GLuint shader) {
@@ -69,10 +69,17 @@ bool Plot::CanInteract(Player* player) {
 
 void Plot::OnInteract(Player* player) {}
 
-void Plot::SetPlantedVegetable(Vegetable* vegetable) {
-	plantedVegetable = vegetable;
+void Plot::SetPlantedVegetable(Seed* seed) {
+	plantedVegetable = seed;
 }
 
 Vegetable* Plot::GetPlantedVegetable() {
-	return plantedVegetable;
+	//return plantedVegetable;
+	//TODO DONT FORGET
+	return nullptr;
+}
+
+glm::vec2 Plot::GetTranslate()
+{
+	return *translate;
 }

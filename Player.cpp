@@ -173,10 +173,10 @@ void Player::Use()
 				auto plot = dynamic_cast<Plot*>(entityTriggered);
 				if (plot != nullptr) {
 					if (isHolding && !plot->isPlanted) {
-						printf("PLOT");
-						auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
+						auto seed = dynamic_cast<Seed*>(entityHeld);
 						plot->isPlanted = true;
-						plot->SetPlantedVegetable(vegetable);
+						plot->SetPlantedVegetable(seed);
+						seed->SetModel(ModelEnum::VEG_CABBAGE, plot->GetTranslate());
 						this->Drop();
 						SetTriggeringEntity(nullptr);
 					}

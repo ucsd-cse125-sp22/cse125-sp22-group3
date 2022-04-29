@@ -69,13 +69,30 @@ void load_models()
 	Model(CHAR_POGO);
 	Model(CHAR_SWAINKY);
 	Model(CHAR_GILMAN);
+
 	Model(VEG_CABBAGE);
 	Model(VEG_CARROT);
 	Model(VEG_CORN);
 	Model(VEG_RADISH);
 	Model(VEG_TOMATO);
-	Model(WORLD_PLOT);
-	Model(WORLD_SEED);
+
+	Model(WORLD_PLOT_RED);
+	Model(WORLD_PLOT_BLUE);
+	Model(WORLD_PLOT_GREEN);
+	Model(WORLD_PLOT_YELLOW);
+
+	Model(WORLD_SEED_CARROT);
+	Model(WORLD_SEED_CORN);
+	Model(WORLD_SEED_CABBAGE);
+	Model(WORLD_SEED_RADDISH);
+	Model(WORLD_SEED_TOMATO);
+
+	Model(WORLD_FLAG_CARROT);
+	Model(WORLD_FLAG_CORN);
+	Model(WORLD_FLAG_CABBAGE);
+	Model(WORLD_FLAG_RADDISH);
+	Model(WORLD_FLAG_TOMATO);
+
 
 }
 
@@ -187,7 +204,8 @@ int main(int argc, char* argv[])
 	// destroy objects created
 	Window::cleanUp();
 	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
-		delete iter->second;
+		free(iter->second);
+		//delete iter->second;
 	}
 
 	// Cleanup ImGui

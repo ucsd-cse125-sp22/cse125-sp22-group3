@@ -32,6 +32,13 @@ ModelEnum Seed::GetModel()
 	return model;
 }
 
+void Seed::SetModel(ModelEnum newModel, glm::vec2 pos)
+{
+
+	model = newModel;
+	*translate = pos;
+}
+
 std::vector<Collider*> Seed::GetColliders()
 {
 	return { collider_ };

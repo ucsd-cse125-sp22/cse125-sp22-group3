@@ -42,6 +42,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 
 		// Information
 		ModelEnum GetModel();
+		void SetModel(ModelEnum newModel, glm::vec2 pos);
 		glm::mat4 GetParentTransform();
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
