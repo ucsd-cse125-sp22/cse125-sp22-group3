@@ -68,21 +68,12 @@ void Player::Move() {
 	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
 }
 
-
-void Player::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
-	glm::mat4 parent = GetParentTransform();
-	//model.draw(view, projection, parent, shader);
-}
-
 glm::mat4 Player::GetParentTransform()
 {
 	return GetTranslation() * GetRotation() * GetScale();
 }
-
-ModelEnum Player::GetModel()
-{
-	return model;
-}
+ModelEnum Player::GetModelEnum() { return model; }
+AniMode Player::GetAniMode() { return modelAnim; }
 
 void Player::OnTrigger(PhysicsObject* object)
 {
@@ -136,11 +127,6 @@ void Player::OnTrigger(PhysicsObject* object)
 			}
 		}
 	}
-}
-
-void Player::Draw(GLuint shader) {
-	glm::mat4 parent = GetTranslation() * GetRotation() * GetScale();
-	//model.draw(parent, shader); TODO
 }
 
 std::vector<Collider*> Player::GetColliders()

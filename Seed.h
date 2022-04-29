@@ -4,7 +4,7 @@
 #include "Holdable.h"
 #include "Interactable.h"
 
-class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity {
+class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 	
 	private:
 		VegetableType type;
@@ -40,9 +40,13 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		void OnDrop() override;
 		glm::mat4 GetHoldTransform() override;
 
+		// Drawable
+		glm::mat4 GetParentTransform() override;
+		ModelEnum GetModelEnum() override;
+		AniMode GetAniMode() override;
+
 		// Information
 		ModelEnum GetModel();
-		glm::mat4 GetParentTransform();
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
 		glm::vec3 GetPosition() const;

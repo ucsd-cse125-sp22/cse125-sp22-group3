@@ -122,66 +122,16 @@ std::pair<char*, int> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
 	for (GameEntity* entity : game_entities) {
-		switch (entity->type) {
-			case EntityType::PLAYER: {
-				auto player = dynamic_cast<Player*>(entity);
-				if (player != nullptr) {
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(player),
-						player->GetModel(),
-						player->modelAnim,
-						player->GetParentTransform()
-					});
-				}
-			}
-			
-			case EntityType::VEGETABLE: {
-				auto vegetable = dynamic_cast<Vegetable*>(entity);
-				if (vegetable != nullptr) {
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(vegetable),
-						vegetable->GetModel(),
-						vegetable->modelAnim,
-						vegetable->GetParentTransform()
-						});
-				}
-			}
-
-			case EntityType::PLOT: {
-				auto plot = dynamic_cast<Plot*>(entity);
-				if (plot != nullptr) {
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(plot),
-						plot->GetModel(),
-						plot->modelAnim,
-						plot->GetParentTransform()
-						});
-				}
-			}
-
-			case EntityType::SEED: {
-				auto player = dynamic_cast<Seed*>(entity);
-				if (player != nullptr) {
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(player),
-						player->GetModel(),
-						player->modelAnim,
-						player->GetParentTransform()
-						});
-				}
-			}
+		auto drawable = dynamic_cast<Drawable*>(entity);
+		if (drawable) {
+			model_infos.push_back(ModelInfo{
+				reinterpret_cast<uintptr_t>(entity),
+				drawable->GetModelEnum(),
+				drawable->GetAniMode(),
+				drawable->GetParentTransform()
+			});
 		}
 	}
-
-	//for (Player* player : players_)
-	//{
-	//	model_infos.push_back(ModelInfo{
-	//		reinterpret_cast<uintptr_t>(player),
-	//		player->GetModel(),
-	//		player->modelAnim,
-	//		player->GetParentTransform()
-	//	});
-	//}
 
 	ServerHeader sheader{};
 	sheader.num_models = model_infos.size();
@@ -190,33 +140,6 @@ std::pair<char*, int> GameManager::GetServerBuf()
 	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 	serverSerialize(server_buf, &sheader, model_infos.data());
 	return std::make_pair(server_buf, GetBufSize(&sheader));
-}
-
-void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
-{
-	for (auto entity : game_entities) {
-		if (entity->type == EntityType::PLAYER) {
-			dynamic_cast<Player*>(entity)->Draw(view, projection, shader);
-		}
-		else if (entity->type == EntityType::VEGETABLE) {
-			dynamic_cast<Vegetable*>(entity)->Draw(view, projection, shader);
-		}
-		else if (entity->type == EntityType::PLOT) {
-			dynamic_cast<Plot*>(entity)->Draw(view, projection, shader);
-		}
-	}
-}
-
-void GameManager::Draw(const GLuint shader)
-{
-	for (auto entity : game_entities) {
-		if (entity->type == EntityType::PLAYER) {
-			dynamic_cast<Player*>(entity)->Draw(shader);
-		}
-		else if (entity->type == EntityType::VEGETABLE) {
-			dynamic_cast<Vegetable*>(entity)->Draw(shader);
-		}
-	}
 }
 
 void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)

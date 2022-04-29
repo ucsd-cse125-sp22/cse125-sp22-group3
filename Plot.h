@@ -16,8 +16,9 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		void FixedUpdate() override;
 
 		// Drawable
-		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
-		void Draw(GLuint shader) override;
+		glm::mat4 GetParentTransform() override;
+		ModelEnum GetModelEnum() override;
+		AniMode GetAniMode() override;
 		
 		// PhysicsObject
         void OnCollide(PhysicsObject* object) override {};
@@ -27,7 +28,6 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 
 		// Information
 		glm::vec3 GetPosition() const;
-		glm::mat4 GetParentTransform();
 		ModelEnum GetModel();
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::mat4 rotation);

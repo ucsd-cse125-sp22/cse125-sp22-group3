@@ -23,26 +23,12 @@ void Vegetable::FixedUpdate()
 	collider_->center = *translate;
 }
 
-void Vegetable::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader)
-{
-	glm::mat4 parent = GetTransformation();
-	//model.draw(view, projection, parent, shader); TODO remove Draw function from Drawable
-}
-
-void Vegetable::Draw(GLuint shader) {
-	glm::mat4 parent = GetTransformation();
-	//model.draw(parent, shader); TODO
-}
-
 glm::mat4 Vegetable::GetParentTransform()
 {
 	return GetTranslation() * rotation;
 }
-
-ModelEnum Vegetable::GetModel()
-{
-	return model;
-}
+ModelEnum Vegetable::GetModelEnum() { return model; }
+AniMode Vegetable::GetAniMode() { return modelAnim; }
 
 std::vector<Collider*> Vegetable::GetColliders()
 {

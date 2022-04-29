@@ -59,10 +59,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void FixedUpdate() override;
 
 		// Drawable
-		void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
-		void Draw(GLuint shader) override;
-		glm::mat4 GetParentTransform();
-		ModelEnum GetModel();
+		glm::mat4 GetParentTransform() override;
+		ModelEnum GetModelEnum() override;
+		AniMode GetAniMode() override;
 
 		// PhysicsObject
 		void OnCollide(PhysicsObject* object) override {}

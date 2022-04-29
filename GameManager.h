@@ -9,7 +9,7 @@
 #include "Seed.h"
 #include <chrono>
 
-class GameManager : GameEntity, public Drawable
+class GameManager : GameEntity
 {
 public:
     GameManager();
@@ -19,8 +19,6 @@ public:
     // Call Updates on GameState
     void FixedUpdate() override;
     std::pair<char*, int> GetServerBuf();
-    void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) override;
-    void Draw(GLuint shader) override;
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);

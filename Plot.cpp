@@ -17,15 +17,6 @@ void Plot::FixedUpdate() {
 	collider_->center = *translate;
 }
 
-void Plot::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
-	glm::mat4 parent = GetTransformation();
-	// model.draw(view, projection, parent, shader);
-}
-
-void Plot::Draw(GLuint shader) {
-	glm::mat4 parent = GetTransformation();
-}
-
 glm::mat4 Plot::GetTransformation() {
 	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
 	return trans;
@@ -43,15 +34,12 @@ glm::vec3 Plot::GetPosition() const {
 	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
 }
 
-ModelEnum Plot::GetModel()
-{
-	return model;
-}
-
 glm::mat4 Plot::GetParentTransform()
 {
 	return GetTransformation() * rotation;
 }
+ModelEnum Plot::GetModelEnum() { return model; }
+AniMode Plot::GetAniMode() { return modelAnim; }
 
 void Plot::SetPosition(glm::vec3 position)
 {
