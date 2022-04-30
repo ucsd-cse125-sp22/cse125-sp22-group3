@@ -61,6 +61,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		// Growth stuff
 		double plantedTime = 0;
 		bool getIsReady();
+		bool isHarvestable = false;
 
 		
 };
