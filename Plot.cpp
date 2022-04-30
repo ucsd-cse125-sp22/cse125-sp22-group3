@@ -16,7 +16,7 @@ Plot::Plot() {}
 void Plot::FixedUpdate() {
 	collider_->center = *translate;
 }
-
+/**
 void Plot::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 	glm::mat4 parent = GetTransformation();
 	//model.draw(view, projection, parent, shader);
@@ -25,7 +25,7 @@ void Plot::Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) {
 void Plot::Draw(GLuint shader) {
 	glm::mat4 parent = GetTransformation();
 }
-
+*/
 glm::mat4 Plot::GetTransformation() {
 	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
 	return trans;

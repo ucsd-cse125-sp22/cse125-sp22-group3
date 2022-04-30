@@ -3,6 +3,7 @@
 #include "Vegetable.h"
 #include "Holdable.h"
 #include "Interactable.h"
+#include "Drawable.h"
 
 class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 	
@@ -50,7 +51,6 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		ModelEnum GetModel();
 
 		void SetModel(ModelEnum newModel, glm::vec2 pos);
-		glm::mat4 GetParentTransform();
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
 		glm::vec3 GetPosition() const;

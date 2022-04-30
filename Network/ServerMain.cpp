@@ -54,7 +54,7 @@ inline int ServerMain()
 	
 	
 	GameManager game({ &swainky });
-	game.AddEntities({ &cabbage, &corn, &radish, &plot, &seed });
+	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato });
 
 	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)

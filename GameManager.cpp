@@ -22,7 +22,7 @@ GameManager::GameManager(std::vector<Player*> players)
 		i++;
 	}
 
-
+	/**
 	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
 	vegetables_ = vegetables;
 	for (Vegetable* vegetable : vegetables_) {
@@ -92,7 +92,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 		game_entities.back()->type = EntityType::SEED;
 		i++;
 	}
-
+	*/
 	// Instantiate Physics Engine
 	std::vector<PhysicsObject*> physics_objects;
 	for (Player* player : players_) {
