@@ -2,17 +2,25 @@
 #include "../GameManager.h"
 
 //int main(int argc, char* argv[]) {
-inline int ServerMain(){
+inline int ServerMain()
+{
 	Server* server = new Server();
 	Player pogo{CHAR_POGO};
 	Player bumbus{CHAR_BUMBUS};
 	Player gilman{CHAR_GILMAN};
 	Player swainky{CHAR_SWAINKY};
+
+	int i = 1;
 	Vegetable cabbage{ VegetableType::CABBAGE, VEG_CABBAGE };
+	cabbage.SetPosition({i++ * 15, 5, 0});
 	Vegetable carrot{VegetableType::CARROT, VEG_CARROT};
+	carrot.SetPosition({i++ * 15, 5, 0});
 	Vegetable corn {VegetableType::CORN, VEG_CORN};
+	corn.SetPosition({i++ * 15, 5, 0});
 	Vegetable radish{VegetableType::RADISH, VEG_RADISH};
+	radish.SetPosition({i++ * 15, 5, 0});
 	Vegetable tomato{VegetableType::TOMATO, VEG_TOMATO};
+
 	
 	Plot plotRed{WORLD_PLOT_RED};
 	Plot plotBlue{ WORLD_PLOT_BLUE };
@@ -34,7 +42,19 @@ inline int ServerMain(){
 
 
 
-	GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
+	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
+
+	tomato.SetPosition({i++ * 15, 5, 0});
+
+	//Plot plot{WORLD_PLOT};
+	plotRed.SetPosition({ 80,30,0 });
+	
+	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
+	seedCorn.SetPosition({ 100, 30, 0 });
+	
+	
+	GameManager game({ &swainky });
+	game.AddEntities({ &cabbage, &corn, &radish, &plot, &seed });
 
 	server->mainLoop([&game](const ClientPacket cpacket) {
 		if (cpacket.justMoved)

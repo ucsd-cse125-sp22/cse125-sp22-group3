@@ -7,9 +7,9 @@ std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::ste
 
 GameManager::GameManager()
 {
-	physics_ = PhysicsEngine();
+	physics = PhysicsEngine();
 }
-GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots)
+GameManager::GameManager(std::vector<Player*> players)
 {
 	// Initialize Players
 	players_ = players;
@@ -19,9 +19,9 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 		player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
-		game_entities.back()->type = EntityType::PLAYER;
 		i++;
 	}
+
 
 	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
 	vegetables_ = vegetables;
@@ -98,17 +98,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	for (Player* player : players_) {
 		physics_objects.push_back(player);
 	}
-	for (Vegetable* vegetable : vegetables_) {
-		physics_objects.push_back(vegetable);
-	}
-	for (Plot* plot : plots_) {
-		physics_objects.push_back(plot);
-	}
-	for (Seed* seed : seeds_) {
-		physics_objects.push_back(seed);
-	}
-	physics_ = PhysicsEngine(physics_objects);
-
+	physics = PhysicsEngine(physics_objects);
 }
 
 void GameManager::FixedUpdate()
@@ -119,13 +109,24 @@ void GameManager::FixedUpdate()
 	}
 
 	// Check collisions
-	physics_.Compute();
+	physics.Compute();
+}
+void GameManager::AddEntities(std::vector<GameEntity*> entities)
+{
+	for (GameEntity* entity : entities) {
+		game_entities.push_back(entity);
+		auto phys_obj = dynamic_cast<PhysicsObject*>(entity);
+		if (phys_obj) {
+			physics.AddPhysObject(phys_obj);
+		}
+	}
 }
 
 std::pair<char*, int> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
 	for (GameEntity* entity : game_entities) {
+/**
 		switch (entity->type) {
 			case EntityType::PLAYER: {
 				auto player = dynamic_cast<Player*>(entity);
@@ -185,18 +186,17 @@ std::pair<char*, int> GameManager::GetServerBuf()
 						});
 				}
 			}
+*/
+		auto drawable = dynamic_cast<Drawable*>(entity);
+		if (drawable) {
+			model_infos.push_back(ModelInfo{
+				reinterpret_cast<uintptr_t>(entity),
+				drawable->GetModelEnum(),
+				drawable->GetAniMode(),
+				drawable->GetParentTransform()
+			});
 		}
 	}
-
-	//for (Player* player : players_)
-	//{
-	//	model_infos.push_back(ModelInfo{
-	//		reinterpret_cast<uintptr_t>(player),
-	//		player->GetModel(),
-	//		player->modelAnim,
-	//		player->GetParentTransform()
-	//	});
-	//}
 
 	ServerHeader sheader{};
 	sheader.num_models = model_infos.size();
@@ -207,33 +207,6 @@ std::pair<char*, int> GameManager::GetServerBuf()
 	printf("server size %d", sheader.num_models);
 	serverSerialize(server_buf, &sheader, model_infos.data());
 	return std::make_pair(server_buf, GetBufSize(&sheader));
-}
-
-void GameManager::Draw(const glm::mat4 view, const glm::mat4 projection, const GLuint shader)
-{
-	for (auto entity : game_entities) {
-		if (entity->type == EntityType::PLAYER) {
-			dynamic_cast<Player*>(entity)->Draw(view, projection, shader);
-		}
-		else if (entity->type == EntityType::VEGETABLE) {
-			dynamic_cast<Vegetable*>(entity)->Draw(view, projection, shader);
-		}
-		else if (entity->type == EntityType::PLOT) {
-			dynamic_cast<Plot*>(entity)->Draw(view, projection, shader);
-		}
-	}
-}
-
-void GameManager::Draw(const GLuint shader)
-{
-	for (auto entity : game_entities) {
-		if (entity->type == EntityType::PLAYER) {
-			dynamic_cast<Player*>(entity)->Draw(shader);
-		}
-		else if (entity->type == EntityType::VEGETABLE) {
-			dynamic_cast<Vegetable*>(entity)->Draw(shader);
-		}
-	}
 }
 
 void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)
@@ -248,11 +221,6 @@ void GameManager::SetPlayerUse(const int player_index) {
 
 void GameManager::SetPlayerDrop(const int player_index) {
 	players_[player_index]->Drop();
-}
-
-glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
-{
-	return players_[player_index]->GetPosition();
 }
 
 double GameManager::GetFixedDeltaTime() {

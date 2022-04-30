@@ -11,5 +11,4 @@ enum class EntityType {
 class GameEntity {
 	public:
 	virtual void FixedUpdate() = 0;
-	EntityType type;
 };

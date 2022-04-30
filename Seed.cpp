@@ -26,11 +26,8 @@ glm::mat4 Seed::GetParentTransform()
 {
 	return GetTranslation() * rotation;
 }
-
-ModelEnum Seed::GetModel()
-{
-	return model;
-}
+ModelEnum Seed::GetModelEnum() { return model; }
+AniMode Seed::GetAniMode() { return modelAnim; }
 
 void Seed::SetModel(ModelEnum newModel, glm::vec2 pos)
 {

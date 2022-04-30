@@ -1,9 +1,11 @@
 #pragma once
 
 #include "glm.h"
+#include "util.h"
 
 class Drawable {
 	public:
-		virtual void Draw(glm::mat4 view, glm::mat4 projection, GLuint shader) = 0;
-		virtual void Draw(GLuint shader) = 0;
+		virtual ModelEnum GetModelEnum() = 0;
+		virtual AniMode GetAniMode() = 0;
+		virtual glm::mat4 GetParentTransform() = 0;
 };

@@ -5,15 +5,20 @@ PhysicsEngine::PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects)
 	// Add physic objects to lists
 	for (PhysicsObject* object : phys_objects)
 	{
-		//TODO fix this
-		if(object->GetColliders()[0]->GetColliderIsStatic())
-		{
-			static_collidables_.push_back(object);
-		}
-		else
-		{
-			moving_collidables_.push_back(object);
-		}
+		AddPhysObject(object);
+	}
+}
+
+void PhysicsEngine::AddPhysObject(PhysicsObject* phys_object)
+{
+	//TODO fix this
+	if(phys_object->GetColliders()[0]->GetColliderIsStatic())
+	{
+		static_collidables_.push_back(phys_object);
+	}
+	else
+	{
+		moving_collidables_.push_back(phys_object);
 	}
 }
 
