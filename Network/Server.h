@@ -10,7 +10,6 @@ class Server
 private:
 	SOCKET ListenSocket = INVALID_SOCKET;
 	SOCKET ClientSocket = INVALID_SOCKET;
-	char network_data[DEFAULT_BUFLEN];
 
 	void printActiveAdapterAddresses(void);
 

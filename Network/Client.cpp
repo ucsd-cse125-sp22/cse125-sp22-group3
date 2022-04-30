@@ -107,8 +107,14 @@ Client::~Client(void)
 int Client::syncWithServer(const void* send_buf, size_t send_len,
 	std::function<void(char* recv_buf, size_t recv_len)> callback)
 {
+	// prepending buffer length in front
+	char* temp_out_buf = static_cast<char*>(malloc(sizeof(size_t) + send_len));
+	memcpy(temp_out_buf, &send_len, sizeof(size_t));
+	memcpy(temp_out_buf + sizeof(size_t), send_buf, send_len);
+
 	// sending data (inputs)
-	int sendStatus = send(ConnectSocket, static_cast<const char*>(send_buf), send_len, 0);
+	int sendStatus = send(ConnectSocket, temp_out_buf, sizeof(size_t) + send_len, 0);
+	free(temp_out_buf);
 	if (sendStatus == SOCKET_ERROR) {
 		fprintf(stderr, "send failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);

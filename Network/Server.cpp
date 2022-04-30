@@ -158,50 +158,65 @@ void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)>
 	char value = 1;
 	setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
+main_loop_label:
 	while (true) {
 		// receive data from client
-		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0); // TODO edge case for receiving partial packet
-		if (recvStatus == SOCKET_ERROR) {
-			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-			continue;
-		}
-		else if (recvStatus == 0) {
-			fprintf(stderr, "Connection closed\n");
-			closesocket(ClientSocket);
-			return; // TODO only terminate for this client, not others
-		}
+		char* total_recv_buf = NULL;
+		size_t total_recv_len = 0;
+		size_t curr_recv_pos = 0;
+		do {
+			char network_data[DEFAULT_BUFLEN];
+			int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
+			if (recvStatus == SOCKET_ERROR) {
+				fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+				goto main_loop_label;
+			}
+			else if (recvStatus == 0) {
+				fprintf(stderr, "Connection closed\n");
+				closesocket(ClientSocket);
+				return; // TODO only terminate for this client, not others
+			}
 
-		//fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
+			//fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
 
-		ClientPacket cpacket;
-		int i = 0;
-		while (i < (unsigned int)recvStatus) {
-			cpacket.deserializeFrom(&(network_data[i]));
-			i += sizeof(ClientPacket);
-
-			// calls passed-in code
-			std::pair<char*, int> out_data = main_code(cpacket);
-
-			int sendStatus = send(ClientSocket, out_data.first, out_data.second, 0);
-			if (sendStatus == SOCKET_ERROR) {
-				fprintf(stderr, "send failed: %d\n", WSAGetLastError());
-				return; // TODO ideally retry transmission
+			if (total_recv_buf == NULL) {
+				total_recv_len = *reinterpret_cast<size_t*>(network_data);
+				total_recv_buf = static_cast<char*>(malloc(total_recv_len));
+				memcpy(total_recv_buf, network_data + sizeof(size_t), recvStatus - sizeof(size_t));
+				curr_recv_pos += recvStatus - sizeof(size_t);
 			}
 			else {
-				//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
+				memcpy(total_recv_buf + curr_recv_pos, network_data, recvStatus);
+				curr_recv_pos += recvStatus;
 			}
+		} while (curr_recv_pos < total_recv_len);
 
-			free(out_data.first);
+		ClientPacket cpacket;
+		cpacket.deserializeFrom(total_recv_buf);
+		free(total_recv_buf);
 
-			//auto end_time = std::chrono::steady_clock::now();
-			//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
-			//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
-			//begin_time = end_time;
+		// calls passed-in code
+		std::pair<char*, int> out_data = main_code(cpacket);
 
-			// TODO: ascertain if we actually need to sleep
-			/*if (elapsed_time_ms < TICK_MS) {
-				Sleep(TICK_MS - elapsed_time_ms);
-			}*/
+		int sendStatus = send(ClientSocket, out_data.first, out_data.second, 0);
+		if (sendStatus == SOCKET_ERROR) {
+			fprintf(stderr, "send failed: %d\n", WSAGetLastError());
+			return; // TODO ideally retry transmission
 		}
+		else {
+			//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
+		}
+
+		free(out_data.first);
+
+		//auto end_time = std::chrono::steady_clock::now();
+		//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+		//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
+		//begin_time = end_time;
+
+		// TODO: ascertain if we actually need to sleep
+		//if (elapsed_time_ms < TICK_MS) {
+		//	Sleep(TICK_MS - elapsed_time_ms);
+		//}
 	}
 }
