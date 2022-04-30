@@ -208,7 +208,7 @@ void GUI::initializeImage() {
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		image->my_image_width *= 2.0f;
-		image->my_image_height *= 2.0f; 
+		image->my_image_height *= 2.0f;
 		i++;
 	}
 
@@ -271,6 +271,7 @@ void GUI::initializeImage() {
 //	return true; 
 //}
 bool GUI::renderLoadScene() {
+	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	int idx = 0; 
 	bool increase = true; 
 	ImGuiWindowFlags window_flags = 0;
@@ -328,5 +329,6 @@ bool GUI::renderLoadScene() {
 		}
 
 	}
+	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
 	return true; 
 }
