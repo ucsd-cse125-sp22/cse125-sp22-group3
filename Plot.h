@@ -32,7 +32,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		void SetRotation(glm::mat4 rotation);
 		bool isPlanted = false;
 		void SetPlantedVegetable(Seed* seed);
-		Vegetable* GetPlantedVegetable();
+		VegetableType GetPlantedVegetable();
 		glm::vec2 GetTranslate();
 
 
@@ -55,5 +55,8 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
 
+		// Planting stuff
 		Seed* plantedVegetable = nullptr;
+		
+	
 };

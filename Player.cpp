@@ -78,7 +78,7 @@ AniMode Player::GetAniMode() { return modelAnim; }
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
-	if (entity != nullptr && !isHolding) {
+	if (entity != nullptr) {
 		if (entityTriggered == nullptr) {
 			SetTriggeringEntity(entity);
 		}
@@ -122,45 +122,40 @@ void Player::Use()
 			}
 
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
 					if (isHolding && !plot->isPlanted) {
 						
-						auto seed = dynamic_cast<Seed*>(entityHeld);
-						plot->isPlanted = true;
-						plot->SetPlantedVegetable(seed);
+						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
 
-						// maybe move this to a helper method its kinda bulky here
-						switch (seed->GetType()) {
-						case VegetableType::CABBAGE:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
-							break;
-						case VegetableType::CORN:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
-							break;
-						case VegetableType::CARROT:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
-							break;
-						case VegetableType::RADISH:
-							seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
-							break;
-						case VegetableType::TOMATO:
-							seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
-							break;
+							plot->SetPlantedVegetable(seed);
 
-						default:
-							printf("Error seed to flag not found\n");
+							// maybe move this to a helper method its kinda bulky here
+							switch (seed->GetType()) {
+							case VegetableType::CABBAGE:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
+								break;
+							case VegetableType::CORN:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
+								break;
+							case VegetableType::CARROT:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
+								break;
+							case VegetableType::RADISH:
+								seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
+								break;
+							case VegetableType::TOMATO:
+								seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
+								break;
+
+							default:
+								printf("Error seed to flag not found\n");
+							}
+							seed->SetPlanted();
+							this->Drop();
+							SetTriggeringEntity(nullptr);
 						}
-						seed->SetPlanted();
-						this->Drop();
-						SetTriggeringEntity(nullptr);
+						else {
+							printf("Warning: You can only plant seeds not veggies bro\n");
+						}
 					}
 					else if (!isHolding && plot->isPlanted) {
 						printf("UNPLOT");
@@ -175,18 +170,6 @@ void Player::Use()
 					SetHoldEntity(seed);
 					SetTriggeringEntity(nullptr);
 				}
-			}
-			else {
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				printf("PLANTED********************************************************\n");
-				
 			}
 		}
 	}

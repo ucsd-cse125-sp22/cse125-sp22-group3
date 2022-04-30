@@ -13,6 +13,7 @@ Plot::Plot(ModelEnum curr) {
 
 Plot::~Plot() {}
 void Plot::FixedUpdate() {
+	
 	collider_->center = *translate;
 }
 
@@ -57,13 +58,16 @@ bool Plot::CanInteract(Player* player) {
 void Plot::OnInteract(Player* player) {}
 
 void Plot::SetPlantedVegetable(Seed* seed) {
+	isPlanted = true;
 	plantedVegetable = seed;
 }
 
-Vegetable* Plot::GetPlantedVegetable() {
+VegetableType Plot::GetPlantedVegetable() {
 	//return plantedVegetable;
 	//TODO DONT FORGET
-	return nullptr;
+	if (plantedVegetable == nullptr)
+		return VegetableType::NOVEGGIE;
+	return plantedVegetable->GetType();
 }
 
 glm::vec2 Plot::GetTranslate()
