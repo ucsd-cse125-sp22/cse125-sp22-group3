@@ -150,6 +150,7 @@ int main(int argc, char* argv[])
 			out_packet.justMoved = InputManager::getMoved();
 			out_packet.movement = InputManager::getLastMovement();
 			out_packet.lastCommand = InputManager::getLastCommand();
+			
 		}
 		InputManager::resetMoved();
 		out_packet.player_index = 0;
@@ -177,8 +178,13 @@ int main(int argc, char* argv[])
 					if (model_map.count(model_info.model_id) == 0) {
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
+					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
+
+							model_map[model_info.model_id] = new Model(model_info.model);
+					}
 
 					//TODO: Bandaid sol to allow seed model to turn into flag model
+					/**
 					if (model_map[model_info.model_id]->modelChanged && (model_arr[i].model == WORLD_FLAG_CARROT ||
 						model_arr[i].model == WORLD_FLAG_CABBAGE|| model_arr[i].model == WORLD_FLAG_TOMATO|| model_arr[i].model == WORLD_FLAG_CORN||
 						model_arr[i].model == WORLD_FLAG_RADISH)) {
@@ -186,6 +192,7 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id] = new Model(model_info.model);
 						model_map[model_info.model_id]->modelChanged = false;
 					}
+					*/
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}

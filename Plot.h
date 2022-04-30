@@ -3,14 +3,11 @@
 #include "Interactable.h"
 #include "Vegetable.h"
 #include "Seed.h"
-#include "Model.h"
-#include "Drawable.h"
 
 class Plot : public Interactable, public Drawable, public PhysicsObject, public GameEntity {
 	public:
 		// current animation, no custom get/set logic so is set as public field
 		AniMode modelAnim;
-		Plot();
 		Plot(ModelEnum curr);
 		~Plot();
 
@@ -35,7 +32,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		void SetRotation(glm::mat4 rotation);
 		bool isPlanted = false;
 		void SetPlantedVegetable(Seed* seed);
-		Vegetable* GetPlantedVegetable();
+		VegetableType GetPlantedVegetable();
 		glm::vec2 GetTranslate();
 
 
@@ -58,5 +55,8 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
 
+		// Planting stuff
 		Seed* plantedVegetable = nullptr;
+		
+	
 };

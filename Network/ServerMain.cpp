@@ -57,6 +57,7 @@ inline int ServerMain()
 	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato });
 
 	server->mainLoop([&game](const ClientPacket cpacket) {
+		
 		if (cpacket.justMoved)
 		{
 			game.SetPlayerInput(cpacket.movement, cpacket.player_index);

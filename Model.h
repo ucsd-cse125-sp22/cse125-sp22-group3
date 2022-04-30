@@ -189,7 +189,8 @@ public:
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);
-	bool modelChanged = true;
+	ModelEnum getModelEnum();
+	//bool modelChanged = true;
 
 	// Operators
 	Model& operator=(const Model& t);

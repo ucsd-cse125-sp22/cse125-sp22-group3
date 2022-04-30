@@ -1,4 +1,5 @@
 #include "Seed.h"
+#include "GameManager.h"
 
 Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	type = vegetable;
@@ -19,6 +20,12 @@ Seed::~Seed() {}
 
 void Seed::FixedUpdate()
 {
+	if (isPlanted) {
+		plantedTime += GameManager::GetFixedDeltaTime();
+		if (getIsReady()) {
+			model = ModelEnum::VEG_CARROT;
+		}
+	}
 	collider_->center = *translate;
 }
 
@@ -77,6 +84,34 @@ VegetableType Seed::GetType()
 	return type;
 }
 
+bool Seed::getIsReady()
+{
+	switch (type) {
+	case VegetableType::TOMATO:
+		if (plantedTime >= 5)
+			return true;
+		break;
+	case VegetableType::CORN:
+		if (plantedTime >= 10)
+			return true;
+		break;
+	case VegetableType::CARROT:
+		if (plantedTime >= 15)
+			return true;
+		break;
+	case VegetableType::RADISH:
+		if (plantedTime >= 20)
+			return true;
+		break;
+	case VegetableType::CABBAGE:
+		if (plantedTime >= 25)
+			return true;
+		break;
+
+	}
+	return false;
+}
+
 bool Seed::CanInteract(Player* player) { 
 	return !player->GetIsHolding() && !isPlanted; 
 }
@@ -96,6 +131,7 @@ glm::mat4 Seed::GetHoldTransform() {
 void Seed::SetPlanted()
 {
 	isPlanted = true;
+	plantedTime = 0;
 }
 
 glm::mat4 Seed::GetTransformation() {

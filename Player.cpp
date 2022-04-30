@@ -78,7 +78,7 @@ AniMode Player::GetAniMode() { return modelAnim; }
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
-	if (entity != nullptr && !isHolding) {
+	if (entity != nullptr) {
 		if (entityTriggered == nullptr) {
 			SetTriggeringEntity(entity);
 		}
@@ -112,6 +112,8 @@ void Player::Use()
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
+			auto temp= dynamic_cast<Plot*>(entityTriggered);
+			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
 			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
 				if (!isHolding && (vegetable != nullptr)) {
 					SetHoldEntity(vegetable);
@@ -121,34 +123,39 @@ void Player::Use()
 
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
 					if (isHolding && !plot->isPlanted) {
-						auto seed = dynamic_cast<Seed*>(entityHeld);
-						plot->isPlanted = true;
-						plot->SetPlantedVegetable(seed);
+						
+						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
 
-						// maybe move this to a helper method its kinda bulky here
-						switch (seed->GetType()) {
-						case VegetableType::CABBAGE:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
-							break;
-						case VegetableType::CORN:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
-							break;
-						case VegetableType::CARROT:
-							seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
-							break;
-						case VegetableType::RADISH:
-							seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
-							break;
-						case VegetableType::TOMATO:
-							seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
-							break;
+							plot->SetPlantedVegetable(seed);
 
-						default:
-							printf("Error seed to flag not found\n");
+							// maybe move this to a helper method its kinda bulky here
+							switch (seed->GetType()) {
+							case VegetableType::CABBAGE:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
+								break;
+							case VegetableType::CORN:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
+								break;
+							case VegetableType::CARROT:
+								seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
+								break;
+							case VegetableType::RADISH:
+								seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
+								break;
+							case VegetableType::TOMATO:
+								seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
+								break;
+
+							default:
+								printf("Error seed to flag not found\n");
+							}
+							seed->SetPlanted();
+							this->Drop();
+							SetTriggeringEntity(nullptr);
 						}
-						seed->SetPlanted();
-						this->Drop();
-						SetTriggeringEntity(nullptr);
+						else {
+							printf("Warning: You can only plant seeds not veggies bro\n");
+						}
 					}
 					else if (!isHolding && plot->isPlanted) {
 						printf("UNPLOT");
@@ -158,7 +165,7 @@ void Player::Use()
 				//}
 			}
 			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				std::cout << "Here" << std::endl;
+				//std::cout << "Here" << std::endl;
 				if (!isHolding) {
 					SetHoldEntity(seed);
 					SetTriggeringEntity(nullptr);

@@ -9,7 +9,8 @@ enum class VegetableType {
     CABBAGE,
     CORN,
     CARROT,
-    RADISH
+    RADISH,
+    NOVEGGIE
 };
 
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
@@ -19,7 +20,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 
         Vegetable(VegetableType type, ModelEnum curr);
         ~Vegetable();
-        VegetableType type;
+        VegetableType type = VegetableType::NOVEGGIE;
 
         // GameEntity
         void FixedUpdate() override;

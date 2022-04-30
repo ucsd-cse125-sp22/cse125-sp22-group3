@@ -3,7 +3,6 @@
 #include "Vegetable.h"
 #include "Holdable.h"
 #include "Interactable.h"
-#include "Drawable.h"
 
 class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 	
@@ -59,6 +58,9 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		glm::mat4 GetRotation() const;
 		VegetableType GetType();
 
+		// Growth stuff
+		double plantedTime = 0;
+		bool getIsReady();
 
 		
 };

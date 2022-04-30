@@ -707,6 +707,11 @@ void Model::copyHelper(const Model& t) {
 	ticks = t.ticks;
 }
 
+ModelEnum Model::getModelEnum()
+{
+	return model;
+}
+
 Model& Model::operator=(const Model& t)
 {
 	copyHelper(t);
