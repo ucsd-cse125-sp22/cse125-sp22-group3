@@ -144,6 +144,7 @@ Server::~Server(void)
 	WSACleanup();
 }
 
+//auto begin_time = std::chrono::steady_clock::now();
 void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code)
 {
 	ClientSocket = INVALID_SOCKET;
@@ -158,8 +159,6 @@ void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)>
 	setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
 	while (true) {
-		auto begin_time = std::chrono::steady_clock::now();
-
 		// receive data from client
 		int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0); // TODO edge case for receiving partial packet
 		if (recvStatus == SOCKET_ERROR) {
@@ -172,7 +171,8 @@ void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)>
 			return; // TODO only terminate for this client, not others
 		}
 
-		fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
+		//fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
+
 		ClientPacket cpacket;
 		int i = 0;
 		while (i < (unsigned int)recvStatus) {
@@ -188,18 +188,20 @@ void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)>
 				return; // TODO ideally retry transmission
 			}
 			else {
-				fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
+				//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
 			}
 
 			free(out_data.first);
 
-			auto end_time = std::chrono::steady_clock::now();
-			long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-			fprintf(stderr, "Elapsed time: %lld\n", elapsed_time_ms);
+			//auto end_time = std::chrono::steady_clock::now();
+			//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+			//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
+			//begin_time = end_time;
 
-			if (elapsed_time_ms < TICK_MS) {
+			// TODO: ascertain if we actually need to sleep
+			/*if (elapsed_time_ms < TICK_MS) {
 				Sleep(TICK_MS - elapsed_time_ms);
-			}
+			}*/
 		}
 	}
 }

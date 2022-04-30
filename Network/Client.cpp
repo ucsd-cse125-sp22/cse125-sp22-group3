@@ -116,7 +116,7 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 		exit(1); // TODO more graceful error handling
 	}
 	else {
-		fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
+		//fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
 	}
 
 	//receiving data (updated state)
@@ -129,7 +129,7 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 		fprintf(stderr, "Connection closed by server\n");
 	}
 	else {
-		fprintf(stderr, "Client bytes received: %ld\n", recvStatus);
+		//fprintf(stderr, "Client bytes received: %ld\n", recvStatus);
 		callback(recvbuf, recvStatus);
 	}
 

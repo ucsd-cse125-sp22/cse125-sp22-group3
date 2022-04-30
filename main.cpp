@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
 
-	auto begin_time = std::chrono::steady_clock::now();
+	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
 	load_models();
@@ -204,15 +204,15 @@ int main(int argc, char* argv[])
 		glfwPollEvents();
 
 		//IMGUI rendering
-		Window::show_GUI = GUI::renderUI(Window::show_GUI);
+		//Window::show_GUI = GUI::renderUI(Window::show_GUI);
 
 		// Swap buffers.
 		glfwSwapBuffers(window);
 
-		auto end_time = std::chrono::steady_clock::now();
-		long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
-		printf("Elapsed time between ticks: %lld ms\n\n", elapsed_time_ms);
-		begin_time = end_time;
+		//auto end_time = std::chrono::steady_clock::now();
+		//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+		//printf("Client time between ticks: %lld us\n", elapsed_time_ms);
+		//begin_time = end_time;
 	}
 
 	// destroy objects created
