@@ -7,9 +7,9 @@ std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::ste
 
 GameManager::GameManager()
 {
-	physics_ = PhysicsEngine();
+	physics = PhysicsEngine();
 }
-GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots)
+GameManager::GameManager(std::vector<Player*> players)
 {
 	// Initialize Players
 	players_ = players;
@@ -19,23 +19,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 		player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
 		game_entities.push_back(player);
-		game_entities.back()->type = EntityType::PLAYER;
 		i++;
-	}
-
-	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
-	vegetables_ = vegetables;
-	for (Vegetable* vegetable : vegetables_) {
-		vegetable->SetPosition({ i * 15,5,0 });
-		game_entities.push_back(vegetable);
-		game_entities.back()->type = EntityType::VEGETABLE;
-		i++;
-	}
-	plots_ = plots;
-	for (Plot* plot : plots_) {
-		plot->SetPosition({ 80,30,0 });
-		game_entities.push_back(plot);
-		game_entities.back()->type = EntityType::PLOT;
 	}
 
 	// Instantiate Physics Engine
@@ -43,68 +27,7 @@ GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> v
 	for (Player* player : players_) {
 		physics_objects.push_back(player);
 	}
-	for (Vegetable* vegetable : vegetables_) {
-		physics_objects.push_back(vegetable);
-	}
-	for (Plot* plot : plots_) {
-		physics_objects.push_back(plot);
-	}
-	physics_ = PhysicsEngine(physics_objects);
-
-}
-
-GameManager::GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots, std::vector<Seed*> seeds)
-{
-	// Initialize Players
-	players_ = players;
-	int i = 0;
-	for (Player* player : players_) {
-		// Set Player Positions
-		player->SetWorldPosition({ i * 10,0,0 });
-		// Add Players to Entities list
-		game_entities.push_back(player);
-		game_entities.back()->type = EntityType::PLAYER;
-		i++;
-	}
-
-	// Testing vegetables/plots, eventually would want to include a vector of GameEntities instead of separating each?
-	vegetables_ = vegetables;
-	for (Vegetable* vegetable : vegetables_) {
-		vegetable->SetPosition({ i * 15,5,0 });
-		game_entities.push_back(vegetable);
-		game_entities.back()->type = EntityType::VEGETABLE;
-		i++;
-	}
-	plots_ = plots;
-	for (Plot* plot : plots_) {
-		plot->SetPosition({ 80,30,0 });
-		game_entities.push_back(plot);
-		game_entities.back()->type = EntityType::PLOT;
-	}
-
-	seeds_ = seeds;
-	for (Seed* seed : seeds_) {
-		seed->SetPosition({ 100, 30, 0 });
-		game_entities.push_back(seed);
-		game_entities.back()->type = EntityType::SEED;
-	}
-
-	// Instantiate Physics Engine
-	std::vector<PhysicsObject*> physics_objects;
-	for (Player* player : players_) {
-		physics_objects.push_back(player);
-	}
-	for (Vegetable* vegetable : vegetables_) {
-		physics_objects.push_back(vegetable);
-	}
-	for (Plot* plot : plots_) {
-		physics_objects.push_back(plot);
-	}
-	for (Seed* seed : seeds_) {
-		physics_objects.push_back(seed);
-	}
-	physics_ = PhysicsEngine(physics_objects);
-
+	physics = PhysicsEngine(physics_objects);
 }
 
 void GameManager::FixedUpdate()
@@ -115,7 +38,17 @@ void GameManager::FixedUpdate()
 	}
 
 	// Check collisions
-	physics_.Compute();
+	physics.Compute();
+}
+void GameManager::AddEntities(std::vector<GameEntity*> entities)
+{
+	for (GameEntity* entity : entities) {
+		game_entities.push_back(entity);
+		auto phys_obj = dynamic_cast<PhysicsObject*>(entity);
+		if (phys_obj) {
+			physics.AddPhysObject(phys_obj);
+		}
+	}
 }
 
 std::pair<char*, int> GameManager::GetServerBuf()
@@ -154,11 +87,6 @@ void GameManager::SetPlayerUse(const int player_index) {
 
 void GameManager::SetPlayerDrop(const int player_index) {
 	players_[player_index]->Drop();
-}
-
-glm::vec3 GameManager::GetPlayerPosition(const int player_index) const
-{
-	return players_[player_index]->GetPosition();
 }
 
 double GameManager::GetFixedDeltaTime() {

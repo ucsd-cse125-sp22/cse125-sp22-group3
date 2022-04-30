@@ -13,22 +13,22 @@ class GameManager : GameEntity
 {
 public:
     GameManager();
-    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots);
-    explicit GameManager(std::vector<Player*> players, std::vector<Vegetable*> vegetables, std::vector<Plot*> plots, std::vector<Seed*> seeds);
+    explicit GameManager(std::vector<Player*> players);
 
     // Call Updates on GameState
     void FixedUpdate() override;
-    std::pair<char*, int> GetServerBuf();
+    void AddEntities(std::vector<GameEntity*> entities);
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);
     void SetPlayerUse(int player_index);
     void SetPlayerDrop(int player_index);
-    
-    glm::vec3 GetPlayerPosition(int player_index) const;
+
+    // Information
+    std::pair<char*, int> GetServerBuf();
 
     // Physics Engine
-    PhysicsEngine physics_;
+    PhysicsEngine physics;
 
     // Game entities in the world
     std::vector<GameEntity*> game_entities{};
@@ -37,7 +37,6 @@ public:
     // Typically 30ms, but you never know
     static void UpdateFixedDeltaTime();
     static double GetFixedDeltaTime();
-    
 
 private:
     std::vector<Player*> players_{}; //TODO what the heck
