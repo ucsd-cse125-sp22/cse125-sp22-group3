@@ -3,14 +3,11 @@
 #include "Interactable.h"
 #include "Vegetable.h"
 #include "Seed.h"
-#include "Model.h"
-#include "Drawable.h"
 
 class Plot : public Interactable, public Drawable, public PhysicsObject, public GameEntity {
 	public:
 		// current animation, no custom get/set logic so is set as public field
 		AniMode modelAnim;
-		Plot();
 		Plot(ModelEnum curr);
 		~Plot();
 

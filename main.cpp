@@ -150,6 +150,7 @@ int main(int argc, char* argv[])
 			out_packet.justMoved = InputManager::getMoved();
 			out_packet.movement = InputManager::getLastMovement();
 			out_packet.lastCommand = InputManager::getLastCommand();
+			
 		}
 		InputManager::resetMoved();
 		out_packet.player_index = 0;

@@ -3,7 +3,6 @@
 #include "Vegetable.h"
 #include "Holdable.h"
 #include "Interactable.h"
-#include "Drawable.h"
 
 class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 	

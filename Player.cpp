@@ -112,6 +112,8 @@ void Player::Use()
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
+			auto temp= dynamic_cast<Plot*>(entityTriggered);
+			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
 			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
 				if (!isHolding && (vegetable != nullptr)) {
 					SetHoldEntity(vegetable);
@@ -120,7 +122,17 @@ void Player::Use()
 			}
 
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
 					if (isHolding && !plot->isPlanted) {
+						
 						auto seed = dynamic_cast<Seed*>(entityHeld);
 						plot->isPlanted = true;
 						plot->SetPlantedVegetable(seed);
@@ -158,11 +170,23 @@ void Player::Use()
 				//}
 			}
 			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				std::cout << "Here" << std::endl;
+				//std::cout << "Here" << std::endl;
 				if (!isHolding) {
 					SetHoldEntity(seed);
 					SetTriggeringEntity(nullptr);
 				}
+			}
+			else {
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				printf("PLANTED********************************************************\n");
+				
 			}
 		}
 	}
