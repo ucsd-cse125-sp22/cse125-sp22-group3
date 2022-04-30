@@ -162,6 +162,7 @@ void Player::Use()
 						plot->isPlanted = false;
 						SetTriggeringEntity(nullptr);
 					}
+					
 				//}
 			}
 			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {

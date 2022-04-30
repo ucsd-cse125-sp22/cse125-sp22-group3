@@ -23,7 +23,25 @@ void Seed::FixedUpdate()
 	if (isPlanted) {
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (getIsReady()) {
-			model = ModelEnum::VEG_CARROT;
+			isHarvestable = true;
+			switch (type) {
+			case VegetableType::TOMATO:
+				model = ModelEnum::VEG_TOMATO;
+				break;
+			case VegetableType::CORN:
+				model = ModelEnum::VEG_CORN;
+				break;
+			case VegetableType::CARROT:
+				model = ModelEnum::VEG_CARROT;
+				break;
+			case VegetableType::RADISH:
+				model = ModelEnum::VEG_RADISH;
+				break;
+			case VegetableType::CABBAGE:
+				model = ModelEnum::VEG_CABBAGE;
+				break;
+
+			}
 		}
 	}
 	collider_->center = *translate;
