@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 	// initialize IMGUI 
 	GUI::initializeGUI(window); 
 	GUI::initializeImage();
-	
+
 	GUI::show_loading = true;
 	//std::thread loadingGuithread(GUI::renderLoadScene, window);
 	

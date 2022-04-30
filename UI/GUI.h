@@ -19,7 +19,7 @@
 
 #define NUM_ICON 4
 #define NUM_RACK_IMG 6
-#define NUM_LOAD_IMG 7
+#define NUM_LOAD_IMG 8
 
 using namespace std;
 

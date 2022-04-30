@@ -216,7 +216,16 @@ void GUI::initializeImage() {
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
 
-	
+	const char* load_dir = (picture_dir + string("/loading")).c_str();
+	i = 0;
+	for (auto& entry : fs::directory_iterator(load_dir)) {
+		std::cout << entry.path() << std::endl;
+		GUIImage* image = &(loading_bg[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		i++;
+	}
 }
 
 //bool GUI::renderLoadScene(GLFWwindow* window) {
@@ -262,16 +271,6 @@ void GUI::initializeImage() {
 //	return true; 
 //}
 bool GUI::renderLoadScene() {
-	const char* load_dir = (picture_dir + string("/loading")).c_str();
-	int i = 0; 
-	for (auto& entry : fs::directory_iterator(load_dir)) {
-		std::cout << entry.path() << std::endl;
-		GUIImage* image = &(loading_bg[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
-			&(image->my_image_width), &(image->my_image_height));
-		i++;
-	}
 	int idx = 0; 
 	bool increase = true; 
 	ImGuiWindowFlags window_flags = 0;
@@ -281,7 +280,7 @@ bool GUI::renderLoadScene() {
 	window_flags |= ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoScrollbar;
 
-	while (!glfwWindowShouldClose(my_window) && show_loading) {
+	while (!glfwWindowShouldClose(my_window)) {
 		
 		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
 			increase = !increase; 
@@ -311,13 +310,23 @@ bool GUI::renderLoadScene() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(my_window);
+		
+		this_thread::sleep_for(chrono::milliseconds(300));
+
+		//handling the last image; 
+		if (idx == 7) {
+			break; 
+		}else if (!show_loading && idx == 6) {
+			idx++;
+			continue; 
+		}
 
 		if (increase) {
 			idx++;
 		}else {
 			idx--; 
 		}
-		this_thread::sleep_for(chrono::milliseconds(300));
+
 	}
 	return true; 
 }
