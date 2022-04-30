@@ -195,6 +195,8 @@ void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)>
 				printf("Server bytes sent: %ld\n", sendStatus);
 			}
 
+			free(out_data.first);
+
 			auto end_time = std::chrono::steady_clock::now();
 			long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count();
 			printf("Elapsed time: %lld\n", elapsed_time_ms);

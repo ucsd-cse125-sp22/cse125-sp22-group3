@@ -10,7 +10,7 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-#define DEFAULT_BUFLEN 1024
+#define DEFAULT_BUFLEN 102400
 
 Client::Client(const char* server_addr, const char* server_port)
 {

@@ -44,8 +44,11 @@ inline void serverDeserialize(char* in_buf, struct ServerHeader **head_buf_ptr, 
 	(*head_buf_ptr) = head_buf;
 
 	int num_models = head_buf->num_models;
+
 	struct ModelInfo* model_arr_buf = reinterpret_cast<struct ModelInfo*>(malloc(num_models * sizeof(struct ModelInfo)));
+	printf("hi %p %p %d\n", model_arr_buf, in_buf, num_models);
 	memcpy(model_arr_buf, in_buf + sizeof(struct ServerHeader), num_models * sizeof(struct ModelInfo));
+	
 	(*model_arr_buf_ptr) =model_arr_buf;
 }
 

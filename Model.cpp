@@ -68,6 +68,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 	std::cout << "scene->mAnimations[0]->mDuration 1: " << scene->mAnimations[0]->mDuration << std::endl;
 	std::cout << "scene->mAnimations[0]->mTicksPerSecond 1: " << scene->mAnimations[0]->mTicksPerSecond << std::endl << std::endl;
 	*/
+	
 }
 
 Model::~Model() {
@@ -679,6 +680,7 @@ void Model::setAnimationMode(AniMode ani) {
 		curr = ani;
 	}
 }
+
 
 void Model::copyHelper(const Model& t) {
 	// Copy all values

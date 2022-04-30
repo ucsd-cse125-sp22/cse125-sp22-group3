@@ -90,11 +90,26 @@ private:
 		{VEG_CABBAGE, "models/cabbage/cabbage.fbx"},
 		{VEG_CARROT, "models/carrot/carrot.fbx"},
 		{VEG_CORN, "models/corn/corn.fbx"}, 
-		{VEG_RADISH, "models/raddish/raddish.fbx"},
+		{VEG_RADISH, "models/radish/radish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
 
-		{WORLD_PLOT, "models/plots/plot.fbx"},
-		{WORLD_SEED, "models/seeds/seed.fbx"},
+		{WORLD_PLOT_RED, "models/plots/plotRed.fbx"},
+		{WORLD_PLOT_BLUE, "models/plots/plotBlue.fbx"},
+		{WORLD_PLOT_GREEN, "models/plots/plotGreen.fbx"},
+		{WORLD_PLOT_YELLOW, "models/plots/plotYellow.fbx"},
+
+		{WORLD_SEED_CABBAGE, "models/seeds/cabbageSeed.fbx"},
+		{WORLD_SEED_CARROT, "models/seeds/carrotSeed.fbx"},
+		{WORLD_SEED_CORN, "models/seeds/cornSeed.fbx"},
+		{WORLD_SEED_RADISH, "models/seeds/radishSeed.fbx"},
+		{WORLD_SEED_TOMATO, "models/seeds/tomatoSeed.fbx"},
+
+		{WORLD_FLAG_CABBAGE, "models/plots/flagCabbage.fbx"},
+		{WORLD_FLAG_CARROT, "models/plots/flagCarrot.fbx"},
+		{WORLD_FLAG_CORN, "models/plots/flagCorn.fbx"},
+		{WORLD_FLAG_RADISH, "models/plots/flagRadish.fbx"},
+		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"}
+		
 	};
 
 	// map to texture (for models who share same mesh, but different textures)
@@ -127,6 +142,7 @@ private:
 	void Model::constructorHelper(ModelEnum thisModel);
 
 	std::map<ModelEnum, Model> model_cache;
+	
 
 public:
 	// Constructor + Deconstructor
@@ -173,10 +189,13 @@ public:
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);
+	bool modelChanged = true;
 
 	// Operators
 	Model& operator=(const Model& t);
 	void copyHelper(const Model& t);
+
+	
 };
 
 #endif

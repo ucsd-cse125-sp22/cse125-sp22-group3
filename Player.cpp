@@ -118,20 +118,44 @@ void Player::Use()
 					SetTriggeringEntity(nullptr);
 				}
 			}
+
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-				if (isHolding && !plot->isPlanted) {
-					printf("PLOT");
-					auto vegetable = dynamic_cast<Vegetable*>(entityHeld);
-					plot->isPlanted = true;
-					plot->SetPlantedVegetable(vegetable);
-					this->Drop();
-					SetTriggeringEntity(nullptr);
-				}
-				else if (!isHolding && plot->isPlanted) {
-					printf("UNPLOT");
-					plot->isPlanted = false;
-					SetTriggeringEntity(nullptr);
-				}
+					if (isHolding && !plot->isPlanted) {
+						auto seed = dynamic_cast<Seed*>(entityHeld);
+						plot->isPlanted = true;
+						plot->SetPlantedVegetable(seed);
+
+						// maybe move this to a helper method its kinda bulky here
+						switch (seed->GetType()) {
+						case VegetableType::CABBAGE:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
+							break;
+						case VegetableType::CORN:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
+							break;
+						case VegetableType::CARROT:
+							seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
+							break;
+						case VegetableType::RADISH:
+							seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
+							break;
+						case VegetableType::TOMATO:
+							seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
+							break;
+
+						default:
+							printf("Error seed to flag not found\n");
+						}
+						seed->SetPlanted();
+						this->Drop();
+						SetTriggeringEntity(nullptr);
+					}
+					else if (!isHolding && plot->isPlanted) {
+						printf("UNPLOT");
+						plot->isPlanted = false;
+						SetTriggeringEntity(nullptr);
+					}
+				//}
 			}
 			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
 				std::cout << "Here" << std::endl;

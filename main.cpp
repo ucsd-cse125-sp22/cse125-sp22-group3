@@ -69,13 +69,30 @@ void load_models()
 	Model(CHAR_POGO);
 	Model(CHAR_SWAINKY);
 	Model(CHAR_GILMAN);
+
 	Model(VEG_CABBAGE);
 	Model(VEG_CARROT);
 	Model(VEG_CORN);
 	Model(VEG_RADISH);
 	Model(VEG_TOMATO);
-	Model(WORLD_PLOT);
-	Model(WORLD_SEED);
+
+	Model(WORLD_PLOT_RED);
+	Model(WORLD_PLOT_BLUE);
+	Model(WORLD_PLOT_GREEN);
+	Model(WORLD_PLOT_YELLOW);
+
+	Model(WORLD_SEED_CARROT);
+	Model(WORLD_SEED_CORN);
+	Model(WORLD_SEED_CABBAGE);
+	Model(WORLD_SEED_RADDISH);
+	Model(WORLD_SEED_TOMATO);
+
+	Model(WORLD_FLAG_CARROT);
+	Model(WORLD_FLAG_CORN);
+	Model(WORLD_FLAG_CABBAGE);
+	Model(WORLD_FLAG_RADDISH);
+	Model(WORLD_FLAG_TOMATO);
+
 
 }
 
@@ -155,12 +172,20 @@ int main(int argc, char* argv[])
 
 				for (int i = 0; i < sheader->num_models; i++)
 				{
-					const ModelInfo model_info = model_arr[i];
+					ModelInfo model_info = model_arr[i];
 
 					if (model_map.count(model_info.model_id) == 0) {
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
 
+					//TODO: Bandaid sol to allow seed model to turn into flag model
+					if (model_map[model_info.model_id]->modelChanged && (model_arr[i].model == WORLD_FLAG_CARROT ||
+						model_arr[i].model == WORLD_FLAG_CABBAGE|| model_arr[i].model == WORLD_FLAG_TOMATO|| model_arr[i].model == WORLD_FLAG_CORN||
+						model_arr[i].model == WORLD_FLAG_RADISH)) {
+
+						model_map[model_info.model_id] = new Model(model_info.model);
+						model_map[model_info.model_id]->modelChanged = false;
+					}
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}
@@ -187,7 +212,8 @@ int main(int argc, char* argv[])
 	// destroy objects created
 	Window::cleanUp();
 	for (auto iter = model_map.begin(); iter != model_map.end(); iter++) {
-		delete iter->second;
+		free(iter->second);
+		//delete iter->second;
 	}
 
 	// Cleanup ImGui

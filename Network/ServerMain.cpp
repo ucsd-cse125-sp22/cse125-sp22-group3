@@ -20,13 +20,37 @@ inline int ServerMain()
 	Vegetable radish{VegetableType::RADISH, VEG_RADISH};
 	radish.SetPosition({i++ * 15, 5, 0});
 	Vegetable tomato{VegetableType::TOMATO, VEG_TOMATO};
+
+	
+	Plot plotRed{WORLD_PLOT_RED};
+	Plot plotBlue{ WORLD_PLOT_BLUE };
+	Plot plotYellow{ WORLD_PLOT_YELLOW };
+	Plot plotGreen{ WORLD_PLOT_GREEN };
+	
+	
+	Seed seedCarrot{ VegetableType::CARROT, WORLD_SEED_CARROT };
+	Seed seedCabbage{ VegetableType::CABBAGE, WORLD_SEED_CABBAGE };
+	Seed seedCorn{ VegetableType::CORN, WORLD_SEED_CORN };
+	Seed seedTomato{ VegetableType::TOMATO, WORLD_SEED_TOMATO };
+	Seed seedRadish{ VegetableType::RADISH, WORLD_SEED_RADISH };
+
+	Seed flagCarrot{ VegetableType::CARROT, WORLD_FLAG_CARROT };
+	Seed flagCabbage{ VegetableType::CABBAGE, WORLD_FLAG_CABBAGE };
+	Seed flagCorn{ VegetableType::CORN, WORLD_FLAG_CORN };
+	Seed flagTomato{ VegetableType::TOMATO, WORLD_FLAG_TOMATO };
+	Seed flagRadish{ VegetableType::RADISH, WORLD_FLAG_RADISH };
+
+
+
+	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
+
 	tomato.SetPosition({i++ * 15, 5, 0});
 
-	Plot plot{WORLD_PLOT};
-	plot.SetPosition({ 80,30,0 });
+	//Plot plot{WORLD_PLOT};
+	plotRed.SetPosition({ 80,30,0 });
 	
-	Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
-	seed.SetPosition({ 100, 30, 0 });
+	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
+	seedCorn.SetPosition({ 100, 30, 0 });
 	
 	
 	GameManager game({ &swainky });
