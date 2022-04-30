@@ -9,13 +9,13 @@ class Server
 {
 private:
 	SOCKET ListenSocket = INVALID_SOCKET;
-	SOCKET ClientSocket = INVALID_SOCKET;
+	std::vector<SOCKET> ClientSocketVec;
 
 	void printActiveAdapterAddresses(void);
 
 public:
 	Server(void);
 	~Server(void);
-	void mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code);
+	void mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code);
 };
 

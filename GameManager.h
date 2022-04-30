@@ -26,7 +26,7 @@ public:
     void SetPlayerDrop(int player_index);
 
     // Information
-    std::pair<char*, int> GetServerBuf();
+    std::vector<std::pair<char*, int>> GetServerBuf();
 
     // Physics Engine
     PhysicsEngine physics;

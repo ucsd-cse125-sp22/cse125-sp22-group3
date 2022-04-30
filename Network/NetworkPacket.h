@@ -5,13 +5,13 @@
 
 #define DEFAULT_PORT "2340"
 #define DEFAULT_BUFLEN 1024
+#define NUM_CLIENTS 2
 
 // the Packet struct that sent by client to server
 struct ClientPacket {
 	bool justMoved = false;
 	glm::vec2 movement{ 0,0 };
 	InputCommands lastCommand;
-	int player_index;
 
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ClientPacket));

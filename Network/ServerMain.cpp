@@ -53,21 +53,23 @@ inline int ServerMain()
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
 	
-	GameManager game({ &swainky });
+	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
 	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato });
 
-	server->mainLoop([&game](const ClientPacket cpacket) {
-		
-		if (cpacket.justMoved)
-		{
-			game.SetPlayerInput(cpacket.movement, cpacket.player_index);
-			if (cpacket.lastCommand == InputCommands::USE)
+	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
+		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			ClientPacket cpacket = client_packet_vec[client_idx];
+			if (cpacket.justMoved)
 			{
-				game.SetPlayerUse(cpacket.player_index);
-			}
-			else if (cpacket.lastCommand == InputCommands::DROP)
-			{
-				game.SetPlayerDrop(cpacket.player_index);
+				game.SetPlayerInput(cpacket.movement, client_idx);
+				if (cpacket.lastCommand == InputCommands::USE)
+				{
+					game.SetPlayerUse(client_idx);
+				}
+				else if (cpacket.lastCommand == InputCommands::DROP)
+				{
+					game.SetPlayerDrop(client_idx);
+				}
 			}
 		}
 

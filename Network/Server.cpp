@@ -131,99 +131,122 @@ void Server::printActiveAdapterAddresses() {
 Server::~Server(void)
 {
 	// shutdown the send half of the connection since no more data will be sent
-	int shutdownCode = shutdown(ClientSocket, SD_SEND);
-	if (shutdownCode == SOCKET_ERROR) {
-		fprintf(stderr, "shutdown failed: %d\n", WSAGetLastError());
+	for (SOCKET ClientSocket : ClientSocketVec) {
+		int shutdownCode = shutdown(ClientSocket, SD_SEND);
+		if (shutdownCode == SOCKET_ERROR) {
+			fprintf(stderr, "shutdown failed: %d\n", WSAGetLastError());
+			closesocket(ClientSocket);
+		}
+
+		// cleanup
 		closesocket(ClientSocket);
 		WSACleanup();
-		exit(1);
 	}
-
-	// cleanup
-	closesocket(ClientSocket);
-	WSACleanup();
 }
 
 //auto begin_time = std::chrono::steady_clock::now();
-void Server::mainLoop(std::function<std::pair<char*, int>(ClientPacket cpacket)> main_code)
+void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
 {
-	ClientSocket = INVALID_SOCKET;
-	ClientSocket = accept(ListenSocket, NULL, NULL); // TODO ClientSocket handling can be multithreaded
-	if (ClientSocket == INVALID_SOCKET) {
-		fprintf(stderr, "accept failed: %d\n", WSAGetLastError());
-		return; // TODO error condition for this
-	}
+	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+		SOCKET client_socket = INVALID_SOCKET;
+		client_socket = accept(ListenSocket, NULL, NULL);
+		if (client_socket == INVALID_SOCKET) {
+			fprintf(stderr, "accept failed: %d\n", WSAGetLastError());
+			return; // TODO error condition for this
+		}
 
-	// disable Nagle on the client socket
-	char value = 1;
-	setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
+		struct sockaddr_in peer_addr;
+		socklen_t socklen = sizeof(peer_addr);
+		getpeername(client_socket, reinterpret_cast<struct sockaddr*>(&peer_addr), &socklen);
+
+		char peer_addr_buf[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &peer_addr.sin_addr, peer_addr_buf, sizeof(peer_addr_buf));
+
+		fprintf(stderr, "Accepted client connection from %s:%d\n", peer_addr_buf, peer_addr.sin_port);
+
+		// disable Nagle on the client socket
+		char value = 1;
+		setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
+
+		ClientSocketVec.push_back(client_socket);
+	}
 
 main_loop_label:
 	while (true) {
-		// receive data from client
-		char* total_recv_buf = NULL;
-		size_t total_recv_len = 0;
-		size_t curr_recv_pos = 0;
-		do {
-			char network_data[DEFAULT_BUFLEN];
-			int recvStatus = recv(ClientSocket, network_data, DEFAULT_BUFLEN, 0);
-			if (recvStatus == SOCKET_ERROR) {
-				fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-				goto main_loop_label;
-			}
-			else if (recvStatus == 0) {
-				fprintf(stderr, "Connection closed\n");
-				closesocket(ClientSocket);
-				return; // TODO only terminate for this client, not others
-			}
+		// receive data from clients
+		std::vector<ClientPacket> client_packet_vec;
+		for (int client_idx = 0; client_idx < NUM_CLIENTS && ClientSocketVec[client_idx] != INVALID_SOCKET; client_idx++) {
+			char* total_recv_buf = NULL;
+			size_t total_recv_len = 0;
+			size_t curr_recv_pos = 0;
+			do {
+				char network_data[DEFAULT_BUFLEN];
+				int recvStatus = recv(ClientSocketVec[client_idx], network_data, DEFAULT_BUFLEN, 0);
+				if (recvStatus == SOCKET_ERROR) {
+					fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+					goto main_loop_label;
+				}
+				else if (recvStatus == 0) {
+					fprintf(stderr, "Connection closed\n");
+					closesocket(ClientSocketVec[client_idx]);
+					ClientSocketVec[client_idx] = INVALID_SOCKET;
+					break;
+				}
 
-			//fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
+				//fprintf(stderr, "Server bytes received: %ld\n", recvStatus);
 
-			if (total_recv_buf == NULL) {
-				total_recv_len = *reinterpret_cast<size_t*>(network_data);
-				total_recv_buf = static_cast<char*>(malloc(total_recv_len));
-				memcpy(total_recv_buf, network_data + sizeof(size_t), recvStatus - sizeof(size_t));
-				curr_recv_pos += recvStatus - sizeof(size_t);
+				if (total_recv_buf == NULL) {
+					total_recv_len = *reinterpret_cast<size_t*>(network_data);
+					total_recv_buf = static_cast<char*>(malloc(total_recv_len));
+					memcpy(total_recv_buf, network_data + sizeof(size_t), recvStatus - sizeof(size_t));
+					curr_recv_pos += recvStatus - sizeof(size_t);
+				}
+				else {
+					memcpy(total_recv_buf + curr_recv_pos, network_data, recvStatus);
+					curr_recv_pos += recvStatus;
+				}
+			} while (curr_recv_pos < total_recv_len);
+
+			if (total_recv_buf != NULL) {
+				ClientPacket cpacket;
+				cpacket.deserializeFrom(total_recv_buf);
+				free(total_recv_buf);
+				client_packet_vec.push_back(cpacket);
+			}
+		}
+		
+		// calls passed-in code
+		std::vector<std::pair<char*, int>> out_vec = main_code(client_packet_vec);
+
+		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			// prepending buffer length in front
+			std::pair<char*, int> out_data = out_vec[client_idx];
+			size_t send_len = out_data.second;
+			char* temp_out_buf = static_cast<char*>(malloc(sizeof(size_t) + send_len));
+			memcpy(temp_out_buf, &send_len, sizeof(size_t));
+			memcpy(temp_out_buf + sizeof(size_t), out_data.first, send_len);
+
+			int sendStatus = send(ClientSocketVec[client_idx], temp_out_buf, sizeof(size_t) + send_len, 0);
+			free(temp_out_buf);
+			if (sendStatus == SOCKET_ERROR) {
+				fprintf(stderr, "send failed: %d\n", WSAGetLastError());
+				return; // TODO ideally retry transmission
 			}
 			else {
-				memcpy(total_recv_buf + curr_recv_pos, network_data, recvStatus);
-				curr_recv_pos += recvStatus;
+				//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
 			}
-		} while (curr_recv_pos < total_recv_len);
 
-		ClientPacket cpacket;
-		cpacket.deserializeFrom(total_recv_buf);
-		free(total_recv_buf);
+			free(out_data.first);
 
-		// calls passed-in code
-		std::pair<char*, int> out_data = main_code(cpacket);
+			//auto end_time = std::chrono::steady_clock::now();
+			//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+			//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
+			//begin_time = end_time;
 
-		// prepending buffer length in front
-		size_t send_len = out_data.second;
-		char* temp_out_buf = static_cast<char*>(malloc(sizeof(size_t) + send_len));
-		memcpy(temp_out_buf, &send_len, sizeof(size_t));
-		memcpy(temp_out_buf + sizeof(size_t), out_data.first, send_len);
-
-		int sendStatus = send(ClientSocket, temp_out_buf, sizeof(size_t) + send_len, 0);
-		free(temp_out_buf);
-		if (sendStatus == SOCKET_ERROR) {
-			fprintf(stderr, "send failed: %d\n", WSAGetLastError());
-			return; // TODO ideally retry transmission
-		}
-		else {
-			//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
-		}
-
-		free(out_data.first);
-
-		//auto end_time = std::chrono::steady_clock::now();
-		//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
-		//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
-		//begin_time = end_time;
-
-		// TODO: ascertain if we actually need to sleep
-		//if (elapsed_time_ms < TICK_MS) {
-		//	Sleep(TICK_MS - elapsed_time_ms);
-		//}
+			// TODO: ascertain if we actually need to sleep
+			//if (elapsed_time_ms < TICK_MS) {
+			//	Sleep(TICK_MS - elapsed_time_ms);
+			//}
+		}	
 	}
 }

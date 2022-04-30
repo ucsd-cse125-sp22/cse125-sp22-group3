@@ -152,7 +152,6 @@ int main(int argc, char* argv[])
 			
 		}
 		InputManager::resetMoved();
-		out_packet.player_index = 0;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

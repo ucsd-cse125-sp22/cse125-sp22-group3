@@ -51,7 +51,7 @@ void GameManager::AddEntities(std::vector<GameEntity*> entities)
 	}
 }
 
-std::pair<char*, int> GameManager::GetServerBuf()
+std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
 	for (GameEntity* entity : game_entities) {
@@ -67,15 +67,17 @@ std::pair<char*, int> GameManager::GetServerBuf()
 		}
 	}
 
-	ServerHeader sheader{};
-	sheader.num_models = model_infos.size();
-	sheader.player_transform = players_[0]->GetParentTransform(); // TODO assumes player index 0
-	
-	auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
+	std::vector<std::pair<char*, int>> out_vec;
+	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+		ServerHeader sheader{};
+		sheader.num_models = model_infos.size();
+		sheader.player_transform = players_[client_idx]->GetParentTransform();
 
-	printf("server size %d", sheader.num_models);
-	serverSerialize(server_buf, &sheader, model_infos.data());
-	return std::make_pair(server_buf, GetBufSize(&sheader));
+		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
+		serverSerialize(server_buf, &sheader, model_infos.data());
+		out_vec.push_back(std::make_pair(server_buf, GetBufSize(&sheader)));
+	}
+	return out_vec;
 }
 
 void GameManager::SetPlayerInput(const glm::vec2 move_input, const int player_index)
