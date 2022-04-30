@@ -8,8 +8,7 @@
 #include <chrono>
 #include <map>
 
-#define SERVER_ADDRESS "127.0.0.1"
-#define SERVER_PORT "8686"
+#define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
 
 void error_callback(int error, const char* description)
 {
@@ -130,7 +129,7 @@ int main(int argc, char* argv[])
 	GUI::initializeImage();
 
 	// Initialize network client interface
-	Client* client = new Client(SERVER_ADDRESS, SERVER_PORT);
+	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
 
 	auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;

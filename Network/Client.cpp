@@ -10,15 +10,13 @@
 
 #pragma comment (lib, "Ws2_32.lib")
 
-#define DEFAULT_BUFLEN 102400
-
 Client::Client(const char* server_addr, const char* server_port)
 {
 	// initialize Winsock 2.2
 	WSADATA wsaData;
 	int startupStatus = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (startupStatus != 0) {
-		printf("WSAStartup failed: %d\n", startupStatus);
+		fprintf(stderr, "WSAStartup failed: %d\n", startupStatus);
 		exit(1);
 	}
 
@@ -33,7 +31,7 @@ Client::Client(const char* server_addr, const char* server_port)
 	struct addrinfo* result = NULL;
 	int getaddrStatus = getaddrinfo(server_addr, server_port, &hints, &result);
 	if (getaddrStatus != 0) { // can't resolve server hostname / IP address
-		printf("getaddrinfo failed: %d\n", getaddrStatus);
+		fprintf(stderr, "getaddrinfo failed: %d\n", getaddrStatus);
 		WSACleanup();
 		exit(1);
 	}
@@ -43,7 +41,7 @@ Client::Client(const char* server_addr, const char* server_port)
 		// creating a socket for the client conforming to current address's protocols
 		ConnectSocket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 		if (ConnectSocket == INVALID_SOCKET) {
-			printf("socket failed with error: %ld\n", WSAGetLastError());
+			fprintf(stderr, "socket failed with error: %ld\n", WSAGetLastError());
 			WSACleanup();
 			continue;
 		}
@@ -63,7 +61,7 @@ Client::Client(const char* server_addr, const char* server_port)
 
 	// if connection failed
 	if (ConnectSocket == INVALID_SOCKET) {
-		printf("Unable to connect to server!\n");
+		fprintf(stderr, "Unable to connect to server!\n");
 		WSACleanup();
 		exit(1);
 	}
@@ -74,7 +72,7 @@ Client::Client(const char* server_addr, const char* server_port)
 		u_long iMode = 1;
 		int ioctlResult = ioctlsocket(ConnectSocket, FIONBIO, &iMode);
 		if (ioctlResult == SOCKET_ERROR) {
-			printf("ioctlsocket failed with error :%d/n", WSAGetLastError());
+			fprintf(stderr, "ioctlsocket failed with error :%d/n", WSAGetLastError());
 			closesocket(ConnectSocket);
 			WSACleanup();
 			exit(1);
@@ -90,7 +88,7 @@ Client::~Client(void)
 {
 	int shutdownStatus = shutdown(ConnectSocket, SD_SEND);
 	if (shutdownStatus == SOCKET_ERROR) {
-		printf("shutdown failed: %d\n", WSAGetLastError());
+		fprintf(stderr, "shutdown failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);
 		WSACleanup();
 		return;
@@ -112,26 +110,26 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 	// sending data (inputs)
 	int sendStatus = send(ConnectSocket, static_cast<const char*>(send_buf), send_len, 0);
 	if (sendStatus == SOCKET_ERROR) {
-		printf("send failed: %d\n", WSAGetLastError());
+		fprintf(stderr, "send failed: %d\n", WSAGetLastError());
 		closesocket(ConnectSocket);
 		WSACleanup();
 		exit(1); // TODO more graceful error handling
 	}
 	else {
-		printf("Client bytes sent: %ld\n", sendStatus);
+		fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
 	}
 
 	//receiving data (updated state)
 	char recvbuf[DEFAULT_BUFLEN];
 	int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
 	if (recvStatus == SOCKET_ERROR) {
-		printf("recv failed: %d\n", WSAGetLastError());
+		fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
 	}
 	else if (recvStatus == 0) {
-		printf("Connection closed by server\n");
+		fprintf(stderr, "Connection closed by server\n");
 	}
 	else {
-		printf("Client bytes received: %ld\n", recvStatus);
+		fprintf(stderr, "Client bytes received: %ld\n", recvStatus);
 		callback(recvbuf, recvStatus);
 	}
 
