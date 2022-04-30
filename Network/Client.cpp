@@ -126,19 +126,38 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 	}
 
 	//receiving data (updated state)
-	char recvbuf[DEFAULT_BUFLEN];
-	int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
-	if (recvStatus == SOCKET_ERROR) {
-		fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-	}
-	else if (recvStatus == 0) {
-		fprintf(stderr, "Connection closed by server\n");
-	}
-	else {
+	char* total_recv_buf = NULL;
+	size_t total_recv_len = 0;
+	size_t curr_recv_pos = 0;
+	do {
+		char recvbuf[DEFAULT_BUFLEN];
+		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+		if (recvStatus == SOCKET_ERROR) {
+			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+			break;
+		}
+		else if (recvStatus == 0) {
+			fprintf(stderr, "Connection closed by server\n");
+			break;
+		}
+		
 		//fprintf(stderr, "Client bytes received: %ld\n", recvStatus);
-		callback(recvbuf, recvStatus);
-	}
 
-	return recvStatus;
+		if (total_recv_buf == NULL) {
+			total_recv_len = *reinterpret_cast<size_t*>(recvbuf);
+			total_recv_buf = static_cast<char*>(malloc(total_recv_len));
+			memcpy(total_recv_buf, recvbuf + sizeof(size_t), recvStatus - sizeof(size_t));
+			curr_recv_pos += recvStatus - sizeof(size_t);
+		}
+		else {
+			memcpy(total_recv_buf + curr_recv_pos, recvbuf, recvStatus);
+			curr_recv_pos += recvStatus;
+		}
+	} while (curr_recv_pos < total_recv_len);
+
+	callback(total_recv_buf, total_recv_len);
+	free(total_recv_buf);
+
+	return total_recv_len;
 }
 

@@ -198,7 +198,14 @@ main_loop_label:
 		// calls passed-in code
 		std::pair<char*, int> out_data = main_code(cpacket);
 
-		int sendStatus = send(ClientSocket, out_data.first, out_data.second, 0);
+		// prepending buffer length in front
+		size_t send_len = out_data.second;
+		char* temp_out_buf = static_cast<char*>(malloc(sizeof(size_t) + send_len));
+		memcpy(temp_out_buf, &send_len, sizeof(size_t));
+		memcpy(temp_out_buf + sizeof(size_t), out_data.first, send_len);
+
+		int sendStatus = send(ClientSocket, temp_out_buf, sizeof(size_t) + send_len, 0);
+		free(temp_out_buf);
 		if (sendStatus == SOCKET_ERROR) {
 			fprintf(stderr, "send failed: %d\n", WSAGetLastError());
 			return; // TODO ideally retry transmission
