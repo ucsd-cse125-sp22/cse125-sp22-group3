@@ -51,6 +51,7 @@ glm::mat4 Seed::GetParentTransform()
 {
 	return GetTranslation() * rotation;
 }
+
 ModelEnum Seed::GetModelEnum() { return model; }
 AniMode Seed::GetAniMode() { return modelAnim; }
 

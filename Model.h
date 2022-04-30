@@ -108,7 +108,9 @@ private:
 		{WORLD_FLAG_CARROT, "models/plots/flagCarrot.fbx"},
 		{WORLD_FLAG_CORN, "models/plots/flagCorn.fbx"},
 		{WORLD_FLAG_RADISH, "models/plots/flagRadish.fbx"},
-		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"}
+		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
+
+		{WORLD_MAP, "models/world/world.fbx"}
 		
 	};
 

@@ -1,6 +1,7 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
 
+#include "World.h"
 #include "Player.h"
 #include "Vegetable.h"
 #include "Plot.h"

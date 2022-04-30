@@ -40,7 +40,7 @@ inline int ServerMain()
 	Seed flagTomato{ VegetableType::TOMATO, WORLD_FLAG_TOMATO };
 	Seed flagRadish{ VegetableType::RADISH, WORLD_FLAG_RADISH };
 
-
+	// World world{ WORLD_MAP };
 
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
@@ -55,6 +55,9 @@ inline int ServerMain()
 	
 	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
 	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato });
+	// game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &world }); // todo: ask danica to freeze transformations on the model bc the flowers and like one fence are very very huge :P
+
+	// world.SetPosition({ 0, 0, -5.f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {

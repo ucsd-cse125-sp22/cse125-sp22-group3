@@ -47,8 +47,6 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		AniMode GetAniMode() override;
 
 		// Information
-		ModelEnum GetModel();
-
 		void SetModel(ModelEnum newModel, glm::vec2 pos);
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
