@@ -195,18 +195,18 @@ int main(int argc, char* argv[])
 							model_map[model_info.model_id] = new Model(model_info.model);
 					}
 
-					//TODO: Bandaid sol to allow seed model to turn into flag model
-					/**
-					if (model_map[model_info.model_id]->modelChanged && (model_arr[i].model == WORLD_FLAG_CARROT ||
-						model_arr[i].model == WORLD_FLAG_CABBAGE|| model_arr[i].model == WORLD_FLAG_TOMATO|| model_arr[i].model == WORLD_FLAG_CORN||
-						model_arr[i].model == WORLD_FLAG_RADISH)) {
+					Model& curr_model = *model_map[model_info.model_id];
 
-						model_map[model_info.model_id] = new Model(model_info.model);
-						model_map[model_info.model_id]->modelChanged = false;
+					//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
+					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
+						curr_model.anim_speed = 2;
 					}
-					*/
-					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+					else {
+						curr_model.anim_speed = 1;
+					}
+					
+					curr_model.setAnimationMode(model_info.modelAnim);
+					curr_model.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 				}
 
 				free(sheader);
