@@ -64,13 +64,20 @@ inline int ServerMain()
 			if (cpacket.justMoved)
 			{
 				game.SetPlayerInput(cpacket.movement, client_idx);
-				if (cpacket.lastCommand == InputCommands::USE)
-				{
-					game.SetPlayerUse(client_idx);
-				}
-				else if (cpacket.lastCommand == InputCommands::DROP)
-				{
-					game.SetPlayerDrop(client_idx);
+				switch (cpacket.lastCommand) {
+					case InputCommands::USE:
+						game.SetPlayerUse(client_idx);
+						break;
+					case InputCommands::DROP:
+						game.SetPlayerDrop(client_idx);
+						break;
+					case InputCommands::SPRINT:
+						game.SetPlayerSprint(client_idx, true);
+						break;
+					case InputCommands::STOP_SPRINT:
+						game.SetPlayerSprint(client_idx, false);
+						break;
+					default: break;
 				}
 			}
 		}

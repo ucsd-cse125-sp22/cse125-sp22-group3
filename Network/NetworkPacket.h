@@ -32,6 +32,7 @@ struct ModelInfo {
 // the Packet struct that sent by server to client
 struct ServerHeader {
 	glm::mat4 player_transform;
+	bool player_sprinting;
 	int num_models;
 };
 

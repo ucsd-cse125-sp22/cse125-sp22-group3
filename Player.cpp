@@ -41,8 +41,9 @@ void Player::FixedUpdate() {
 		// Transform input from 2D to 3D Plane
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
-		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
-			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
+		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
+		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
+			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
 		
 		if (isHolding)

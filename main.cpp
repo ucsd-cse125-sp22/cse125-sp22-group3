@@ -199,7 +199,12 @@ int main(int argc, char* argv[])
 
 					//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
-						curr_model.anim_speed = 2;
+						if (sheader->player_sprinting) {
+							curr_model.anim_speed = 3.0f;
+						}
+						else {
+							curr_model.anim_speed = 1.5f;
+						}
 					}
 					else {
 						curr_model.anim_speed = 1;
