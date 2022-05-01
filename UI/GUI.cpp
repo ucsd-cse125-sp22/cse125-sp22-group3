@@ -6,9 +6,13 @@ namespace fs = std::experimental::filesystem;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
+GUIImage GUI::loading_bg[NUM_LOAD_IMG];
+
 int GUI::rack_image_idx; 
 string GUI::picture_dir;
 float GUI::rack_size_ratio; 
+GLFWwindow* GUI::my_window;
+
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -37,8 +41,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
 	picture_dir = "./UI/Pictures";
 	rack_size_ratio = 0.5f;
+	my_window = window;
+
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	//io.Fonts->AddFontFromFileTTF("font.ttf", 18.0f);
@@ -51,6 +58,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 	/*END of IMGUI initialize*/
+
 }
 
 /**
@@ -59,12 +67,18 @@ void GUI::initializeGUI(GLFWwindow* window) {
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
 bool GUI::renderUI(bool show_GUI) {
+	//get current main window size and calculate the ratio for dynamic resizing
+	int width, height; 
+	glfwGetWindowSize(my_window, &width, &height);
+	float display_ratio = 0.2f * width / 1280; 
 	//IMGUI rendering
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
+	ImGui::GetWindowSize(); 
+
 	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
 		show_GUI = !show_GUI;
 		rack_image_idx = 0;
@@ -78,39 +92,45 @@ bool GUI::renderUI(bool show_GUI) {
 	window_flags |= ImGuiWindowFlags_NoScrollbar;
 	//show scoreboard
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::Begin("ScoreBoard_bg", NULL, window_flags);
-	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width*0.5f, score_background.my_image_height*0.5f));
+	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::End();
-	ImGui::SetNextWindowPos(ImVec2(80, 80), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * 0.5f, score_background.my_image_height * 0.5f));
+	ImGui::SetNextWindowPos(ImVec2(190*display_ratio, 190*display_ratio), 0, ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::Begin("ScoreBoard_content", NULL, window_flags);
+
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+	
 	for (int i = 0; i < NUM_ICON; i++) {
 		GUIImage image = icon_images_list[i];
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width, image.my_image_height));
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
 		ImGui::SameLine();
 		ImGui::Text("2000");
 	}
+	ImGui::PopStyleColor();
 	ImGui::End(); 
 
 	//show the sale page
 	if(show_GUI == true) {		
-		// etc.
-		bool open_ptr = true; 
-		ImGui::SetNextWindowSize(ImVec2(rack_images_list[0].my_image_width * rack_size_ratio, rack_images_list[0].my_image_height * rack_size_ratio));
-		ImGui::Begin("My Name is Window, IMGUI Window", &open_ptr, window_flags);
-		//ImGui::Text("Hello there adeventurer!");
-	
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-			if(rack_image_idx<NUM_RACK_IMG-1)
+			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
 		}
 		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if(rack_image_idx>0)
-				rack_image_idx--; 
+			if (rack_image_idx > 0)
+				rack_image_idx--;
 		}
+		// etc.
+		bool open_ptr = true;
 		GUIImage image = rack_images_list[rack_image_idx];
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width*rack_size_ratio, image.my_image_height*rack_size_ratio));//image.my_image_width, image.my_image_height));
+
+		ImVec2 size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+		ImGui::SetNextWindowSize(ImVec2(width,height));
+		ImGui::Begin("Sale GUI", &open_ptr, window_flags);
+		ImGui::SetCursorPos((ImGui::GetContentRegionAvail() - size) * 0.5f);
+		//ImGui::Text("Hello there adeventurer!");	
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, size);//image.my_image_width, image.my_image_height));
 		//ImGui::Text("image demension:%dx%d", image.my_image_width, image.my_image_height);
 		ImGui::End();
 	}
@@ -187,10 +207,128 @@ void GUI::initializeImage() {
 		const char* epath = entry.path().string().c_str();
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 2.0f;
+		image->my_image_height *= 2.0f;
 		i++;
 	}
 
 	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
+
+	const char* load_dir = (picture_dir + string("/loading")).c_str();
+	i = 0;
+	for (auto& entry : fs::directory_iterator(load_dir)) {
+		std::cout << entry.path() << std::endl;
+		GUIImage* image = &(loading_bg[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		i++;
+	}
+}
+
+//bool GUI::renderLoadScene(GLFWwindow* window) {
+//	glfwMakeContextCurrent(window);
+//	glfwSwapInterval(0); // Enable vsync
+//	initializeGUI(window);
+//	
+//	const char* loading_bg_path = (picture_dir + string("/loading_background.png")).c_str();
+//	LoadTextureFromFile(loading_bg_path, &(loading_bg.my_image_texture), &(loading_bg.my_image_width), &(loading_bg.my_image_height));
+//	while (!glfwWindowShouldClose(window) && show_loading) {
+//		glfwPollEvents();
+//		ImGui_ImplOpenGL3_NewFrame();
+//		ImGui_ImplGlfw_NewFrame();
+//		ImGui::NewFrame();
+//		int width, height;
+//		glfwGetWindowSize(window, &width, &height);
+//		float display_ratio = 0.2f * width / 1280;
+//
+//
+//		ImGui::SetNextWindowSize(ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
+//		ImGuiWindowFlags window_flags = 0;
+//		window_flags |= ImGuiWindowFlags_NoBackground;
+//		window_flags |= ImGuiWindowFlags_NoTitleBar;
+//		window_flags |= ImGuiWindowFlags_NoResize;
+//		window_flags |= ImGuiWindowFlags_NoMove;
+//		window_flags |= ImGuiWindowFlags_NoScrollbar;
+//
+//		ImGui::Begin("Loading Screen", NULL, window_flags);
+//		ImGui::Image((void*)(intptr_t)loading_bg.my_image_texture, ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
+//		ImGui::End();
+//		// Rendering
+//		int display_w, display_h;
+//		glfwGetFramebufferSize(window, &display_w, &display_h);
+//		glViewport(0, 0, display_w, display_h);
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		ImGui::Render();
+//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//		glfwSwapBuffers(window);
+//	}
+//	//ImGui_ImplOpenGL3_Shutdown();
+//	//ImGui_ImplGlfw_Shutdown();
+//	//ImGui::DestroyContext();
+//	return true; 
+//}
+bool GUI::renderLoadScene() {
+	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
+	int idx = 0; 
+	bool increase = true; 
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
+
+	while (!glfwWindowShouldClose(my_window)) {
+		
+		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
+			increase = !increase; 
+		}
+
+		glfwPollEvents();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		int width, height;
+		glfwGetWindowSize(my_window, &width, &height);
+		float display_ratio = 0.4f * width / 1280;
+		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
+		ImGui::SetNextWindowSize(size);
+		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
+		ImGui::Begin("Loading Screen", NULL, window_flags);
+		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
+		ImGui::End();
+
+		// Rendering
+		int display_w, display_h;
+		glfwGetFramebufferSize(my_window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(my_window);
+		
+		this_thread::sleep_for(chrono::milliseconds(300));
+
+		//handling the last image; 
+		if (idx == 7) {
+			break; 
+		}else if (!show_loading && idx == 6) {
+			idx++;
+			continue; 
+		}
+
+		if (increase) {
+			idx++;
+		}else {
+			idx--; 
+		}
+
+	}
+	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
+	return true; 
 }

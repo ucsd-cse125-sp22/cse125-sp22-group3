@@ -4,11 +4,13 @@
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
 #include "Model.h"
-
+#include <thread>         
 #include <chrono>
 #include <map>
 
 #define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
+
+bool GUI::show_loading; 
 
 void error_callback(int error, const char* description)
 {
@@ -91,7 +93,8 @@ void load_models()
 	Model(WORLD_FLAG_CABBAGE);
 	Model(WORLD_FLAG_RADDISH);
 	Model(WORLD_FLAG_TOMATO);
-
+	this_thread::sleep_for(chrono::milliseconds(5000));
+	GUI::show_loading = false; 
 
 }
 
@@ -125,19 +128,27 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 
 	// initialize IMGUI 
-	GUI::initializeGUI(window);
+	GUI::initializeGUI(window); 
 	GUI::initializeImage();
 
+	GUI::show_loading = true;
+	//std::thread loadingGuithread(GUI::renderLoadScene, window);
+	
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
 
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-	load_models();
+	std::thread loadingThread(load_models);
 
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
-
+	
+	GUI::renderLoadScene();
+	loadingThread.join(); 
+	//loadingGuithread.join();
+	//GUI::initializeGUI(window);
+	
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
