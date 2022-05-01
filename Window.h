@@ -9,6 +9,8 @@
 #include "GameManager.h"
 #include "DepthMap.h"
 
+#include <map>
+
 class Window
 {
 public:
@@ -27,6 +29,7 @@ public:
 	// Objects to Render
 	static Player* player;
 
+	static std::map<ModelEnum, GLuint> modelShader;
 	// Camera Matrices
 	static glm::mat4 projection;
 	static glm::mat4 view;
@@ -35,7 +38,7 @@ public:
 	static DepthMap* dm;
 
 	// Shader Program ID
-	static GLuint shaderProgram;
+	static GLuint worldShaderProgram;
 	static GLuint modelShaderProgram;
 	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;

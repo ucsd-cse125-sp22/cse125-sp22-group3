@@ -206,7 +206,14 @@ int main(int argc, char* argv[])
 					}
 					*/
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+
+					if (model_info.model != WORLD_MAP) {
+						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+					}
+
+					else {
+						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
+					}
 				}
 
 				free(sheader);

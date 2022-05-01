@@ -21,5 +21,4 @@ void main()
 {
 	TexCoords = uvs;
 	gl_Position = vec4(positions, 1.0);
-
 }

@@ -277,6 +277,8 @@
     <None Include="shaders\shader.vert" />
     <None Include="shaders\shadows.frag" />
     <None Include="shaders\shadows.vert" />
+    <None Include="shaders\world.frag" />
+    <None Include="shaders\world.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Downloads\saleboard.png" />

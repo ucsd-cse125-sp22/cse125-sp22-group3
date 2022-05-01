@@ -77,11 +77,11 @@ void main()
 
     float rimDot = 1 - dot(viewDir, norm);
     float rimIntensity = rimDot * pow(NdotL, 0.1);
-    rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
+    // rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    fragColor = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
-    // fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + specular);
+    // fragColor = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
+    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + specular + rim);
 
     /*
     // Realistic
