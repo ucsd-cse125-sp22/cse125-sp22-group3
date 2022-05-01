@@ -38,8 +38,6 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void SetHoldEntity(GameEntity* entity);
 		bool isHolding = false;
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
-		GameEntity* GetTriggeringEntity();
-		GameEntity* GetHoldEntity();
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
@@ -78,5 +76,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec3 GetPosition() const;
 		void SetWorldPosition(glm::vec3 position);
 		bool GetIsHolding() const { return isHolding; }
+		GameEntity* GetTriggeringEntity();
+		GameEntity* GetHoldEntity();
 
 };

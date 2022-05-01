@@ -32,7 +32,6 @@
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="Seed.cpp" />
-    <ClCompile Include="Growth.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +83,6 @@
     <ClInclude Include="UI\imgui\imgui_impl_glfw.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="Seed.h" />
-    <ClInclude Include="Growth.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>

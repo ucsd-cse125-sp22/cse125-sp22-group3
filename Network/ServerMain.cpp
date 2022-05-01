@@ -53,7 +53,7 @@ inline int ServerMain()
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
 	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
-	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &world });
+	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world });
 
 	world.SetPosition({ 0, 0, -5.0f });
 

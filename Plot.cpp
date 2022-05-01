@@ -51,7 +51,13 @@ void Plot::SetRotation(glm::mat4 rotation) {
 }
 
 bool Plot::CanInteract(Player* player) {
-	return player->GetIsHolding();
+	auto seed = dynamic_cast<Seed*>(player->GetHoldEntity());
+
+	// WARNING: SPAGHETTI (ASK LEON OR DANICA ABOUT IT)
+	// can interact if:
+	// 1. player is holding a seed and plot is empty
+	// 2. player is holding nothing and plot is harvestable
+	return (player->GetIsHolding() && seed && !isPlanted) || (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
 	//return true;
 }
 

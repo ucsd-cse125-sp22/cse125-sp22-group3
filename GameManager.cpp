@@ -5,6 +5,9 @@
 std::chrono::steady_clock::time_point GameManager::curr_time_ = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::steady_clock::now();
 
+std::vector<GameEntity*> GameManager::game_entities = {};
+PhysicsEngine GameManager::physics = PhysicsEngine();
+
 GameManager::GameManager()
 {
 	physics = PhysicsEngine();
@@ -18,7 +21,7 @@ GameManager::GameManager(std::vector<Player*> players)
 		// Set Player Positions
 		player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
-		game_entities.push_back(player);
+		GameManager::game_entities.push_back(player);
 		i++;
 	}
 
@@ -33,28 +36,36 @@ GameManager::GameManager(std::vector<Player*> players)
 void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
-	for (GameEntity* entity : game_entities) {
+	for (GameEntity* entity : GameManager::game_entities) {
 		entity->FixedUpdate();
 	}
 
 	// Check collisions
-	physics.Compute();
+	GameManager::physics.Compute();
 }
+
 void GameManager::AddEntities(std::vector<GameEntity*> entities)
 {
 	for (GameEntity* entity : entities) {
-		game_entities.push_back(entity);
-		auto phys_obj = dynamic_cast<PhysicsObject*>(entity);
-		if (phys_obj) {
-			physics.AddPhysObject(phys_obj);
+		GameManager::game_entities.push_back(entity);
+		if (auto phys_obj = dynamic_cast<PhysicsObject*>(entity)) {
+			GameManager::physics.AddPhysObject(phys_obj);
 		}
+	}
+}
+
+void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
+	for (GameEntity* entity : entities) {
+		auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
+		GameManager::game_entities.erase(iter);
+		//free(entity);
 	}
 }
 
 std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
-	for (GameEntity* entity : game_entities) {
+	for (GameEntity* entity : GameManager::game_entities) {
 
 		auto drawable = dynamic_cast<Drawable*>(entity);
 		if (drawable) {

@@ -112,7 +112,7 @@ void Player::Use()
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
-			auto temp= dynamic_cast<Plot*>(entityTriggered);
+			auto temp = dynamic_cast<Plot*>(entityTriggered);
 			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
 			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
 				if (!isHolding && (vegetable != nullptr)) {
@@ -122,8 +122,7 @@ void Player::Use()
 			}
 
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-					if (isHolding && !plot->isPlanted) {
-						
+					if (isHolding && !plot->isPlanted) {	
 						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
 
 							plot->SetPlantedVegetable(seed);
@@ -157,13 +156,47 @@ void Player::Use()
 							printf("Warning: You can only plant seeds not veggies bro\n");
 						}
 					}
-					else if (!isHolding && plot->isPlanted) {
-						printf("UNPLOT");
-						plot->isPlanted = false;
-						SetTriggeringEntity(nullptr);
+					else if (!isHolding) {
+						Seed* seed = plot->plantedVegetable;
+						if (seed != nullptr && plot->plantedVegetable->isHarvestable) {
+							plot->isPlanted = false;
+
+							// Remove the seed
+							VegetableType veggieType = plot->GetPlantedVegetable();
+							auto seed_ = dynamic_cast<GameEntity*>(seed);
+							if (seed_ != nullptr) {
+								GameManager::RemoveEntities({ seed_ });
+							}
+
+							Vegetable* veggie = nullptr;
+							// Spawn the correct vegetable on the player
+							switch (seed->GetType()) {
+							case VegetableType::CABBAGE:
+								veggie = new Vegetable{ VegetableType::CABBAGE, VEG_CABBAGE };
+								break;
+							case VegetableType::CORN:
+								veggie = new Vegetable{ VegetableType::CORN, VEG_CORN };
+								break;
+							case VegetableType::CARROT:
+								veggie = new Vegetable{ VegetableType::CARROT, VEG_CARROT };
+								break;
+							case VegetableType::RADISH:
+								veggie = new Vegetable{ VegetableType::RADISH, VEG_RADISH };
+								break;
+							case VegetableType::TOMATO:
+								veggie = new Vegetable{ VegetableType::TOMATO, VEG_TOMATO };
+								break;
+
+							default:
+								printf("Error flag to veggie not found\n");
+							}
+
+							GameManager::AddEntities({ veggie });
+							SetHoldEntity(veggie);
+							SetTriggeringEntity(nullptr);
+						}
 					}
 					
-				//}
 			}
 			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
 				//std::cout << "Here" << std::endl;
