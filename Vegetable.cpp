@@ -66,8 +66,16 @@ void Vegetable::SetRotation(glm::mat4 rotation)
 
 bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }
 
-void Vegetable::OnInteract(Player* player) { isHeld = true;}
-void Vegetable::OnDrop() { isHeld = false; }
+void Vegetable::OnInteract(Player* player)
+{
+	isHeld = true;
+	holding_player = player;
+}
+void Vegetable::OnDrop()
+{
+	isHeld = false;
+	holding_player = nullptr;
+}
 glm::mat4 Vegetable::GetHoldTransform() { return hold_transformation_; }
 
 glm::mat4 Vegetable::GetTransformation()

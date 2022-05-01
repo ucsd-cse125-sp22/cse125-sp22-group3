@@ -51,6 +51,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		glm::mat4 GetHoldTransform() override;
         bool isHoldable = true;
 		bool isHeld = false;
+		Player* holding_player = nullptr;
 
 	private:
 		// Transformations

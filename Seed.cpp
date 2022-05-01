@@ -136,11 +136,13 @@ bool Seed::CanInteract(Player* player) {
 }
 
 void Seed::OnInteract(Player* player) { 
-	isHeld = true; 
+	isHeld = true;
+	holding_player = player;
 }
 
 void Seed::OnDrop() { 
-	isHeld = false; 
+	isHeld = false;
+	holding_player = nullptr;
 }
 
 glm::mat4 Seed::GetHoldTransform() { 

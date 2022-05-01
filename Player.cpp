@@ -108,7 +108,6 @@ void Player::Use()
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
 		if (interactable != nullptr && interactable->CanInteract(this)) {
-			interactable->OnInteract(this);
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
@@ -116,11 +115,25 @@ void Player::Use()
 			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
 			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
 				if (!isHolding && (vegetable != nullptr)) {
+					if(vegetable->holding_player != nullptr) {
+						vegetable->holding_player->Drop();
+					}
 					SetHoldEntity(vegetable);
 					SetTriggeringEntity(nullptr);
+					interactable->OnInteract(this);
 				}
 			}
-
+			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
+				//std::cout << "Here" << std::endl;
+				if (!isHolding) {
+					if(seed->holding_player != nullptr) {
+						seed->holding_player->Drop();
+					}
+					SetHoldEntity(seed);
+					SetTriggeringEntity(nullptr);
+					interactable->OnInteract(this);
+				}
+			}
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
 					if (isHolding && !plot->isPlanted) {	
 						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
@@ -151,6 +164,7 @@ void Player::Use()
 							seed->SetPlanted();
 							this->Drop();
 							SetTriggeringEntity(nullptr);
+							interactable->OnInteract(this);
 						}
 						else {
 							printf("Warning: You can only plant seeds not veggies bro\n");
@@ -193,20 +207,14 @@ void Player::Use()
 							GameManager::AddEntities({ veggie });
 							SetHoldEntity(veggie);
 							SetTriggeringEntity(nullptr);
+							interactable->OnInteract(this);
 						}
 					}
-					
-			}
-			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				//std::cout << "Here" << std::endl;
-				if (!isHolding) {
-					SetHoldEntity(seed);
-					SetTriggeringEntity(nullptr);
-				}
 			}
 		}
 	}
 }
+
 void Player::Drop()
 {
 	auto holdable = dynamic_cast<Holdable*>(entityHeld);
