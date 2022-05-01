@@ -35,7 +35,7 @@ public:
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
-	static FBO * postprocessing;
+	// static FBO * postprocessing;
 
 	// Shader Program ID
 	static GLuint worldShaderProgram;

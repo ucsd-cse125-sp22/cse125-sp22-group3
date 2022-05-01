@@ -1,15 +1,13 @@
 #include "FBO.h"
 
-#include "DepthMap.h"
-
 // static variables
-unsigned int FBO::dm;
 glm::mat4 FBO::lightSpaceMatrix;
 
 unsigned int FBO::sceneFBO;
 unsigned int FBO::pingpongFBO[2];
 unsigned int FBO::colorBuffers[2];
 unsigned int FBO::pColorBuffers[2];
+unsigned int FBO::dm;
 
 FBO::FBO() {}
 

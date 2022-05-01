@@ -27,7 +27,8 @@ class FBO {
 		const unsigned int SHADOW_WIDTH = 1024;
 		const unsigned int SHADOW_HEIGHT = 1024;
 		GLuint depthFBO;
-		// texture for depth map
+
+		// shadows
 		static unsigned int dm;
 
 		// projection * view
