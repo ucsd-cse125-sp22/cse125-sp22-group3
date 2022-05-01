@@ -122,7 +122,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
             glActiveTexture(GL_TEXTURE0 + i);
             glUniform1i(glGetUniformLocation(shaderProgram, "shadowMap"), i);
             // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+            glBindTexture(GL_TEXTURE_2D, FBO::dm);
         }
     }
     // Does not have animations
@@ -134,7 +134,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+        glm::value_ptr(FBO::lightSpaceMatrix));
 
     glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
 
@@ -200,7 +200,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
             glActiveTexture(GL_TEXTURE0 + i);
             glUniform1i(glGetUniformLocation(shaderProgram, "shadowMap"), i);
             // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+            glBindTexture(GL_TEXTURE_2D, FBO::dm);
         }
     }
 
@@ -219,7 +219,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
 
     // for shadows
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+        glm::value_ptr(FBO::lightSpaceMatrix));
 
     // Camera position --- TO DO: just get eyePos from windows or just create a camera class? Inverse can be a expensive operation
         // transformations
@@ -254,7 +254,7 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
         glm::value_ptr(m));
     glUniformMatrix4fv(glGetUniformLocation(shader, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+        glm::value_ptr(FBO::lightSpaceMatrix));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 1);
 
@@ -275,7 +275,7 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
         glm::value_ptr(m));
     glUniformMatrix4fv(glGetUniformLocation(shader, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+        glm::value_ptr(FBO::lightSpaceMatrix));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
     // Bind the VAO

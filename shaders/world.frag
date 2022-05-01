@@ -22,6 +22,7 @@ out vec4 fragColor;
 
 void main()
 {
+    /*
     // Toon
     vec4 tex = texture(texture_diffuse1, TexCoords);
     // vec4 tex = vec4(1.0f);
@@ -62,7 +63,6 @@ void main()
         shadow = 0.0;
     }
 
-
     // diffuse shading
     float NdotL = dot(norm, lightPos);
     // float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
@@ -73,17 +73,21 @@ void main()
     float NdotH = dot(norm, halfVector);
     float specularIntensity = pow(NdotH * lightIntensity, 32);
     float specularIntensitySmooth = smoothstep(0.005, 0.01, specularIntensity);
-    vec4 specular = specularIntensitySmooth * vec4(0.1f, 0.1f, 0.1f, 1.0f);
+    vec4 specular = specularIntensitySmooth * vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
     float rimDot = 1 - dot(viewDir, norm);
     float rimIntensity = rimDot * pow(NdotL, 0.1);
     // rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    // fragColor = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
-    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + specular + rim);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
 
-    /*
+    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + spec);
+    */
+
+    
     // Realistic
     vec4 tex = texture(texture_diffuse1, TexCoords);
 
@@ -105,7 +109,7 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
 
     // combine results
-    vec3 ambient = vec3(0.5f, 0.5f, 0.5f) * vec3(tex);
+    vec3 ambient = vec3(0.6f, 0.5f, 0.4f) * vec3(tex);
     vec3 diffuse = vec3(0.6f, 0.6f, 0.6f) * diff * vec3(tex);
     vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(tex);
 
@@ -135,6 +139,6 @@ void main()
     }
  
     // check for transparency;
-    fragColor = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0f);
-    */
+    // fragColor = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0f);
+    fragColor = vec4(ambient + (diffuse + specular), 1.0f);
 }

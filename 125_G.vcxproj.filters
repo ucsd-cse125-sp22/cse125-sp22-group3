@@ -33,6 +33,7 @@
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="Seed.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="FBO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -84,6 +85,7 @@
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="Seed.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="FBO.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

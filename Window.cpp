@@ -17,7 +17,7 @@ const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
 Player* Window::player;
-DepthMap* Window::dm;
+FBO* Window::postprocessing;
 
 // Camera Matrices 
 // Projection matrix:
@@ -79,6 +79,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
+	postprocessing = new FBO(-10.f, 10.f);
 	// Use later, in case many objects need many shaders
 	modelShader = {
 	{ CHAR_BUMBUS, animationShaderProgram },
@@ -237,7 +238,7 @@ void Window::renderDepthMap() {
 	glUseProgram(modelShaderProgram);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+	glBindTexture(GL_TEXTURE_2D, FBO::dm);
 	glUniform1i(glGetUniformLocation(shadowShaderProgram, "shadowMap"), 0);
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;

@@ -7,7 +7,7 @@
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"
-#include "DepthMap.h"
+#include "FBO.h"
 
 #include <map>
 
@@ -35,7 +35,7 @@ public:
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
-	static DepthMap* dm;
+	static FBO * postprocessing;
 
 	// Shader Program ID
 	static GLuint worldShaderProgram;
