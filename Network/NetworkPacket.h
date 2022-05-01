@@ -5,7 +5,7 @@
 
 #define DEFAULT_PORT "2340"
 #define DEFAULT_BUFLEN 1024
-#define NUM_CLIENTS 2
+#define NUM_CLIENTS 1
 
 // the Packet struct that sent by client to server
 struct ClientPacket {
