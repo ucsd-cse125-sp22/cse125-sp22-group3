@@ -136,6 +136,8 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
         glm::value_ptr(DepthMap::lightSpaceMatrix));
 
+    glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
+
     // Bind the VAO
     glBindVertexArray(VAO);
 

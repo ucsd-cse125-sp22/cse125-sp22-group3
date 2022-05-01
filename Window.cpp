@@ -77,7 +77,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	dm = new DepthMap(-20.0f, 20.0f);
+	// dm = new DepthMap(-20.0f, 20.0f);
 			
 	return true;
 }
