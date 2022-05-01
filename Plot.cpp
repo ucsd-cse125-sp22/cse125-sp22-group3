@@ -64,7 +64,7 @@ bool Plot::CanInteract(Player* player) {
 void Plot::OnInteract(Player* player) {}
 
 void Plot::SetPlantedVegetable(Seed* seed) {
-	isPlanted = true;
+	isPlanted = seed != nullptr;
 	plantedVegetable = seed;
 }
 

@@ -159,13 +159,12 @@ void Player::Use()
 					else if (!isHolding) {
 						Seed* seed = plot->plantedVegetable;
 						if (seed != nullptr && plot->plantedVegetable->isHarvestable) {
-							plot->isPlanted = false;
-
 							// Remove the seed
 							VegetableType veggieType = plot->GetPlantedVegetable();
 							auto seed_ = dynamic_cast<GameEntity*>(seed);
 							if (seed_ != nullptr) {
 								GameManager::RemoveEntities({ seed_ });
+								plot->SetPlantedVegetable(nullptr);
 							}
 
 							Vegetable* veggie = nullptr;
