@@ -42,6 +42,8 @@ public:
 	static GLuint modelShaderProgram;
 	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;
+	static GLuint blurShaderProgram;
+	static GLuint finalShaderProgram;
 
 
 	static bool show_GUI;

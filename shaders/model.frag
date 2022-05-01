@@ -8,13 +8,16 @@ out vec4 FragColor;
 // You can output many things. The first vec4 type output determines the color of the fragment
 in vec2 TexCoords;
 
-uniform sampler2D shadowMap;
+uniform sampler2D map;
 
 out vec4 fragColor;
 
 void main()
 {
+    /*
     float depthValue = texture(shadowMap, TexCoords).r;
     FragColor = vec4(vec3(depthValue), 1.0);
-    
+    */
+
+   FragColor = vec4(1.0f);
 }

@@ -36,6 +36,8 @@ GLuint Window::worldShaderProgram;
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
 GLuint Window::shadowShaderProgram; 
+GLuint Window::blurShaderProgram;
+GLuint Window::finalShaderProgram;
 
 // Shader to Program
 std::map<ModelEnum, GLuint> Window::modelShader;
@@ -47,6 +49,8 @@ bool Window::initializeProgram() {
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
 	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag");
+	blurShaderProgram = LoadShaders("shaders/blur.vert", "shaders/blur.frag");
+	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 
 	// Check the shader program.
 	if (!worldShaderProgram)
@@ -79,7 +83,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	postprocessing = new FBO(-10.f, 10.f);
+	postprocessing = new FBO(width, height);
 	// Use later, in case many objects need many shaders
 	modelShader = {
 	{ CHAR_BUMBUS, animationShaderProgram },

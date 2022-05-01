@@ -18,21 +18,34 @@
 
 
 class FBO {
-public:
-	// size of frame buffers
-	const unsigned int SHADOW_WIDTH = 1024;
-	const unsigned int SHADOW_HEIGHT = 1024;
-	GLuint depthFBO;
-	// texture for depth map
-	static unsigned int dm;
+	private:
+		unsigned int rbo;
+		unsigned int attachments[2];
 
-	// projection * view
-	static glm::mat4 lightSpaceMatrix;
+	public:
+		// size of frame buffers
+		const unsigned int SHADOW_WIDTH = 1024;
+		const unsigned int SHADOW_HEIGHT = 1024;
+		GLuint depthFBO;
+		// texture for depth map
+		static unsigned int dm;
 
-	FBO();
-	~FBO();
-	FBO(float np, float fp);
-	void draw();
+		// projection * view
+		static glm::mat4 lightSpaceMatrix;
+
+		// Bloom
+		static unsigned int colorBuffers[2];
+		static unsigned int pColorBuffers[2];
+		static unsigned int sceneFBO;
+		static unsigned int pingpongFBO[2];
+
+
+		FBO();
+		~FBO();
+		FBO(float np, float fp);
+		FBO(int width, int height);
+		void draw();
+		void draw(GLuint shader);
 };
 
 #endif

@@ -1,5 +1,7 @@
 #version 330 core
 // This is a sample fragment shader.
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 // Inputs to the fragment shader are the outputs of the same name from the vertex shader.
 // Note that you do not have access to the vertex shader's default output, gl_Position.
@@ -80,7 +82,16 @@ void main()
     rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    fragColor = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
+    vec4 result = tex * vec4(0.8, 0.7, 0.6, 1.0) * (tex + light + specular + rim);
+    float brightness = dot(vec3(result), vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0) {
+        BrightColor = vec4(result);
+    }
+    else {
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+
+    FragColor = result;
     // fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + specular);
 
     /*

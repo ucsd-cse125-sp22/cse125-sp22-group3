@@ -1,5 +1,7 @@
 #version 330 core
 // This is a sample fragment shader.
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 // Inputs to the fragment shader are the outputs of the same name from the vertex shader.
 // Note that you do not have access to the vertex shader's default output, gl_Position.
@@ -138,7 +140,16 @@ void main()
         shadow = 0.0;
     }
  
+    vec4 result = vec4(ambient + (diffuse + specular), 1.0f);
+    float brightness = dot(vec3(result), vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0) {
+        BrightColor = result;
+    }
+    else {
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+
     // check for transparency;
     // fragColor = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0f);
-    fragColor = vec4(ambient + (diffuse + specular), 1.0f);
+    FragColor = result;
 }
