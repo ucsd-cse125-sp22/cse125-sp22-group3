@@ -16,23 +16,29 @@
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
-
+#include <vector>
 class FBO {
 	private:
 		unsigned int rbo;
 		unsigned int attachments[2];
 
+		float near, far;
+
+		glm::mat4 setLightSpaceMatrix(float np, float fp, glm::mat4 view, int width, int height);
+
 	public:
 		// size of frame buffers
-		const unsigned int SHADOW_WIDTH = 1024;
-		const unsigned int SHADOW_HEIGHT = 1024;
+		const unsigned int SHADOW_WIDTH = 4096;
+		const unsigned int SHADOW_HEIGHT = 4096;
 		GLuint depthFBO;
 
 		// shadows
 		static unsigned int dm;
+		static unsigned int matricesUBO;
 
 		// projection * view
-		static glm::mat4 lightSpaceMatrix;
+		static std::vector<glm::mat4> lightSpaceMatrix;
+		static std::vector<float> shadowCascadeLevels;
 
 		// Bloom
 		static unsigned int colorBuffers[2];
@@ -45,7 +51,7 @@ class FBO {
 		~FBO();
 		FBO(float np, float fp);
 		FBO(int width, int height);
-		void draw();
+		void draw(int width, int height, glm::mat4 view);
 		void draw(GLuint shader);
 };
 

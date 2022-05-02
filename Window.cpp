@@ -17,7 +17,7 @@ const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
 Player* Window::player;
-// FBO* Window::postprocessing;
+FBO* Window::postprocessing;
 
 // Camera Matrices 
 // Projection matrix:
@@ -48,7 +48,7 @@ bool Window::initializeProgram() {
 	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
-	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag");
+	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag", "shaders/shadows.geom");
 	blurShaderProgram = LoadShaders("shaders/blur.vert", "shaders/blur.frag");
 	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 
@@ -83,6 +83,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
+	postprocessing = new FBO(-100.0f, 10000.0f);
 	// Use later, in case many objects need many shaders
 	modelShader = {
 	{ CHAR_BUMBUS, animationShaderProgram },
@@ -241,8 +242,8 @@ void Window::renderDepthMap() {
 	glUseProgram(modelShaderProgram);
 
 	glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D, FBO::dm);
-	glUniform1i(glGetUniformLocation(shadowShaderProgram, "shadowMap"), 0);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
+	glUniform1i(glGetUniformLocation(modelShaderProgram, "map"), 0);
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
 	if (quadVAO == 0)

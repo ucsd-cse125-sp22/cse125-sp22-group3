@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 out vec4 FragColor;
 // This is a sample fragment shader.
 
@@ -8,16 +8,13 @@ out vec4 FragColor;
 // You can output many things. The first vec4 type output determines the color of the fragment
 in vec2 TexCoords;
 
-uniform sampler2D map;
+uniform sampler2DArray map;
 
 out vec4 fragColor;
 
 void main()
-{
-    /*
-    float depthValue = texture(shadowMap, TexCoords).r;
-    FragColor = vec4(vec3(depthValue), 1.0);
-    */
-
-   FragColor = vec4(1.0f);
+{             
+    float depthValue = texture(map, vec3(TexCoords, 0)).r;
+    // FragColor = vec4(vec3(LinearizeDepth(depthValue) / far_plane), 1.0); // perspective
+    fragColor = vec4(vec3(depthValue), 1.0); // orthographic
 }

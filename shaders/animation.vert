@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 // NOTE: Do NOT use any version older than 330! Bad things will happen!
 
 // This is an example vertex shader. GLSL is very similar to C.
@@ -30,7 +30,7 @@ out float sampleExtraOutput;
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 TexCoords;
-out vec4 FragPosLightSpace;
+out mat4 viewMat;
 
 void main()
 {
@@ -61,8 +61,8 @@ void main()
         Normal = mat3(transpose(inverse(model))) * totalNormal;  
         TexCoords = uvs;
 
-        FragPosLightSpace = lightSpaceMatrix * model * totalPosition;
-    
+        viewMat = view;
+
         gl_Position = projection * view * model * totalPosition;
     }
 
@@ -70,9 +70,9 @@ void main()
        FragPos = vec3(model * vec4(positions, 1.0));
        Normal = mat3(transpose(inverse(model))) * normals;  
        TexCoords = uvs;
-
-       FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
     
+        viewMat = view;
+
        gl_Position = projection * view * vec4(FragPos, 1.0);
     }
 }

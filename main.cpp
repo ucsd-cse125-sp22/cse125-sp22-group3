@@ -183,6 +183,38 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+				Window::postprocessing->draw(Window::width, Window::height, Window::view);
+				for (int i = 0; i < sheader->num_models; i++)
+				{
+					ModelInfo model_info = model_arr[i];
+
+					if (model_map.count(model_info.model_id) == 0) {
+						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
+
+						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+
+					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
+
+					if (model_info.model != WORLD_MAP) {
+						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
+					}
+
+					/*
+					else {
+						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
+					}
+					*/
+				}
+
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glViewport(0, 0, Window::width, Window::height);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				// Window::renderDepthMap();
+
+				
 				for (int i = 0; i < sheader->num_models; i++)
 				{
 					ModelInfo model_info = model_arr[i];
@@ -204,12 +236,13 @@ int main(int argc, char* argv[])
 					else {
 						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
 					}
+					
 				}
+				
 
 				free(sheader);
 				free(model_arr);
 			});
-		
 		// Gets events, including input such as keyboard and mouse or window resizing
 		glfwPollEvents();
 

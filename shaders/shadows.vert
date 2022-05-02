@@ -1,5 +1,4 @@
-#version 330 core
-
+#version 460 core
 
 layout (location = 0) in vec3 positions;
 layout (location = 1) in vec3 normals;
@@ -19,10 +18,8 @@ uniform bool hasAnimation;
 
 void main()
 {
-    // gl_Position = lightSpaceMatrix * model * vec4(positions, 1.0);
-
     if(!hasAnimation) {
-        gl_Position = lightSpaceMatrix * model * vec4(positions, 1.0);
+        gl_Position = model * vec4(positions, 1.0);
     }
 
     else {
@@ -42,6 +39,6 @@ void main()
             totalPosition += localPosition * weights[i];
         }
 
-        gl_Position = lightSpaceMatrix * model * vec4(totalPosition);
+        gl_Position = model * vec4(totalPosition);
     }
 } 
