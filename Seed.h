@@ -17,9 +17,6 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		glm::mat4 rotation{};
 		glm::mat4 hold_transformation_{};
 
-		bool isHoldable = true;
-		bool isHeld = false;
-
 	public:
 		AniMode modelAnim = NO_ANI;
 
@@ -55,6 +52,8 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		void SetRotation(glm::mat4 rotation);
 		glm::mat4 GetRotation() const;
 		VegetableType GetType();
+		bool isHeld = false;
+		Player* holding_player = nullptr;
 
 		// Growth stuff
 		double plantedTime = 0;

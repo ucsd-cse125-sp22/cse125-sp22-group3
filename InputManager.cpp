@@ -47,6 +47,9 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 				lastMovement -= glm::vec2(1,0);
 				lastCmd = STOP_RIGHT;
 				break;
+			case GLFW_KEY_LEFT_SHIFT:
+				lastCmd = STOP_SPRINT;
+				break;
 			default: break;
 		}
 	}
@@ -82,6 +85,9 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 			case GLFW_KEY_G:
 				lastCmd = DROP;
 				//justMoved = false;
+				break;
+			case GLFW_KEY_LEFT_SHIFT:
+				lastCmd = SPRINT;
 				break;
 			default: break;
 		}

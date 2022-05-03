@@ -12,7 +12,9 @@ enum InputCommands {
 	STOP_LEFT,
 	STOP_RIGHT,
 	USE,
-	DROP
+	DROP,
+	SPRINT,
+	STOP_SPRINT
 };
 
 enum ModelEnum

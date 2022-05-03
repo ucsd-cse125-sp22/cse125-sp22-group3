@@ -260,9 +260,13 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
 	if (hasAni) {
-		float currTime = glfwGetTime();
-	
-		CalculateBoneTransform(currTime);
+		//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
+		curr_time = glfwGetTime();
+		float delta = curr_time - last_time;
+		fixed_time += delta * anim_speed;
+
+		CalculateBoneTransform(fixed_time);
+		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -281,9 +285,12 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 
 void Model::draw(glm::mat4 parent, GLuint shader) {
 	if (hasAni) {
-		float currTime = glfwGetTime();
+		curr_time = glfwGetTime();
+		float delta = curr_time - last_time;
+		fixed_time += delta * anim_speed;
 
-		CalculateBoneTransform(currTime);
+		CalculateBoneTransform(fixed_time);
+		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -464,7 +471,7 @@ void Model::LoadAnimationData(const aiScene* scene) {
 
 void Model::CalculateBoneTransform(float time)
 {
-	float time_tick = time * ticks * anim_speed;
+	float time_tick = time * ticks;
 	// Get current frame
 	float at = fmod(time_tick, duration);
 

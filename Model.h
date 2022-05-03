@@ -66,8 +66,11 @@ private:
 	// Animation data
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
-	float blendOffset = 0.1f;
+	float blendOffset = 0.01f;
 	bool hasAni = false;
+	float last_time = 0;
+	float curr_time = 0;
+	float fixed_time = 0;
 
 	std::vector<std::vector<AnimationNode>> animationChannels;
 

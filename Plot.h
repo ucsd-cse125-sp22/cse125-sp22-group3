@@ -40,7 +40,8 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		bool CanInteract(Player* player) override;
 		void OnInteract(Player* player) override;
 
-		
+		// Planting stuff
+		Seed* plantedVegetable = nullptr;
 
 	private:
 		// Transformations
@@ -54,9 +55,5 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
-
-		// Planting stuff
-		Seed* plantedVegetable = nullptr;
-		
 	
 };

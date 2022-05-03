@@ -195,9 +195,24 @@ int main(int argc, char* argv[])
 
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
+  
+  				Model& curr_model = *model_map[model_info.model_id];
 
-					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-					model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
+					//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
+					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
+						if (sheader->player_sprinting) {
+							curr_model.anim_speed = 3.0f;
+						}
+						else {
+							curr_model.anim_speed = 1.5f;
+						}
+					}
+					else {
+						curr_model.anim_speed = 1;
+					}
+					
+					curr_model.setAnimationMode(model_info.modelAnim);
+					curr_model.draw(model_info.parent_transform, Window::animationShaderProgram);
 				}
 
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -228,9 +243,7 @@ int main(int argc, char* argv[])
 					else {
 						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
 					}
-					
-					
-				}
+        }
 				
 
 				free(sheader);

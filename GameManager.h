@@ -11,7 +11,7 @@
 #include "Growth.h"
 #include <chrono>
 
-class GameManager : GameEntity
+static class GameManager : GameEntity
 {
 public:
     GameManager();
@@ -19,21 +19,23 @@ public:
 
     // Call Updates on GameState
     void FixedUpdate() override;
-    void AddEntities(std::vector<GameEntity*> entities);
+    static void AddEntities(std::vector<GameEntity*> entities);
+    static void RemoveEntities(std::vector<GameEntity*> entities);
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);
     void SetPlayerUse(int player_index);
     void SetPlayerDrop(int player_index);
+    void SetPlayerSprint(int player_index, bool sprinting);
 
     // Information
     std::vector<std::pair<char*, int>> GetServerBuf();
 
     // Physics Engine
-    PhysicsEngine physics;
+    static PhysicsEngine physics;
 
     // Game entities in the world
-    std::vector<GameEntity*> game_entities{};
+    static std::vector<GameEntity*> game_entities;
 
     // FixedDeltaTime is the time between logic updates on the server
     // Typically 30ms, but you never know

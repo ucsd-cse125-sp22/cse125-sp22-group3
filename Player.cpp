@@ -41,8 +41,9 @@ void Player::FixedUpdate() {
 		// Transform input from 2D to 3D Plane
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
-		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
-			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
+		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
+		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
+			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
 		
 		if (isHolding)
@@ -108,22 +109,34 @@ void Player::Use()
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
 		if (interactable != nullptr && interactable->CanInteract(this)) {
-			interactable->OnInteract(this);
 
 			//VEGGIE SPECIFIC CODE
 			//TODO Maybe change to holdable to make more general?
-			auto temp= dynamic_cast<Plot*>(entityTriggered);
+			auto temp = dynamic_cast<Plot*>(entityTriggered);
 			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
 			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
 				if (!isHolding && (vegetable != nullptr)) {
+					if(vegetable->holding_player != nullptr) {
+						vegetable->holding_player->Drop();
+					}
 					SetHoldEntity(vegetable);
 					SetTriggeringEntity(nullptr);
+					interactable->OnInteract(this);
 				}
 			}
-
+			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
+				//std::cout << "Here" << std::endl;
+				if (!isHolding) {
+					if(seed->holding_player != nullptr) {
+						seed->holding_player->Drop();
+					}
+					SetHoldEntity(seed);
+					SetTriggeringEntity(nullptr);
+					interactable->OnInteract(this);
+				}
+			}
 			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-					if (isHolding && !plot->isPlanted) {
-						
+					if (isHolding && !plot->isPlanted) {	
 						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
 
 							plot->SetPlantedVegetable(seed);
@@ -152,29 +165,57 @@ void Player::Use()
 							seed->SetPlanted();
 							this->Drop();
 							SetTriggeringEntity(nullptr);
+							interactable->OnInteract(this);
 						}
 						else {
 							printf("Warning: You can only plant seeds not veggies bro\n");
 						}
 					}
-					else if (!isHolding && plot->isPlanted) {
-						printf("UNPLOT");
-						plot->isPlanted = false;
-						SetTriggeringEntity(nullptr);
+					else if (!isHolding) {
+						Seed* seed = plot->plantedVegetable;
+						if (seed != nullptr && plot->plantedVegetable->isHarvestable) {
+							// Remove the seed
+							VegetableType veggieType = plot->GetPlantedVegetable();
+							auto seed_ = dynamic_cast<GameEntity*>(seed);
+							if (seed_ != nullptr) {
+								GameManager::RemoveEntities({ seed_ });
+								plot->SetPlantedVegetable(nullptr);
+							}
+
+							Vegetable* veggie = nullptr;
+							// Spawn the correct vegetable on the player
+							switch (seed->GetType()) {
+							case VegetableType::CABBAGE:
+								veggie = new Vegetable{ VegetableType::CABBAGE, VEG_CABBAGE };
+								break;
+							case VegetableType::CORN:
+								veggie = new Vegetable{ VegetableType::CORN, VEG_CORN };
+								break;
+							case VegetableType::CARROT:
+								veggie = new Vegetable{ VegetableType::CARROT, VEG_CARROT };
+								break;
+							case VegetableType::RADISH:
+								veggie = new Vegetable{ VegetableType::RADISH, VEG_RADISH };
+								break;
+							case VegetableType::TOMATO:
+								veggie = new Vegetable{ VegetableType::TOMATO, VEG_TOMATO };
+								break;
+
+							default:
+								printf("Error flag to veggie not found\n");
+							}
+
+							GameManager::AddEntities({ veggie });
+							SetHoldEntity(veggie);
+							SetTriggeringEntity(nullptr);
+							interactable->OnInteract(this);
+						}
 					}
-					
-				//}
-			}
-			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				//std::cout << "Here" << std::endl;
-				if (!isHolding) {
-					SetHoldEntity(seed);
-					SetTriggeringEntity(nullptr);
-				}
 			}
 		}
 	}
 }
+
 void Player::Drop()
 {
 	auto holdable = dynamic_cast<Holdable*>(entityHeld);
