@@ -1,4 +1,5 @@
 ﻿#include "Plot.h"
+#include "GameManager.h"
 
 Plot::Plot(ModelEnum curr) {
 	model = curr;
@@ -63,7 +64,43 @@ bool Plot::CanInteract(Player* player) {
 	//return true;
 }
 
-void Plot::OnInteract(Player* player) {}
+void Plot::OnInteract(Player* player) {
+	if (player->isHolding && !isPlanted) {
+		if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
+
+			SetPlantedVegetable(seed);
+
+			VeggieInfo veggie = veggie_map[seed->GetType()];
+			seed->SetModel(veggie.flag_model, GetTranslate());
+			seed->SetPlanted();
+			player->Drop();
+			player->SetTriggeringEntity(nullptr);
+		}
+		else {
+			printf("Warning: You can only plant seeds not veggies bro\n");
+		}
+	}
+	else if (!player->isHolding) {
+		Seed* seed = plantedVegetable;
+		if (seed != nullptr && plantedVegetable->isHarvestable) {
+			// Remove the seed
+			VegetableType veggieType = GetPlantedVegetable();
+			auto seed_ = dynamic_cast<GameEntity*>(seed);
+			if (seed_ != nullptr) {
+				GameManager::RemoveEntities({ seed_ });
+				SetPlantedVegetable(nullptr);
+			}
+
+			Vegetable* veggie = nullptr;
+			// Spawn the correct vegetable on the player
+			VeggieInfo veggie_info = veggie_map[seed->GetType()];
+			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
+			GameManager::AddEntities({ veggie });
+			player->SetHoldEntity(veggie);
+			player->SetTriggeringEntity(nullptr);
+		}
+	}
+}
 
 void Plot::SetPlantedVegetable(Seed* seed) {
 	isPlanted = seed != nullptr;

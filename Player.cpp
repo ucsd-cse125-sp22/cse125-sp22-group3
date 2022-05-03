@@ -109,71 +109,7 @@ void Player::Use()
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
 		if (interactable != nullptr && interactable->CanInteract(this)) {
-
-			//VEGGIE SPECIFIC CODE
-			//TODO Maybe change to holdable to make more general?
-			auto temp = dynamic_cast<Plot*>(entityTriggered);
-			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
-			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
-				if (!isHolding && (vegetable != nullptr)) {
-					if(vegetable->holding_player != nullptr) {
-						vegetable->holding_player->Drop();
-					}
-					SetHoldEntity(vegetable);
-					SetTriggeringEntity(nullptr);
-					interactable->OnInteract(this);
-				}
-			}
-			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				//std::cout << "Here" << std::endl;
-				if (!isHolding) {
-					if(seed->holding_player != nullptr) {
-						seed->holding_player->Drop();
-					}
-					SetHoldEntity(seed);
-					SetTriggeringEntity(nullptr);
-					interactable->OnInteract(this);
-				}
-			}
-			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-					if (isHolding && !plot->isPlanted) {	
-						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
-
-							plot->SetPlantedVegetable(seed);
-
-							VeggieInfo veggie = veggie_map[seed->GetType()];
-							seed->SetModel(veggie.flag_model, plot->GetTranslate());
-							seed->SetPlanted();
-							this->Drop();
-							SetTriggeringEntity(nullptr);
-							interactable->OnInteract(this);
-						}
-						else {
-							printf("Warning: You can only plant seeds not veggies bro\n");
-						}
-					}
-					else if (!isHolding) {
-						Seed* seed = plot->plantedVegetable;
-						if (seed != nullptr && plot->plantedVegetable->isHarvestable) {
-							// Remove the seed
-							VegetableType veggieType = plot->GetPlantedVegetable();
-							auto seed_ = dynamic_cast<GameEntity*>(seed);
-							if (seed_ != nullptr) {
-								GameManager::RemoveEntities({ seed_ });
-								plot->SetPlantedVegetable(nullptr);
-							}
-
-							Vegetable* veggie = nullptr;
-							// Spawn the correct vegetable on the player
-							VeggieInfo veggie_info = veggie_map[seed->GetType()];
-							veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
-							GameManager::AddEntities({ veggie });
-							SetHoldEntity(veggie);
-							SetTriggeringEntity(nullptr);
-							interactable->OnInteract(this);
-						}
-					}
-			}
+			interactable->OnInteract(this);
 		}
 	}
 }

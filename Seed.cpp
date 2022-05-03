@@ -99,6 +99,12 @@ bool Seed::CanInteract(Player* player) {
 }
 
 void Seed::OnInteract(Player* player) { 
+	if (holding_player != nullptr) {
+		holding_player->Drop();
+	}
+	player->SetHoldEntity(this);
+	player->SetTriggeringEntity(nullptr);
+
 	isHeld = true;
 	holding_player = player;
 }
