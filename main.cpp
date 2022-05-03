@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
 					}
 					
 					curr_model.setAnimationMode(model_info.modelAnim);
-					curr_model.draw(model_info.parent_transform, Window::animationShaderProgram);
+					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 				}
 
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
