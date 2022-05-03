@@ -202,11 +202,9 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
 					}
 
-					/*
 					else {
 						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
 					}
-					*/
 				}
 
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);

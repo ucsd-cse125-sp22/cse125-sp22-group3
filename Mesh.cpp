@@ -263,6 +263,13 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 1);
 
+    if (textures.size() > 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    }
+
     // Bind the VAO
     glBindVertexArray(VAO);
 
@@ -281,6 +288,14 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
         glm::value_ptr(m));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
+
+    if (textures.size() > 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    }
+
     // Bind the VAO
     glBindVertexArray(VAO);
 
