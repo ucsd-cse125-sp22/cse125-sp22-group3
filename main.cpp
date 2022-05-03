@@ -197,14 +197,7 @@ int main(int argc, char* argv[])
 					}
 
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-
-					if (model_info.model != WORLD_MAP) {
-						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
-					}
-
-					else {
-						model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
-					}
+					model_map[model_info.model_id]->draw(model_info.parent_transform, Window::shadowShaderProgram);
 				}
 
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -231,9 +224,11 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
 					}
 
+					
 					else {
 						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
 					}
+					
 					
 				}
 				

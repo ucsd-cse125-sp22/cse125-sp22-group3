@@ -110,8 +110,7 @@ private:
 		{WORLD_FLAG_RADISH, "models/plots/flagRadish.fbx"},
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
 
-		{WORLD_MAP, "models/world/world.fbx"}
-		
+		{WORLD_MAP, "models/world/world.fbx"},
 	};
 
 	// map to texture (for models who share same mesh, but different textures)

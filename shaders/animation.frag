@@ -161,7 +161,7 @@ void main()
 
     float shadow = 0.0f; 
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    int halfkernelWidth = 3;
+    int halfkernelWidth = 1;
     for(int x = -halfkernelWidth; x <= halfkernelWidth; ++x)
     {
 	    for(int y = -halfkernelWidth; y <= halfkernelWidth; ++y)
