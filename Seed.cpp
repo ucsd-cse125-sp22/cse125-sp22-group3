@@ -24,24 +24,8 @@ void Seed::FixedUpdate()
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (getIsReady()) {
 			isHarvestable = true;
-			switch (type) {
-			case VegetableType::TOMATO:
-				model = ModelEnum::VEG_TOMATO;
-				break;
-			case VegetableType::CORN:
-				model = ModelEnum::VEG_CORN;
-				break;
-			case VegetableType::CARROT:
-				model = ModelEnum::VEG_CARROT;
-				break;
-			case VegetableType::RADISH:
-				model = ModelEnum::VEG_RADISH;
-				break;
-			case VegetableType::CABBAGE:
-				model = ModelEnum::VEG_CABBAGE;
-				break;
-
-			}
+			VeggieInfo veggie = veggie_map[type];
+			model = veggie.veggie_model;
 		}
 	}
 	collider_->center = *translate;
@@ -105,29 +89,8 @@ VegetableType Seed::GetType()
 
 bool Seed::getIsReady()
 {
-	switch (type) {
-	case VegetableType::TOMATO:
-		if (plantedTime >= 5)
-			return true;
-		break;
-	case VegetableType::CORN:
-		if (plantedTime >= 10)
-			return true;
-		break;
-	case VegetableType::CARROT:
-		if (plantedTime >= 15)
-			return true;
-		break;
-	case VegetableType::RADISH:
-		if (plantedTime >= 20)
-			return true;
-		break;
-	case VegetableType::CABBAGE:
-		if (plantedTime >= 25)
-			return true;
-		break;
-
-	}
+	VeggieInfo veggie = veggie_map[type];
+	if (plantedTime >= veggie.growth_time) return true;
 	return false;
 }
 

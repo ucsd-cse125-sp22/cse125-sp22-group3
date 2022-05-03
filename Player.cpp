@@ -141,27 +141,8 @@ void Player::Use()
 
 							plot->SetPlantedVegetable(seed);
 
-							// maybe move this to a helper method its kinda bulky here
-							switch (seed->GetType()) {
-							case VegetableType::CABBAGE:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
-								break;
-							case VegetableType::CORN:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
-								break;
-							case VegetableType::CARROT:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
-								break;
-							case VegetableType::RADISH:
-								seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
-								break;
-							case VegetableType::TOMATO:
-								seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
-								break;
-
-							default:
-								printf("Error seed to flag not found\n");
-							}
+							VeggieInfo veggie = veggie_map[seed->GetType()];
+							seed->SetModel(veggie.flag_model, plot->GetTranslate());
 							seed->SetPlanted();
 							this->Drop();
 							SetTriggeringEntity(nullptr);
@@ -184,27 +165,8 @@ void Player::Use()
 
 							Vegetable* veggie = nullptr;
 							// Spawn the correct vegetable on the player
-							switch (seed->GetType()) {
-							case VegetableType::CABBAGE:
-								veggie = new Vegetable{ VegetableType::CABBAGE, VEG_CABBAGE };
-								break;
-							case VegetableType::CORN:
-								veggie = new Vegetable{ VegetableType::CORN, VEG_CORN };
-								break;
-							case VegetableType::CARROT:
-								veggie = new Vegetable{ VegetableType::CARROT, VEG_CARROT };
-								break;
-							case VegetableType::RADISH:
-								veggie = new Vegetable{ VegetableType::RADISH, VEG_RADISH };
-								break;
-							case VegetableType::TOMATO:
-								veggie = new Vegetable{ VegetableType::TOMATO, VEG_TOMATO };
-								break;
-
-							default:
-								printf("Error flag to veggie not found\n");
-							}
-
+							VeggieInfo veggie_info = veggie_map[seed->GetType()];
+							veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
 							GameManager::AddEntities({ veggie });
 							SetHoldEntity(veggie);
 							SetTriggeringEntity(nullptr);

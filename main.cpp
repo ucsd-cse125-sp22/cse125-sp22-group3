@@ -8,6 +8,7 @@
 #include <chrono>
 #include <map>
 
+// #define SERVER_ADDRESS "127.0.0.1"
 #define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
 
 bool GUI::show_loading; 
