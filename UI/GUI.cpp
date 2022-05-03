@@ -215,9 +215,11 @@ void GUI::initializeImage() {
 	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
+}
 
+void GUI::initializeLoadingImage() {
 	const char* load_dir = (picture_dir + string("/loading")).c_str();
-	i = 0;
+	int i = 0;
 	for (auto& entry : fs::directory_iterator(load_dir)) {
 		std::cout << entry.path() << std::endl;
 		GUIImage* image = &(loading_bg[i]);
@@ -228,49 +230,9 @@ void GUI::initializeImage() {
 	}
 }
 
-//bool GUI::renderLoadScene(GLFWwindow* window) {
-//	glfwMakeContextCurrent(window);
-//	glfwSwapInterval(0); // Enable vsync
-//	initializeGUI(window);
-//	
-//	const char* loading_bg_path = (picture_dir + string("/loading_background.png")).c_str();
-//	LoadTextureFromFile(loading_bg_path, &(loading_bg.my_image_texture), &(loading_bg.my_image_width), &(loading_bg.my_image_height));
-//	while (!glfwWindowShouldClose(window) && show_loading) {
-//		glfwPollEvents();
-//		ImGui_ImplOpenGL3_NewFrame();
-//		ImGui_ImplGlfw_NewFrame();
-//		ImGui::NewFrame();
-//		int width, height;
-//		glfwGetWindowSize(window, &width, &height);
-//		float display_ratio = 0.2f * width / 1280;
-//
-//
-//		ImGui::SetNextWindowSize(ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
-//		ImGuiWindowFlags window_flags = 0;
-//		window_flags |= ImGuiWindowFlags_NoBackground;
-//		window_flags |= ImGuiWindowFlags_NoTitleBar;
-//		window_flags |= ImGuiWindowFlags_NoResize;
-//		window_flags |= ImGuiWindowFlags_NoMove;
-//		window_flags |= ImGuiWindowFlags_NoScrollbar;
-//
-//		ImGui::Begin("Loading Screen", NULL, window_flags);
-//		ImGui::Image((void*)(intptr_t)loading_bg.my_image_texture, ImVec2(loading_bg.my_image_width * display_ratio, loading_bg.my_image_height * display_ratio));
-//		ImGui::End();
-//		// Rendering
-//		int display_w, display_h;
-//		glfwGetFramebufferSize(window, &display_w, &display_h);
-//		glViewport(0, 0, display_w, display_h);
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//		ImGui::Render();
-//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-//		glfwSwapBuffers(window);
-//	}
-//	//ImGui_ImplOpenGL3_Shutdown();
-//	//ImGui_ImplGlfw_Shutdown();
-//	//ImGui::DestroyContext();
-//	return true; 
-//}
-bool GUI::renderLoadScene() {
+bool GUI::renderLoadScene(GLFWwindow* window) {
+	initializeLoadingImage();
+
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	int idx = 0; 
 	bool increase = true; 
@@ -281,7 +243,7 @@ bool GUI::renderLoadScene() {
 	window_flags |= ImGuiWindowFlags_NoMove;
 	window_flags |= ImGuiWindowFlags_NoScrollbar;
 
-	while (!glfwWindowShouldClose(my_window)) {
+	while (!glfwWindowShouldClose(window)) {
 		
 		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
 			increase = !increase; 
@@ -294,7 +256,7 @@ bool GUI::renderLoadScene() {
 		ImGui::NewFrame();
 
 		int width, height;
-		glfwGetWindowSize(my_window, &width, &height);
+		glfwGetWindowSize(window, &width, &height);
 		float display_ratio = 0.4f * width / 1280;
 		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
 		ImGui::SetNextWindowSize(size);
@@ -305,12 +267,12 @@ bool GUI::renderLoadScene() {
 
 		// Rendering
 		int display_w, display_h;
-		glfwGetFramebufferSize(my_window, &display_w, &display_h);
+		glfwGetFramebufferSize(window, &display_w, &display_h);
 		glViewport(0, 0, display_w, display_h);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		glfwSwapBuffers(my_window);
+		glfwSwapBuffers(window);
 		
 		this_thread::sleep_for(chrono::milliseconds(300));
 
@@ -332,3 +294,151 @@ bool GUI::renderLoadScene() {
 	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
 	return true; 
 }
+
+//bool GUI::renderLoadScene(GLFWwindow* window) {
+//	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
+//	int idx = 0; 
+//	bool increase = true; 
+//	ImGuiWindowFlags window_flags = 0;
+//	window_flags |= ImGuiWindowFlags_NoBackground;
+//	window_flags |= ImGuiWindowFlags_NoTitleBar;
+//	window_flags |= ImGuiWindowFlags_NoResize;
+//	window_flags |= ImGuiWindowFlags_NoMove;
+//	window_flags |= ImGuiWindowFlags_NoScrollbar;
+//
+//	while (!glfwWindowShouldClose(my_window)) {
+//		
+//		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
+//			increase = !increase; 
+//		}
+//
+//		glfwPollEvents();
+//
+//		ImGui_ImplOpenGL3_NewFrame();
+//		ImGui_ImplGlfw_NewFrame();
+//		ImGui::NewFrame();
+//
+//		int width, height;
+//		glfwGetWindowSize(my_window, &width, &height);
+//		float display_ratio = 0.4f * width / 1280;
+//		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
+//		ImGui::SetNextWindowSize(size);
+//		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
+//		ImGui::Begin("Loading Screen", NULL, window_flags);
+//		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
+//		ImGui::End();
+//
+//		// Rendering
+//		int display_w, display_h;
+//		glfwGetFramebufferSize(my_window, &display_w, &display_h);
+//		glViewport(0, 0, display_w, display_h);
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		ImGui::Render();
+//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+//		glfwSwapBuffers(my_window);
+//		
+//		this_thread::sleep_for(chrono::milliseconds(300));
+//
+//		//handling the last image; 
+//		if (idx == 7) {
+//			break; 
+//		}else if (!show_loading && idx == 6) {
+//			idx++;
+//			continue; 
+//		}
+//
+//		if (increase) {
+//			idx++;
+//		}else {
+//			idx--; 
+//		}
+//
+//	}
+//	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
+//	return true; 
+//}
+
+
+namespace ImGui {
+
+	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = size_arg;
+		size.x -= style.FramePadding.x * 2;
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+
+		// Render
+		const float circleStart = size.x * 0.7f;
+		const float circleEnd = size.x;
+		const float circleWidth = circleEnd - circleStart;
+
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart, bb.Max.y), bg_col);
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart * value, bb.Max.y), fg_col);
+
+		const float t = g.Time;
+		const float r = size.y / 2;
+		const float speed = 1.5f;
+
+		const float a = speed * 0;
+		const float b = speed * 0.333f;
+		const float c = speed * 0.666f;
+
+		const float o1 = (circleWidth + r) * (t + a - speed * (int)((t + a) / speed)) / speed;
+		const float o2 = (circleWidth + r) * (t + b - speed * (int)((t + b) / speed)) / speed;
+		const float o3 = (circleWidth + r) * (t + c - speed * (int)((t + c) / speed)) / speed;
+
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
+	}
+
+}
+void GUI::renderProgressBar(float percent, GLFWwindow* window) {
+	glfwPollEvents();
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	float display_ratio =  1.0f * width / 1280;
+	ImVec2 size = ImVec2(1200 * display_ratio, 18 * display_ratio);
+	ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
+	ImGui::Begin("Progress Indicators", NULL, window_flags);
+
+	const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = ImGui::GetColorU32(ImGuiCol_Button);
+
+	//ImGui::Spinner("##spinner", 15, 6, col);
+	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
+	ImGui::BufferingBar("##buffer_bar", percent, size, bg, col);
+
+	ImGui::End();
+
+	// Rendering
+	int display_w, display_h;
+	glfwGetFramebufferSize(window, &display_w, &display_h);
+	glViewport(0, 0, display_w, display_h);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	glfwSwapBuffers(window);
+}
+

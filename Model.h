@@ -143,10 +143,11 @@ private:
 
 	void Model::constructorHelper(ModelEnum thisModel);
 
-	std::map<ModelEnum, Model> model_cache;
 	
 
 public:
+	static std::map<ModelEnum, Model> model_cache; //move to static so can be used in the constructor
+
 	// Constructor + Deconstructor
 	Model();
 
@@ -198,7 +199,7 @@ public:
 	Model& operator=(const Model& t);
 	void copyHelper(const Model& t);
 
-	
+
 };
 
 #endif

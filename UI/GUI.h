@@ -47,7 +47,10 @@ public:
 	static void cleanUp();
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 	static void initializeImage();
-	static bool renderLoadScene();
+	static bool renderLoadScene(GLFWwindow* window);
+	static void initializeLoadingImage(); 
+	static void renderProgressBar(float percent, GLFWwindow* window);
+
 };
 
 

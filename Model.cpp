@@ -1,4 +1,6 @@
 #include "Model.h"
+std::map<ModelEnum, Model> Model::model_cache; //move to static so can be used in the constructor
+
 
 Model::Model() {}
 
@@ -17,6 +19,7 @@ Model::Model(const Model &other) {
 }
 
 void Model::constructorHelper(ModelEnum thisModel) {
+	std::cout << "ConstructorHelper called " << std::endl;
 	model = thisModel;
 	// Set current animation mode
 	last = IDLE;
@@ -681,7 +684,6 @@ void Model::setAnimationMode(AniMode ani) {
 	}
 }
 
-
 void Model::copyHelper(const Model& t) {
 	// Copy all values
 	curr = t.curr;
@@ -718,3 +720,5 @@ Model& Model::operator=(const Model& t)
 
 	return *this;
 }
+
+
