@@ -99,7 +99,7 @@ void main()
 
     // diffuse shading
     float NdotL = dot(norm, lightPos);
-    float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
+    float lightIntensity = smoothstep(0.0, 0.01, NdotL * (1 - shadow));
     // float lightIntensity = smoothstep(0.0f, 0.01f, NdotL);
     vec4 light = lightIntensity * vec4(0.5f);
 

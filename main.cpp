@@ -243,8 +243,7 @@ int main(int argc, char* argv[])
 					else {
 						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
 					}
-        }
-				
+				}
 
 				free(sheader);
 				free(model_arr);
