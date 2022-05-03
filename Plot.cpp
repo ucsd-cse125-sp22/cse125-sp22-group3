@@ -57,7 +57,9 @@ bool Plot::CanInteract(Player* player) {
 	// can interact if:
 	// 1. player is holding a seed and plot is empty
 	// 2. player is holding nothing and plot is harvestable
-	return (player->GetIsHolding() && seed && !isPlanted) || (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
+	bool can_plant_seed = (player->GetIsHolding() && seed && !isPlanted);
+	bool can_harvest_veggie = (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
+	return  can_plant_seed || can_harvest_veggie;
 	//return true;
 }
 
