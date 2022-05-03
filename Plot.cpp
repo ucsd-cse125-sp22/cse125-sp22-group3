@@ -13,6 +13,7 @@ Plot::Plot(ModelEnum curr) {
 }
 
 Plot::~Plot() {}
+
 void Plot::FixedUpdate() {
 	
 	collider_->center = *translate;
