@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 	//loadingGuithread.join();
 	//GUI::initializeGUI(window);
 	
-	Window::postprocessing = new FBO(-100.0f, 10000.0f);
+	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
 
 	// Loop while GLFW window should stay open and server han't closed connection
@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
 				glViewport(0, 0, Window::width, Window::height);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
-				glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
+				// glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				// Window::renderDepthMap();
@@ -251,6 +251,7 @@ int main(int argc, char* argv[])
 					}
 				}
 
+				/* i still need to adjust bloom :P
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				glUseProgram(Window::blurShaderProgram);
 				unsigned int amount = 10;
@@ -285,6 +286,7 @@ int main(int argc, char* argv[])
 				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
 				Window::renderDepthMap();
 				glUseProgram(0);
+				*/
 
 				free(sheader);
 				free(model_arr);

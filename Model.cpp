@@ -18,6 +18,7 @@ Model::Model(const Model &other) {
 
 void Model::constructorHelper(ModelEnum thisModel) {
 	model = thisModel;
+
 	// Set current animation mode
 	last = IDLE;
 	curr = IDLE;

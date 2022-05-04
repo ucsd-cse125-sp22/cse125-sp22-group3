@@ -90,6 +90,7 @@ private:
 		{CHAR_POGO, "models/pogo/pogo.fbx"},
 		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
 		{CHAR_GILMAN, "models/gilma/gilma.fbx"}, // TODO rename
+		{CHAR_NPC, "models/NPC/fish.fbx"},
 
 		{VEG_CABBAGE, "models/cabbage/cabbage.fbx"},
 		{VEG_CARROT, "models/carrot/carrot.fbx"},
@@ -114,7 +115,7 @@ private:
 		{WORLD_FLAG_RADISH, "models/plots/flagRadish.fbx"},
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
 
-		{WORLD_MAP, "models/world/world.fbx"},
+		{WORLD_MAP, "models/world/borderlessMap.fbx"},
 	};
 
 	// map to texture (for models who share same mesh, but different textures)

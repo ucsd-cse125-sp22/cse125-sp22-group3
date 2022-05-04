@@ -27,6 +27,7 @@ enum ModelEnum
 	CHAR_POGO,
 	CHAR_SWAINKY,
 	CHAR_GILMAN,
+	CHAR_NPC, // i dont think we named her question mark
 
 	VEG_CABBAGE,
 	VEG_CARROT,
