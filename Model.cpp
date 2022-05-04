@@ -52,7 +52,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 
 		animationChannels.resize(scene->mNumAnimations);
 
-		duration = scene->mAnimations[1]->mDuration;
+		duration = scene->mAnimations[0]->mDuration;
 	}
 
 	// Get directory from filepah to get materials
@@ -499,10 +499,10 @@ void Model::ReadHierarchyData(float time) {
 		glm::mat4 node_trans = node.transformation;
 		// get transformations at this time
 		if (node.hasBone) {
-			glm::mat4 scaling = InterpolateScale(time, node);
+			// glm::mat4 scaling = InterpolateScale(time, node);
 			glm::mat4 rotation = InterpolateRotation(time, node);
 			glm::mat4 translation = InterpolatePosition(time, node);
-			node_trans = translation * rotation * scaling;
+			node_trans = translation * rotation;
 		}
 
 		// get parent
@@ -532,11 +532,11 @@ void Model::ReadBlendedHierarchyData(float time) {
 			glm::mat4 this_node_transform = node.transformation;
 			if (node.hasBone) {
 				// get transformations at this time
-				glm::mat4 this_scaling = InterpolateScale(time, node);
+				// glm::mat4 this_scaling = InterpolateScale(time, node);
 				glm::mat4 this_rotation = InterpolateRotation(time, node);
 				glm::mat4 this_translation = InterpolatePosition(time, node);
 
-				this_node_transform = this_translation * this_rotation * this_scaling;
+				this_node_transform = this_translation * this_rotation;
 			}
 
 			AnimationNode& next_node = animationChannels[animationMap[curr]][i];

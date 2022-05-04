@@ -161,6 +161,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vector<glm::mat4> transforms, GLuint shaderProgram) {
@@ -250,6 +251,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shader) {
@@ -278,7 +280,7 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
-
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(glm::mat4 parent, GLuint shader) {
@@ -304,4 +306,5 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }

@@ -76,11 +76,12 @@ private:
 
 	// map to current animation
 	std::map<AniMode, int> animationMap = { 
-		{IDLE_HOLD, 1},
-		{IDLE_WALK, 2},
-		{IDLE, 3},
-		{WALK, 4},
-		{NO_ANI, 5}
+		{DANCE, 0},
+		{IDLE_HOLD, 2},
+		{IDLE_WALK, 3},
+		{IDLE, 4},
+		{WALK, 5},
+		{NO_ANI, 6}
 	};
 
 	// map to model file path
@@ -88,7 +89,7 @@ private:
 		{CHAR_BUMBUS, "models/bumbus/bumbus.fbx"},
 		{CHAR_POGO, "models/pogo/pogo.fbx"},
 		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
-		{CHAR_GILMAN, "models/gilma/char4.fbx"}, // TODO rename
+		{CHAR_GILMAN, "models/gilma/gilma.fbx"}, // TODO rename
 
 		{VEG_CABBAGE, "models/cabbage/cabbage.fbx"},
 		{VEG_CARROT, "models/carrot/carrot.fbx"},

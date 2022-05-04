@@ -18,6 +18,7 @@ const char* Window::windowTitle = "GLFW Starter Project";
 // Objects to Render
 Player* Window::player;
 FBO* Window::postprocessing;
+FBO* Window::bloom;
 
 // Camera Matrices 
 // Projection matrix:
@@ -83,7 +84,6 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	postprocessing = new FBO(-100.0f, 10000.0f);
 	// Use later, in case many objects need many shaders
 	modelShader = {
 	{ CHAR_BUMBUS, animationShaderProgram },
@@ -204,6 +204,10 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 	// Set the projection matrix.
 	Window::projection = glm::perspective(glm::radians(60.0), 
 								double(width) / (double)height, 1.0, 1000.0);
+
+	if (Window::bloom != nullptr) {
+		Window::bloom->resize(width, height);
+	}
 }
 
 void Window::logicCallback()
@@ -239,11 +243,11 @@ void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos)
 }
 
 void Window::renderDepthMap() {
-	glUseProgram(modelShaderProgram);
+	// glUseProgram(modelShaderProgram);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
-	glUniform1i(glGetUniformLocation(modelShaderProgram, "map"), 0);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
+	// glUniform1i(glGetUniformLocation(modelShaderProgram, "map"), 0);
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
 	if (quadVAO == 0)
@@ -270,5 +274,5 @@ void Window::renderDepthMap() {
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	// glUseProgram(0);
 }

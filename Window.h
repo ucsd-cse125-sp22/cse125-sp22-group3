@@ -36,6 +36,7 @@ public:
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
 	static FBO * postprocessing;
+	static FBO * bloom;
 
 	// Shader Program ID
 	static GLuint worldShaderProgram;

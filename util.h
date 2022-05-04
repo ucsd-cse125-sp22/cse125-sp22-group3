@@ -54,6 +54,7 @@ enum ModelEnum
 };
 
 enum AniMode {
+	DANCE,
 	IDLE_HOLD,
 	IDLE_WALK,
 	IDLE,

@@ -51,6 +51,7 @@ class FBO {
 		~FBO();
 		FBO(float np, float fp);
 		FBO(int width, int height);
+		void resize(int width, int height);
 		void draw(int width, int height, glm::mat4 view);
 		void draw(GLuint shader);
 };
