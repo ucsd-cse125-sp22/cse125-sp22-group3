@@ -405,13 +405,16 @@ void Model::LoadAnimationData(const aiScene* scene) {
 	}
 
 	// For every animation type. Skip the one where all is combined (i = 0)
-	for (int i = 1; i < scene->mNumAnimations; i++) {
+	for (int i = 0; i < scene->mNumAnimations; i++) {
 		// Copy vector for every animation
 		std::vector<AnimationNode> nodes = aniNodes;
 		animationChannels[i] = nodes;
 		const aiAnimation* animation = scene->mAnimations[i];
+		if (i == 1)
+			continue;
 		for (int j = 0; j < scene->mAnimations[i]->mNumChannels; j++)
 		{
+			
 			auto channel = animation->mChannels[j];
 			std::string name = std::string(channel->mNodeName.data);
 

@@ -77,6 +77,10 @@ inline int ServerMain()
 					case InputCommands::STOP_SPRINT:
 						game.SetPlayerSprint(client_idx, false);
 						break;
+					case InputCommands::DANCE_CMD:
+						game.SetPlayerDance(client_idx);
+						break;
+
 					default: break;
 				}
 			}

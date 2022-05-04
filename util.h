@@ -17,7 +17,8 @@ enum InputCommands {
 	USE,
 	DROP,
 	SPRINT,
-	STOP_SPRINT
+	STOP_SPRINT,
+	DANCE_CMD
 };
 
 enum ModelEnum

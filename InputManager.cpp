@@ -89,6 +89,9 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 			case GLFW_KEY_LEFT_SHIFT:
 				lastCmd = SPRINT;
 				break;
+			case GLFW_KEY_X:
+				lastCmd = DANCE_CMD;
+				break;
 			default: break;
 		}
 	}
