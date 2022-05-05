@@ -33,9 +33,6 @@ AniMode NPC::GetAniMode()
 	return AniMode();
 }
 
-void NPC::OnTrigger(PhysicsObject* object)
-{
-}
 
 std::vector<Collider*> NPC::GetColliders()
 {
