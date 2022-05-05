@@ -220,6 +220,7 @@ void FBO::draw(int width, int height, glm::mat4 cam) {
 	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO);
 	glClearDepth(1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_FRONT);  // peter panning
 
     lightSpaceMatrix = ret;
 

@@ -227,7 +227,7 @@ int main(int argc, char* argv[])
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				// Window::renderDepthMap();
-
+				glCullFace(GL_BACK);
 				for (int i = 0; i < sheader->num_models; i++)
 				{
 					ModelInfo model_info = model_arr[i];
