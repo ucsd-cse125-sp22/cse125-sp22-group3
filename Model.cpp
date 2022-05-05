@@ -307,7 +307,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 {
 	for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 	{
-		std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
+		//std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
 
 		int boneID = -1;
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();

@@ -7,10 +7,13 @@ GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
+float GUI::display_ratio;
+int GUI::window_height;
+int GUI::window_width;
+
 
 int GUI::rack_image_idx; 
 string GUI::picture_dir;
-float GUI::rack_size_ratio; 
 GLFWwindow* GUI::my_window;
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
@@ -43,7 +46,6 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
 	picture_dir = "./UI/Pictures";
-	rack_size_ratio = 0.5f;
 	my_window = window;
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
@@ -61,45 +63,39 @@ void GUI::initializeGUI(GLFWwindow* window) {
 
 }
 
+void GUI::updateDisplayRatio(int width, int height) {
+	display_ratio = 0.2f * width / 1280;
+	window_width = width;
+	window_height = height; 
+}
+
 /**
 * Render the UI compenents, should be called within the mainloop
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
 bool GUI::renderUI(bool show_GUI) {
-	//get current main window size and calculate the ratio for dynamic resizing
-	int width, height; 
-	glfwGetWindowSize(my_window, &width, &height);
-	float display_ratio = 0.2f * width / 1280; 
-	//IMGUI rendering
+	
+
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	ImGui::GetWindowSize(); 
-
 	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
 		show_GUI = !show_GUI;
 		rack_image_idx = 0;
-
 	}
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoBackground;
-	window_flags |= ImGuiWindowFlags_NoTitleBar;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoMove; 
-	window_flags |= ImGuiWindowFlags_NoScrollbar;
-	//show scoreboard
+	
+	/* build scoreboard */
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-	ImGui::Begin("ScoreBoard_bg", NULL, window_flags);
+	ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
 	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 	ImGui::End();
 	ImGui::SetNextWindowPos(ImVec2(190*display_ratio, 190*display_ratio), 0, ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-	ImGui::Begin("ScoreBoard_content", NULL, window_flags);
-
+	ImGui::Begin("ScoreBoard_content", NULL, TRANS_WINDOW_FLAG);
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 	
 	for (int i = 0; i < NUM_ICON; i++) {
@@ -110,8 +106,9 @@ bool GUI::renderUI(bool show_GUI) {
 	}
 	ImGui::PopStyleColor();
 	ImGui::End(); 
+	/* end of scoreboard */
 
-	//show the sale page
+	/* build the seed sale page */
 	if(show_GUI == true) {		
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
@@ -126,16 +123,15 @@ bool GUI::renderUI(bool show_GUI) {
 		GUIImage image = rack_images_list[rack_image_idx];
 
 		ImVec2 size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
-		ImGui::SetNextWindowSize(ImVec2(width,height));
-		ImGui::Begin("Sale GUI", &open_ptr, window_flags);
+		ImGui::SetNextWindowSize(ImVec2(window_width,window_height));
+		ImGui::Begin("Sale GUI", &open_ptr, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos((ImGui::GetContentRegionAvail() - size) * 0.5f);
 		//ImGui::Text("Hello there adeventurer!");	
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, size);//image.my_image_width, image.my_image_height));
 		//ImGui::Text("image demension:%dx%d", image.my_image_width, image.my_image_height);
 		ImGui::End();
 	}
-
-	
+	/*end of seed sale page*/
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -236,12 +232,12 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	int idx = 0; 
 	bool increase = true; 
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoBackground;
-	window_flags |= ImGuiWindowFlags_NoTitleBar;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoMove;
-	window_flags |= ImGuiWindowFlags_NoScrollbar;
+	ImGuiWindowFlags trans_win_flags = 0;
+	trans_win_flags |= ImGuiWindowFlags_NoBackground;
+	trans_win_flags |= ImGuiWindowFlags_NoTitleBar;
+	trans_win_flags |= ImGuiWindowFlags_NoResize;
+	trans_win_flags |= ImGuiWindowFlags_NoMove;
+	trans_win_flags |= ImGuiWindowFlags_NoScrollbar;
 
 	while (!glfwWindowShouldClose(window)) {
 		
@@ -255,13 +251,11 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		int width, height;
-		glfwGetWindowSize(window, &width, &height);
-		float display_ratio = 0.4f * width / 1280;
-		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
+		
+		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio * 2, loading_bg[idx].my_image_height * display_ratio * 2);
 		ImGui::SetNextWindowSize(size);
-		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
-		ImGui::Begin("Loading Screen", NULL, window_flags);
+		ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
+		ImGui::Begin("Loading Screen", NULL, trans_win_flags);
 		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
 		ImGui::End();
 
@@ -273,8 +267,9 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
-		
+
 		this_thread::sleep_for(chrono::milliseconds(300));
+		
 
 		//handling the last image; 
 		if (idx == 7) {
@@ -406,6 +401,7 @@ namespace ImGui {
 
 }
 void GUI::renderProgressBar(float percent, GLFWwindow* window) {
+	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
 	ImGuiWindowFlags window_flags = 0;
 	window_flags |= ImGuiWindowFlags_NoBackground;
@@ -416,12 +412,10 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-	float display_ratio =  1.0f * width / 1280;
-	ImVec2 size = ImVec2(1200 * display_ratio, 18 * display_ratio);
-	ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
-	ImGui::Begin("Progress Indicators", NULL, window_flags);
+	
+	ImVec2 size = ImVec2(1200 * display_ratio * 5, 18 * display_ratio * 5);
+	ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
+	ImGui::Begin("Progress Indicators", NULL, TRANS_WINDOW_FLAG);
 
 	const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 	const ImU32 bg = ImGui::GetColorU32(ImGuiCol_Button);
@@ -433,12 +427,15 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	ImGui::End();
 
 	// Rendering
-	int display_w, display_h;
-	glfwGetFramebufferSize(window, &display_w, &display_h);
-	glViewport(0, 0, display_w, display_h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
+	
+}
+
+void GUI::renderMiniMap() {
+
+
 }
 

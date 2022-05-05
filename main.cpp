@@ -3,6 +3,9 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 #include "Model.h"
 #include <thread>         
 #include <chrono>
@@ -61,6 +64,21 @@ void print_versions()
 	std::cout << "Supported GLSL version is: " <<
 		glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 #endif
+}
+
+void preload_texture_files() {
+	std::cout << "Start pre-loading... " << std::endl; 
+	const char* load_dir = "models";
+	int i = 0;
+	for (auto& entry : fs::recursive_directory_iterator(load_dir)) {
+		std::cout << entry.path() << std::endl;
+		const char* epath = entry.path().string().c_str();
+		int width, height, nrComponents; 
+		unsigned char* data = stbi_load(epath, &width, &height, &nrComponents, 0);
+		stbi_image_free(data);
+		i++;
+	}
+	GUI::show_loading = false; 
 }
 
 void load_models(GLFWwindow* window) 
@@ -156,8 +174,9 @@ int main(int argc, char* argv[])
 
 
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
-	
+	//std::thread preload_thread(preload_texture_files); 
 	//GUI::renderLoadScene(window);
+	//preload_thread.join(); 
 	//loadingThread.join(); 
 	load_models(window); 
 	Window::show_GUI = false; 
