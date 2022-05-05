@@ -689,6 +689,10 @@ void Model::setAnimationMode(AniMode ani) {
 	if (ani != curr || blend == 0.0f) {
 		last = curr;
 		curr = ani;
+
+		if (blend != 0.0f) {
+			blend = 1.0f - blend;
+		}
 	}
 }
 

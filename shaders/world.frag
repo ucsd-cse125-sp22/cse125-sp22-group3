@@ -97,12 +97,12 @@ void main()
 
         shadow /= ((halfkernelWidth*2+1)*(halfkernelWidth*2+1));
     }
-
+    
     /*
     // diffuse shading
     float NdotL = dot(norm, lightPos);
-    // float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
-    float lightIntensity = smoothstep(0, 0.01, NdotL);
+    float lightIntensity = smoothstep(0, 0.01, NdotL * (1 - shadow));
+    // float lightIntensity = smoothstep(0, 0.01, NdotL);
     vec4 light = lightIntensity * vec4(0.5f);
 
     // specular
@@ -120,7 +120,7 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
 
-    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + spec);
+    fragColor = tex * vec4(0.6, 0.5, 0.4, 1.0) * (tex + light + rim);
     */
 
     // diffuse shading
