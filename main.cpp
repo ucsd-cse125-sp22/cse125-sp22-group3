@@ -223,7 +223,7 @@ int main(int argc, char* argv[])
 				glViewport(0, 0, Window::width, Window::height);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				
-				// glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
+				glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				// Window::renderDepthMap();
@@ -251,10 +251,10 @@ int main(int argc, char* argv[])
 					}
 				}
 
-				/* i still need to adjust bloom :P
+				
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				glUseProgram(Window::blurShaderProgram);
-				unsigned int amount = 10;
+				unsigned int amount = 2;
 				bool horizontal = true, first_iteration = true;
 				for (unsigned int i = 0; i < amount; i++)
 				{
@@ -283,10 +283,10 @@ int main(int argc, char* argv[])
 				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "scene"), 0);
 				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloomBlur"), 1);
 				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloom"), 1);
-				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
+				glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
 				Window::renderDepthMap();
 				glUseProgram(0);
-				*/
+				
 
 				free(sheader);
 				free(model_arr);
