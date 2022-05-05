@@ -187,7 +187,7 @@ void GUI::initializeImage() {
 	const char* rack_dir = (picture_dir + string("/rack")).c_str(); 
 	int i = 0;
 	for (auto& entry : fs::directory_iterator(rack_dir)) {
-		std::cout << entry.path() << std::endl;
+		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(rack_images_list[i]);
 		const char* epath = entry.path().string().c_str(); 
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
@@ -198,7 +198,7 @@ void GUI::initializeImage() {
 	i = 0; 
 	const char* icon_dir = (picture_dir + string("/icon")).c_str();
 	for (auto& entry : fs::directory_iterator(icon_dir)) {
-		std::cout << entry.path() << std::endl;
+		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(icon_images_list[i]);
 		const char* epath = entry.path().string().c_str();
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
@@ -217,7 +217,7 @@ void GUI::initializeLoadingImage() {
 	const char* load_dir = (picture_dir + string("/loading")).c_str();
 	int i = 0;
 	for (auto& entry : fs::directory_iterator(load_dir)) {
-		std::cout << entry.path() << std::endl;
+		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(loading_bg[i]);
 		const char* epath = entry.path().string().c_str();
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),

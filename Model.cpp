@@ -108,12 +108,12 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
-	std::cout << mesh->mName.C_Str() << std::endl;
+	//std::cout << mesh->mName.C_Str() << std::endl;
 
 	// Has materials
 	bool hasMaterials = false;
 
-	std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
+	//std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
 
 	// Data to send to mesh
     std::vector<glm::vec3> pos;
@@ -252,7 +252,7 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		std::cout << "Texture loaded at path: " << path << std::endl;
+		//std::cout << "Texture loaded at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
 	else
