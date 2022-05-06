@@ -281,7 +281,7 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
 					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
-
+							delete model_map[model_info.model_id];
 							model_map[model_info.model_id] = new Model(model_info.model);
 					}
 
