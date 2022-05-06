@@ -5,6 +5,7 @@ std::map<ModelEnum, Model> Model::model_cache; //move to static so can be used i
 Model::Model() {}
 
 Model::Model(ModelEnum thisModel) {
+	model = thisModel;
 	if (model_cache.count(thisModel) == 0) {
 		constructorHelper(thisModel);
 		model_cache[thisModel] = *this;
@@ -12,6 +13,7 @@ Model::Model(ModelEnum thisModel) {
 	else {
 		copyHelper(model_cache[thisModel]);
 	}
+	
 }
 
 Model::Model(const Model &other) {

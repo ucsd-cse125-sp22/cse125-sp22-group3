@@ -52,7 +52,7 @@ inline int ServerMain()
 	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
-	GameManager game({ &bumbus,&pogo, &gilman, &swainky });
+	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
 	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world });
 
 	world.SetPosition({ 0, 0, -5.0f });
