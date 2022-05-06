@@ -21,7 +21,6 @@ Model::Model(const Model &other) {
 }
 
 void Model::constructorHelper(ModelEnum thisModel) {
-	std::cout << "ConstructorHelper called " << std::endl;
 	model = thisModel;
 
 	// Set current animation mode
@@ -705,6 +704,8 @@ void Model::copyHelper(const Model& t) {
 	// Copy all values
 	curr = t.curr;
 	last = t.last;
+
+	model = t.model;
 
 	textures_loaded = t.textures_loaded;
 	meshes = t.meshes;
