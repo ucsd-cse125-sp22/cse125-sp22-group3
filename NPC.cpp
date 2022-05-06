@@ -33,7 +33,6 @@ AniMode NPC::GetAniMode()
 	return AniMode();
 }
 
-
 std::vector<Collider*> NPC::GetColliders()
 {
 	return { collider_ };

@@ -153,6 +153,9 @@ int main(int argc, char* argv[])
 	//loadingGuithread.join();
 	//GUI::initializeGUI(window);
 	
+	Window::postprocessing = new FBO(-200.0f, 7500.0f);
+	Window::bloom = new FBO(Window::width, Window::height);
+
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -184,6 +187,7 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
 				{
 					ModelInfo model_info = model_arr[i];
@@ -193,10 +197,10 @@ int main(int argc, char* argv[])
 					}
 					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
 
-							model_map[model_info.model_id] = new Model(model_info.model);
+						model_map[model_info.model_id] = new Model(model_info.model);
 					}
-
-					Model& curr_model = *model_map[model_info.model_id];
+  
+  				Model& curr_model = *model_map[model_info.model_id];
 
 					//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
@@ -212,13 +216,82 @@ int main(int argc, char* argv[])
 					}
 					
 					curr_model.setAnimationMode(model_info.modelAnim);
-					curr_model.draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 				}
+
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glViewport(0, 0, Window::width, Window::height);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				
+				glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
+
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				// Window::renderDepthMap();
+				glCullFace(GL_BACK);
+				for (int i = 0; i < sheader->num_models; i++)
+				{
+					ModelInfo model_info = model_arr[i];
+
+					if (model_map.count(model_info.model_id) == 0) {
+						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
+
+							model_map[model_info.model_id] = new Model(model_info.model);
+					}
+
+					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
+
+					if (model_info.model != WORLD_MAP) {
+						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
+					}
+
+					else {
+						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
+					}
+				}
+
+				
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glUseProgram(Window::blurShaderProgram);
+				unsigned int amount = 2;
+				bool horizontal = true, first_iteration = true;
+				for (unsigned int i = 0; i < amount; i++)
+				{
+					glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "image"), 0);
+					glBindFramebuffer(GL_FRAMEBUFFER, FBO::pingpongFBO[horizontal]);
+					glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "horizontal"), horizontal);
+					glBindTexture(GL_TEXTURE_2D, first_iteration ? FBO::colorBuffers[1] : FBO::pColorBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+					Window::renderDepthMap();
+					horizontal = !horizontal;
+					if (first_iteration)
+						first_iteration = false;
+				}
+
+				
+				glUseProgram(0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glUseProgram(Window::finalShaderProgram);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[!horizontal]);
+
+				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "scene"), 0);
+				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloomBlur"), 1);
+				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloom"), 1);
+				glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
+				Window::renderDepthMap();
+				glUseProgram(0);
+				
 
 				free(sheader);
 				free(model_arr);
 			});
-		
+
 		// Gets events, including input such as keyboard and mouse or window resizing
 		glfwPollEvents();
 

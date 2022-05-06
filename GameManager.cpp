@@ -109,11 +109,16 @@ void GameManager::SetPlayerSprint(const int player_index, const bool sprinting)
 {
 	players_[player_index]->sprint = sprinting;
 }
+void GameManager::SetPlayerDance(const int player_index)
+{
+	players_[player_index]->Dance();
+}
 
 double GameManager::GetFixedDeltaTime() {
 	const std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
     return elapsed_seconds.count();
 }
+
 
 void GameManager::UpdateFixedDeltaTime()
 {

@@ -52,7 +52,7 @@ inline int ServerMain()
 	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
-	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
+	GameManager game({ &bumbus,&pogo, &gilman, &swainky });
 	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world });
 
 	world.SetPosition({ 0, 0, -5.0f });
@@ -77,6 +77,10 @@ inline int ServerMain()
 					case InputCommands::STOP_SPRINT:
 						game.SetPlayerSprint(client_idx, false);
 						break;
+					case InputCommands::DANCE_CMD:
+						game.SetPlayerDance(client_idx);
+						break;
+
 					default: break;
 				}
 			}

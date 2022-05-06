@@ -68,8 +68,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Input
 		glm::vec2 move_input{0,0};
 		bool sprint = false;
+		bool isDancing = false;
 		void Use();
 		void Drop();
+		void Dance();
 
 		// Information
 		glm::vec3 GetPosition() const;
@@ -82,5 +84,5 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		bool isHolding = false;
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 
-
+		
 };

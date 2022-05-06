@@ -31,10 +31,14 @@ void Player::FixedUpdate() {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
 
-		if (isHolding) 
+		if (isHolding) {
 			this->modelAnim = IDLE_HOLD;
-		else
+		}
+		else if (!isDancing)
+		//else
 			this->modelAnim = IDLE;
+		else
+			this->modelAnim = DANCE;
 	}
 	else {
 		// Accelerate in our inputted direction
@@ -50,6 +54,7 @@ void Player::FixedUpdate() {
 			this->modelAnim = IDLE_WALK;
 		else
 			this->modelAnim = WALK;
+		isDancing = false;
 	}
 	
 	if (glm::length(curr_vel_) > 0) {
@@ -122,6 +127,12 @@ void Player::Drop()
 	}
 	isHolding = false;
 	entityHeld = nullptr;
+}
+
+void Player::Dance() {
+	printf("REACHED DANCE\n");
+	if (!isHolding)
+		isDancing = true;
 }
 
 glm::mat4 Player::GetRotation() {

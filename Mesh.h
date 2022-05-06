@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-#include "DepthMap.h"
+#include "FBO.h"
 
 // store texture info
 struct Texture {

@@ -17,7 +17,8 @@ const char* Window::windowTitle = "GLFW Starter Project";
 
 // Objects to Render
 Player* Window::player;
-DepthMap* Window::dm;
+FBO* Window::postprocessing;
+FBO* Window::bloom;
 
 // Camera Matrices 
 // Projection matrix:
@@ -32,22 +33,28 @@ glm::vec3 Window::upVector(0, 1, 0);		// The up direction of the camera.
 glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window::upVector);
 
 // Shader Program ID
-GLuint Window::shaderProgram; 
+GLuint Window::worldShaderProgram; 
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
 GLuint Window::shadowShaderProgram; 
+GLuint Window::blurShaderProgram;
+GLuint Window::finalShaderProgram;
 
+// Shader to Program
+std::map<ModelEnum, GLuint> Window::modelShader;
 
 bool Window::show_GUI = true; 
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
-	shaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
+	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
-	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag");
+	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag", "shaders/shadows.geom");
+	blurShaderProgram = LoadShaders("shaders/blur.vert", "shaders/blur.frag");
+	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 
 	// Check the shader program.
-	if (!shaderProgram)
+	if (!worldShaderProgram)
 	{
 		std::cerr << "Failed to initialize shader program" << std::endl;
 		return false;
@@ -77,7 +84,38 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	// dm = new DepthMap(-20.0f, 20.0f);
+	// Use later, in case many objects need many shaders
+	modelShader = {
+	{ CHAR_BUMBUS, animationShaderProgram },
+	{ CHAR_POGO, animationShaderProgram },
+	{ CHAR_SWAINKY, animationShaderProgram },
+	{ CHAR_GILMAN, animationShaderProgram }, // TODO rename
+
+	{ VEG_CABBAGE, animationShaderProgram  },
+	{ VEG_CARROT, animationShaderProgram  },
+	{ VEG_CORN, animationShaderProgram  },
+	{ VEG_RADISH, animationShaderProgram  },
+	{ VEG_TOMATO, animationShaderProgram  },
+
+	{ WORLD_PLOT_RED, animationShaderProgram  },
+	{ WORLD_PLOT_BLUE, animationShaderProgram },
+	{ WORLD_PLOT_GREEN, animationShaderProgram  },
+	{ WORLD_PLOT_YELLOW, animationShaderProgram  },
+
+	{ WORLD_SEED_CABBAGE, animationShaderProgram  },
+	{ WORLD_SEED_CARROT, animationShaderProgram  },
+	{ WORLD_SEED_CORN, animationShaderProgram  },
+	{ WORLD_SEED_RADISH, animationShaderProgram  },
+	{ WORLD_SEED_TOMATO, animationShaderProgram  },
+
+	{ WORLD_FLAG_CABBAGE, animationShaderProgram  },
+	{ WORLD_FLAG_CARROT, animationShaderProgram },
+	{ WORLD_FLAG_CORN, animationShaderProgram  },
+	{ WORLD_FLAG_RADISH, animationShaderProgram  },
+	{ WORLD_FLAG_TOMATO, animationShaderProgram  },
+
+	{ WORLD_MAP, worldShaderProgram }
+	};
 			
 	return true;
 }
@@ -88,7 +126,7 @@ void Window::cleanUp()
 	// delete player;
 
 	// Delete the shader program.
-	glDeleteProgram(shaderProgram);
+	glDeleteProgram(worldShaderProgram);
 	glDeleteProgram(modelShaderProgram);
 	glDeleteProgram(animationShaderProgram);
 	glDeleteProgram(shadowShaderProgram);
@@ -166,6 +204,10 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 	// Set the projection matrix.
 	Window::projection = glm::perspective(glm::radians(60.0), 
 								double(width) / (double)height, 1.0, 1000.0);
+
+	if (Window::bloom != nullptr) {
+		Window::bloom->resize(width, height);
+	}
 }
 
 void Window::logicCallback()
@@ -201,11 +243,11 @@ void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos)
 }
 
 void Window::renderDepthMap() {
-	glUseProgram(modelShaderProgram);
+	// glUseProgram(modelShaderProgram);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
-	glUniform1i(glGetUniformLocation(shadowShaderProgram, "shadowMap"), 0);
+	// glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
+	// glUniform1i(glGetUniformLocation(modelShaderProgram, "map"), 0);
 	unsigned int quadVAO = 0;
 	unsigned int quadVBO;
 	if (quadVAO == 0)
@@ -232,5 +274,5 @@ void Window::renderDepthMap() {
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
-	glUseProgram(0);
+	// glUseProgram(0);
 }

@@ -17,7 +17,8 @@ enum InputCommands {
 	USE,
 	DROP,
 	SPRINT,
-	STOP_SPRINT
+	STOP_SPRINT,
+	DANCE_CMD
 };
 
 enum ModelEnum
@@ -26,6 +27,7 @@ enum ModelEnum
 	CHAR_POGO,
 	CHAR_SWAINKY,
 	CHAR_GILMAN,
+	CHAR_NPC, // i dont think we named her question mark
 
 	VEG_CABBAGE,
 	VEG_CARROT,
@@ -54,6 +56,7 @@ enum ModelEnum
 };
 
 enum AniMode {
+	DANCE,
 	IDLE_HOLD,
 	IDLE_WALK,
 	IDLE,
