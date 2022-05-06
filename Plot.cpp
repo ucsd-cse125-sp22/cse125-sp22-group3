@@ -1,4 +1,5 @@
 ﻿#include "Plot.h"
+#include "GameManager.h"
 
 Plot::Plot(ModelEnum curr) {
 	model = curr;
@@ -12,6 +13,7 @@ Plot::Plot(ModelEnum curr) {
 }
 
 Plot::~Plot() {}
+
 void Plot::FixedUpdate() {
 	
 	collider_->center = *translate;
@@ -57,14 +59,52 @@ bool Plot::CanInteract(Player* player) {
 	// can interact if:
 	// 1. player is holding a seed and plot is empty
 	// 2. player is holding nothing and plot is harvestable
-	return (player->GetIsHolding() && seed && !isPlanted) || (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
+	bool can_plant_seed = (player->GetIsHolding() && seed && !isPlanted);
+	bool can_harvest_veggie = (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
+	return  can_plant_seed || can_harvest_veggie;
 	//return true;
 }
 
-void Plot::OnInteract(Player* player) {}
+void Plot::OnInteract(Player* player) {
+	if (player->isHolding && !isPlanted) {
+		if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
+
+			SetPlantedVegetable(seed);
+
+			VeggieInfo veggie = veggie_map[seed->GetType()];
+			seed->SetModel(veggie.flag_model, GetTranslate());
+			seed->SetPlanted();
+			player->Drop();
+			player->SetTriggeringEntity(nullptr);
+		}
+		else {
+			printf("Warning: You can only plant seeds not veggies bro\n");
+		}
+	}
+	else if (!player->isHolding) {
+		Seed* seed = plantedVegetable;
+		if (seed != nullptr && plantedVegetable->isHarvestable) {
+			// Remove the seed
+			VegetableType veggieType = GetPlantedVegetable();
+			auto seed_ = dynamic_cast<GameEntity*>(seed);
+			if (seed_ != nullptr) {
+				GameManager::RemoveEntities({ seed_ });
+				SetPlantedVegetable(nullptr);
+			}
+
+			Vegetable* veggie = nullptr;
+			// Spawn the correct vegetable on the player
+			VeggieInfo veggie_info = veggie_map[seed->GetType()];
+			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
+			GameManager::AddEntities({ veggie });
+			player->SetHoldEntity(veggie);
+			player->SetTriggeringEntity(nullptr);
+		}
+	}
+}
 
 void Plot::SetPlantedVegetable(Seed* seed) {
-	isPlanted = true;
+	isPlanted = seed != nullptr;
 	plantedVegetable = seed;
 }
 

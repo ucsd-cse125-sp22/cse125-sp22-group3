@@ -18,6 +18,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		float friction_ = 50.f; // Resistance in Units/Sec
 		float base_accel_ = 200.f; // Acceleration in Units/Sec^2
 		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
+		float max_sprint_velocity_ = 30.f;
 		float entityHeldDist = 2.5f; // distance of entity from player
 		glm::vec2 curr_vel_ = glm::vec2(0,0);
 
@@ -35,9 +36,6 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Moving player
 		void Move();
 		void MoveHeld();
-		void SetHoldEntity(GameEntity* entity);
-		bool isHolding = false;
-		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
@@ -69,8 +67,11 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		
 		// Input
 		glm::vec2 move_input{0,0};
+		bool sprint = false;
+		bool isDancing = false;
 		void Use();
 		void Drop();
+		void Dance();
 
 		// Information
 		glm::vec3 GetPosition() const;
@@ -79,4 +80,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		GameEntity* GetTriggeringEntity();
 		GameEntity* GetHoldEntity();
 
+		void SetHoldEntity(GameEntity* entity);
+		bool isHolding = false;
+		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
+
+		
 };

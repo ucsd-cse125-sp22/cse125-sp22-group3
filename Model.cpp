@@ -21,6 +21,7 @@ Model::Model(const Model &other) {
 void Model::constructorHelper(ModelEnum thisModel) {
 	std::cout << "ConstructorHelper called " << std::endl;
 	model = thisModel;
+
 	// Set current animation mode
 	last = IDLE;
 	curr = IDLE;
@@ -55,7 +56,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 
 		animationChannels.resize(scene->mNumAnimations);
 
-		duration = scene->mAnimations[1]->mDuration;
+		duration = scene->mAnimations[0]->mDuration;
 	}
 
 	// Get directory from filepah to get materials
@@ -263,9 +264,13 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
 	if (hasAni) {
-		float currTime = glfwGetTime();
-	
-		CalculateBoneTransform(currTime);
+		//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
+		curr_time = glfwGetTime();
+		float delta = curr_time - last_time;
+		fixed_time += delta * anim_speed;
+
+		CalculateBoneTransform(fixed_time);
+		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -284,9 +289,12 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 
 void Model::draw(glm::mat4 parent, GLuint shader) {
 	if (hasAni) {
-		float currTime = glfwGetTime();
+		curr_time = glfwGetTime();
+		float delta = curr_time - last_time;
+		fixed_time += delta * anim_speed;
 
-		CalculateBoneTransform(currTime);
+		CalculateBoneTransform(fixed_time);
+		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -401,13 +409,16 @@ void Model::LoadAnimationData(const aiScene* scene) {
 	}
 
 	// For every animation type. Skip the one where all is combined (i = 0)
-	for (int i = 1; i < scene->mNumAnimations; i++) {
+	for (int i = 0; i < scene->mNumAnimations; i++) {
 		// Copy vector for every animation
 		std::vector<AnimationNode> nodes = aniNodes;
 		animationChannels[i] = nodes;
 		const aiAnimation* animation = scene->mAnimations[i];
+		if (i == 1)
+			continue;
 		for (int j = 0; j < scene->mAnimations[i]->mNumChannels; j++)
 		{
+			
 			auto channel = animation->mChannels[j];
 			std::string name = std::string(channel->mNodeName.data);
 
@@ -467,7 +478,7 @@ void Model::LoadAnimationData(const aiScene* scene) {
 
 void Model::CalculateBoneTransform(float time)
 {
-	float time_tick = time * ticks * anim_speed;
+	float time_tick = time * ticks;
 	// Get current frame
 	float at = fmod(time_tick, duration);
 
@@ -495,10 +506,10 @@ void Model::ReadHierarchyData(float time) {
 		glm::mat4 node_trans = node.transformation;
 		// get transformations at this time
 		if (node.hasBone) {
-			glm::mat4 scaling = InterpolateScale(time, node);
+			// glm::mat4 scaling = InterpolateScale(time, node);
 			glm::mat4 rotation = InterpolateRotation(time, node);
 			glm::mat4 translation = InterpolatePosition(time, node);
-			node_trans = translation * rotation * scaling;
+			node_trans = translation * rotation;
 		}
 
 		// get parent
@@ -528,11 +539,11 @@ void Model::ReadBlendedHierarchyData(float time) {
 			glm::mat4 this_node_transform = node.transformation;
 			if (node.hasBone) {
 				// get transformations at this time
-				glm::mat4 this_scaling = InterpolateScale(time, node);
+				// glm::mat4 this_scaling = InterpolateScale(time, node);
 				glm::mat4 this_rotation = InterpolateRotation(time, node);
 				glm::mat4 this_translation = InterpolatePosition(time, node);
 
-				this_node_transform = this_translation * this_rotation * this_scaling;
+				this_node_transform = this_translation * this_rotation;
 			}
 
 			AnimationNode& next_node = animationChannels[animationMap[curr]][i];
@@ -681,6 +692,10 @@ void Model::setAnimationMode(AniMode ani) {
 	if (ani != curr || blend == 0.0f) {
 		last = curr;
 		curr = ani;
+
+		if (blend != 0.0f) {
+			blend = 1.0f - blend;
+		}
 	}
 }
 

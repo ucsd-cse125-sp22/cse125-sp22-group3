@@ -84,6 +84,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		ServerHeader sheader{};
 		sheader.num_models = model_infos.size();
 		sheader.player_transform = players_[client_idx]->GetParentTransform();
+		sheader.player_sprinting = players_[client_idx]->sprint;
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 		serverSerialize(server_buf, &sheader, model_infos.data());
@@ -105,11 +106,20 @@ void GameManager::SetPlayerUse(const int player_index) {
 void GameManager::SetPlayerDrop(const int player_index) {
 	players_[player_index]->Drop();
 }
+void GameManager::SetPlayerSprint(const int player_index, const bool sprinting)
+{
+	players_[player_index]->sprint = sprinting;
+}
+void GameManager::SetPlayerDance(const int player_index)
+{
+	players_[player_index]->Dance();
+}
 
 double GameManager::GetFixedDeltaTime() {
 	const std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
     return elapsed_seconds.count();
 }
+
 
 void GameManager::UpdateFixedDeltaTime()
 {

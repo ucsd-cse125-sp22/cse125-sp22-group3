@@ -4,15 +4,6 @@
 #include "Harvestable.h"
 #include "Holdable.h"
 
-enum class VegetableType {
-    TOMATO,
-    CABBAGE,
-    CORN,
-    CARROT,
-    RADISH,
-    NOVEGGIE
-};
-
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
     public:
         // current animation, no custom get/set logic so is set as public field
@@ -51,6 +42,7 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		glm::mat4 GetHoldTransform() override;
         bool isHoldable = true;
 		bool isHeld = false;
+		Player* holding_player = nullptr;
 
 	private:
 		// Transformations

@@ -26,6 +26,8 @@ public:
     void SetPlayerInput(glm::vec2 move_input, int player_index);
     void SetPlayerUse(int player_index);
     void SetPlayerDrop(int player_index);
+    void SetPlayerSprint(int player_index, bool sprinting);
+    void SetPlayerDance(int player_index);
 
     // Information
     std::vector<std::pair<char*, int>> GetServerBuf();

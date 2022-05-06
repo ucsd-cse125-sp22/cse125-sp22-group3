@@ -31,24 +31,30 @@ void Player::FixedUpdate() {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
 		}
 
-		if (isHolding) 
+		if (isHolding) {
 			this->modelAnim = IDLE_HOLD;
-		else
+		}
+		else if (!isDancing)
+		//else
 			this->modelAnim = IDLE;
+		else
+			this->modelAnim = DANCE;
 	}
 	else {
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
-		if (glm::length(curr_vel_) > max_velocity_ * glm::length(move_input)) {
-			curr_vel_ = glm::normalize(curr_vel_) * max_velocity_ * glm::length(move_input);
+		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
+		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
+			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
 		
 		if (isHolding)
 			this->modelAnim = IDLE_WALK;
 		else
 			this->modelAnim = WALK;
+		isDancing = false;
 	}
 	
 	if (glm::length(curr_vel_) > 0) {
@@ -109,105 +115,10 @@ void Player::Use()
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
 		if (interactable != nullptr && interactable->CanInteract(this)) {
 			interactable->OnInteract(this);
-
-			//VEGGIE SPECIFIC CODE
-			//TODO Maybe change to holdable to make more general?
-			auto temp = dynamic_cast<Plot*>(entityTriggered);
-			auto temp1 = dynamic_cast<Vegetable*>(entityTriggered);
-			if (auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)){//auto vegetable = dynamic_cast<Vegetable*>(entityTriggered)) {
-				if (!isHolding && (vegetable != nullptr)) {
-					SetHoldEntity(vegetable);
-					SetTriggeringEntity(nullptr);
-				}
-			}
-
-			else if (auto plot = dynamic_cast<Plot*>(entityTriggered)) {
-					if (isHolding && !plot->isPlanted) {	
-						if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
-
-							plot->SetPlantedVegetable(seed);
-
-							// maybe move this to a helper method its kinda bulky here
-							switch (seed->GetType()) {
-							case VegetableType::CABBAGE:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CABBAGE, plot->GetTranslate());
-								break;
-							case VegetableType::CORN:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CORN, plot->GetTranslate());
-								break;
-							case VegetableType::CARROT:
-								seed->SetModel(ModelEnum::WORLD_FLAG_CARROT, plot->GetTranslate());
-								break;
-							case VegetableType::RADISH:
-								seed->SetModel(ModelEnum::WORLD_FLAG_RADISH, plot->GetTranslate());
-								break;
-							case VegetableType::TOMATO:
-								seed->SetModel(ModelEnum::WORLD_FLAG_TOMATO, plot->GetTranslate());
-								break;
-
-							default:
-								printf("Error seed to flag not found\n");
-							}
-							seed->SetPlanted();
-							this->Drop();
-							SetTriggeringEntity(nullptr);
-						}
-						else {
-							printf("Warning: You can only plant seeds not veggies bro\n");
-						}
-					}
-					else if (!isHolding) {
-						Seed* seed = plot->plantedVegetable;
-						if (seed != nullptr && plot->plantedVegetable->isHarvestable) {
-							plot->isPlanted = false;
-
-							// Remove the seed
-							VegetableType veggieType = plot->GetPlantedVegetable();
-							auto seed_ = dynamic_cast<GameEntity*>(seed);
-							if (seed_ != nullptr) {
-								GameManager::RemoveEntities({ seed_ });
-							}
-
-							Vegetable* veggie = nullptr;
-							// Spawn the correct vegetable on the player
-							switch (seed->GetType()) {
-							case VegetableType::CABBAGE:
-								veggie = new Vegetable{ VegetableType::CABBAGE, VEG_CABBAGE };
-								break;
-							case VegetableType::CORN:
-								veggie = new Vegetable{ VegetableType::CORN, VEG_CORN };
-								break;
-							case VegetableType::CARROT:
-								veggie = new Vegetable{ VegetableType::CARROT, VEG_CARROT };
-								break;
-							case VegetableType::RADISH:
-								veggie = new Vegetable{ VegetableType::RADISH, VEG_RADISH };
-								break;
-							case VegetableType::TOMATO:
-								veggie = new Vegetable{ VegetableType::TOMATO, VEG_TOMATO };
-								break;
-
-							default:
-								printf("Error flag to veggie not found\n");
-							}
-
-							GameManager::AddEntities({ veggie });
-							SetHoldEntity(veggie);
-							SetTriggeringEntity(nullptr);
-						}
-					}
-					
-			}
-			else if (auto seed = dynamic_cast<Seed*>(entityTriggered)) {
-				//std::cout << "Here" << std::endl;
-				if (!isHolding) {
-					SetHoldEntity(seed);
-					SetTriggeringEntity(nullptr);
-				}
-			}
 		}
 	}
 }
+
 void Player::Drop()
 {
 	auto holdable = dynamic_cast<Holdable*>(entityHeld);
@@ -216,6 +127,12 @@ void Player::Drop()
 	}
 	isHolding = false;
 	entityHeld = nullptr;
+}
+
+void Player::Dance() {
+	printf("REACHED DANCE\n");
+	if (!isHolding)
+		isDancing = true;
 }
 
 glm::mat4 Player::GetRotation() {

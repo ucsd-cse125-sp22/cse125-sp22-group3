@@ -7,7 +7,9 @@
 #include "main.h"
 #include "shader.h"
 #include "GameManager.h"
-#include "DepthMap.h"
+#include "FBO.h"
+
+#include <map>
 
 class Window
 {
@@ -27,18 +29,22 @@ public:
 	// Objects to Render
 	static Player* player;
 
+	static std::map<ModelEnum, GLuint> modelShader;
 	// Camera Matrices
 	static glm::mat4 projection;
 	static glm::mat4 view;
 	static glm::vec3 eyePos, lookAtPoint, upVector;
 
-	static DepthMap* dm;
+	static FBO * postprocessing;
+	static FBO * bloom;
 
 	// Shader Program ID
-	static GLuint shaderProgram;
+	static GLuint worldShaderProgram;
 	static GLuint modelShaderProgram;
 	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;
+	static GLuint blurShaderProgram;
+	static GLuint finalShaderProgram;
 
 
 	static bool show_GUI;

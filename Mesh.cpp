@@ -122,7 +122,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
             glActiveTexture(GL_TEXTURE0 + i);
             glUniform1i(glGetUniformLocation(shaderProgram, "shadowMap"), i);
             // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
         }
     }
     // Does not have animations
@@ -133,8 +133,12 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+    // for shadows
+    for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
+    {
+        std::string shaderLoc = "cascadePlaneDistances[" + std::to_string(i) + "]";
+        glUniform1f(glGetUniformLocation(shaderProgram, shaderLoc.c_str()), FBO::shadowCascadeLevels[i]);
+    }
 
     glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
 
@@ -157,6 +161,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vector<glm::mat4> transforms, GLuint shaderProgram) {
@@ -200,7 +205,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
             glActiveTexture(GL_TEXTURE0 + i);
             glUniform1i(glGetUniformLocation(shaderProgram, "shadowMap"), i);
             // and finally bind the texture
-            glBindTexture(GL_TEXTURE_2D, DepthMap::dm);
+            glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
         }
     }
 
@@ -218,8 +223,11 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
         GL_FALSE, glm::value_ptr(transforms[0]));
 
     // for shadows
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
+    for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
+    {
+        std::string shaderLoc = "cascadePlaneDistances[" + std::to_string(i) + "]";
+        glUniform1f(glGetUniformLocation(shaderProgram, shaderLoc.c_str()), FBO::shadowCascadeLevels[i]);
+    }
 
     // Camera position --- TO DO: just get eyePos from windows or just create a camera class? Inverse can be a expensive operation
         // transformations
@@ -243,6 +251,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shader) {
@@ -253,10 +262,15 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     glm::mat4 m = parent * model;
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
         glm::value_ptr(m));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 1);
+
+    if (textures.size() > 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    }
 
     // Bind the VAO
     glBindVertexArray(VAO);
@@ -266,7 +280,7 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
-
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(glm::mat4 parent, GLuint shader) {
@@ -274,10 +288,16 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
     glm::mat4 m = parent * model;
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
         glm::value_ptr(m));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "lightSpaceMatrix"), 1, GL_FALSE,
-        glm::value_ptr(DepthMap::lightSpaceMatrix));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
+
+    if (textures.size() > 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    }
+
     // Bind the VAO
     glBindVertexArray(VAO);
 
@@ -286,4 +306,5 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
     // Unbind the VAO and shader program
     glBindVertexArray(0);
     glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
 }
