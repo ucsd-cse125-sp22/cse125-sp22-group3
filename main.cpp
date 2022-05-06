@@ -3,9 +3,11 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+//#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 #include "Model.h"
 #include <thread>         
 #include <chrono>

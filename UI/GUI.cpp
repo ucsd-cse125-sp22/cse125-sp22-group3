@@ -1,8 +1,10 @@
 #include "GUI.h"
 #include <iostream>
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+//#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
+#include <filesystem>
+namespace fs = std::filesystem;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
@@ -13,7 +15,7 @@ int GUI::window_width;
 
 
 int GUI::rack_image_idx; 
-string GUI::picture_dir;
+std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
@@ -184,7 +186,7 @@ bool GUI::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* ou
 }
 
 void GUI::initializeImage() {
-	const char* rack_dir = (picture_dir + string("/rack")).c_str(); 
+	const char* rack_dir = (picture_dir + std::string("/rack")).c_str(); 
 	int i = 0;
 	for (auto& entry : fs::directory_iterator(rack_dir)) {
 		//std::cout << entry.path() << std::endl;
@@ -196,7 +198,7 @@ void GUI::initializeImage() {
 	}
 	rack_image_idx = 0;
 	i = 0; 
-	const char* icon_dir = (picture_dir + string("/icon")).c_str();
+	const char* icon_dir = (picture_dir + std::string("/icon")).c_str();
 	for (auto& entry : fs::directory_iterator(icon_dir)) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(icon_images_list[i]);
@@ -208,13 +210,13 @@ void GUI::initializeImage() {
 		i++;
 	}
 
-	const char* score_bg_path = (picture_dir + string("/score_background.png")).c_str();
+	const char* score_bg_path = (picture_dir + std::string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
 }
 
 void GUI::initializeLoadingImage() {
-	const char* load_dir = (picture_dir + string("/loading")).c_str();
+	const char* load_dir = (picture_dir + std::string("/loading")).c_str();
 	int i = 0;
 	for (auto& entry : fs::directory_iterator(load_dir)) {
 		//std::cout << entry.path() << std::endl;
@@ -268,7 +270,7 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(window);
 
-		this_thread::sleep_for(chrono::milliseconds(300));
+		std::this_thread::sleep_for(std::chrono::milliseconds(300));
 		
 
 		//handling the last image; 

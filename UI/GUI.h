@@ -23,7 +23,7 @@
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
 
-using namespace std;
+//using namespace std;
 
 struct GUIImage {
 public: 
@@ -38,7 +38,7 @@ public:
 	static float display_ratio; 
 	static int window_height;
 	static int window_width; 
-	static string picture_dir;
+	static std::string picture_dir;
 	static GLFWwindow* my_window;
 	static GUIImage score_background;
 	static GUIImage loading_bg[NUM_LOAD_IMG]; 
