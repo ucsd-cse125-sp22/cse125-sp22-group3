@@ -73,7 +73,8 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 				reinterpret_cast<uintptr_t>(entity),
 				drawable->GetModelEnum(),
 				drawable->GetAniMode(),
-				drawable->GetParentTransform()
+				drawable->GetParentTransform(),
+				dynamic_cast<Player*>(entity) != nullptr
 			});
 		}
 	}

@@ -202,9 +202,11 @@ void Window::resizeCallback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 
 	// Set the projection matrix.
-	Window::projection = glm::perspective(glm::radians(60.0), 
-								double(width) / (double)height, 1.0, 1000.0);
-
+	if (height != 0) {
+		Window::projection = glm::perspective(glm::radians(60.0),
+			double(width) / (double)height, 1.0, 1000.0);
+	}
+	GUI::updateDisplayRatio(width, height); 
 	if (Window::bloom != nullptr) {
 		Window::bloom->resize(width, height);
 	}

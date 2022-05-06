@@ -1,4 +1,6 @@
 #include "Model.h"
+std::map<ModelEnum, Model> Model::model_cache; //move to static so can be used in the constructor
+
 
 Model::Model() {}
 
@@ -17,6 +19,7 @@ Model::Model(const Model &other) {
 }
 
 void Model::constructorHelper(ModelEnum thisModel) {
+	std::cout << "ConstructorHelper called " << std::endl;
 	model = thisModel;
 
 	// Set current animation mode
@@ -312,7 +315,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 {
 	for (int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex)
 	{
-		std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
+		//std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
 
 		int boneID = -1;
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
@@ -696,7 +699,6 @@ void Model::setAnimationMode(AniMode ani) {
 	}
 }
 
-
 void Model::copyHelper(const Model& t) {
 	// Copy all values
 	curr = t.curr;
@@ -733,3 +735,5 @@ Model& Model::operator=(const Model& t)
 
 	return *this;
 }
+
+

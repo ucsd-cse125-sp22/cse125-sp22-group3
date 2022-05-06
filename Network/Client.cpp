@@ -100,6 +100,22 @@ Client::~Client(void)
 	WSACleanup();
 }
 
+ClientWaitPacket Client::updateClientJoinStatus() {
+	char recvbuf[DEFAULT_BUFLEN];
+	int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+	if (recvStatus == SOCKET_ERROR) {
+		fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+	}
+	else if (recvStatus == 0) {
+		fprintf(stderr, "Connection closed by server\n");
+	}
+
+	ClientWaitPacket cw_packet;
+	cw_packet.deserializeFrom(recvbuf);
+	fprintf(stdout, " %d client joined.... \n", cw_packet.client_joined);
+	return cw_packet;
+}
+
 /*
  * Returns bytes received from server. If return value is 0, server has closed connection.
  * Delete the client object immediately.
@@ -154,9 +170,12 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 			curr_recv_pos += recvStatus;
 		}
 	} while (curr_recv_pos < total_recv_len);
-
+	
 	callback(total_recv_buf, total_recv_len);
-	free(total_recv_buf);
+
+	if (total_recv_buf != NULL) {
+		free(total_recv_buf);
+	}
 
 	return total_recv_len;
 }

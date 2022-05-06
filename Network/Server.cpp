@@ -169,6 +169,20 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 		setsockopt(client_socket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
 		ClientSocketVec.push_back(client_socket);
+
+		// TODO send an message to client_socket indicate the number of other client joined
+		const unsigned int wait_packet_size = sizeof(ClientWaitPacket);
+		char wait_packet_data[wait_packet_size];
+
+		ClientWaitPacket cw_packet;
+		cw_packet.client_joined = ClientSocketVec.size();
+		cw_packet.max_client = NUM_CLIENTS;
+
+		cw_packet.serializeTo(wait_packet_data);
+		for (SOCKET client_socket : ClientSocketVec) {
+			int sendStatus = send(client_socket, wait_packet_data, wait_packet_size, 0);
+			// TODO deal with send_status;
+		}
 	}
 
 main_loop_label:

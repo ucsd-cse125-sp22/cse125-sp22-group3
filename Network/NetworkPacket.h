@@ -7,6 +7,20 @@
 #define DEFAULT_BUFLEN 1024
 #define NUM_CLIENTS 1
 
+// the initial message that will be sent to client when waiting for other client to join
+struct ClientWaitPacket {
+	int client_joined;
+	int max_client;
+
+	void serializeTo(void* data) {
+		memcpy(data, this, sizeof(ClientWaitPacket));
+	}
+
+	void deserializeFrom(const void* data) {
+		memcpy(this, data, sizeof(ClientWaitPacket));
+	}
+};
+
 // the Packet struct that sent by client to server
 struct ClientPacket {
 	bool justMoved = false;
@@ -27,6 +41,7 @@ struct ModelInfo {
 	ModelEnum model;
 	AniMode modelAnim;
 	glm::mat4 parent_transform;
+	bool is_player;
 };
 
 // the Packet struct that sent by server to client

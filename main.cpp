@@ -3,6 +3,9 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
 #include "Model.h"
 #include <thread>         
 #include <chrono>
@@ -64,41 +67,66 @@ void print_versions()
 #endif
 }
 
-void load_models() 
-{
-	// Model constructor internally has logic to cache meshes
-	Model(CHAR_BUMBUS);
-	Model(CHAR_POGO);
-	Model(CHAR_SWAINKY);
-	Model(CHAR_GILMAN);
-
-	Model(VEG_CABBAGE);
-	Model(VEG_CARROT);
-	Model(VEG_CORN);
-	Model(VEG_RADISH);
-	Model(VEG_TOMATO);
-
-	Model(WORLD_PLOT_RED);
-	Model(WORLD_PLOT_BLUE);
-	Model(WORLD_PLOT_GREEN);
-	Model(WORLD_PLOT_YELLOW);
-
-	Model(WORLD_SEED_CARROT);
-	Model(WORLD_SEED_CORN);
-	Model(WORLD_SEED_CABBAGE);
-	Model(WORLD_SEED_RADDISH);
-	Model(WORLD_SEED_TOMATO);
-
-	Model(WORLD_FLAG_CARROT);
-	Model(WORLD_FLAG_CORN);
-	Model(WORLD_FLAG_CABBAGE);
-	Model(WORLD_FLAG_RADDISH);
-	Model(WORLD_FLAG_TOMATO);
-
-	Model(WORLD_MAP);
-
-	this_thread::sleep_for(chrono::milliseconds(5000));
+void preload_texture_files() {
+	std::cout << "Start pre-loading... " << std::endl; 
+	const char* load_dir = "models";
+	int i = 0;
+	for (auto& entry : fs::recursive_directory_iterator(load_dir)) {
+		std::cout << entry.path() << std::endl;
+		const char* epath = entry.path().string().c_str();
+		int width, height, nrComponents; 
+		unsigned char* data = stbi_load(epath, &width, &height, &nrComponents, 0);
+		stbi_image_free(data);
+		i++;
+	}
 	GUI::show_loading = false; 
+}
+
+void load_models(GLFWwindow* window) 
+{
+	Model tmp; 
+	int size = WORLD_MAP - CHAR_BUMBUS+2; 
+	float progress = 1; 
+	for (ModelEnum i = CHAR_BUMBUS; i <= WORLD_MAP; i = ModelEnum(i + 1)) {
+		GUI::renderProgressBar(progress / size, window);
+		tmp = Model(i); 
+		progress++;
+	}
+
+	//// Model constructor internally has logic to cache meshes
+	//Model BUMBUS = Model(CHAR_BUMBUS);
+	////Model BUMBUS2 = Model(CHAR_BUMBUS);
+	//Model POGO = Model(CHAR_POGO);
+	//Model SWAINKY = Model(CHAR_SWAINKY);
+	//Model GILMAN = Model(CHAR_GILMAN);
+
+	//Model CABBAGE = Model(VEG_CABBAGE);
+	//Model carrot = Model(VEG_CARROT);
+	//Model corn = Model(VEG_CORN);
+	//Model radish = Model(VEG_RADISH);
+	//Model tomato = Model(VEG_TOMATO);
+
+	//Model wpr = Model(WORLD_PLOT_RED);
+	//Model wpb = Model(WORLD_PLOT_BLUE);
+	//Model wpg = Model(WORLD_PLOT_GREEN);
+	//Model wpy = Model(WORLD_PLOT_YELLOW);
+
+	//Model wseed_carrot = Model(WORLD_SEED_CARROT);
+	//Model wseed_corn = Model(WORLD_SEED_CORN);
+	//Model wseed_cabbage = Model(WORLD_SEED_CABBAGE);
+	//Model wseed_raddish = Model(WORLD_SEED_RADISH);
+	//Model wseed_tomato = Model(WORLD_SEED_TOMATO);
+
+	//Model wflag_carrot = Model(WORLD_FLAG_CARROT);
+	//Model wflag_corn = Model(WORLD_FLAG_CORN);
+	//Model wflag_cabbage = Model(WORLD_FLAG_CABBAGE);
+	//Model wflag_raddish = Model(WORLD_FLAG_RADISH);
+	//Model wflag_tomato = Model(WORLD_FLAG_TOMATO);
+
+	//Model world_map = Model(WORLD_MAP);
+
+	//this_thread::sleep_for(chrono::milliseconds(5000));
+	//GUI::show_loading = false; 
 
 }
 
@@ -131,25 +159,34 @@ int main(int argc, char* argv[])
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
 
-	// initialize IMGUI 
-	GUI::initializeGUI(window); 
-	GUI::initializeImage();
+	
 
 	GUI::show_loading = true;
-	//std::thread loadingGuithread(GUI::renderLoadScene, window);
-	
+	//std::thread loadingThread(load_models, window);
+	// initialize IMGUI 
+	GUI::initializeGUI(window);
+	GUI::initializeImage();
+
 	// Initialize network client interface
 	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
 
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-	std::thread loadingThread(load_models);
 
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
-	
-	GUI::renderLoadScene();
-	loadingThread.join(); 
+	//std::thread preload_thread(preload_texture_files); 
+	//GUI::renderLoadScene(window);
+	//preload_thread.join(); 
+	//loadingThread.join(); 
+	load_models(window); 
+	Window::show_GUI = false; 
+	bool still_waiting_join = true; 
+	do{
+		ClientWaitPacket  cw_packet = client->updateClientJoinStatus();
+		still_waiting_join = cw_packet.client_joined < cw_packet.max_client;
+
+	} while (still_waiting_join);
 	//loadingGuithread.join();
 	//GUI::initializeGUI(window);
 	
@@ -187,6 +224,7 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+				std::vector<glm::vec2> minimap_pos;
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
 				{
@@ -196,8 +234,15 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id] = new Model(model_info.model);
 					}
 					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
-
+						delete model_map[model_info.model_id];
 						model_map[model_info.model_id] = new Model(model_info.model);
+					}
+
+					if (model_info.is_player) {
+						minimap_pos.push_back(glm::vec2(
+							model_info.parent_transform[3][0],
+							model_info.parent_transform[3][2]
+						));
 					}
   
   				Model& curr_model = *model_map[model_info.model_id];
@@ -290,6 +335,8 @@ int main(int argc, char* argv[])
 
 				free(sheader);
 				free(model_arr);
+
+				// TODO render minimap here using minimap_pos vectors
 			});
 
 		// Gets events, including input such as keyboard and mouse or window resizing
