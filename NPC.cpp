@@ -54,12 +54,14 @@ void NPC::SetWorldPosition(glm::vec3 position)
 
 bool NPC::CanInteract(Player* player)
 {
-	return !player->GetHoldEntity();
+	//TODO: if bribed return false
+	return true;
 }
 
 void NPC::OnInteract(Player* player)
 {
 	// Enable Shop UI
+	// Disable movement
 }
 
 glm::mat4 NPC::GetRotation()

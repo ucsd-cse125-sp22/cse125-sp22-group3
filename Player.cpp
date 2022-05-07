@@ -67,11 +67,14 @@ void Player::FixedUpdate() {
 
 
 void Player::Move() {
-	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
-	const glm::vec2 distance = delta * curr_vel_;
-	*translate += distance;
-	
-	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+	if (GetMoveable()) {
+
+		const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
+		const glm::vec2 distance = delta * curr_vel_;
+		*translate += distance;
+
+		rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+	}
 }
 
 glm::mat4 Player::GetParentTransform()
@@ -128,14 +131,13 @@ void Player::Drop() {
 }
 
 void Player::Dance() {
-	printf("REACHED DANCE\n");
 	if (!isHolding)
 		isDancing = true;
 }
 
 void Player::Buy(VegetableType bought_vegetable) {
 	VeggieInfo veggie = veggie_map[bought_vegetable];
-	// TODO: Check if NPC is interactable
+	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (!isHolding && veggie.seed_price <= curr_balance) {
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
@@ -145,17 +147,32 @@ void Player::Buy(VegetableType bought_vegetable) {
 }
 
 void Player::Sell(){
+	
 	if (!isHolding)
 		return;
-	// TODO: Check if NPC is interactable
+	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
 
 		VeggieInfo veggie = veggie_map[vegetable->type];
 		isHolding = false;
 		curr_balance += veggie.sell_price;
-		// TODO: Take seed from player's hand
-
+		// TODO: Remove item from player's hand
 	}
+}
+
+void Player::EnableMovement()
+{
+	moveable = true;
+}
+
+void Player::DisableMovement()
+{
+	moveable = false;
+}
+
+bool Player::GetMoveable()
+{
+	return moveable;
 }
 
 glm::mat4 Player::GetRotation() {

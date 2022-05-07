@@ -56,9 +56,12 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 
 	if (action == GLFW_PRESS)
 	{
+		// Yeeted by Danica
+		/**
 		if (key == GLFW_KEY_ESCAPE) {
 			glfwSetWindowShouldClose(window, GL_TRUE); // Close the window.
 		}
+		*/
 
 		switch (key)
 		{
@@ -91,6 +94,9 @@ void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int ac
 				break;
 			case GLFW_KEY_X:
 				lastCmd = DANCE_CMD;
+				break;
+			case GLFW_KEY_ESCAPE: 
+				lastCmd = CLOSE_UI;
 				break;
 			default: break;
 		}

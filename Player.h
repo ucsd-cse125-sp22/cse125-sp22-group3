@@ -42,6 +42,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::mat4 GetTranslation();
 		glm::mat4 GetScale();
 
+		bool moveable = true;
+
 		
 
 	public:
@@ -76,6 +78,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void Dance();
 		void Buy(VegetableType bought_vegetable);
 		void Sell();
+		void EnableMovement();
+		void DisableMovement();
+		bool GetMoveable();
 
 		// Information
 		glm::vec3 GetPosition() const;
@@ -90,5 +95,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// how much money player currently has
 		float curr_balance = 10;
+
+		
 		
 };

@@ -26,7 +26,8 @@ enum InputCommands {
 	BUY_RADISH,
 	BUY_TOMATO,
 	// selling
-	SELL_CMD
+	SELL_CMD,
+	CLOSE_UI
 };
 
 enum ModelEnum
