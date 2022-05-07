@@ -138,10 +138,14 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 	int sendStatus = send(ConnectSocket, temp_out_buf, sizeof(size_t) + send_len, 0);
 	free(temp_out_buf);
 	if (sendStatus == SOCKET_ERROR) {
-		fprintf(stderr, "send failed: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
-		WSACleanup();
-		exit(1); // TODO more graceful error handling
+		if (WSAGetLastError() == WSAECONNRESET) {
+			fprintf(stderr, "Connection with server dropped\n");
+		}
+		else {
+			fprintf(stderr, "send failed: %d\n", WSAGetLastError());
+		}
+		Client::~Client();
+		return 0;
 	}
 	else {
 		//fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
@@ -156,11 +160,11 @@ int Client::syncWithServer(const void* send_buf, size_t send_len,
 		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
 		if (recvStatus == SOCKET_ERROR) {
 			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-			break;
+			return 0;
 		}
 		else if (recvStatus == 0) {
 			fprintf(stderr, "Connection closed by server\n");
-			break;
+			return 0;
 		}
 		
 		//fprintf(stderr, "Client bytes received: %ld\n", recvStatus);
