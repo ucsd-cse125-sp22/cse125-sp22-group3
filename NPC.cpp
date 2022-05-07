@@ -64,6 +64,7 @@ void NPC::OnInteract(Player* player)
 {
 	printf("Interacting with NPC\n");
 	// Enable Shop UI
+	player->ui_open = true;
 	// Disable movement of player
 }
 

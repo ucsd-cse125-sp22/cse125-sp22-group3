@@ -222,6 +222,7 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+
 				std::vector<glm::vec2> minimap_pos;
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
