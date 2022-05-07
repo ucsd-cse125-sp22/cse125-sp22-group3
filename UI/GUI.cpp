@@ -1,4 +1,5 @@
 #include "GUI.h"
+#include "../util.h"
 #include <iostream>
 //#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 //#include <experimental/filesystem>
@@ -13,10 +14,11 @@ float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
 
-
 int GUI::rack_image_idx; 
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
+ImVec2 GUI::player_pos[4];
+
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
@@ -134,7 +136,7 @@ bool GUI::renderUI(bool show_GUI) {
 		ImGui::End();
 	}
 	/*end of seed sale page*/
-
+	createMiniMap(); 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return show_GUI;
@@ -437,8 +439,39 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	
 }
 
-void GUI::renderMiniMap() {
+/**
+	this method construct the minimap on the corner of the screen base on the player locations
+	only add the require elements for minimap but not actually render it
+*/
+void GUI::createMiniMap() {
+	//get size of minimap 
+	float world_dim = 650.0f;
+	int width = 1200;
+	int height = 1200;
+	float padding = 32.0f;
+	//size of minimap 
+	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
 
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	//ImVec2 center = ImVec2(padding + size.x / 2, window_height - padding - size.y / 2); // center of minimap
+	ImVec2 center = ImVec2(size.x / 2.0f, size.y /2.0f); // center of minimap
 
+	bool bptr;
+	ImGui::Begin("MiniMap", &bptr, MINI_MAP_FLAG);
+	//place all player's icon:
+	for (int i = 0; i < 4; i++) {
+		GUIImage image = icon_images_list[i];
+		//TODO convert the pos into relative pos in minimap
+		ImVec2 icon_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+
+		ImVec2 relative_pos = ImVec2(player_pos[i].x / world_dim * width - icon_size.x * 0.5f, player_pos[i].y / world_dim * height - icon_size.y * 0.5f); 
+		//size of icon 
+		ImGui::SetCursorPos(relative_pos + center);
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, icon_size);
+	}
+	ImGui::End();
 }
+
+
 

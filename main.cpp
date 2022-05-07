@@ -222,8 +222,6 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-
-				std::vector<glm::vec2> minimap_pos;
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
 				{
@@ -238,10 +236,9 @@ int main(int argc, char* argv[])
 					}
 
 					if (model_info.is_player) {
-						minimap_pos.push_back(glm::vec2(
+						GUI::player_pos[model_info.model] = ImVec2(
 							model_info.parent_transform[3][0],
-							model_info.parent_transform[3][2]
-						));
+							model_info.parent_transform[3][2]);
 					}
   
   				Model& curr_model = *model_map[model_info.model_id];

@@ -23,6 +23,9 @@
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
 
+#define MINI_MAP_FLAG ImGuiWindowFlags_NoTitleBar| \
+						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
+
 //using namespace std;
 
 struct GUIImage {
@@ -45,7 +48,8 @@ public:
 	static bool show_loading;
 	static int rack_image_idx;
 	static GUIImage rack_images_list[NUM_RACK_IMG];
-	static GUIImage icon_images_list[NUM_ICON]; 
+	static GUIImage icon_images_list[NUM_ICON];
+	static ImVec2 player_pos[4]; 
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI(bool show_GUI);
 	static void cleanUp();
@@ -54,7 +58,7 @@ public:
 	static bool renderLoadScene(GLFWwindow* window);
 	static void initializeLoadingImage(); 
 	static void renderProgressBar(float percent, GLFWwindow* window);
-	static void GUI::renderMiniMap();
+	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 };
 
