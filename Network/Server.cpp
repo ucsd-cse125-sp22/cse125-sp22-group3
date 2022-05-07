@@ -13,8 +13,6 @@
 #pragma comment (lib, "Ws2_32.lib")
 #pragma comment (lib, "Iphlpapi.lib")
 
-#define TICK_MS 30
-
 Server::Server(void)
 {
 	// initialize Winsock 2.2
@@ -90,6 +88,8 @@ Server::Server(void)
 	}
 
 	this->printActiveAdapterAddresses();
+
+	fprintf(stderr, "\n");
 }
 
 void Server::printActiveAdapterAddresses() {
@@ -147,6 +147,7 @@ Server::~Server(void)
 //auto begin_time = std::chrono::steady_clock::now();
 void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
 {
+	fprintf(stderr, "Expecting %d clients\n", NUM_CLIENTS);
 	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
 		SOCKET client_socket = INVALID_SOCKET;
 		client_socket = accept(ListenSocket, NULL, NULL);
@@ -162,7 +163,7 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 		char peer_addr_buf[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &peer_addr.sin_addr, peer_addr_buf, sizeof(peer_addr_buf));
 
-		fprintf(stderr, "Accepted client connection from %s:%d\n", peer_addr_buf, peer_addr.sin_port);
+		fprintf(stderr, "\tAccepted client connection from %s:%d (%d/%d)\n", peer_addr_buf, peer_addr.sin_port, client_idx + 1, NUM_CLIENTS);
 
 		// disable Nagle on the client socket
 		char value = 1;
@@ -184,6 +185,7 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 			// TODO deal with send_status;
 		}
 	}
+	fprintf(stderr, "All clients connected, starting game loop\n");
 
 main_loop_label:
 	while (true) {
@@ -256,11 +258,6 @@ main_loop_label:
 			//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
 			//fprintf(stderr, "Server time between ticks: %lld us\n", elapsed_time_ms);
 			//begin_time = end_time;
-
-			// TODO: ascertain if we actually need to sleep
-			//if (elapsed_time_ms < TICK_MS) {
-			//	Sleep(TICK_MS - elapsed_time_ms);
-			//}
 		}	
 	}
 }
