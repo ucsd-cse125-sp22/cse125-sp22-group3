@@ -16,7 +16,6 @@ GUIImage GUI::loading_background;
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
 GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
 int GUI::scoreboard_data[NUM_ICON];
-
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
@@ -238,6 +237,7 @@ void GUI::initializeImage() {
 	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
 	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
 		&(loading_background.my_image_width), &(loading_background.my_image_height));
+
 
 	i = 0;
 	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
@@ -525,7 +525,7 @@ void GUI::createMiniMap() {
 */
 void GUI::createMiniMap() {
 	//get size of minimap 
-	float world_dim = 650.0f;
+	float world_dim = 700.0f;
 	int width = 1200;
 	int height = 1200;
 	float padding = 32.0f;

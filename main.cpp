@@ -92,6 +92,7 @@ void load_models(GLFWwindow* window)
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image 
 	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
+
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 		tmp = Model(i); 
 		progress++;
