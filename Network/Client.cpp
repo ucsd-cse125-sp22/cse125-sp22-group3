@@ -100,20 +100,26 @@ Client::~Client(void)
 	WSACleanup();
 }
 
-ClientWaitPacket Client::updateClientJoinStatus() {
-	char recvbuf[DEFAULT_BUFLEN];
-	int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
-	if (recvStatus == SOCKET_ERROR) {
-		fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-	}
-	else if (recvStatus == 0) {
-		fprintf(stderr, "Connection closed by server\n");
-	}
+void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_packet)> callback) {
+	bool wait_for_clients = true;
+	do {
+		char recvbuf[DEFAULT_BUFLEN];
+		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+		if (recvStatus == SOCKET_ERROR) {
+			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+		}
+		else if (recvStatus == 0) {
+			fprintf(stderr, "Connection closed by server\n");
+		}
 
-	ClientWaitPacket cw_packet;
-	cw_packet.deserializeFrom(recvbuf);
-	fprintf(stdout, " %d client joined.... \n", cw_packet.client_joined);
-	return cw_packet;
+		for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ClientWaitPacket)) {
+			ClientWaitPacket cw_packet;
+			cw_packet.deserializeFrom(recvbuf + byte_idx);
+			callback(cw_packet);
+
+			wait_for_clients = cw_packet.client_joined < cw_packet.max_client;
+		}
+	} while (wait_for_clients);
 }
 
 /*

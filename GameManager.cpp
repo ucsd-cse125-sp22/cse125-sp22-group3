@@ -88,7 +88,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 		serverSerialize(server_buf, &sheader, model_infos.data());
-		out_vec.push_back(std::make_pair(server_buf, GetBufSize(&sheader)));
+		out_vec.push_back(std::make_pair(server_buf, static_cast<int>(GetBufSize(&sheader))));
 	}
 	return out_vec;
 }
