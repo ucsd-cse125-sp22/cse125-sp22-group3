@@ -103,6 +103,7 @@ bool GUI::renderUI() {
 	//	GUI_showNPCui = !GUI_showNPCui;
 	//	rack_image_idx = 0;
 	//}
+
 	
 	/* build scoreboard */
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
@@ -126,7 +127,7 @@ bool GUI::renderUI() {
 	/* end of scoreboard */
 
 	/* build the seed sale page */
-	if(show_GUI == true) {		
+	if(GUI_showNPCui == true) {		
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
@@ -156,7 +157,7 @@ bool GUI::renderUI() {
 	createMiniMap(); 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return show_GUI;
+	return GUI_showNPCui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
