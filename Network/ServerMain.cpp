@@ -59,26 +59,25 @@ inline int ServerMain()
 
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
-		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
-			ClientPacket cpacket = client_packet_vec[client_idx];
+		for (ClientPacket& cpacket : client_packet_vec) {
 			if (cpacket.justMoved)
 			{
-				game.SetPlayerInput(cpacket.movement, client_idx);
+				game.SetPlayerInput(cpacket.movement, cpacket.player_idx);
 				switch (cpacket.lastCommand) {
 					case InputCommands::USE:
-						game.SetPlayerUse(client_idx);
+						game.SetPlayerUse(cpacket.player_idx);
 						break;
 					case InputCommands::DROP:
-						game.SetPlayerDrop(client_idx);
+						game.SetPlayerDrop(cpacket.player_idx);
 						break;
 					case InputCommands::SPRINT:
-						game.SetPlayerSprint(client_idx, true);
+						game.SetPlayerSprint(cpacket.player_idx, true);
 						break;
 					case InputCommands::STOP_SPRINT:
-						game.SetPlayerSprint(client_idx, false);
+						game.SetPlayerSprint(cpacket.player_idx, false);
 						break;
 					case InputCommands::DANCE_CMD:
-						game.SetPlayerDance(client_idx);
+						game.SetPlayerDance(cpacket.player_idx);
 						break;
 
 					default: break;

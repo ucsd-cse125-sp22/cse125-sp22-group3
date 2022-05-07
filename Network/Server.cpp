@@ -252,6 +252,7 @@ main_loop_label:
 				ClientPacket cpacket;
 				cpacket.deserializeFrom(total_recv_buf);
 				free(total_recv_buf);
+				cpacket.player_idx = client_idx;
 				client_packet_vec.push_back(cpacket);
 			}
 		}

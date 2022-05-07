@@ -26,6 +26,7 @@ struct ClientPacket {
 	bool justMoved = false;
 	glm::vec2 movement{ 0,0 };
 	InputCommands lastCommand;
+	int player_idx; // only for server convenience, not to be filled by the client
 
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ClientPacket));
