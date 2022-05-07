@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
+#include <string>
 
 // Networking libraries
 #include <windows.h>
@@ -140,8 +141,19 @@ Server::~Server(void)
 
 		// cleanup
 		closesocket(ClientSocket);
-		WSACleanup();
 	}
+	WSACleanup();
+}
+
+std::string Server::getRemoteAddressString(SOCKET remote_socket) {
+	struct sockaddr_in peer_addr;
+	socklen_t socklen = sizeof(peer_addr);
+	getpeername(remote_socket, reinterpret_cast<struct sockaddr*>(&peer_addr), &socklen);
+
+	char peer_addr_buf[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &peer_addr.sin_addr, peer_addr_buf, sizeof(peer_addr_buf));
+
+	return std::string(peer_addr_buf).append(":").append(std::to_string(peer_addr.sin_port));
 }
 
 //auto begin_time = std::chrono::steady_clock::now();
@@ -149,21 +161,24 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 {
 	fprintf(stderr, "Expecting %d clients\n", NUM_CLIENTS);
 	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+begin_loop_accept_client:
 		SOCKET client_socket = INVALID_SOCKET;
 		client_socket = accept(ListenSocket, NULL, NULL);
 		if (client_socket == INVALID_SOCKET) {
-			fprintf(stderr, "accept failed: %d\n", WSAGetLastError());
-			return; // TODO error condition for this
+			fprintf(stderr, "Failed to accept new client connection, error code: %d\n", WSAGetLastError());
+
+			if (WSAGetLastError() == WSAECONNRESET) {
+				closesocket(client_socket);
+				goto begin_loop_accept_client;
+			}
+			else {
+				Server::~Server(); // gracefully shut down
+				exit(1);
+			}
 		}
 
-		struct sockaddr_in peer_addr;
-		socklen_t socklen = sizeof(peer_addr);
-		getpeername(client_socket, reinterpret_cast<struct sockaddr*>(&peer_addr), &socklen);
-
-		char peer_addr_buf[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &peer_addr.sin_addr, peer_addr_buf, sizeof(peer_addr_buf));
-
-		fprintf(stderr, "\tAccepted client connection from %s:%d (%d/%d)\n", peer_addr_buf, peer_addr.sin_port, client_idx + 1, NUM_CLIENTS);
+		std::string client_addr_str = getRemoteAddressString(client_socket);
+		fprintf(stderr, "\tAccepted client connection from %s (%d/%d)\n", client_addr_str.c_str(), client_idx + 1, NUM_CLIENTS);
 
 		// disable Nagle on the client socket
 		char value = 1;
@@ -171,7 +186,7 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 
 		ClientSocketVec.push_back(client_socket);
 
-		// TODO send an message to client_socket indicate the number of other client joined
+		// send a message to connected clients, updating about join status
 		ClientWaitPacket cw_packet;
 		cw_packet.client_joined = ClientSocketVec.size();
 		cw_packet.max_client = NUM_CLIENTS;
@@ -189,7 +204,11 @@ main_loop_label:
 	while (true) {
 		// receive data from clients
 		std::vector<ClientPacket> client_packet_vec;
-		for (int client_idx = 0; client_idx < NUM_CLIENTS && ClientSocketVec[client_idx] != INVALID_SOCKET; client_idx++) {
+		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
+				continue;
+			}
+
 			char* total_recv_buf = NULL;
 			size_t total_recv_len = 0;
 			size_t curr_recv_pos = 0;
@@ -197,11 +216,23 @@ main_loop_label:
 				char network_data[DEFAULT_BUFLEN];
 				int recvStatus = recv(ClientSocketVec[client_idx], network_data, DEFAULT_BUFLEN, 0);
 				if (recvStatus == SOCKET_ERROR) {
-					fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-					goto main_loop_label;
+					if (WSAGetLastError() == WSAECONNRESET) {
+						std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
+						fprintf(stderr, "Connection with client #%d at %s dropped\n", client_idx, client_addr_str.c_str());
+
+						closesocket(ClientSocketVec[client_idx]);
+						ClientSocketVec[client_idx] = INVALID_SOCKET;
+					}
+					else {
+						fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+					}
+
+					break; // break out of the recv do-while loop
 				}
 				else if (recvStatus == 0) {
-					fprintf(stderr, "Connection closed\n");
+					std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
+					fprintf(stderr, "Client #%d at %s closed the connection\n", client_idx, client_addr_str.c_str());
+
 					closesocket(ClientSocketVec[client_idx]);
 					ClientSocketVec[client_idx] = INVALID_SOCKET;
 					break;
@@ -225,6 +256,7 @@ main_loop_label:
 				ClientPacket cpacket;
 				cpacket.deserializeFrom(total_recv_buf);
 				free(total_recv_buf);
+				cpacket.player_idx = client_idx;
 				client_packet_vec.push_back(cpacket);
 			}
 		}
@@ -233,6 +265,11 @@ main_loop_label:
 		std::vector<std::pair<char*, int>> out_vec = main_code(client_packet_vec);
 
 		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
+				free(out_vec[client_idx].first);
+				continue;
+			}
+
 			// prepending buffer length in front
 			std::pair<char*, int> out_data = out_vec[client_idx];
 			size_t send_len = out_data.second;
@@ -243,8 +280,17 @@ main_loop_label:
 			int sendStatus = send(ClientSocketVec[client_idx], temp_out_buf, sizeof(size_t) + send_len, 0);
 			free(temp_out_buf);
 			if (sendStatus == SOCKET_ERROR) {
-				fprintf(stderr, "send failed: %d\n", WSAGetLastError());
-				return; // TODO ideally retry transmission
+				if (WSAGetLastError() == WSAECONNRESET) {
+					std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
+					fprintf(stderr, "Connection with client #%d at %s dropped\n", client_idx, client_addr_str.c_str());
+
+					closesocket(ClientSocketVec[client_idx]);
+					ClientSocketVec[client_idx] = INVALID_SOCKET;
+				}
+				else {
+					fprintf(stderr, "send failed: %d\n", WSAGetLastError());
+				}
+				// TODO current behavior: skip sending if failed
 			}
 			else {
 				//fprintf(stderr, "Server bytes sent: %ld\n", sendStatus);
