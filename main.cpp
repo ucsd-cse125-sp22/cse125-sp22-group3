@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
 		glfwPollEvents();
 
 		//IMGUI rendering
-		Window::show_GUI = GUI::renderUI(Window::show_GUI);
+		GUI::renderUI();
 
 		// Swap buffers.
 		glfwSwapBuffers(window);

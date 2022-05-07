@@ -52,9 +52,10 @@ public:
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
+	static int scoreboard_data[NUM_ICON];
 	static ImVec2 player_pos[4]; 
 	static void initializeGUI(GLFWwindow* window);
-	static bool renderUI(bool show_GUI);
+	static bool renderUI();
 	static void cleanUp();
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 	static void initializeImage();

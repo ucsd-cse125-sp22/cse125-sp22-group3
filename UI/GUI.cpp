@@ -13,6 +13,8 @@ GUIImage GUI::loading_background;
 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
 GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
+int GUI::scoreboard_data[NUM_ICON];
+
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
@@ -80,7 +82,7 @@ void GUI::updateDisplayRatio(int width, int height) {
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
-bool GUI::renderUI(bool show_GUI) {
+bool GUI::renderUI() {
 	
 
 	// Start the Dear ImGui frame
@@ -88,8 +90,8 @@ bool GUI::renderUI(bool show_GUI) {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	//if (ImGui::IsKeyPressed(ImGuiKey_K)) {
-	//	show_GUI = !show_GUI;
+	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+		GUI_showNPCui = !GUI_showNPCui;
 		rack_image_idx = 0;
 	//}
 	
@@ -108,14 +110,14 @@ bool GUI::renderUI(bool show_GUI) {
 		GUIImage image = icon_images_list[i];
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
 		ImGui::SameLine();
-		ImGui::Text("2000");
+		ImGui::Text("%d",scoreboard_data[i]);
 	}
 	ImGui::PopStyleColor();
 	ImGui::End(); 
 	/* end of scoreboard */
 
 	/* build the seed sale page */
-	if(show_GUI == true) {		
+	if(GUI_showNPCui == true) {		
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
@@ -141,7 +143,7 @@ bool GUI::renderUI(bool show_GUI) {
 	createMiniMap(); 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return show_GUI;
+	return GUI_showNPCui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
