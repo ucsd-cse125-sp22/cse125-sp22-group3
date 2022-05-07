@@ -8,7 +8,7 @@
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
 #include "Seed.h"
-#include "Growth.h"
+#include "NPC.h"
 #include <chrono>
 
 class GameManager : GameEntity

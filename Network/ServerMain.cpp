@@ -10,6 +10,9 @@ inline int ServerMain()
 	Player gilman{CHAR_GILMAN};
 	Player swainky{CHAR_SWAINKY};
 
+
+	NPC fish{ CHAR_NPC };
+
 	int i = 1;
 	Vegetable cabbage{ VegetableType::CABBAGE, VEG_CABBAGE };
 	cabbage.SetPosition({i++ * 15, 5, 0});
@@ -52,8 +55,9 @@ inline int ServerMain()
 	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
+	fish.SetWorldPosition({ 0,30,0 });
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
-	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world });
+	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world});
 
 	world.SetPosition({ 0, 0, -5.0f });
 
