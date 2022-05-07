@@ -239,7 +239,6 @@ void GUI::initializeImage() {
 	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
 		&(loading_background.my_image_width), &(loading_background.my_image_height));
 
-
 	i = 0;
 	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
 	for (auto& entry : fs::directory_iterator(chase_dir)) {
