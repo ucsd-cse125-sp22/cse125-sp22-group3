@@ -12,6 +12,7 @@ private:
 	std::vector<SOCKET> ClientSocketVec;
 
 	void printActiveAdapterAddresses(void);
+	std::string getRemoteAddressString(SOCKET remote_socket);
 
 public:
 	Server(void);
