@@ -22,7 +22,6 @@ std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
 
-
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -377,8 +376,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 //	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
 //	return true; 
 //}
-
-
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -463,7 +460,6 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	glfwSwapBuffers(window);
 	return !flip_image;
 }
-
 /**
 	this method construct the minimap on the corner of the screen base on the player locations
 	only add the require elements for minimap but not actually render it
@@ -497,6 +493,7 @@ void GUI::createMiniMap() {
 	}
 	ImGui::End();
 }
+
 
 
 
