@@ -86,8 +86,9 @@ void load_models(GLFWwindow* window)
 	Model tmp; 
 	int size = WORLD_MAP - CHAR_BUMBUS+2; 
 	float progress = 1; 
+	bool flip_image; // variable use to flip the image 
 	for (ModelEnum i = CHAR_BUMBUS; i <= WORLD_MAP; i = ModelEnum(i + 1)) {
-		GUI::renderProgressBar(progress / size, window);
+		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 		tmp = Model(i); 
 		progress++;
 	}

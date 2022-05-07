@@ -20,6 +20,7 @@
 #define NUM_ICON 4
 #define NUM_RACK_IMG 6
 #define NUM_LOAD_IMG 8
+#define NUM_CHASE_IMG 2 
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
 
@@ -50,6 +51,7 @@ public:
 	static int rack_image_idx;
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
+	static GUIImage chase_images_list[NUM_CHASE_IMG];
 	static ImVec2 player_pos[4]; 
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI(bool show_GUI);
@@ -58,7 +60,7 @@ public:
 	static void initializeImage();
 	static bool renderLoadScene(GLFWwindow* window);
 	static void initializeLoadingImage(); 
-	static void renderProgressBar(float percent, GLFWwindow* window);
+	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 };
