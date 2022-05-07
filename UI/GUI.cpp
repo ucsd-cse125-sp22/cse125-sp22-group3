@@ -466,7 +466,7 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 */
 void GUI::createMiniMap() {
 	//get size of minimap 
-	float world_dim = 700.0f;
+	float world_dim = 500.0f;
 	int width = 1200;
 	int height = 1200;
 	float padding = 32.0f;
@@ -486,7 +486,7 @@ void GUI::createMiniMap() {
 		//TODO convert the pos into relative pos in minimap
 		ImVec2 icon_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 
-		ImVec2 relative_pos = ImVec2(player_pos[i].x / world_dim * width - icon_size.x * 0.5f, player_pos[i].y / world_dim * height - icon_size.y * 0.5f); 
+		ImVec2 relative_pos = ImVec2(player_pos[i].x / world_dim * size.x- icon_size.x * 0.5f, player_pos[i].y / world_dim * size.y - icon_size.y * 0.5f); 
 		//size of icon 
 		ImGui::SetCursorPos(relative_pos + center);
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, icon_size);
