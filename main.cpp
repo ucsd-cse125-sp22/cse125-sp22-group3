@@ -239,6 +239,7 @@ int main(int argc, char* argv[])
 					GUI::scoreboard_data[i]=sheader->balance[i];
 				}
 
+
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
 				{
