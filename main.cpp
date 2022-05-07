@@ -3,17 +3,14 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
-//#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-//#include <experimental/filesystem>
-//namespace fs = std::experimental::filesystem;
 #include <filesystem>
-namespace fs = std::filesystem;
 #include "Model.h"
 #include <thread>         
 #include <chrono>
 #include <map>
 
-// #define SERVER_ADDRESS "127.0.0.1"
+namespace fs = std::filesystem;
+
 #define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
 
 bool GUI::show_loading; 
@@ -183,12 +180,11 @@ int main(int argc, char* argv[])
 	//loadingThread.join(); 
 	load_models(window); 
 	Window::show_GUI = false; 
-	bool still_waiting_join = true; 
-	do{
-		ClientWaitPacket  cw_packet = client->updateClientJoinStatus();
-		still_waiting_join = cw_packet.client_joined < cw_packet.max_client;
-
-	} while (still_waiting_join);
+	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
+		{
+			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
+		});
+	fprintf(stderr, "All players connected, starting game\n");
 	//loadingGuithread.join();
 	//GUI::initializeGUI(window);
 	

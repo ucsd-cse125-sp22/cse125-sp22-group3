@@ -14,6 +14,6 @@ public:
 	~Client(void);
 	int syncWithServer(const void* send_buf, size_t send_len,
 		std::function<void(char* recv_buf, size_t recv_len)> callback);
-	ClientWaitPacket updateClientJoinStatus(void);
+	void syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_packet)> callback);
 };
 

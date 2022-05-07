@@ -172,16 +172,14 @@ void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vect
 		ClientSocketVec.push_back(client_socket);
 
 		// TODO send an message to client_socket indicate the number of other client joined
-		const unsigned int wait_packet_size = sizeof(ClientWaitPacket);
-		char wait_packet_data[wait_packet_size];
-
 		ClientWaitPacket cw_packet;
 		cw_packet.client_joined = ClientSocketVec.size();
 		cw_packet.max_client = NUM_CLIENTS;
 
+		char wait_packet_data[sizeof(ClientWaitPacket)];
 		cw_packet.serializeTo(wait_packet_data);
-		for (SOCKET client_socket : ClientSocketVec) {
-			int sendStatus = send(client_socket, wait_packet_data, wait_packet_size, 0);
+		for (SOCKET temp_sock : ClientSocketVec) {
+			int sendStatus = send(temp_sock, wait_packet_data, sizeof(ClientWaitPacket), 0);
 			// TODO deal with send_status;
 		}
 	}
