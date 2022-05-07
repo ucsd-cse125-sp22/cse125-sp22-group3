@@ -12,6 +12,7 @@ GUIImage GUI::score_background;
 GUIImage GUI::loading_background;
 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
+GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
@@ -222,6 +223,19 @@ void GUI::initializeImage() {
 	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
 		&(loading_background.my_image_width), &(loading_background.my_image_height));
 
+
+	i = 0;
+	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
+	for (auto& entry : fs::directory_iterator(chase_dir)) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(chase_images_list[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 2.0f;
+		image->my_image_height *= 2.0f;
+		i++;
+	}
 }
 
 void GUI::initializeLoadingImage() {
@@ -412,7 +426,7 @@ namespace ImGui {
 	}
 
 }
-void GUI::renderProgressBar(float percent, GLFWwindow* window) {
+bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
 	ImGuiWindowFlags window_flags = 0;
@@ -427,15 +441,19 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	
 	ImVec2 size = ImVec2(1200 * display_ratio * 5, 18 * display_ratio * 5);
 	ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
 	ImGui::Begin("Progress Indicators", NULL, TRANS_WINDOW_FLAG);
 
 	const ImU32 col = IM_COL32(245.f, 61.f,119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
 	//ImGui::Spinner("##spinner", 15, 6, col);
+	int idx = flip_image ? 1 : 0;
+	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, \
+						ImVec2(chase_images_list[idx].my_image_width * display_ratio,\
+							   chase_images_list[idx].my_image_height * display_ratio));
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
 	ImGui::BufferingBar("##buffer_bar", percent, size, bg, col);
-
 	ImGui::End();
 
 	// Rendering
@@ -443,7 +461,7 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
-	
+	return !flip_image;
 }
 
 /**
@@ -452,7 +470,7 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 */
 void GUI::createMiniMap() {
 	//get size of minimap 
-	float world_dim = 650.0f;
+	float world_dim = 700.0f;
 	int width = 1200;
 	int height = 1200;
 	float padding = 32.0f;
