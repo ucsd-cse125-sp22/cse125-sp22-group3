@@ -108,8 +108,7 @@ glm::vec2* Player::GetWorldPosition()
 {
 	return translate;
 }
-void Player::Use()
-{	
+void Player::Use() {	
 	auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
@@ -119,8 +118,7 @@ void Player::Use()
 	}
 }
 
-void Player::Drop()
-{
+void Player::Drop() {
 	auto holdable = dynamic_cast<Holdable*>(entityHeld);
 	if (holdable != nullptr) {
 		holdable->OnDrop();
@@ -133,6 +131,29 @@ void Player::Dance() {
 	printf("REACHED DANCE\n");
 	if (!isHolding)
 		isDancing = true;
+}
+
+void Player::Buy(VegetableType bought_vegetable) {
+	VeggieInfo veggie = veggie_map[bought_vegetable];
+	if (!isHolding && veggie.seed_price <= curr_balance) {
+		curr_balance -= veggie.seed_price;
+		isHolding = true;
+		// TODO: Add seed to player's hand
+		
+	}
+}
+
+void Player::Sell(){
+	if (!isHolding)
+		return;
+	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
+
+		VeggieInfo veggie = veggie_map[vegetable->type];
+		isHolding = false;
+		curr_balance += veggie.sell_price;
+		// TODO: Take seed from player's hand
+
+	}
 }
 
 glm::mat4 Player::GetRotation() {

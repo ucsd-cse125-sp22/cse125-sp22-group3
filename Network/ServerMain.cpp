@@ -80,6 +80,11 @@ inline int ServerMain()
 					case InputCommands::DANCE_CMD:
 						game.SetPlayerDance(client_idx);
 						break;
+					case InputCommands::BUY_CABBAGE:
+						game.SetPlayerBuy(client_idx, VegetableType::CABBAGE);
+						break;
+					case InputCommands::SELL_CMD:
+						game.SetPlayerSell(client_idx);
 
 					default: break;
 				}
