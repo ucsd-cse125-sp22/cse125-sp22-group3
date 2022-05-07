@@ -124,7 +124,7 @@ GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath, con
 	int InfoLogLength;
 
 	// Link the program.
-	printf("Linking program\n");
+	//printf("Linking program\n");
 	GLuint programID = glCreateProgram();
 	glAttachShader(programID, vertexShaderID);
 	glAttachShader(programID, fragmentShaderID);
@@ -145,7 +145,7 @@ GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath, con
 	}
 	else
 	{
-		printf("Successfully linked program!\n");
+		//printf("Successfully linked program!\n");
 	}
 
 	// Detach and delete the shaders as they are no longer needed.
