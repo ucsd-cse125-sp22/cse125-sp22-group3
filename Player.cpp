@@ -135,6 +135,7 @@ void Player::Dance() {
 
 void Player::Buy(VegetableType bought_vegetable) {
 	VeggieInfo veggie = veggie_map[bought_vegetable];
+	// TODO: Check if NPC is interactable
 	if (!isHolding && veggie.seed_price <= curr_balance) {
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
@@ -146,6 +147,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 void Player::Sell(){
 	if (!isHolding)
 		return;
+	// TODO: Check if NPC is interactable
 	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
 
 		VeggieInfo veggie = veggie_map[vegetable->type];
