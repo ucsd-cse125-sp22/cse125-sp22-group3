@@ -204,7 +204,11 @@ main_loop_label:
 	while (true) {
 		// receive data from clients
 		std::vector<ClientPacket> client_packet_vec;
-		for (int client_idx = 0; client_idx < NUM_CLIENTS && ClientSocketVec[client_idx] != INVALID_SOCKET; client_idx++) {
+		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
+				continue;
+			}
+
 			char* total_recv_buf = NULL;
 			size_t total_recv_len = 0;
 			size_t curr_recv_pos = 0;
@@ -260,7 +264,12 @@ main_loop_label:
 		// calls passed-in code
 		std::vector<std::pair<char*, int>> out_vec = main_code(client_packet_vec);
 
-		for (int client_idx = 0; client_idx < NUM_CLIENTS && ClientSocketVec[client_idx] != INVALID_SOCKET; client_idx++) {
+		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
+				free(out_vec[client_idx].first);
+				continue;
+			}
+
 			// prepending buffer length in front
 			std::pair<char*, int> out_data = out_vec[client_idx];
 			size_t send_len = out_data.second;
