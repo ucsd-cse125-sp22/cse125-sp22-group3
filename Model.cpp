@@ -399,8 +399,7 @@ void Model::LoadAnimationData(const aiScene* scene) {
 		node.name = std::string(data.src->mName.data);
 		assert(node.parent < int(aniNodes.size()));
 		aniNodes.push_back(node);
-		node_names.insert(std::pair<std::string, int>(data.src->mName.data, 
-			aniNodes.size() - 1));
+		node_names.insert(std::pair<std::string, int>(data.src->mName.data, static_cast<int>(aniNodes.size() - 1)));
 		const int parent_index = int(aniNodes.size() - 1);
 
 		for (unsigned i = 0; i < data.src->mNumChildren; ++i)

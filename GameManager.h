@@ -11,7 +11,7 @@
 #include "Growth.h"
 #include <chrono>
 
-static class GameManager : GameEntity
+class GameManager : GameEntity
 {
 public:
     GameManager();
