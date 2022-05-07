@@ -67,11 +67,14 @@ void Player::FixedUpdate() {
 
 
 void Player::Move() {
-	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
-	const glm::vec2 distance = delta * curr_vel_;
-	*translate += distance;
-	
-	rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+	if (GetMoveable()) {
+
+		const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
+		const glm::vec2 distance = delta * curr_vel_;
+		*translate += distance;
+
+		rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+	}
 }
 
 glm::mat4 Player::GetParentTransform()
@@ -108,8 +111,7 @@ glm::vec2* Player::GetWorldPosition()
 {
 	return translate;
 }
-void Player::Use()
-{	
+void Player::Use() {	
 	auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
@@ -119,8 +121,7 @@ void Player::Use()
 	}
 }
 
-void Player::Drop()
-{
+void Player::Drop() {
 	auto holdable = dynamic_cast<Holdable*>(entityHeld);
 	if (holdable != nullptr) {
 		holdable->OnDrop();
@@ -130,9 +131,48 @@ void Player::Drop()
 }
 
 void Player::Dance() {
-	printf("REACHED DANCE\n");
 	if (!isHolding)
 		isDancing = true;
+}
+
+void Player::Buy(VegetableType bought_vegetable) {
+	VeggieInfo veggie = veggie_map[bought_vegetable];
+	// TODO: Check if NPC is interactable... unless we don't have to do that?
+	if (!isHolding && veggie.seed_price <= curr_balance) {
+		curr_balance -= veggie.seed_price;
+		isHolding = true;
+		// TODO: Add seed to player's hand
+		
+	}
+}
+
+void Player::Sell(){
+	
+	if (!isHolding)
+		return;
+	// TODO: Check if NPC is interactable... unless we don't have to do that?
+	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
+
+		VeggieInfo veggie = veggie_map[vegetable->type];
+		isHolding = false;
+		curr_balance += veggie.sell_price;
+		// TODO: Remove item from player's hand
+	}
+}
+
+void Player::EnableMovement()
+{
+	moveable = true;
+}
+
+void Player::DisableMovement()
+{
+	moveable = false;
+}
+
+bool Player::GetMoveable()
+{
+	return moveable;
 }
 
 glm::mat4 Player::GetRotation() {

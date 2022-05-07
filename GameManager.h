@@ -8,7 +8,7 @@
 #include "GameEntity.h"
 #include "PhysicsEngine.h" 
 #include "Seed.h"
-#include "Growth.h"
+#include "NPC.h"
 #include <chrono>
 
 class GameManager : GameEntity
@@ -28,6 +28,9 @@ public:
     void SetPlayerDrop(int player_index);
     void SetPlayerSprint(int player_index, bool sprinting);
     void SetPlayerDance(int player_index);
+    void SetPlayerBuy(int player_index, VegetableType bought_vegetable);
+    void SetPlayerSell(int player_index);
+
 
     // Information
     std::vector<std::pair<char*, int>> GetServerBuf();

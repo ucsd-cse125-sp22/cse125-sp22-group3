@@ -115,6 +115,18 @@ void GameManager::SetPlayerDance(const int player_index)
 	players_[player_index]->Dance();
 }
 
+void GameManager::SetPlayerBuy(int player_index, VegetableType bought_vegetable)
+{
+	players_[player_index]->Buy(bought_vegetable);
+}
+
+void GameManager::SetPlayerSell(int player_index)
+{
+	players_[player_index]->Sell();
+}
+
+
+
 double GameManager::GetFixedDeltaTime() {
 	const std::chrono::duration<double> elapsed_seconds = curr_time_ - last_time_;
     return elapsed_seconds.count();

@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "GameManager.h"
 #include "FBO.h"
+#include "NPC.h"
 
 #include <map>
 

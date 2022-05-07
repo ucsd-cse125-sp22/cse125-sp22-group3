@@ -10,6 +10,10 @@ inline int ServerMain()
 	Player gilman{CHAR_GILMAN};
 	Player swainky{CHAR_SWAINKY};
 
+
+	//NPC fish{ CHAR_NPC };
+	NPC fish{ WORLD_PLOT_RED }; // TODO: Ask Cynthia how to import default animations
+
 	int i = 1;
 	Vegetable cabbage{ VegetableType::CABBAGE, VEG_CABBAGE };
 	cabbage.SetPosition({i++ * 15, 5, 0});
@@ -44,7 +48,7 @@ inline int ServerMain()
 
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
-	tomato.SetPosition({i++ * 15, 5, 0});
+	tomato.SetPosition({-10, 5, 0});
 
 	//Plot plot{WORLD_PLOT};
 	plotRed.SetPosition({ 80,30,0 });
@@ -52,8 +56,9 @@ inline int ServerMain()
 	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
 	seedCorn.SetPosition({ 100, 30, 0 });
 	
+	fish.SetWorldPosition({ 0,30,0 });
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
-	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world });
+	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world, &fish});
 
 	world.SetPosition({ 0, 0, -5.0f });
 
@@ -79,7 +84,24 @@ inline int ServerMain()
 					case InputCommands::DANCE_CMD:
 						game.SetPlayerDance(cpacket.player_idx);
 						break;
-
+					case InputCommands::SELL_CMD:
+						game.SetPlayerSell(cpacket.player_idx);
+						break;
+					case InputCommands::BUY_CABBAGE:
+						game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE); // Is there a nicer way of doing this?
+						break;
+					case InputCommands::BUY_CARROT:
+						game.SetPlayerBuy(cpacket.player_idx, VegetableType::CARROT);
+						break;
+					case InputCommands::BUY_CORN:
+						game.SetPlayerBuy(cpacket.player_idx, VegetableType::CORN);
+						break;
+					case InputCommands::BUY_TOMATO:
+						game.SetPlayerBuy(cpacket.player_idx, VegetableType::TOMATO); 
+						break;
+					case InputCommands::BUY_RADISH:
+						game.SetPlayerBuy(cpacket.player_idx, VegetableType::RADISH); 
+						break;
 					default: break;
 				}
 			}

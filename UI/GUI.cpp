@@ -84,10 +84,10 @@ bool GUI::renderUI(bool show_GUI) {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
-		show_GUI = !show_GUI;
+	//if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+	//	show_GUI = !show_GUI;
 		rack_image_idx = 0;
-	}
+	//}
 	
 	/* build scoreboard */
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));

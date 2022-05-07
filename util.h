@@ -18,7 +18,16 @@ enum InputCommands {
 	DROP,
 	SPRINT,
 	STOP_SPRINT,
-	DANCE_CMD
+	DANCE_CMD,
+	// buying
+	BUY_CARROT,
+	BUY_CABBAGE,
+	BUY_CORN,
+	BUY_RADISH,
+	BUY_TOMATO,
+	// selling
+	SELL_CMD,
+	CLOSE_UI
 };
 
 enum ModelEnum

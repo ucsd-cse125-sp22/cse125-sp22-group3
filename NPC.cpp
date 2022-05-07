@@ -16,21 +16,23 @@ NPC::~NPC() {}
 
 void NPC::FixedUpdate()
 {
+	collider_->center = *translate;
 }
 
 glm::mat4 NPC::GetParentTransform()
 {
-	return glm::mat4();
+	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
+	return trans * rotation;
 }
 
 ModelEnum NPC::GetModelEnum()
 {
-	return ModelEnum();
+	return model;
 }
 
 AniMode NPC::GetAniMode()
 {
-	return AniMode();
+	return modelAnim;
 }
 
 std::vector<Collider*> NPC::GetColliders()
@@ -40,12 +42,12 @@ std::vector<Collider*> NPC::GetColliders()
 
 glm::vec2* NPC::GetWorldPosition()
 {
-	return nullptr;
+	return translate;
 }
 
 glm::vec3 NPC::GetPosition() const
 {
-	return glm::vec3();
+	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
 }
 
 void NPC::SetWorldPosition(glm::vec3 position)
@@ -54,12 +56,15 @@ void NPC::SetWorldPosition(glm::vec3 position)
 
 bool NPC::CanInteract(Player* player)
 {
-	return !player->GetHoldEntity();
+	//TODO: if bribed return false
+	return true;
 }
 
 void NPC::OnInteract(Player* player)
 {
+	printf("Interacting with NPC\n");
 	// Enable Shop UI
+	// Disable movement of player
 }
 
 glm::mat4 NPC::GetRotation()
