@@ -62,6 +62,7 @@ bool NPC::CanInteract(Player* player)
 
 void NPC::OnInteract(Player* player)
 {
+	printf("Interacting with NPC\n");
 	// Enable Shop UI
 	// Disable movement of player
 }
