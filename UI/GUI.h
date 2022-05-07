@@ -44,6 +44,7 @@ public:
 	static std::string picture_dir;
 	static GLFWwindow* my_window;
 	static GUIImage score_background;
+	static GUIImage loading_background; 
 	static GUIImage loading_bg[NUM_LOAD_IMG]; 
 	static bool show_loading;
 	static int rack_image_idx;

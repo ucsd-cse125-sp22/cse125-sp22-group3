@@ -9,6 +9,8 @@ namespace fs = std::filesystem;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
+GUIImage GUI::loading_background;
+
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
 float GUI::display_ratio;
 int GUI::window_height;
@@ -215,6 +217,11 @@ void GUI::initializeImage() {
 	const char* score_bg_path = (picture_dir + std::string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
+
+	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
+	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
+		&(loading_background.my_image_width), &(loading_background.my_image_height));
+
 }
 
 void GUI::initializeLoadingImage() {
@@ -422,8 +429,8 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
 	ImGui::Begin("Progress Indicators", NULL, TRANS_WINDOW_FLAG);
 
-	const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-	const ImU32 bg = ImGui::GetColorU32(ImGuiCol_Button);
+	const ImU32 col = IM_COL32(245.f, 61.f,119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
 	//ImGui::Spinner("##spinner", 15, 6, col);
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
