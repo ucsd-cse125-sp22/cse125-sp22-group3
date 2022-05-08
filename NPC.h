@@ -10,7 +10,7 @@ public:
 	~NPC();
 
 	// current animation, no custom get/set logic so is set as public field
-	AniMode modelAnim = NO_ANI; // TODO, NPC has animation
+	AniMode modelAnim = DANCE; // TODO, NPC has animation
 
 	// GameEntity
 	void FixedUpdate() override;
