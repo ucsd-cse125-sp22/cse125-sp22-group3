@@ -116,15 +116,15 @@ private:
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
 
 		{WORLD_MAP, "models/world/borderlessMap.fbx"},
+
+		{PARTICLE_DUST, "models/world/borderlessMap.fbx"}, // TODO ask danica for plane model for particles
+		{PARTICLE_GLOW, "models/world/borderlessMap.fbx"},
 	};
 
-	// map to texture (for models who share same mesh, but different textures)
-	std::vector<std::string> veggieTextures{
-		{"cabbage.png", "carrot.png", "corn.png", "raddish.png", "tomato.png"},
-	};
-
-	std::vector<std::string> plotColorTextures{
-		"plotBlue.png","plotYellow.png","plotRed.png","plotGreen.png"
+	// map to particle textures
+	std::map<ModelEnum, std::string> particleTextures = {
+		{PARTICLE_DUST, "dust"},
+		{PARTICLE_GLOW, "glow"}
 	};
 
 	// Get previous and current blending
@@ -173,6 +173,7 @@ public:
 	void processNode(aiNode * root, const aiScene* scene);
 	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+	std::vector<Texture> Model::loadParticleTextures(std::string filename);
 	unsigned int TextureFromFile(const char* path, const std::string& directory);
 
 	// Load Animation Data

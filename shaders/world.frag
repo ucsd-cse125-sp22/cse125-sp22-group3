@@ -61,7 +61,7 @@ void main()
     }
 
     // shadows
-    vec4 FragPosLightSpace = lightSpaceMatrices[0] * vec4(FragPos, 1.0);
+    vec4 FragPosLightSpace = lightSpaceMatrices[layer] * vec4(FragPos, 1.0);
     vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;  
     float currentDepth = projCoords.z;  
@@ -82,7 +82,7 @@ void main()
 
         else
         {
-            bias *= 1 / (cascadePlaneDistances[0] * biasModifier);
+            bias *= 1 / (cascadePlaneDistances[layer] * biasModifier);
         }
         vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
         int halfkernelWidth = 1;
@@ -90,7 +90,7 @@ void main()
         {
 	        for(int y = -halfkernelWidth; y <= halfkernelWidth; ++y)
 	        {
-		        float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, 0)).r;
+		        float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
 		        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 	        }
         }

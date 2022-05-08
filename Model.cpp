@@ -158,19 +158,10 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	{
 		aiFace face = mesh->mFaces[i];
 		// retrieve all indices of the face and store them in the indices vector
-
-		
 		if (face.mNumIndices == 3) {
 
 			indices.push_back(glm::uvec3(face.mIndices[0], face.mIndices[1], face.mIndices[2]));
 		}
-
-		/*
-		for (unsigned int j = 0; j < face.mNumIndices; j++) {
-			std::cout << (face.mNumIndices) << std::endl;
-			indices.push_back(face.mIndices[j]);
-		}
-		*/
 	}
 	
 	// process materials
@@ -178,18 +169,27 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	// Get materials
 	if (mesh->mMaterialIndex >= 0)
 	{
-		// 1. diffuse maps
-		std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		// 2. specular maps
-		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		// 3. normal maps
-		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		// 4. height maps
-		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		// Check if current model is not a oarticle
+		if (particleTextures.find(model) == particleTextures.end()) {
+			// 1. diffuse maps
+			std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+			// 2. specular maps
+			std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+			// 3. normal maps
+			std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+			// 4. height maps
+			std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		}
+
+		// If it is, we are gonna add textures from its respective directory
+		else {
+			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
+			textures = particles;
+		}
 	}
 	
 	ExtractBoneWeightForVertices(boneIds, weights, mesh, scene);
@@ -229,18 +229,38 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 	return textures;
 }
 
+std::vector<Texture> Model::loadParticleTextures(std::string filename) {
+	std::vector<Texture> textures;
+
+	int i = 1;
+	std::string fileType = ".png";
+
+	std::string fileName = fileName + std::to_string(i) + fileType;
+	unsigned int result = TextureFromFile(fileName.c_str(), directory);
+
+	while (result != -1) {
+		Texture texture;
+		texture.id = result;
+		texture.type = "texture_diffuse";
+		texture.path = fileName;
+		textures.push_back(texture);
+		textures_loaded.push_back(texture);
+	}
+	return textures;
+}
+
 unsigned int Model::TextureFromFile(const char* path, const std::string& directory)
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+
+	unsigned int textureID;
 	if (data)
 	{
+		glGenTextures(1, &textureID);
 		GLenum format;
 		if (nrComponents == 1)
 			format = GL_RED;
@@ -260,14 +280,16 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 
 		//std::cout << "Texture loaded at path: " << path << std::endl;
 		stbi_image_free(data);
+
+		return textureID;
 	}
 	else
 	{
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
-	}
 
-	return textureID;
+		return -1;
+	}
 }
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
