@@ -8,7 +8,7 @@ NPC::NPC(ModelEnum curr)
 	rotation = glm::mat4(1);
 
 	// Change to AABB later
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 5, false);
+	collider_ = new ColliderCircle(glm::vec2(0, 0), 8, false);
 	collider_->collider_is_trigger = true;
 }
 
@@ -62,10 +62,17 @@ bool NPC::CanInteract(Player* player)
 
 void NPC::OnInteract(Player* player)
 {
-	printf("Interacting with NPC\n");
-	// Enable Shop UI
-	player->ui_open = true;
-	// Disable movement of player
+	if (player->GetIsHolding()) {
+		// TODO: instead of calling sell directly, open sell GUI instead
+		printf("Selling to NPC\n");
+		player->Sell();
+	}
+	else {
+		printf("Buying from NPC\n");
+		// Enable Shop UI and disable movement
+		player->OpenUI();
+	}
+	
 }
 
 glm::mat4 NPC::GetRotation()

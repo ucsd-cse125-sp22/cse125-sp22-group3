@@ -3,6 +3,7 @@
 #include "GameEntity.h"
 #include "PhysicsObject.h"
 #include "Interactable.h"
+#include "Vegetable.h"
 
 class NPC : public Drawable, public GameEntity, public PhysicsObject, public Interactable {
 public:

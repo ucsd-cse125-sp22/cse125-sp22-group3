@@ -79,6 +79,14 @@ void GUI::updateDisplayRatio(int width, int height) {
 	window_height = height; 
 }
 
+static std::unordered_map<int, InputCommands> buy_command_map = {
+	{1, BUY_CARROT},
+	{2, BUY_CABBAGE},
+	{3, BUY_CORN},
+	{4, BUY_RADISH},
+	{5, BUY_TOMATO},
+};
+
 /**
 * Render the UI compenents, should be called within the mainloop
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
@@ -92,7 +100,7 @@ bool GUI::renderUI() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	//if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+	//if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
 	//	GUI_showNPCui = !GUI_showNPCui;
 	//	rack_image_idx = 0;
 	//}
@@ -125,8 +133,12 @@ bool GUI::renderUI() {
 				rack_image_idx++;
 		}
 		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if (rack_image_idx > 0)
+			if (rack_image_idx > 1)
 				rack_image_idx--;
+		}
+		else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+			
+			InputManager::lastCmd = buy_command_map[rack_image_idx];
 		}
 		// etc.
 		bool open_ptr = true;
@@ -204,7 +216,7 @@ void GUI::initializeImage() {
 			&(image->my_image_width), &(image->my_image_height));
 		i++;
 	}
-	rack_image_idx = 0;
+	rack_image_idx = 1;
 	i = 0; 
 	const char* icon_dir = (picture_dir + std::string("/icon")).c_str();
 	for (auto& entry : fs::directory_iterator(icon_dir)) {
@@ -468,7 +480,7 @@ bool GUI::ShowGUI(bool show)
 {
 	show_GUI = show;
 	if (show == true) {
-		rack_image_idx = 0;
+		rack_image_idx = 1;
 	}
 	return show;
 }

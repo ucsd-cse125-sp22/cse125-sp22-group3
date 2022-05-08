@@ -22,6 +22,7 @@ bool InputManager::getMoved() {
 
 void InputManager::resetMoved() {
 	justMoved = false;
+	lastCmd = NONE;
 }
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {

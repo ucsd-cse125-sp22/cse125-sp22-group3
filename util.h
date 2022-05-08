@@ -93,6 +93,7 @@ struct VeggieInfo {
 	bool requires_fertilizer = false;
 };
 
+// veggie model, // model flag, seed model , growth time, seed price, sell price, requires water? requires fertilizer?
 static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::TOMATO, VeggieInfo{VEG_TOMATO, WORLD_FLAG_TOMATO, WORLD_SEED_TOMATO, 5, 10, 50, true, true}},
 	{VegetableType::CABBAGE, VeggieInfo{VEG_CABBAGE, WORLD_FLAG_CABBAGE, WORLD_SEED_CABBAGE, 5, 2, 6, true, false}},

@@ -51,6 +51,7 @@ struct ServerHeader {
 	bool player_sprinting;
 	int num_models;
 	bool ui_open;
+	float balance[4];
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr) {

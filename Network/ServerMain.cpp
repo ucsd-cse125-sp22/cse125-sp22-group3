@@ -14,6 +14,7 @@ inline int ServerMain()
 	NPC fish{ CHAR_NPC };
 	//NPC fish{ WORLD_PLOT_RED }; // TODO: Ask Cynthia how to import default animations
 
+	/**
 	int i = 1;
 	Vegetable cabbage{ VegetableType::CABBAGE, VEG_CABBAGE };
 	cabbage.SetPosition({i++ * 15, 5, 0});
@@ -24,14 +25,14 @@ inline int ServerMain()
 	Vegetable radish{VegetableType::RADISH, VEG_RADISH};
 	radish.SetPosition({i++ * 15, 5, 0});
 	Vegetable tomato{VegetableType::TOMATO, VEG_TOMATO};
-
+	*/
 	
 	Plot plotRed{WORLD_PLOT_RED};
 	Plot plotBlue{ WORLD_PLOT_BLUE };
 	Plot plotYellow{ WORLD_PLOT_YELLOW };
 	Plot plotGreen{ WORLD_PLOT_GREEN };
 	
-	
+	/**
 	Seed seedCarrot{ VegetableType::CARROT, WORLD_SEED_CARROT };
 	Seed seedCabbage{ VegetableType::CABBAGE, WORLD_SEED_CABBAGE };
 	Seed seedCorn{ VegetableType::CORN, WORLD_SEED_CORN };
@@ -43,22 +44,21 @@ inline int ServerMain()
 	Seed flagCorn{ VegetableType::CORN, WORLD_FLAG_CORN };
 	Seed flagTomato{ VegetableType::TOMATO, WORLD_FLAG_TOMATO };
 	Seed flagRadish{ VegetableType::RADISH, WORLD_FLAG_RADISH };
+	*/
 
 	World world{ WORLD_MAP };
 
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
-	tomato.SetPosition({-10, 5, 0});
-
 	//Plot plot{WORLD_PLOT};
 	plotRed.SetPosition({ 80,30,0 });
-	
-	//Seed seed{ VegetableType::CABBAGE, WORLD_SEED };
-	seedCorn.SetPosition({ 100, 30, 0 });
+	plotBlue.SetPosition({ 80,30,10 });
+	plotYellow.SetPosition({ 80,30,20 });
+	plotGreen.SetPosition({ 80,30,30 });
 	
 	fish.SetWorldPosition({ 0,30,0 });
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
-	game.AddEntities({ &cabbage, &corn, &radish, &plotRed, &seedTomato, &seedCorn, &world, &fish});
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish});
 
 	world.SetPosition({ 0, 0, -5.0f });
 
@@ -88,6 +88,7 @@ inline int ServerMain()
 						game.SetPlayerSell(cpacket.player_idx);
 						break;
 					case InputCommands::BUY_CABBAGE:
+						printf("BUYING CABBAGE\n");
 						game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE); // Is there a nicer way of doing this?
 						break;
 					case InputCommands::BUY_CARROT:
@@ -102,6 +103,8 @@ inline int ServerMain()
 					case InputCommands::BUY_RADISH:
 						game.SetPlayerBuy(cpacket.player_idx, VegetableType::RADISH); 
 						break;
+					case InputCommands::CLOSE_UI:
+						game.SetClosePlayerUI(cpacket.player_idx);
 					default: break;
 				}
 			}

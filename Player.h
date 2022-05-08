@@ -79,9 +79,12 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void Dance();
 		void Buy(VegetableType bought_vegetable);
 		void Sell();
+		void CloseUI();
+		void OpenUI();
 		void EnableMovement();
 		void DisableMovement();
 		bool GetMoveable();
+
 
 		// Information
 		glm::vec3 GetPosition() const;
@@ -95,7 +98,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 
 		// how much money player currently has
-		float curr_balance = 10;
+		float curr_balance = 50;
 
 		
 		

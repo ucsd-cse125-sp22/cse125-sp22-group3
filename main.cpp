@@ -204,6 +204,7 @@ int main(int argc, char* argv[])
 			out_packet.movement = InputManager::getLastMovement();
 			out_packet.lastCommand = InputManager::getLastCommand();
 			
+			
 		}
 		InputManager::resetMoved();
 
@@ -225,6 +226,13 @@ int main(int argc, char* argv[])
 
 				if (sheader->ui_open && !GUI::show_GUI) {
 					GUI::ShowGUI(true);
+				}
+				else if (!sheader->ui_open && GUI::show_GUI){
+					GUI::ShowGUI(false);
+				}
+
+				for (int i = 0; i < NUM_CLIENTS; i++) {
+					GUI::scoreboard_data[i]=sheader->balance[i];
 				}
 
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);

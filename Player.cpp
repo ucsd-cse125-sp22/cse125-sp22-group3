@@ -136,28 +136,51 @@ void Player::Dance() {
 }
 
 void Player::Buy(VegetableType bought_vegetable) {
+	
 	VeggieInfo veggie = veggie_map[bought_vegetable];
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (!isHolding && veggie.seed_price <= curr_balance) {
+		SetTriggeringEntity(nullptr);
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
-		// TODO: Add seed to player's hand
+
+		// Spawn the correct vegetable on the player
+		VeggieInfo veggie_info = veggie_map[bought_vegetable];
+		Seed* bought_seed = new Seed{ bought_vegetable, veggie_info.seed_model };
+		GameManager::AddEntities({ bought_seed });
+		SetHoldEntity(bought_seed);
 		
 	}
+	printf("BUYING VEGGIE %f\n", curr_balance);
 }
 
 void Player::Sell(){
+	
 	
 	if (!isHolding)
 		return;
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
-
+		SetTriggeringEntity(nullptr);
 		VeggieInfo veggie = veggie_map[vegetable->type];
-		isHolding = false;
 		curr_balance += veggie.sell_price;
-		// TODO: Remove item from player's hand
+		Drop();
+		GameManager::RemoveEntities({ vegetable });
+		
 	}
+	printf("SELLING VEGGIE %f\n", curr_balance);
+}
+
+void Player::CloseUI()
+{
+	ui_open = false;
+	moveable = true;
+}
+
+void Player::OpenUI()
+{
+	ui_open = true;
+	moveable = false;
 }
 
 void Player::EnableMovement()

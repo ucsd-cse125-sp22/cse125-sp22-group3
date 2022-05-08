@@ -8,7 +8,7 @@ Plot::Plot(ModelEnum curr) {
 	rotation = glm::mat4(1);
 	
 	// Change to AABB later
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 5, false);
+	collider_ = new ColliderCircle(glm::vec2(0, 0), 8, false);
 	collider_->collider_is_trigger = true;
 }
 

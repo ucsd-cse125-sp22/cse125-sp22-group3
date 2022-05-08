@@ -86,6 +86,9 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.player_transform = players_[client_idx]->GetParentTransform();
 		sheader.player_sprinting = players_[client_idx]->sprint;
 		sheader.ui_open = players_[client_idx]->ui_open;
+		for (int i = 0; i < NUM_CLIENTS; i++) {
+			sheader.balance[i] = players_[i]->curr_balance;
+		}
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 		serverSerialize(server_buf, &sheader, model_infos.data());
@@ -124,6 +127,10 @@ void GameManager::SetPlayerBuy(int player_index, VegetableType bought_vegetable)
 void GameManager::SetPlayerSell(int player_index)
 {
 	players_[player_index]->Sell();
+}
+
+void GameManager::SetClosePlayerUI(int player_index) {
+	players_[player_index]->CloseUI();
 }
 
 

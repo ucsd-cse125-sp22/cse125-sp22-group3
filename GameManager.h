@@ -30,7 +30,7 @@ public:
     void SetPlayerDance(int player_index);
     void SetPlayerBuy(int player_index, VegetableType bought_vegetable);
     void SetPlayerSell(int player_index);
-
+    void SetClosePlayerUI(int player_index);
 
     // Information
     std::vector<std::pair<char*, int>> GetServerBuf();
