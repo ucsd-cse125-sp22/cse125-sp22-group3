@@ -50,6 +50,7 @@ struct ServerHeader {
 	glm::mat4 player_transform;
 	bool player_sprinting;
 	int num_models;
+	bool ui_open;
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr) {

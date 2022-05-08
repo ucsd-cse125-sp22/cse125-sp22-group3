@@ -85,6 +85,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.num_models = model_infos.size();
 		sheader.player_transform = players_[client_idx]->GetParentTransform();
 		sheader.player_sprinting = players_[client_idx]->sprint;
+		sheader.ui_open = players_[client_idx]->ui_open;
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 		serverSerialize(server_buf, &sheader, model_infos.data());

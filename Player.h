@@ -73,6 +73,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec2 move_input{0,0};
 		bool sprint = false;
 		bool isDancing = false;
+		bool ui_open = false;
 		void Use();
 		void Drop();
 		void Dance();

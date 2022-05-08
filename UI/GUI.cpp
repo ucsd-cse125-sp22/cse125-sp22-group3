@@ -1,4 +1,5 @@
 #include "GUI.h"
+#include "../util.h"
 #include <iostream>
 //#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
 //#include <experimental/filesystem>
@@ -8,15 +9,20 @@ namespace fs = std::filesystem;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
+GUIImage GUI::loading_background;
+
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
+GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
+int GUI::scoreboard_data[NUM_ICON];
+
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
 
-
 int GUI::rack_image_idx; 
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
+ImVec2 GUI::player_pos[4];
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
@@ -76,7 +82,7 @@ void GUI::updateDisplayRatio(int width, int height) {
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
-bool GUI::renderUI(bool show_GUI) {
+bool GUI::renderUI() {
 	
 
 	// Start the Dear ImGui frame
@@ -84,8 +90,8 @@ bool GUI::renderUI(bool show_GUI) {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	//if (ImGui::IsKeyPressed(ImGuiKey_K)) {
-	//	show_GUI = !show_GUI;
+	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+		GUI_showNPCui = !GUI_showNPCui;
 		rack_image_idx = 0;
 	//}
 	
@@ -104,14 +110,14 @@ bool GUI::renderUI(bool show_GUI) {
 		GUIImage image = icon_images_list[i];
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
 		ImGui::SameLine();
-		ImGui::Text("2000");
+		ImGui::Text("%d",scoreboard_data[i]);
 	}
 	ImGui::PopStyleColor();
 	ImGui::End(); 
 	/* end of scoreboard */
 
 	/* build the seed sale page */
-	if(show_GUI == true) {		
+	if(GUI_showNPCui == true) {		
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
@@ -134,10 +140,10 @@ bool GUI::renderUI(bool show_GUI) {
 		ImGui::End();
 	}
 	/*end of seed sale page*/
-
+	createMiniMap(); 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return show_GUI;
+	return GUI_showNPCui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
@@ -213,6 +219,24 @@ void GUI::initializeImage() {
 	const char* score_bg_path = (picture_dir + std::string("/score_background.png")).c_str();
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
+
+	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
+	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
+		&(loading_background.my_image_width), &(loading_background.my_image_height));
+
+
+	i = 0;
+	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
+	for (auto& entry : fs::directory_iterator(chase_dir)) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(chase_images_list[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 2.0f;
+		image->my_image_height *= 2.0f;
+		i++;
+	}
 }
 
 void GUI::initializeLoadingImage() {
@@ -354,8 +378,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 //	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
 //	return true; 
 //}
-
-
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -403,7 +425,7 @@ namespace ImGui {
 	}
 
 }
-void GUI::renderProgressBar(float percent, GLFWwindow* window) {
+bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
 	ImGuiWindowFlags window_flags = 0;
@@ -418,15 +440,19 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	
 	ImVec2 size = ImVec2(1200 * display_ratio * 5, 18 * display_ratio * 5);
 	ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
 	ImGui::Begin("Progress Indicators", NULL, TRANS_WINDOW_FLAG);
 
-	const ImU32 col = ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-	const ImU32 bg = ImGui::GetColorU32(ImGuiCol_Button);
+	const ImU32 col = IM_COL32(245.f, 61.f,119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
 	//ImGui::Spinner("##spinner", 15, 6, col);
+	int idx = flip_image ? 1 : 0;
+	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, \
+						ImVec2(chase_images_list[idx].my_image_width * display_ratio,\
+							   chase_images_list[idx].my_image_height * display_ratio));
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
 	ImGui::BufferingBar("##buffer_bar", percent, size, bg, col);
-
 	ImGui::End();
 
 	// Rendering
@@ -434,11 +460,42 @@ void GUI::renderProgressBar(float percent, GLFWwindow* window) {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
-	
+	return !flip_image;
+}
+/**
+	this method construct the minimap on the corner of the screen base on the player locations
+	only add the require elements for minimap but not actually render it
+*/
+void GUI::createMiniMap() {
+	//get size of minimap 
+	float world_dim = 500.0f;
+	int width = 1200;
+	int height = 1200;
+	float padding = 32.0f;
+	//size of minimap 
+	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	//ImVec2 center = ImVec2(padding + size.x / 2, window_height - padding - size.y / 2); // center of minimap
+	ImVec2 center = ImVec2(size.x / 2.0f, size.y /2.0f); // center of minimap
+
+	bool bptr;
+	ImGui::Begin("MiniMap", &bptr, MINI_MAP_FLAG);
+	//place all player's icon:
+	for (int i = 0; i < 4; i++) {
+		GUIImage image = icon_images_list[i];
+		//TODO convert the pos into relative pos in minimap
+		ImVec2 icon_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+
+		ImVec2 relative_pos = ImVec2(player_pos[i].x / world_dim * size.x- icon_size.x * 0.5f, player_pos[i].y / world_dim * size.y - icon_size.y * 0.5f); 
+		//size of icon 
+		ImGui::SetCursorPos(relative_pos + center);
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, icon_size);
+	}
+	ImGui::End();
 }
 
-void GUI::renderMiniMap() {
 
 
-}
 
