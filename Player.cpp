@@ -140,7 +140,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 	VeggieInfo veggie = veggie_map[bought_vegetable];
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (!isHolding && veggie.seed_price <= curr_balance) {
-		SetTriggeringEntity(nullptr);
+		//SetTriggeringEntity(nullptr);
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
 
@@ -151,7 +151,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 		SetHoldEntity(bought_seed);
 		
 	}
-	printf("BUYING VEGGIE %f\n", curr_balance);
+	//printf("BUYING VEGGIE %f\n", curr_balance);
 }
 
 void Player::Sell(){
@@ -161,14 +161,14 @@ void Player::Sell(){
 		return;
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
-		SetTriggeringEntity(nullptr);
+		//SetTriggeringEntity(nullptr);
 		VeggieInfo veggie = veggie_map[vegetable->type];
 		curr_balance += veggie.sell_price;
 		Drop();
 		GameManager::RemoveEntities({ vegetable });
 		
 	}
-	printf("SELLING VEGGIE %f\n", curr_balance);
+	//printf("SELLING VEGGIE %f\n", curr_balance);
 }
 
 void Player::CloseUI()

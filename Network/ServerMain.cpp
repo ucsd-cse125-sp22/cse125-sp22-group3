@@ -51,10 +51,10 @@ inline int ServerMain()
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	//Plot plot{WORLD_PLOT};
-	plotRed.SetPosition({ 80,30,0 });
-	plotBlue.SetPosition({ 80,30,10 });
-	plotYellow.SetPosition({ 80,30,20 });
-	plotGreen.SetPosition({ 80,30,30 });
+	plotRed.SetPosition({ 80,10,0 });
+	plotBlue.SetPosition({ 80,10,10 });
+	plotYellow.SetPosition({ 80,10,20 });
+	plotGreen.SetPosition({ 80,10,30 });
 	
 	fish.SetWorldPosition({ 0,30,0 });
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
@@ -88,7 +88,6 @@ inline int ServerMain()
 						game.SetPlayerSell(cpacket.player_idx);
 						break;
 					case InputCommands::BUY_CABBAGE:
-						printf("BUYING CABBAGE\n");
 						game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE); // Is there a nicer way of doing this?
 						break;
 					case InputCommands::BUY_CARROT:
