@@ -11,9 +11,15 @@ void main()
 {
     vec4 tex = texture(texture_diffuse1, texCoords);
 
-    if(tex.a < 0.8f) {
+    
+    if(tex.a < 0.05f) {
         discard;
     }
 
-    fragColor = tex;
+    else {
+        fragColor = tex;
+    }
+    
+
+    // fragColor = tex;
 }

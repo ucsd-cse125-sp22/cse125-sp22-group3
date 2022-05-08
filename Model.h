@@ -117,8 +117,8 @@ private:
 
 		{WORLD_MAP, "models/world/borderlessMap.fbx"},
 
-		{PARTICLE_DUST, "models/world/borderlessMap.fbx"}, // TODO ask danica for plane model for particles
-		{PARTICLE_GLOW, "models/world/borderlessMap.fbx"},
+		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
+		{PARTICLE_GLOW, "models/particles/plane.fbx"},
 	};
 
 	// map to particle textures

@@ -42,3 +42,7 @@ void Particle::SetRotation(glm::mat4 rotation)
 {
 	this->rotation = rotation;
 }
+
+glm::mat4 Particle::GetTransformation() {
+	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
+}

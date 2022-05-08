@@ -130,7 +130,10 @@ bool Window::initializeObjects()
 	{ WORLD_FLAG_RADISH, animationShaderProgram  },
 	{ WORLD_FLAG_TOMATO, animationShaderProgram  },
 
-	{ WORLD_MAP, worldShaderProgram }
+	{ WORLD_MAP, worldShaderProgram },
+
+	{ PARTICLE_GLOW, particleShaderProgram },
+	{ PARTICLE_DUST, particleShaderProgram }
 	};
 			
 	return true;

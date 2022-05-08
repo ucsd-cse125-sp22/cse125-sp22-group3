@@ -84,15 +84,14 @@ void preload_texture_files() {
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
-	int size = WORLD_MAP - CHAR_BUMBUS+2; 
+	int size = PARTICLE_GLOW - CHAR_BUMBUS+2; 
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image 
-	for (ModelEnum i = CHAR_BUMBUS; i <= WORLD_MAP; i = ModelEnum(i + 1)) {
+	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 		tmp = Model(i); 
 		progress++;
 	}
-
 	//// Model constructor internally has logic to cache meshes
 	//Model BUMBUS = Model(CHAR_BUMBUS);
 	////Model BUMBUS2 = Model(CHAR_BUMBUS);
@@ -158,8 +157,6 @@ int main(int argc, char* argv[])
 	// Initialize objects/pointers for rendering; exit if initialization fails.
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
-
-	
 
 	GUI::show_loading = true;
 	//std::thread loadingThread(load_models, window);
@@ -296,13 +293,7 @@ int main(int argc, char* argv[])
 
 					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 
-					if (model_info.model != WORLD_MAP) {
-						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::animationShaderProgram);
-					}
-
-					else {
-						model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::worldShaderProgram);
-					}
+					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::modelShader[model_info.model]);
 				}
 
 				

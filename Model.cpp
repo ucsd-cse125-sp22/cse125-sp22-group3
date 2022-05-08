@@ -235,16 +235,22 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 	int i = 1;
 	std::string fileType = ".png";
 
-	std::string fileName = fileName + std::to_string(i) + fileType;
-	unsigned int result = TextureFromFile(fileName.c_str(), directory);
+	std::string file = filename + "/" + filename + std::to_string(i) + fileType;
+	unsigned int result = TextureFromFile(file.c_str(), directory);
 
 	while (result != -1) {
+		// load texture
 		Texture texture;
 		texture.id = result;
 		texture.type = "texture_diffuse";
-		texture.path = fileName;
+		texture.path = filename;
 		textures.push_back(texture);
 		textures_loaded.push_back(texture);
+
+		file = filename + "/" + filename + std::to_string(i) + fileType;
+		result = TextureFromFile(file.c_str(), directory);
+
+		i++;
 	}
 	return textures;
 }
@@ -254,6 +260,7 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
+	std::cout << filename << std::endl; 
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 
