@@ -39,6 +39,7 @@ GLuint Window::animationShaderProgram;
 GLuint Window::shadowShaderProgram; 
 GLuint Window::blurShaderProgram;
 GLuint Window::finalShaderProgram;
+GLuint Window::particleShaderProgram;
 
 // Shader to Program
 std::map<ModelEnum, GLuint> Window::modelShader;
@@ -52,6 +53,7 @@ bool Window::initializeProgram() {
 	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag", "shaders/shadows.geom");
 	blurShaderProgram = LoadShaders("shaders/blur.vert", "shaders/blur.frag");
 	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
+	particleShaderProgram = LoadShaders("shaders/particles.vert", "shaders/particles.frag");
 
 	// Check the shader program.
 	if (!worldShaderProgram)
@@ -79,6 +81,20 @@ bool Window::initializeProgram() {
 		return false;
 	}
 
+	if (!blurShaderProgram) {
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
+
+	if (!finalShaderProgram) {
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
+
+	if (!particleShaderProgram) {
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
 	return true;
 }
 
