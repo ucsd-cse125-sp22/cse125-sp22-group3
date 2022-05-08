@@ -192,6 +192,7 @@
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="FBO.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Seed.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="glm.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Seed.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="UI\imgui\imconfig.h" />

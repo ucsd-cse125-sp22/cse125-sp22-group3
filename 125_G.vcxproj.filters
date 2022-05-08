@@ -34,6 +34,7 @@
     <ClCompile Include="Seed.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="FBO.cpp" />
+    <ClCompile Include="Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Seed.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="FBO.h" />
+    <ClInclude Include="Particle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

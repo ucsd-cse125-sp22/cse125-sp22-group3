@@ -114,10 +114,17 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
-	//std::cout << mesh->mName.C_Str() << std::endl;
+	// particle textures
+	std::map<ModelEnum, std::string> particleTextures = {
+		{PARTICLE_DUST, "dust"},
+		{PARTICLE_GLOW, "glow"}
+	};
 
 	// Has materials
 	bool hasMaterials = false;
+
+	// Is a particle
+	bool isParticle = false;
 
 	//std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
 
@@ -187,6 +194,7 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		// If it is, we are gonna add textures from its respective directory
 		else {
+			isParticle = true;
 			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
 			textures = particles;
 		}
@@ -194,6 +202,8 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	
 	ExtractBoneWeightForVertices(boneIds, weights, mesh, scene);
 	Mesh m = Mesh(pos, norms, uvs, indices, textures, boneIds, weights);
+
+	if (isParticle) { m.isParticle = true; }
 
 	return m;
 }

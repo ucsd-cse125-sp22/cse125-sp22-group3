@@ -55,12 +55,11 @@ inline int ServerMain()
 	plotBlue.SetPosition({ 80,10,10 });
 	plotYellow.SetPosition({ 80,10,20 });
 	plotGreen.SetPosition({ 80,10,30 });
-	
+	world.SetPosition({ 0, 0, -5.0f });
 	fish.SetWorldPosition({ 0,30,0 });
+	glow.SetPosition({ 0,15, -5.0f });
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
-
-	world.SetPosition({ 0, 0, -5.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (ClientPacket& cpacket : client_packet_vec) {
