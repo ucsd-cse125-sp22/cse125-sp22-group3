@@ -19,10 +19,10 @@ GameManager::GameManager(std::vector<Player*> players)
 	int i = 0;
 	for (Player* player : players_) {
 		// Set Player Positions
-		player->SetWorldPosition({i * 10,0,0});
+		//player->SetWorldPosition({i * 10,0,0});
 		// Add Players to Entities list
 		GameManager::game_entities.push_back(player);
-		i++;
+		//i++;
 	}
 
 	// Instantiate Physics Engine

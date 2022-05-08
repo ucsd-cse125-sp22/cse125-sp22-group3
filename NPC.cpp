@@ -8,7 +8,7 @@ NPC::NPC(ModelEnum curr)
 	rotation = glm::mat4(1);
 
 	// Change to AABB later
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 8, false);
+	collider_ = new ColliderCircle(glm::vec2(0, 0), 6, false);
 	collider_->collider_is_trigger = true;
 }
 
@@ -71,6 +71,7 @@ void NPC::OnInteract(Player* player)
 		printf("Buying from NPC\n");
 		// Enable Shop UI and disable movement
 		player->OpenUI();
+
 	}
 	
 }

@@ -64,7 +64,11 @@ enum ModelEnum
 	WORLD_MAP,
 
 	PARTICLE_GLOW,
-	PARTICLE_DUST
+	PARTICLE_DUST,
+
+	POISON,
+	WATERING_CAN,
+	SHOVEL
 };
 
 enum AniMode {

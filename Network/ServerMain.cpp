@@ -55,8 +55,13 @@ inline int ServerMain()
 	plotBlue.SetPosition({ 80,10,10 });
 	plotYellow.SetPosition({ 80,10,20 });
 	plotGreen.SetPosition({ 80,10,30 });
+	fish.SetWorldPosition({ 100,30,100 });
 	
-	fish.SetWorldPosition({ 0,30,0 });
+	bumbus.SetWorldPosition({ -20, 30, 0 });
+	pogo.SetWorldPosition({ 20, 30, 0 });
+	swainky.SetWorldPosition({ 0, 30, -20 });
+	gilman.SetWorldPosition({ 0, 30, 20 });
+
 	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
 

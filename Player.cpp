@@ -151,6 +151,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 		SetHoldEntity(bought_seed);
 		
 	}
+	CloseUI();
 	//printf("BUYING VEGGIE %f\n", curr_balance);
 }
 
