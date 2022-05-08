@@ -6,7 +6,8 @@ enum class EntityType {
 	PLOT,
 	SEED,
 	GROWTH,
-	WORLD
+	WORLD,
+	PARTICLE
 };
 
 class GameEntity {
