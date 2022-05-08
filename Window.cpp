@@ -106,6 +106,7 @@ bool Window::initializeObjects()
 	{ CHAR_POGO, animationShaderProgram },
 	{ CHAR_SWAINKY, animationShaderProgram },
 	{ CHAR_GILMAN, animationShaderProgram }, // TODO rename
+	{ CHAR_NPC, animationShaderProgram },
 
 	{ VEG_CABBAGE, animationShaderProgram  },
 	{ VEG_CARROT, animationShaderProgram  },
