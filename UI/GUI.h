@@ -34,11 +34,11 @@ public:
 	int my_image_width = 0;
 	int my_image_height = 0;
 	GLuint my_image_texture = 0;
-	
 
 };
 class GUI {
 public:
+	static bool show_GUI;
 	static float display_ratio; 
 	static int window_height;
 	static int window_width; 
@@ -64,6 +64,7 @@ public:
 	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
+	static bool ShowGUI(bool show);
 };
 
 

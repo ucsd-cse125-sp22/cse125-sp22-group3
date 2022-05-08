@@ -6,6 +6,8 @@
 //namespace fs = std::experimental::filesystem;
 #include <filesystem>
 namespace fs = std::filesystem;
+
+bool GUI::show_GUI = false;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
@@ -90,9 +92,9 @@ bool GUI::renderUI() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	
-	if (ImGui::IsKeyPressed(ImGuiKey_K)) {
-		GUI_showNPCui = !GUI_showNPCui;
-		rack_image_idx = 0;
+	//if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+	//	GUI_showNPCui = !GUI_showNPCui;
+	//	rack_image_idx = 0;
 	//}
 	
 	/* build scoreboard */
@@ -117,7 +119,7 @@ bool GUI::renderUI() {
 	/* end of scoreboard */
 
 	/* build the seed sale page */
-	if(GUI_showNPCui == true) {		
+	if(show_GUI == true) {		
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
@@ -143,7 +145,7 @@ bool GUI::renderUI() {
 	createMiniMap(); 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return GUI_showNPCui;
+	return show_GUI;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
@@ -461,6 +463,14 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(window);
 	return !flip_image;
+}
+bool GUI::ShowGUI(bool show)
+{
+	show_GUI = show;
+	if (show == true) {
+		rack_image_idx = 0;
+	}
+	return show;
 }
 /**
 	this method construct the minimap on the corner of the screen base on the player locations

@@ -4,8 +4,6 @@
 
 #include <unordered_map>
 
-static bool GUI_showNPCui; 
-
 enum InputCommands {
 	NONE,
 	MOVE_FORWARD,
