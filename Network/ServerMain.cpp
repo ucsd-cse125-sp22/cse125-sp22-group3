@@ -11,8 +11,8 @@ inline int ServerMain()
 	Player swainky{CHAR_SWAINKY};
 
 
-	//NPC fish{ CHAR_NPC };
-	NPC fish{ WORLD_PLOT_RED }; // TODO: Ask Cynthia how to import default animations
+	NPC fish{ CHAR_NPC };
+	//NPC fish{ WORLD_PLOT_RED }; // TODO: Ask Cynthia how to import default animations
 
 	int i = 1;
 	Vegetable cabbage{ VegetableType::CABBAGE, VEG_CABBAGE };

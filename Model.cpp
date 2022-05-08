@@ -24,8 +24,15 @@ void Model::constructorHelper(ModelEnum thisModel) {
 	model = thisModel;
 
 	// Set current animation mode
-	last = IDLE;
-	curr = IDLE;
+	if (thisModel == CHAR_NPC) {
+		last = DANCE;
+		curr = DANCE;
+	}
+
+	else {
+		last = IDLE;
+		curr = IDLE;
+	}
 
 	// Load model at file path
 	Assimp::Importer importer;
