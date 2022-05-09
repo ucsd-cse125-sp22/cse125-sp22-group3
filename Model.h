@@ -121,6 +121,11 @@ private:
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},
 	};
 
+	std::map<ModelEnum, std::string> particleTextures = {
+		{PARTICLE_DUST, "dust"},
+		{PARTICLE_GLOW, "glow"}
+	};
+
 	// Get previous and current blending
 	AniMode curr;
 	AniMode last;

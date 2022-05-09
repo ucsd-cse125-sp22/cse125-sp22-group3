@@ -114,12 +114,6 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
-	// particle textures
-	std::map<ModelEnum, std::string> particleTextures = {
-		{PARTICLE_DUST, "dust"},
-		{PARTICLE_GLOW, "glow"}
-	};
-
 	// Has materials
 	bool hasMaterials = false;
 
@@ -270,7 +264,6 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	std::cout << filename << std::endl; 
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 
@@ -310,14 +303,13 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 }
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
-	if (hasAni) {
-		//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
-		curr_time = glfwGetTime();
-		float delta = curr_time - last_time;
-		fixed_time += delta * anim_speed;
+	//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
+	curr_time = glfwGetTime();
+	float delta = curr_time - last_time;
+	fixed_time += delta * anim_speed;
 
+	if (hasAni) {
 		CalculateBoneTransform(fixed_time);
-		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -329,9 +321,18 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 	else {
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, shader);
+			if (particleTextures.find(model) == particleTextures.end()) {
+				mesh.draw(view, projection, parent, shader);
+			}
+
+			
+			else {
+				mesh.draw(view, projection, parent, fixed_time, shader);
+			}
 		}
 	}
+
+	last_time += delta;
 }
 
 void Model::draw(glm::mat4 parent, GLuint shader) {

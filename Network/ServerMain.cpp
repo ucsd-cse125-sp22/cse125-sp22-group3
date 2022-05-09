@@ -47,7 +47,7 @@ inline int ServerMain()
 	*/
 
 	World world{ WORLD_MAP };
-	Particle glow{ PARTICLE_GLOW };
+	Particle glow{ PARTICLE_DUST };
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	//Plot plot{WORLD_PLOT};

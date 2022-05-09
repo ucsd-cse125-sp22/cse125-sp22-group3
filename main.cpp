@@ -46,7 +46,14 @@ void setup_opengl_settings()
 	glDepthFunc(GL_LEQUAL);
 
 	// Set polygon drawing mode to fill front and back of each polygon.
+	/*
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	*/
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
 
 	// Set clear color to black.
 	glClearColor(212.f/255, 242.f/255, 148.f/255, 1.0);
@@ -84,10 +91,10 @@ void preload_texture_files() {
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
-	int size = PARTICLE_GLOW - CHAR_BUMBUS+2; 
+	int size = PARTICLE_DUST - CHAR_BUMBUS+2; 
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image 
-	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
+	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_DUST; i = ModelEnum(i + 1)) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 		tmp = Model(i); 
 		progress++;
@@ -266,8 +273,10 @@ int main(int argc, char* argv[])
 						curr_model.anim_speed = 1;
 					}
 					
-					curr_model.setAnimationMode(model_info.modelAnim);
-					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+					if (Window::modelShader[model_info.model] != Window::particleShaderProgram) {
+						curr_model.setAnimationMode(model_info.modelAnim);
+						curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+					}
 				}
 
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
