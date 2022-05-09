@@ -52,9 +52,9 @@ inline int ServerMain()
 
 	//Plot plot{WORLD_PLOT};
 	plotRed.SetPosition({ 80,-5,0 });
-	plotBlue.SetPosition({ 80,-5,10 });
+	plotBlue.SetPosition({ 80,-5,-20 });
 	plotYellow.SetPosition({ 80,-5,20 });
-	plotGreen.SetPosition({ 80,-5,30 });
+	plotGreen.SetPosition({ 80,-5,40 });
 	fish.SetWorldPosition({ 100,30,100 });
 	
 	bumbus.SetWorldPosition({ -20, 30, 0 });
