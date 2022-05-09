@@ -27,17 +27,13 @@ void PhysicsEngine::RemovePhysObject(PhysicsObject* phys_object)
 	//TODO fix this
 	if (phys_object->GetColliders()[0]->GetColliderIsStatic())
 	{
-		for (PhysicsObject* phys_object: static_collidables_) {
-			auto iter = std::find(static_collidables_.begin(), static_collidables_.end(), phys_object);
-			static_collidables_.erase(iter);
-		}
+		auto iter = std::find(static_collidables_.begin(), static_collidables_.end(), phys_object);
+		static_collidables_.erase(iter);
 	}
 	else
 	{
-		for (PhysicsObject* phys_object: moving_collidables_) {
-			auto iter = std::find(moving_collidables_.begin(), moving_collidables_.end(), phys_object);
-			moving_collidables_.erase(iter);
-		}
+		auto iter = std::find(moving_collidables_.begin(), moving_collidables_.end(), phys_object);
+		moving_collidables_.erase(iter);
 	}
 }
 

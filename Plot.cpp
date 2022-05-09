@@ -89,8 +89,6 @@ void Plot::OnInteract(Player* player) {
 			// Remove the seed
 			VegetableType veggieType = GetPlantedVegetable();
 			auto seed_ = dynamic_cast<GameEntity*>(seed);
-			auto seed_1 = dynamic_cast<PhysicsObject*>(seed);
-		
 
 			Vegetable* veggie = nullptr;
 			// Spawn the correct vegetable on the player
@@ -99,7 +97,6 @@ void Plot::OnInteract(Player* player) {
 			GameManager::AddEntities({ veggie });
 			if (seed_ != nullptr) {
 				GameManager::RemoveEntities({ seed_ });
-				GameManager::RemovePhysicsObjects({ seed_1 });
 				SetPlantedVegetable(nullptr);
 			}
 			player->SetHoldEntity(veggie);

@@ -17,7 +17,9 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 }
 
 Seed::~Seed() {
-	//free(collider_);
+	delete collider_;
+	delete translate;
+	delete translate3D;
 }
 
 

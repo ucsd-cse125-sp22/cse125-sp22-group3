@@ -8,6 +8,7 @@ class ColliderCircle : public Collider
 public:
     ColliderCircle();
     ColliderCircle(glm::vec2 center, float radius, bool is_static = true);
+    ~ColliderCircle();
 
     glm::vec2 center{};
     float radius{};

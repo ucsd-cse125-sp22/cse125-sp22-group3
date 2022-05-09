@@ -10,6 +10,7 @@ ColliderCircle::ColliderCircle(const glm::vec2 center, const float radius, const
     this->radius = radius;
     this->collider_is_static = is_static;
 }
+ColliderCircle::~ColliderCircle() = default;
 
 bool ColliderCircle::CollidesWith(Collider* other_collider) const
 {

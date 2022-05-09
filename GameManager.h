@@ -22,7 +22,6 @@ public:
     void FixedUpdate() override;
     static void AddEntities(std::vector<GameEntity*> entities);
     static void RemoveEntities(std::vector<GameEntity*> entities);
-    static void RemovePhysicsObjects(std::vector<PhysicsObject*> physics_objects);
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);

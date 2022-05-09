@@ -60,15 +60,13 @@ void GameManager::AddEntities(std::vector<GameEntity*> entities)
 
 void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 	for (GameEntity* entity : entities) {
+		//delete entity; TODO :/
 		auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
 		GameManager::game_entities.erase(iter);
-	}
-}
 
-void GameManager::RemovePhysicsObjects(std::vector<PhysicsObject*> phys_objects) {
-	for (PhysicsObject* phys_obj : physics.moving_collidables_) {
-		auto iter = std::find(physics.moving_collidables_.begin(), physics.moving_collidables_.end(), phys_obj);
-		physics.moving_collidables_.erase(iter);
+		if(auto phys_object = dynamic_cast<PhysicsObject*>(entity)) {
+			physics.RemovePhysObject(phys_object);
+		}
 	}
 }
 

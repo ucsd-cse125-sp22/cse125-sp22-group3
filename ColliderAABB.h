@@ -7,6 +7,7 @@ class ColliderAABB final : public Collider
 public:
     ColliderAABB();
     ColliderAABB(const glm::vec2& min, const glm::vec2& max, bool is_static = true);
+    ~ColliderAABB() = default;
 
     glm::vec2 minimum{};
     glm::vec2 maximum{};

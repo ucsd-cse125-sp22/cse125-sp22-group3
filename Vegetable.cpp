@@ -18,10 +18,9 @@ Vegetable::Vegetable(VegetableType vegetable, ModelEnum curr) {
 }
 
 Vegetable::~Vegetable() {
-	//free(translate);
-	//free(translate3D);
-	//free(collider_);
-	//delete(collider_);
+	delete collider_;
+	delete translate;
+	delete translate3D;
 }
 
 void Vegetable::FixedUpdate()

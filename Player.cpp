@@ -156,8 +156,6 @@ void Player::Buy(VegetableType bought_vegetable) {
 }
 
 void Player::Sell(){
-	
-	
 	if (!isHolding)
 		return;
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
@@ -167,12 +165,15 @@ void Player::Sell(){
 			return;
 		VeggieInfo veggie = veggie_map[vegetable->type];
 		curr_balance += veggie.sell_price;
-		Drop();
-		if (auto vegetable_ = dynamic_cast<GameEntity*>(entityHeld))
-			GameManager::RemoveEntities({ vegetable_ });
-		//if (auto vegetable_1 = dynamic_cast<PhysicsObject*>(entityHeld))
-		//	GameManager::RemovePhysicsObjects({vegetable_1});
-		
+
+		//Drop but with remove :)))
+		auto holdable = dynamic_cast<Holdable*>(entityHeld);
+		if (holdable != nullptr) {
+			holdable->OnDrop();
+		}
+		GameManager::RemoveEntities({ entityHeld });
+		entityHeld = nullptr;
+		isHolding = false;
 	}
 	//printf("SELLING VEGGIE %f\n", curr_balance);
 }
