@@ -69,7 +69,6 @@ void GameManager::RemovePhysicsObjects(std::vector<PhysicsObject*> phys_objects)
 	for (PhysicsObject* phys_obj : physics.moving_collidables_) {
 		auto iter = std::find(physics.moving_collidables_.begin(), physics.moving_collidables_.end(), phys_obj);
 		physics.moving_collidables_.erase(iter);
-		//GameManager::physics.RemovePhysObject(iter);
 	}
 }
 
