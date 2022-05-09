@@ -7,6 +7,7 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
+	translate3D = new glm::vec3(0.f, 0.f, 0.f);
 	rotation = glm::mat4(1);
 
 	collider_ = new ColliderCircle(glm::vec2(0, 0), 5, false);
@@ -39,10 +40,12 @@ glm::mat4 Seed::GetParentTransform()
 ModelEnum Seed::GetModelEnum() { return model; }
 AniMode Seed::GetAniMode() { return modelAnim; }
 
-void Seed::SetModel(ModelEnum newModel, glm::vec2 pos)
+void Seed::SetModel(ModelEnum newModel, glm::vec3 pos)
 {
 	model = newModel;
-	*translate = pos;
+	*translate = glm::vec2(pos.x, pos.z);
+	*translate3D = pos;
+	//*translate3D = pos;
 	// rotate 90 degrees towards viewer
 	rotation = glm::rotate(glm::mat4(1.0f), 3.14f, glm::vec3(0,1,0));
 	//setModelChanged(true);
@@ -60,12 +63,13 @@ glm::vec2* Seed::GetWorldPosition()
 
 glm::vec3 Seed::GetPosition() const
 {
-	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
+	return glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2]);
 }
 
 void Seed::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
+	*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }
 
 void Seed::SetRotation(glm::mat4 rotation)
@@ -74,7 +78,7 @@ void Seed::SetRotation(glm::mat4 rotation)
 }
 
 glm::mat4 Seed::GetTranslation() {
-	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
+	return glm::translate(glm::vec3((*translate3D)[0],(*translate3D)[1], -(*translate3D)[2]));
 }
 
 glm::mat4 Seed::GetRotation() const
@@ -94,6 +98,16 @@ bool Seed::getIsReady()
 	return false;
 }
 
+void Seed::SetHeight(float height)
+{
+	(*translate3D)[1] = height;
+}
+
+float Seed::GetHeight()
+{
+	return (*translate3D)[1];
+}
+
 bool Seed::CanInteract(Player* player) { 
 	return !player->GetIsHolding() && !isPlanted; 
 }
@@ -102,6 +116,7 @@ void Seed::OnInteract(Player* player) {
 	if (holding_player != nullptr) {
 		holding_player->Drop();
 	}
+	SetHeight(pickupHeight);
 	player->SetHoldEntity(this);
 	player->SetTriggeringEntity(nullptr);
 
@@ -110,9 +125,12 @@ void Seed::OnInteract(Player* player) {
 }
 
 void Seed::OnDrop() { 
+	if(!isPlanted)
+		SetHeight(dropHeight);
 	isHeld = false;
 	holding_player = nullptr;
 }
+
 
 glm::mat4 Seed::GetHoldTransform() { 
 	return hold_transformation_; 
@@ -125,7 +143,7 @@ void Seed::SetPlanted()
 }
 
 glm::mat4 Seed::GetTransformation() {
-	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
+	const glm::mat4 trans = glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2])) * rotation;
 	return isHeld ? trans * hold_transformation_ : trans;
 }
 

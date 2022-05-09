@@ -51,10 +51,10 @@ inline int ServerMain()
 	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	//Plot plot{WORLD_PLOT};
-	plotRed.SetPosition({ 80,5,0 });
-	plotBlue.SetPosition({ 80,5,10 });
-	plotYellow.SetPosition({ 80,5,20 });
-	plotGreen.SetPosition({ 80,5,30 });
+	plotRed.SetPosition({ 80,-5,0 });
+	plotBlue.SetPosition({ 80,-5,10 });
+	plotYellow.SetPosition({ 80,-5,20 });
+	plotGreen.SetPosition({ 80,-5,30 });
 	fish.SetWorldPosition({ 100,30,100 });
 	
 	bumbus.SetWorldPosition({ -20, 30, 0 });

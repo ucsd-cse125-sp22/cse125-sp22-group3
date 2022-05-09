@@ -5,6 +5,7 @@ Plot::Plot(ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
+	translate3D = new glm::vec3(0.f, 0.f, 0.f);
 	rotation = glm::mat4(1);
 	
 	// Change to AABB later
@@ -20,7 +21,7 @@ void Plot::FixedUpdate() {
 }
 
 glm::mat4 Plot::GetTransformation() {
-	const glm::mat4 trans = glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
+	const glm::mat4 trans = glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2])) * rotation;
 	return trans;
 }
 
@@ -33,7 +34,7 @@ glm::vec2* Plot::GetWorldPosition() {
 }
 
 glm::vec3 Plot::GetPosition() const {
-	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
+	return glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[1]);
 }
 
 glm::mat4 Plot::GetParentTransform()
@@ -46,6 +47,7 @@ AniMode Plot::GetAniMode() { return modelAnim; }
 void Plot::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
+	*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }
 
 void Plot::SetRotation(glm::mat4 rotation) {
@@ -116,7 +118,7 @@ VegetableType Plot::GetPlantedVegetable() {
 	return plantedVegetable->GetType();
 }
 
-glm::vec2 Plot::GetTranslate()
+glm::vec3 Plot::GetTranslate()
 {
-	return *translate;
+	return *translate3D;
 }

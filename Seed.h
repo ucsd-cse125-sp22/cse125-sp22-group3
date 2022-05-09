@@ -14,8 +14,12 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		bool isPlanted = false;
 		// Transformations
 		glm::vec2* translate = nullptr;
+		glm::vec3* translate3D = nullptr;
 		glm::mat4 rotation{};
 		glm::mat4 hold_transformation_{};
+
+		float pickupHeight = -1;
+		float dropHeight = -4;
 
 	public:
 		AniMode modelAnim = NO_ANI;
@@ -44,7 +48,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		AniMode GetAniMode() override;
 
 		// Information
-		void SetModel(ModelEnum newModel, glm::vec2 pos);
+		void SetModel(ModelEnum newModel, glm::vec3 pos);
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
 		glm::vec3 GetPosition() const;
@@ -59,6 +63,11 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		double plantedTime = 0;
 		bool getIsReady();
 		bool isHarvestable = false;
+
+		// translation for player interact;
+		
+		void SetHeight(float height);
+		float GetHeight();
 
 		
 };

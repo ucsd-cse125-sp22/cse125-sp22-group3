@@ -44,9 +44,13 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		bool isHeld = false;
 		Player* holding_player = nullptr;
 
+        void SetHeight(float height);
+        float GetHeight();
+
 	private:
 		// Transformations
 		glm::vec2* translate = nullptr;
+        glm::vec3* translate3D = nullptr;
         glm::mat4 rotation{};
 		glm::mat4 hold_transformation_{};
 
@@ -58,5 +62,8 @@ class Vegetable : public Interactable, public PhysicsObject, public Drawable, pu
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
         glm::mat4 GetTranslation();
+
+        float pickupHeight = -1;
+        float dropHeight = -3;
 
 };

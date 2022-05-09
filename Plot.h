@@ -33,7 +33,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		bool isPlanted = false;
 		void SetPlantedVegetable(Seed* seed);
 		VegetableType GetPlantedVegetable();
-		glm::vec2 GetTranslate();
+		glm::vec3 GetTranslate();
 
 
 		// Interactable
@@ -46,6 +46,7 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 	private:
 		// Transformations
 		glm::vec2* translate = nullptr;
+		glm::vec3* translate3D = nullptr;
 		glm::mat4 rotation{};
 
 		// Current model to display

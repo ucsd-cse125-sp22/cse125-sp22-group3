@@ -248,16 +248,16 @@ void Player::MoveHeld() {
 	if (isHolding) {
 		if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
 		
-			const glm::vec4 vegetableLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+			const glm::vec4 vegetableLocation = glm::vec4(0, 0, -veggieHeldDist, 1) * GetRotation();
 			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
-			vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), 0, (-1) * translate->y - (vegetableLocation.z)));
+			vegetable->SetPosition(glm::vec3(translate->x + (vegetableLocation.x), vegetable->GetHeight(), (-1) * translate->y - (vegetableLocation.z)));
 			vegetable->SetRotation(held_rotation);
 		}
 		else if (auto seed = dynamic_cast<Seed*>(entityHeld)) {
 
-			const glm::vec4 seedLocation = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+			const glm::vec4 seedLocation = glm::vec4(0, 0, -seedHeldDist, 1) * GetRotation();
 			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
-			seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), 0, (-1) * translate->y - (seedLocation.z)));
+			seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), seed->GetHeight(), (-1) * translate->y - (seedLocation.z)));
 			seed->SetRotation(held_rotation);
 		}
 	}

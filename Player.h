@@ -20,6 +20,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
 		float max_sprint_velocity_ = 30.f;
 		float entityHeldDist = 2.5f; // distance of entity from player
+		float seedHeldDist = 2.5f; // distance of entity from player
+		float veggieHeldDist = 3.f; // distance of entity from player
 		glm::vec2 curr_vel_ = glm::vec2(0,0);
 
 		// Current model to display
