@@ -62,7 +62,7 @@ inline int ServerMain()
 	swainky.SetWorldPosition({ 0, 30, -20 });
 	gilman.SetWorldPosition({ 0, 30, 20 });
 
-	GameManager game({ &pogo,&bumbus, &gilman, &swainky });
+	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
 
 	world.SetPosition({ 0, 0, -5.0f });

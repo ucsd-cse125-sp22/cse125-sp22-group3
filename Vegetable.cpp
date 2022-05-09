@@ -17,7 +17,12 @@ Vegetable::Vegetable(VegetableType vegetable, ModelEnum curr) {
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
 }
 
-Vegetable::~Vegetable() {}
+Vegetable::~Vegetable() {
+	//free(translate);
+	//free(translate3D);
+	//free(collider_);
+	//delete(collider_);
+}
 
 void Vegetable::FixedUpdate()
 {

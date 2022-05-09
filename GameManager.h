@@ -22,6 +22,7 @@ public:
     void FixedUpdate() override;
     static void AddEntities(std::vector<GameEntity*> entities);
     static void RemoveEntities(std::vector<GameEntity*> entities);
+    static void RemovePhysicsObjects(std::vector<PhysicsObject*> physics_objects);
 
     // Player Properties
     void SetPlayerInput(glm::vec2 move_input, int player_index);
@@ -41,6 +42,8 @@ public:
 
     // Game entities in the world
     static std::vector<GameEntity*> game_entities;
+
+    static std::vector<PhysicsObject*> physics_objects;
 
     // FixedDeltaTime is the time between logic updates on the server
     // Typically 30ms, but you never know

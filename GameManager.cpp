@@ -7,6 +7,8 @@ std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::ste
 
 std::vector<GameEntity*> GameManager::game_entities = {};
 PhysicsEngine GameManager::physics = PhysicsEngine();
+std::vector<PhysicsObject*> GameManager::physics_objects = {};
+
 
 GameManager::GameManager()
 {
@@ -26,7 +28,7 @@ GameManager::GameManager(std::vector<Player*> players)
 	}
 
 	// Instantiate Physics Engine
-	std::vector<PhysicsObject*> physics_objects;
+	//std::vector<PhysicsObject*> physics_objects;
 	for (Player* player : players_) {
 		physics_objects.push_back(player);
 	}
@@ -39,6 +41,8 @@ void GameManager::FixedUpdate()
 	for (GameEntity* entity : GameManager::game_entities) {
 		entity->FixedUpdate();
 	}
+
+	printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions
 	GameManager::physics.Compute();
@@ -58,7 +62,14 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 	for (GameEntity* entity : entities) {
 		auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
 		GameManager::game_entities.erase(iter);
-		//free(entity);
+	}
+}
+
+void GameManager::RemovePhysicsObjects(std::vector<PhysicsObject*> phys_objects) {
+	for (PhysicsObject* phys_obj : physics.moving_collidables_) {
+		auto iter = std::find(physics.moving_collidables_.begin(), physics.moving_collidables_.end(), phys_obj);
+		physics.moving_collidables_.erase(iter);
+		//GameManager::physics.RemovePhysObject(iter);
 	}
 }
 

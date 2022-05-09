@@ -52,6 +52,8 @@ glm::vec3 NPC::GetPosition() const
 
 void NPC::SetWorldPosition(glm::vec3 position)
 {
+	*translate = glm::vec2(position[0], -position[2]);
+	//*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }
 
 bool NPC::CanInteract(Player* player)

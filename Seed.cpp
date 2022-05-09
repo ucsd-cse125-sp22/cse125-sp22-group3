@@ -16,7 +16,9 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
 }
 
-Seed::~Seed() {}
+Seed::~Seed() {
+	//free(collider_);
+}
 
 
 void Seed::FixedUpdate()

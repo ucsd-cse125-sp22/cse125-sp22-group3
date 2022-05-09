@@ -163,10 +163,15 @@ void Player::Sell(){
 	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
 		//SetTriggeringEntity(nullptr);
+		if (vegetable == nullptr)
+			return;
 		VeggieInfo veggie = veggie_map[vegetable->type];
 		curr_balance += veggie.sell_price;
 		Drop();
-		GameManager::RemoveEntities({ vegetable });
+		if (auto vegetable_ = dynamic_cast<GameEntity*>(entityHeld))
+			GameManager::RemoveEntities({ vegetable_ });
+		//if (auto vegetable_1 = dynamic_cast<PhysicsObject*>(entityHeld))
+		//	GameManager::RemovePhysicsObjects({vegetable_1});
 		
 	}
 	//printf("SELLING VEGGIE %f\n", curr_balance);

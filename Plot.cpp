@@ -89,16 +89,19 @@ void Plot::OnInteract(Player* player) {
 			// Remove the seed
 			VegetableType veggieType = GetPlantedVegetable();
 			auto seed_ = dynamic_cast<GameEntity*>(seed);
-			if (seed_ != nullptr) {
-				GameManager::RemoveEntities({ seed_ });
-				SetPlantedVegetable(nullptr);
-			}
+			auto seed_1 = dynamic_cast<PhysicsObject*>(seed);
+		
 
 			Vegetable* veggie = nullptr;
 			// Spawn the correct vegetable on the player
 			VeggieInfo veggie_info = veggie_map[seed->GetType()];
 			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
 			GameManager::AddEntities({ veggie });
+			if (seed_ != nullptr) {
+				GameManager::RemoveEntities({ seed_ });
+				GameManager::RemovePhysicsObjects({ seed_1 });
+				SetPlantedVegetable(nullptr);
+			}
 			player->SetHoldEntity(veggie);
 			player->SetTriggeringEntity(nullptr);
 		}
