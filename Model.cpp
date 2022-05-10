@@ -260,7 +260,6 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	std::cout << filename << std::endl; 
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 

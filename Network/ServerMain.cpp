@@ -47,6 +47,7 @@ inline int ServerMain()
 	*/
 
 	World world{ WORLD_MAP };
+	World can{ WATERING_CAN };
 	Particle glow{ PARTICLE_GLOW };
 
 	//Plot plot{WORLD_PLOT};
@@ -64,7 +65,7 @@ inline int ServerMain()
 
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
 
 	world.SetPosition({ 0, 0, -5.0f });
 

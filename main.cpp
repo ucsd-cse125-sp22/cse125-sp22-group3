@@ -170,7 +170,6 @@ int main(int argc, char* argv[])
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
 
-
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 	//std::thread preload_thread(preload_texture_files); 
 	//GUI::renderLoadScene(window);

@@ -114,6 +114,10 @@ bool Window::initializeObjects()
 	{ VEG_RADISH, animationShaderProgram  },
 	{ VEG_TOMATO, animationShaderProgram  },
 
+	{ WATERING_CAN, animationShaderProgram  },
+	{ POISON, animationShaderProgram  },
+	{ SHOVEL, animationShaderProgram  },
+
 	{ WORLD_PLOT_RED, animationShaderProgram  },
 	{ WORLD_PLOT_BLUE, animationShaderProgram },
 	{ WORLD_PLOT_GREEN, animationShaderProgram  },
