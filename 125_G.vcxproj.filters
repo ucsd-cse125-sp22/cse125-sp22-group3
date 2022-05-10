@@ -88,6 +88,7 @@
     <ClInclude Include="World.h" />
     <ClInclude Include="FBO.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="ConfigReader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

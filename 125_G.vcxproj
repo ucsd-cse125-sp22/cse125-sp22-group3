@@ -225,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ColliderAABB.h" />
+    <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="FBO.h" />
     <ClInclude Include="glm.h" />
     <ClInclude Include="Holdable.h" />
