@@ -66,6 +66,7 @@ public:
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
+	static void createStamina();
 };
 
 

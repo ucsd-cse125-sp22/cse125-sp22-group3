@@ -92,8 +92,6 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
 bool GUI::renderUI() {
-	
-
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -104,7 +102,7 @@ bool GUI::renderUI() {
 	//	rack_image_idx = 0;
 	//}
 
-	
+
 	/* build scoreboard */
 	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
@@ -154,15 +152,17 @@ bool GUI::renderUI() {
 		ImGui::End();
 	}
 	/*end of seed sale page*/
-	createMiniMap(); 
+	createMiniMap();
+	stamina_percent = 0.85; //TODO hardcode stamina percentage
+	createStamina();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return GUI_showNPCui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
-void GUI::cleanUp() {
-	// Cleanup ImGui
+void GUI::cleanUp(){
+// Cleanup ImGui
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
@@ -330,68 +330,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	return true; 
 }
 
-//bool GUI::renderLoadScene(GLFWwindow* window) {
-//	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
-//	int idx = 0; 
-//	bool increase = true; 
-//	ImGuiWindowFlags window_flags = 0;
-//	window_flags |= ImGuiWindowFlags_NoBackground;
-//	window_flags |= ImGuiWindowFlags_NoTitleBar;
-//	window_flags |= ImGuiWindowFlags_NoResize;
-//	window_flags |= ImGuiWindowFlags_NoMove;
-//	window_flags |= ImGuiWindowFlags_NoScrollbar;
-//
-//	while (!glfwWindowShouldClose(my_window)) {
-//		
-//		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
-//			increase = !increase; 
-//		}
-//
-//		glfwPollEvents();
-//
-//		ImGui_ImplOpenGL3_NewFrame();
-//		ImGui_ImplGlfw_NewFrame();
-//		ImGui::NewFrame();
-//
-//		int width, height;
-//		glfwGetWindowSize(my_window, &width, &height);
-//		float display_ratio = 0.4f * width / 1280;
-//		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
-//		ImGui::SetNextWindowSize(size);
-//		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
-//		ImGui::Begin("Loading Screen", NULL, window_flags);
-//		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
-//		ImGui::End();
-//
-//		// Rendering
-//		int display_w, display_h;
-//		glfwGetFramebufferSize(my_window, &display_w, &display_h);
-//		glViewport(0, 0, display_w, display_h);
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//		ImGui::Render();
-//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-//		glfwSwapBuffers(my_window);
-//		
-//		this_thread::sleep_for(chrono::milliseconds(300));
-//
-//		//handling the last image; 
-//		if (idx == 7) {
-//			break; 
-//		}else if (!show_loading && idx == 6) {
-//			idx++;
-//			continue; 
-//		}
-//
-//		if (increase) {
-//			idx++;
-//		}else {
-//			idx--; 
-//		}
-//
-//	}
-//	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
-//	return true; 
-//}
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -435,6 +373,34 @@ namespace ImGui {
 		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
 		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
 		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
+		return true;
+	}
+
+	bool ReverseBufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = size_arg;
+		size.x -= style.FramePadding.x * 2;
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+
+		// Render
+		const float circleStart = size.y * 0.7f;
+		const float circleEnd = size.y;
+		const float circleWidth = circleEnd - circleStart;
+
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, pos.y + circleStart), bg_col,ImDrawFlags_RoundCornersAll);
+		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1-value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col,ImDrawFlags_RoundCornersAll);
 		return true;
 	}
 
@@ -490,10 +456,10 @@ bool GUI::ShowGUI(bool show)
 */
 void GUI::createMiniMap() {
 	//get size of minimap 
-	float world_dim = 500.0f;
-	int width = 1200;
-	int height = 1200;
-	float padding = 32.0f;
+	float world_dim = 400.0f;
+	int width = 1000;
+	int height = 1000;
+	float padding = 64.0f * display_ratio;
 	//size of minimap 
 	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
 
@@ -516,6 +482,24 @@ void GUI::createMiniMap() {
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, icon_size);
 	}
 	ImGui::End();
+}
+
+void GUI::createStamina() {
+	bool bptr;
+	int width = 160;
+	int height = 1600; 
+	float padding = 64.0f * display_ratio;
+	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 80);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+
+	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
+	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent, size, bg, col);
+	ImGui::End();
+
 }
 
 
