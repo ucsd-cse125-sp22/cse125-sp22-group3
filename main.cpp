@@ -3,6 +3,7 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
+#include "ConfigReader.h"
 #include <filesystem>
 #include "Model.h"
 #include <thread>         
@@ -10,8 +11,6 @@
 #include <map>
 
 namespace fs = std::filesystem;
-
-#define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
 
 bool GUI::show_loading; 
 
@@ -165,7 +164,8 @@ int main(int argc, char* argv[])
 	GUI::initializeImage();
 
 	// Initialize network client interface
-	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
+	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("server.cfg");
+	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
