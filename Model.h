@@ -98,6 +98,10 @@ private:
 		{VEG_RADISH, "models/radish/radish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
 
+		{POISON, "models/poison/poison.fbx"},
+		{WATERING_CAN, "models/wateringCan/wateringCan.fbx"},
+		{SHOVEL, "models/shovel/shovel.fbx"},
+
 		{WORLD_PLOT_RED, "models/plots/plotRed.fbx"},
 		{WORLD_PLOT_BLUE, "models/plots/plotBlue.fbx"},
 		{WORLD_PLOT_GREEN, "models/plots/plotGreen.fbx"},

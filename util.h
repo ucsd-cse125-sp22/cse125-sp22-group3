@@ -44,6 +44,10 @@ enum ModelEnum
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
 
+	POISON,
+	WATERING_CAN,
+	SHOVEL,
+
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
 	WORLD_SEED_CORN,
@@ -64,11 +68,7 @@ enum ModelEnum
 	WORLD_MAP,
 
 	PARTICLE_GLOW,
-	PARTICLE_DUST,
-
-	POISON,
-	WATERING_CAN,
-	SHOVEL
+	PARTICLE_DUST
 };
 
 enum AniMode {
