@@ -178,8 +178,11 @@ int main(int argc, char* argv[])
 	//loadingThread.join(); 
 	load_models(window); 
 	Window::show_GUI = false; 
+
+	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
 		{
+			num_clients = cw_packet.max_client;
 			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
 		});
 	fprintf(stderr, "All players connected, starting game\n");
@@ -228,7 +231,7 @@ int main(int argc, char* argv[])
 					GUI::ShowGUI(false);
 				}
 
-				for (int i = 0; i < NUM_CLIENTS; i++) {
+				for (int i = 0; i < num_clients; i++) {
 					GUI::scoreboard_data[i]=sheader->balance[i];
 				}
 
