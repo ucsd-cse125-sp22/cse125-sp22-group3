@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "../ConfigReader.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +17,9 @@
 
 Server::Server(void)
 {
+	static std::unordered_map<std::string, std::string> server_config = ConfigReader::readConfigFile("server.cfg");
+	num_clients = stoi(server_config["num_clients"]);
+
 	// initialize Winsock 2.2
 	WSADATA wsaData;
 	int startupStatus = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -159,8 +163,8 @@ std::string Server::getRemoteAddressString(SOCKET remote_socket) {
 //auto begin_time = std::chrono::steady_clock::now();
 void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
 {
-	fprintf(stderr, "Expecting %d clients\n", NUM_CLIENTS);
-	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+	fprintf(stderr, "Expecting %d clients\n", num_clients);
+	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
 begin_loop_accept_client:
 		SOCKET client_socket = INVALID_SOCKET;
 		client_socket = accept(ListenSocket, NULL, NULL);
@@ -178,7 +182,7 @@ begin_loop_accept_client:
 		}
 
 		std::string client_addr_str = getRemoteAddressString(client_socket);
-		fprintf(stderr, "\tAccepted client connection from %s (%d/%d)\n", client_addr_str.c_str(), client_idx + 1, NUM_CLIENTS);
+		fprintf(stderr, "\tAccepted client connection from %s (%d/%d)\n", client_addr_str.c_str(), client_idx + 1, num_clients);
 
 		// disable Nagle on the client socket
 		char value = 1;
@@ -189,7 +193,7 @@ begin_loop_accept_client:
 		// send a message to connected clients, updating about join status
 		ClientWaitPacket cw_packet;
 		cw_packet.client_joined = ClientSocketVec.size();
-		cw_packet.max_client = NUM_CLIENTS;
+		cw_packet.max_client = num_clients;
 
 		char wait_packet_data[sizeof(ClientWaitPacket)];
 		cw_packet.serializeTo(wait_packet_data);
@@ -204,7 +208,7 @@ main_loop_label:
 	while (true) {
 		// receive data from clients
 		std::vector<ClientPacket> client_packet_vec;
-		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
 			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
 				continue;
 			}
@@ -264,7 +268,7 @@ main_loop_label:
 		// calls passed-in code
 		std::vector<std::pair<char*, int>> out_vec = main_code(client_packet_vec);
 
-		for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
 			if (ClientSocketVec[client_idx] == INVALID_SOCKET) {
 				free(out_vec[client_idx].first);
 				continue;

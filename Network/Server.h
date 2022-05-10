@@ -5,12 +5,14 @@
 #include "NetworkPacket.h"
 #include "../GameManager.h"
 
+#define DEFAULT_NUM_CLIENTS 4
+
 class Server
 {
 private:
 	SOCKET ListenSocket = INVALID_SOCKET;
 	std::vector<SOCKET> ClientSocketVec;
-
+	
 	void printActiveAdapterAddresses(void);
 	std::string getRemoteAddressString(SOCKET remote_socket);
 
@@ -18,5 +20,7 @@ public:
 	Server(void);
 	~Server(void);
 	void mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code);
+
+	int num_clients = DEFAULT_NUM_CLIENTS;
 };
 
