@@ -48,7 +48,6 @@ inline int ServerMain()
 
 	World world{ WORLD_MAP };
 	Particle glow{ PARTICLE_GLOW };
-	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	//Plot plot{WORLD_PLOT};
 	plotRed.SetPosition({ 80,-5,0 });
@@ -61,8 +60,10 @@ inline int ServerMain()
 	pogo.SetWorldPosition({ 20, 30, 0 });
 	swainky.SetWorldPosition({ 0, 30, -20 });
 	gilman.SetWorldPosition({ 0, 30, 20 });
+	std::vector<Player*> all_players = { &pogo, &bumbus, &gilman, &swainky };
 
-	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
+	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
+	GameManager game(players);
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
 
 	world.SetPosition({ 0, 0, -5.0f });

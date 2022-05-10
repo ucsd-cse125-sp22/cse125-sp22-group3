@@ -88,13 +88,13 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 	}
 
 	std::vector<std::pair<char*, int>> out_vec;
-	for (int client_idx = 0; client_idx < NUM_CLIENTS; client_idx++) {
+	for (int client_idx = 0; client_idx < players_.size(); client_idx++) {
 		ServerHeader sheader{};
 		sheader.num_models = model_infos.size();
 		sheader.player_transform = players_[client_idx]->GetParentTransform();
 		sheader.player_sprinting = players_[client_idx]->sprint;
 		sheader.ui_open = players_[client_idx]->ui_open;
-		for (int i = 0; i < NUM_CLIENTS; i++) {
+		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
 		}
 
