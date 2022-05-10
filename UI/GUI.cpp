@@ -55,7 +55,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
-	picture_dir = "./UI/Pictures";
+	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
