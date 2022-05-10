@@ -47,6 +47,11 @@ void setup_opengl_settings()
 	// Set polygon drawing mode to fill front and back of each polygon.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	// Enable transparency for meshes
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+
 	// Set clear color to black.
 	glClearColor(212.f/255, 242.f/255, 148.f/255, 1.0);
 }

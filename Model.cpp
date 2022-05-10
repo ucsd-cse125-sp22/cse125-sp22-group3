@@ -114,10 +114,11 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
-	//std::cout << mesh->mName.C_Str() << std::endl;
-
 	// Has materials
 	bool hasMaterials = false;
+
+	// Is a particle
+	bool isParticle = false;
 
 	//std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
 
@@ -187,6 +188,7 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		// If it is, we are gonna add textures from its respective directory
 		else {
+			isParticle = true;
 			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
 			textures = particles;
 		}
@@ -194,6 +196,8 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	
 	ExtractBoneWeightForVertices(boneIds, weights, mesh, scene);
 	Mesh m = Mesh(pos, norms, uvs, indices, textures, boneIds, weights);
+
+	if (isParticle) { m.isParticle = true; }
 
 	return m;
 }
@@ -299,14 +303,13 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 }
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
-	if (hasAni) {
-		//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
-		curr_time = glfwGetTime();
-		float delta = curr_time - last_time;
-		fixed_time += delta * anim_speed;
+	//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
+	curr_time = glfwGetTime();
+	float delta = curr_time - last_time;
+	fixed_time += delta * anim_speed;
 
+	if (hasAni) {
 		CalculateBoneTransform(fixed_time);
-		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
@@ -318,9 +321,18 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 	else {
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, shader);
+			if (particleTextures.find(model) == particleTextures.end()) {
+				mesh.draw(view, projection, parent, shader);
+			}
+
+			
+			else {
+				mesh.draw(view, projection, parent, fixed_time, shader);
+			}
 		}
 	}
+
+	last_time += delta;
 }
 
 void Model::draw(glm::mat4 parent, GLuint shader) {

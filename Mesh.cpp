@@ -148,7 +148,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     // Draw the points 
     glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
 
-    
+
     // Check if vertices imported correctly
     // Set point size
     // glPointSize(10.0f);
@@ -156,7 +156,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     // Draw the points 
     // glDrawArrays(GL_POINTS, 0, vertices.size());
     // std::cout << vertices.size() << std::endl;
-    
+
 
     // Unbind the VAO and shader program
     glBindVertexArray(0);
@@ -164,11 +164,43 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint s
     glActiveTexture(GL_TEXTURE0);
 }
 
+void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float time, GLuint shader) {
+    glUseProgram(shader);
+
+
+    // Apply parent transformation
+    glm::mat4 m = parent * model;
+
+    int index = int(time * 15.0f) % textures.size();
+
+    // Bind current texture to animate
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(glGetUniformLocation(shader, "texture_diffuse1"), 0);
+    glBindTexture(GL_TEXTURE_2D, textures[index].id);
+    
+
+    // Get the shader variable locations and send the uniform data to the shader 
+    glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, false, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(m));
+    
+    // Bind the VAO
+    glBindVertexArray(VAO);
+
+    // Draw the points 
+    glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+
+    glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
+}
+
+
 void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vector<glm::mat4> transforms, GLuint shaderProgram) {
     // Actiavte the shader program 
     glUseProgram(shaderProgram);
-
-    glm::vec3 color = glm::vec3(0.5f, 0.5f, 0.5f);
 
     // Get textures from texture vector
             // bind appropriate textures
@@ -267,7 +299,8 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
 
     if (textures.size() > 0) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        if (isParticle) { glBindTexture(GL_TEXTURE_2D, textures[currentTextureIndex].id); }
+        else { glBindTexture(GL_TEXTURE_2D, textures[0].id); }
         glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
         glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
     }
@@ -293,7 +326,14 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
 
     if (textures.size() > 0) {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+
+        if (isParticle) {
+            glBindTexture(GL_TEXTURE_2D, textures[currentTextureIndex].id);
+        }
+
+        else {
+            glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        }
         glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
         glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
     }

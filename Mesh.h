@@ -55,8 +55,6 @@ class Mesh {
 		//weights from each bone
 		std::vector<glm::vec4> weights;
 
-		int ticksPerSecond = 25.0f;
-
 		// Buffers + Attribute pointers
 		GLuint VAO;
 		GLuint VBO, VBO_N, VBO_UV, VBO_BI, VBO_W, EBO;
@@ -68,6 +66,13 @@ class Mesh {
 		// true if mesh has texture - false otherwise
 		bool hasTexture;
 
+		// for particles only
+		int currentTextureIndex = 0;
+		float totalChange = 0.0f;
+
+		// is this mesh a particle?
+		bool isParticle = false;
+
 		// Constructor + Deconstructors
 		Mesh();
 
@@ -78,6 +83,7 @@ class Mesh {
 
 		// Render mesh
 		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, GLuint shader);
+		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, float time, GLuint shader);
 		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, std::vector<glm::mat4> transforms, GLuint shader);
 
 		// Render depth map

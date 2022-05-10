@@ -4,7 +4,7 @@ Particle::Particle(ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
-	rotation = glm::mat4(1); // TODO calculate rotation based on angle the camera is tilted
+	rotation = glm::rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
 Particle::~Particle() {}
