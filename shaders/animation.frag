@@ -13,6 +13,7 @@ in vec3 FragPos;
 in mat4 viewMat;
 
 uniform vec3 viewPos;
+uniform vec3 lightPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2DArray shadowMap;
 
@@ -25,7 +26,10 @@ uniform float cascadePlaneDistances[16];
 uniform float time;
 
 const vec4 day = vec4(0.8, 0.7, 0.6, 1.0);
-const vec4 night = vec4(0.141, 0.188, 0.658, 1.0);
+const vec4 night = vec4(0.0, 0.082, 0.341, 1.0);
+const vec4 sunset = vec4(0.956, 0.552, 0.262, 1.0);
+const vec4 sunrise = vec4(0.941, 0.415, 0.549, 1.0f);
+
 out vec4 fragColor;
 
 void main()
@@ -39,7 +43,6 @@ void main()
     }
 
     // Directional Light
-    vec3 lightPos = vec3(-2.0f, 2.0f, -1.0f);
     vec3 lightDir = normalize(lightPos);
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -118,10 +121,40 @@ void main()
     rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    // float interpolate = clamp((time - 26.0f) / 15.0f, 0.0f, 1.0f);
-    // vec4 lightColor = mix(day, night, interpolate);
+    float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
+    // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
+    vec4 lightColor = day;
 
-    vec4 result = vec4(vec3(tex * day * (tex + light + specular + rim)), 1.0f);
+    if(convTime >= 4.0f && convTime < 4.75f) {
+        float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(day, sunset, interpolate);
+    }
+
+    else if(convTime >= 4.75f && convTime < 5.5f) {
+        float interpolate = clamp((convTime - 4.75f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(sunset, night, interpolate);
+    }
+
+    else if(convTime >= 5.5f && convTime < 9.5f) {
+        lightColor = night;
+    }
+
+    else if(convTime >= 9.5f && convTime < 10.25f) {
+        float interpolate = clamp((convTime - 9.5f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(night, sunrise, interpolate);
+    }
+
+    else if(convTime >= 10.25f && convTime < 11.0f) {
+        float interpolate = clamp((convTime - 10.25f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(sunrise, day, interpolate);
+    }
+
+    else if(convTime >= 11.0f) {
+        lightColor = day;
+    }
+    
+    lightColor = day;
+    vec4 result = vec4(vec3(tex * lightColor * (tex + light + specular + rim)), 1.0f);
     float brightness = dot(vec3(result), vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1.0) {
         BrightColor = vec4(result);

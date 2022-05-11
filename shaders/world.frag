@@ -12,8 +12,8 @@ in vec3 Normal;
 in vec3 FragPos;
 in mat4 viewMat;
 
-uniform mat4 view;
 uniform vec3 viewPos;
+uniform vec3 lightPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2DArray shadowMap;
 
@@ -27,7 +27,9 @@ uniform float time;
 
 const vec3 day = vec3(0.6, 0.5, 0.4);
 // const vec3 night = vec3(0.066, 0.098, 0.415);
-const vec3 night = vec3(0.066, 0.098, 0.415);
+const vec3 night = vec3(0, 0.027, 0.121);
+const vec3 sunset = vec3(0.701, 0.337, 0.078);
+const vec3 sunrise = vec3(0.890, 0.290, 0.439);
 
 out vec4 fragColor;
 
@@ -42,14 +44,13 @@ void main()
     }
 
     // Directional Light
-    vec3 lightPos = vec3(-2.0f, 2.0f, -1.0f);
     vec3 lightDir = normalize(lightPos);
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 halfVector = normalize(lightPos + viewDir);
 
     // select cascade layer
-    vec4 fragPosViewSpace = view * vec4(FragPos, 1.0);
+    vec4 fragPosViewSpace = viewMat * vec4(FragPos, 1.0);
     float depthValue = abs(fragPosViewSpace.z);
 
     int layer = -1;
@@ -109,14 +110,43 @@ void main()
 
     // specular shading
     vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
-    // combine results 
+    float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
+    // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
+    vec3 lightColor = day;
 
-    // float interpolate = clamp((time - 26.0f) / 15.0f, 0.0f, 1.0f);
-    // vec3 lightColor = mix(day, night, interpolate);
-    vec3 ambient = day * vec3(tex);
-    vec3 diffuse = vec3(0.6f, 0.6f, 0.6f) * diff * vec3(tex);
+    if(convTime >= 4.0f && convTime < 4.75f) {
+        float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(day, sunset, interpolate);
+    }
+
+    else if(convTime >= 4.75f && convTime < 5.5f) {
+        float interpolate = clamp((convTime - 4.75f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(sunset, night, interpolate);
+    }
+
+    else if(convTime >= 5.5f && convTime < 9.5f) {
+        lightColor = night;
+    }
+
+    else if(convTime >= 9.5f && convTime < 10.25f) {
+        float interpolate = clamp((convTime - 9.5f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(night, sunrise, interpolate);
+    }
+
+    else if(convTime >= 10.25f && convTime < 11.0f) {
+        float interpolate = clamp((convTime - 10.25f) / 0.75f, 0.0f, 1.0f);
+        lightColor = mix(sunrise, day, interpolate);
+    }
+
+    else if(convTime >= 11.0f) {
+        lightColor = day;
+    }
+
+    lightColor = day;
+    vec3 ambient = lightColor * vec3(tex);
+    vec3 diffuse = lightColor * diff * vec3(tex);
     vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(tex);
     
     vec4 result = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0f);

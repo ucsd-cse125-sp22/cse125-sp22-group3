@@ -153,6 +153,7 @@ int main(int argc, char* argv[])
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
 
+
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -272,7 +273,6 @@ int main(int argc, char* argv[])
 					if (first_iteration)
 						first_iteration = false;
 				}
-
 				
 				glUseProgram(0);
 				glActiveTexture(GL_TEXTURE0);

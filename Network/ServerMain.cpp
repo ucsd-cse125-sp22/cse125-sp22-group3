@@ -51,10 +51,10 @@ inline int ServerMain()
 	Particle glow{ PARTICLE_GLOW };
 
 	//Plot plot{WORLD_PLOT};
-	plotRed.SetPosition({ 80,-5,0 });
-	plotBlue.SetPosition({ 80,-5,-20 });
-	plotYellow.SetPosition({ 80,-5,20 });
-	plotGreen.SetPosition({ 80,-5,40 });
+	plotRed.SetPosition({ 80,-4,0 });
+	plotBlue.SetPosition({ 80,-4,-20 });
+	plotYellow.SetPosition({ 80,-4,20 });
+	plotGreen.SetPosition({ 80,-4,40 });
 	fish.SetWorldPosition({ 100,30,100 });
 	
 	bumbus.SetWorldPosition({ -20, 30, 0 });
@@ -67,7 +67,7 @@ inline int ServerMain()
 	GameManager game(players);
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
 
-	world.SetPosition({ 0, 0, -5.0f });
+	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (ClientPacket& cpacket : client_packet_vec) {

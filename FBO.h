@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -39,6 +40,8 @@ class FBO {
 		// projection * view
 		static std::vector<glm::mat4> lightSpaceMatrix;
 		static std::vector<float> shadowCascadeLevels;
+
+		static glm::vec3 lightPos;
 
 		// Bloom
 		static unsigned int colorBuffers[2];
