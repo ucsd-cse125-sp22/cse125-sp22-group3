@@ -35,11 +35,11 @@ public:
 	int my_image_width = 0;
 	int my_image_height = 0;
 	GLuint my_image_texture = 0;
+	float fade_ratio = 1; 
 
 };
 class GUI {
 public:
-	static bool show_GUI;
 	static float display_ratio; 
 	static int window_height;
 	static int window_width; 
@@ -47,6 +47,7 @@ public:
 	static GLFWwindow* my_window;
 	static GUIImage score_background;
 	static GUIImage loading_background; 
+	static GUIImage minimap_background; 
 	static GUIImage loading_bg[NUM_LOAD_IMG]; 
 	static bool show_loading;
 	static int rack_image_idx;
@@ -66,6 +67,8 @@ public:
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
+	static void createStamina();
+	static void createTimer(); 
 };
 
 
