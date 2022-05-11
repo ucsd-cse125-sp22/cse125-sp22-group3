@@ -4,8 +4,13 @@
 
 #include <unordered_map>
 
-static bool GUI_showNPCui; // use this to trigger the UI display
 static bool GUI_show_sale_ui; //use this to tigger the sale UI display 
+static bool GUI_show_scoreboard; 
+static bool GUI_show_minimap; 
+static bool GUI_show_stamina;
+static bool GUI_show_timer; 
+static bool GUI_show_buy_ui; 
+
 static float stamina_percent; //use this variable to set the stamina display
 
 
