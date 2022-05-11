@@ -82,9 +82,9 @@ class Mesh {
 		~Mesh();
 
 		// Render mesh
-		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, GLuint shader);
 		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, float time, GLuint shader);
-		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, std::vector<glm::mat4> transforms, GLuint shader);
+		void particleDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, float time, GLuint shader);
+		void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 mod, std::vector<glm::mat4> transforms, float time, GLuint shader);
 
 		// Render depth map
 		void draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shader);
