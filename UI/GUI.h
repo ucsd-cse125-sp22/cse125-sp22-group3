@@ -36,6 +36,7 @@ public:
 	int my_image_height = 0;
 	GLuint my_image_texture = 0;
 	float fade_ratio = 1; 
+	bool fade_in=true; // true for fade in, false for fade out; 
 
 };
 class GUI {
