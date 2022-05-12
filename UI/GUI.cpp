@@ -175,20 +175,18 @@ bool GUI::renderUI() {
 	bool bptr; 
 	ImGui::Begin("testing fade" , & bptr, TRANS_WINDOW_FLAG );
 	GUIImage* image = &rack_images_list[0];
-	if (image->fade_ratio > 0.0001) {
-		ImVec2 image_size = ImVec2(image->my_image_width * display_ratio * 0.5f, image->my_image_height * display_ratio * 0.5f);
-		ImGui::SetCursorPos(ImVec2(image_size.x* image->fade_ratio , 0 ));
-		ImGui::Image((void*)(intptr_t)image->my_image_texture, image_size);
-		image->fade_ratio*=0.8;
-	}
-	else {
-		ImVec2 image_size = ImVec2(image->my_image_width * display_ratio * 0.5f, image->my_image_height * display_ratio * 0.5f);
-		ImGui::SetCursorPos(ImVec2(0 , 0));
-		ImGui::Image((void*)(intptr_t)image->my_image_texture, image_size);
+	ImVec2 image_size = ImVec2(image->my_image_width * display_ratio * 0.5f, image->my_image_height * display_ratio * 0.5f);
+	ImGui::SetCursorPos(ImVec2(image_size.x* image->fade_ratio , 0 ));
+	ImGui::Image((void*)(intptr_t)image->my_image_texture, image_size);
+	if (image->fade_in) {
+		image->fade_ratio *= 0.8;
+		image->fade_ratio = image->fade_ratio < 0.0005 ? 0.0005: image->fade_ratio;
+	}else if (image->fade_ratio < 1) {
+		image->fade_ratio *= 1.25; 
 	}
 	ImGui::End(); 
 	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-		image->fade_ratio = 1; 
+		image->fade_in = !image->fade_in; 
 	}
 	//end of fading out test
 	
