@@ -357,7 +357,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 	{
 		//std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
 
-		int boneID = -1;
+		int boneID = 0;
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
 
 		// Does this bone exist already? If not, add to the map 
@@ -383,7 +383,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 			boneID = boneInfoMap[boneName].id;
 		}
 
-		assert(boneID != -1);
+		// assert(boneID != -1);
 		auto weights = mesh->mBones[boneIndex]->mWeights;
 		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
 
@@ -402,7 +402,7 @@ void Model::SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::v
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		if (weights[vertexId][i] == 0.f || bones[vertexId][i] == -1)
+		if (weights[vertexId][i] == 0.f)
 		{
 			weights[vertexId][i] = weight;
 			bones[vertexId][i] = boneID;

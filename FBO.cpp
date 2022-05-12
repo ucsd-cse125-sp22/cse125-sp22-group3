@@ -9,7 +9,7 @@ unsigned int FBO::colorBuffers[2];
 unsigned int FBO::pColorBuffers[2];
 unsigned int FBO::dm;
 unsigned int FBO::matricesUBO;
-glm::vec3 FBO::lightPos = glm::vec3(-2.0f, 2.0f, 1.0f);
+glm::vec3 FBO::lightPos = glm::vec3(-2.0f, 2.0f, -1.0f);
 
 FBO::FBO() {}
 
