@@ -138,6 +138,7 @@ bool Window::initializeObjects()
 	{ WORLD_FLAG_CORN, animationShaderProgram  },
 	{ WORLD_FLAG_RADISH, animationShaderProgram  },
 	{ WORLD_FLAG_TOMATO, animationShaderProgram  },
+	{ WORLD_FLAG_POISON, animationShaderProgram  },
 
 	{ WORLD_MAP, worldShaderProgram },
 

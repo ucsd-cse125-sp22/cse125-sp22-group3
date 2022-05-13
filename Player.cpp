@@ -47,6 +47,7 @@ void Player::FixedUpdate() {
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
 		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
+		
 		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
@@ -193,6 +194,14 @@ void Player::Sell(){
 		isHolding = false;
 	}
 	//printf("SELLING VEGGIE %f\n", curr_balance);
+}
+
+void Player::SetSprint(bool sprinting) {
+	if (sprint != true && sprinting) {
+		printf("first time sprinting\n");
+	}
+	sprint = true;
+
 }
 
 void Player::CloseUI()

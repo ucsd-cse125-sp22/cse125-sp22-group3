@@ -122,6 +122,7 @@ private:
 		{WORLD_FLAG_CORN, "models/plots/flagCorn.fbx"},
 		{WORLD_FLAG_RADISH, "models/plots/flagRadish.fbx"},
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
+		{WORLD_FLAG_POISON, "models/poisonedPlot/poisonedPlot.fbx"},
 
 		{WORLD_MAP, "models/world/borderlessMap.fbx"},
 

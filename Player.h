@@ -86,6 +86,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void EnableMovement();
 		void DisableMovement();
 		bool GetMoveable();
+		void SetSprint(bool sprinting);
 
 
 		// Information
@@ -100,7 +101,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 
 		// how much money player currently has
-		float curr_balance = 50;
+		float curr_balance = 20;
 
 		
 		

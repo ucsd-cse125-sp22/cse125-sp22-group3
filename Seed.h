@@ -63,6 +63,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		double plantedTime = 0;
 		bool getIsReady();
 		bool isHarvestable = false;
+		bool isPoisoned = false;
 
 		// translation for player interact;
 		

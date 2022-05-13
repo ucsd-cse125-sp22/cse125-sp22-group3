@@ -120,7 +120,7 @@ void GameManager::SetPlayerDrop(const int player_index) {
 }
 void GameManager::SetPlayerSprint(const int player_index, const bool sprinting)
 {
-	players_[player_index]->sprint = sprinting;
+	players_[player_index]->SetSprint(sprinting);
 }
 void GameManager::SetPlayerDance(const int player_index)
 {
