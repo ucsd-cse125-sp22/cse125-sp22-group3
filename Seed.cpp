@@ -27,7 +27,7 @@ void Seed::FixedUpdate()
 {
 	if (isPlanted) {
 		plantedTime += GameManager::GetFixedDeltaTime();
-		if (getIsReady()) {
+		if (!isHarvestable && getIsReady()) {
 			isHarvestable = true;
 			VeggieInfo veggie = veggie_map[type];
 			model = veggie.veggie_model;
