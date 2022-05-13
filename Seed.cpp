@@ -25,9 +25,9 @@ Seed::~Seed() {
 
 void Seed::FixedUpdate()
 {
-	if (isPlanted) {
+	if (isPlanted && !isPoisoned) { // stop growth if poisoned
 		plantedTime += GameManager::GetFixedDeltaTime();
-		if (getIsReady()) {
+		if (!isHarvestable && getIsReady()) {
 			isHarvestable = true;
 			VeggieInfo veggie = veggie_map[type];
 			model = veggie.veggie_model;
