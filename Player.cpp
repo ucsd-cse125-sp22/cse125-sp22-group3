@@ -200,7 +200,7 @@ void Player::SetSprint(bool sprinting) {
 	if (sprint != true && sprinting) {
 		printf("first time sprinting\n");
 	}
-	sprint = true;
+	sprint = sprinting;
 
 }
 
