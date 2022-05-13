@@ -78,6 +78,10 @@ inline int ServerMain()
 	hoe.SetPosition({ 10, -4, -10 });
 	game.AddEntities({ &hoe });
 
+	Poison poisson{};
+	poisson.SetPosition({ -10, -4, -10 });
+	game.AddEntities({ &poisson });
+
 	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {

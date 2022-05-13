@@ -36,6 +36,7 @@
     <ClCompile Include="GardenTool.cpp" />
     <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="Hoe.cpp" />
+    <ClCompile Include="Poison.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="GardenTool.h" />
     <ClInclude Include="Shovel.h" />
     <ClInclude Include="Hoe.h" />
+    <ClInclude Include="Poison.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
