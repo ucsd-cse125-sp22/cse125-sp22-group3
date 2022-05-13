@@ -9,6 +9,8 @@
 #include <thread>         
 #include <chrono>
 #include <map>
+#include "../../../packages/SoLoud-wav.2020.2.7/build/native/include/soloud.h"
+#include "../../../packages/SoLoud-wav.2020.2.7/build/native/include/soloud_wav.h"
 
 namespace fs = std::filesystem;
 
@@ -103,6 +105,10 @@ int main(int argc, char* argv[])
 		ServerMain();
 		return 0;
 	}
+
+	//TODO move somewhere
+	SoLoud::Soloud sound_engine;
+	sound_engine.init();
 	
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
@@ -152,8 +158,7 @@ int main(int argc, char* argv[])
 	
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
-
-
+	
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
@@ -313,6 +318,8 @@ int main(int argc, char* argv[])
 		//printf("Client time between ticks: %lld us\n", elapsed_time_ms);
 		//begin_time = end_time;
 	}
+
+	sound_engine.deinit();
 
 	// destroy objects created
 	Window::cleanUp();
