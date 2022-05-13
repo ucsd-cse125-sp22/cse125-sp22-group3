@@ -71,7 +71,7 @@ inline int ServerMain()
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
 
 	Shovel shovel{};
-	shovel.SetPosition({10, 0, 10});
+	shovel.SetPosition({10, -4, 10});
 	game.AddEntities({ &shovel });
 
 	world.SetPosition({ 0, 0, -4.0f });

@@ -56,19 +56,36 @@ void Plot::SetRotation(glm::mat4 rotation) {
 
 bool Plot::CanInteract(Player* player) {
 	auto seed = dynamic_cast<Seed*>(player->GetHoldEntity());
-
+	auto shovel = dynamic_cast<Shovel*>(player->GetHoldEntity());
 	// WARNING: SPAGHETTI (ASK LEON OR DANICA ABOUT IT)
 	// can interact if:
 	// 1. player is holding a seed and plot is empty
 	// 2. player is holding nothing and plot is harvestable
+	bool can_remove_plot = (player->GetIsHolding() && shovel);
 	bool can_plant_seed = (player->GetIsHolding() && seed && !isPlanted);
 	bool can_harvest_veggie = (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
-	return  can_plant_seed || can_harvest_veggie;
+	return  can_remove_plot || can_plant_seed || can_harvest_veggie;
 	//return true;
 }
 
 void Plot::OnInteract(Player* player) {
-	if (player->GetModelEnum() == Plot::plot_ownership[this->GetModelEnum()]) {
+	// anyone can destroy the plot with a shovel
+	fprintf(stderr, "Plot interact\n");
+	if (auto shovel = dynamic_cast<Shovel*>(player->GetHoldEntity())) {
+		fprintf(stderr, "Plot ded\n");
+		player->Drop();
+		player->SetTriggeringEntity(nullptr);
+
+		Seed* seed = plantedVegetable;
+		if (seed != nullptr) {
+			GameManager::RemoveEntities({ seed });
+			SetPlantedVegetable(nullptr);
+		}
+
+		GameManager::RemoveEntities({ this, shovel });
+	}
+	// only plot owner can plant and pick up
+	else if (player->GetModelEnum() == Plot::plot_ownership[this->GetModelEnum()]) {
 		if (player->isHolding && !isPlanted) {
 			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
 

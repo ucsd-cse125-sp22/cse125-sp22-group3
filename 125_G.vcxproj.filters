@@ -13,7 +13,6 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Tools.cpp" />
-    <ClCompile Include="SabotageItem.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -35,6 +34,8 @@
     <ClCompile Include="World.cpp" />
     <ClCompile Include="FBO.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="SabotageItem.cpp" />
+    <ClCompile Include="Shovel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -65,7 +66,6 @@
     <ClInclude Include="ColliderCircle.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="util.h" />
-    <ClInclude Include="SabotageItem.h" />
     <ClInclude Include="Network\NetworkPacket.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
@@ -89,6 +89,8 @@
     <ClInclude Include="FBO.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ConfigReader.h" />
+    <ClInclude Include="SabotageItem.h" />
+    <ClInclude Include="Shovel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
