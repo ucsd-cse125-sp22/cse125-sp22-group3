@@ -56,5 +56,12 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
+
+		std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
+			{WORLD_PLOT_RED, CHAR_BUMBUS},
+			{WORLD_PLOT_YELLOW, CHAR_POGO},
+			{WORLD_PLOT_BLUE, CHAR_GILMAN},
+			{WORLD_PLOT_GREEN, CHAR_SWAINKY}
+		};
 	
 };

@@ -68,39 +68,41 @@ bool Plot::CanInteract(Player* player) {
 }
 
 void Plot::OnInteract(Player* player) {
-	if (player->isHolding && !isPlanted) {
-		if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
+	if (player->GetModelEnum() == Plot::plot_ownership[this->GetModelEnum()]) {
+		if (player->isHolding && !isPlanted) {
+			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
 
-			SetPlantedVegetable(seed);
+				SetPlantedVegetable(seed);
 
-			VeggieInfo veggie = veggie_map[seed->GetType()];
-			seed->SetModel(veggie.flag_model, GetTranslate());
-			seed->SetPlanted();
-			player->Drop();
-			player->SetTriggeringEntity(nullptr);
-		}
-		else {
-			printf("Warning: You can only plant seeds not veggies bro\n");
-		}
-	}
-	else if (!player->isHolding) {
-		Seed* seed = plantedVegetable;
-		if (seed != nullptr && plantedVegetable->isHarvestable) {
-			// Remove the seed
-			VegetableType veggieType = GetPlantedVegetable();
-			auto seed_ = dynamic_cast<GameEntity*>(seed);
-
-			Vegetable* veggie = nullptr;
-			// Spawn the correct vegetable on the player
-			VeggieInfo veggie_info = veggie_map[seed->GetType()];
-			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
-			GameManager::AddEntities({ veggie });
-			if (seed_ != nullptr) {
-				GameManager::RemoveEntities({ seed_ });
-				SetPlantedVegetable(nullptr);
+				VeggieInfo veggie = veggie_map[seed->GetType()];
+				seed->SetModel(veggie.flag_model, GetTranslate());
+				seed->SetPlanted();
+				player->Drop();
+				player->SetTriggeringEntity(nullptr);
 			}
-			player->SetHoldEntity(veggie);
-			player->SetTriggeringEntity(nullptr);
+			else {
+				printf("Warning: You can only plant seeds not veggies bro\n");
+			}
+		}
+		else if (!player->isHolding) {
+			Seed* seed = plantedVegetable;
+			if (seed != nullptr && plantedVegetable->isHarvestable) {
+				// Remove the seed
+				VegetableType veggieType = GetPlantedVegetable();
+				auto seed_ = dynamic_cast<GameEntity*>(seed);
+
+				Vegetable* veggie = nullptr;
+				// Spawn the correct vegetable on the player
+				VeggieInfo veggie_info = veggie_map[seed->GetType()];
+				veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
+				GameManager::AddEntities({ veggie });
+				if (seed_ != nullptr) {
+					GameManager::RemoveEntities({ seed_ });
+					SetPlantedVegetable(nullptr);
+				}
+				player->SetHoldEntity(veggie);
+				player->SetTriggeringEntity(nullptr);
+			}
 		}
 	}
 }
