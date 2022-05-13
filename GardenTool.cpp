@@ -1,6 +1,6 @@
-#include "SabotageItem.h"
+#include "GardenTool.h"
 
-SabotageItem::SabotageItem(ModelEnum curr) {
+GardenTool::GardenTool(ModelEnum curr) {
 	modelAnim = NO_ANI;
 	model = curr;
 
@@ -12,27 +12,27 @@ SabotageItem::SabotageItem(ModelEnum curr) {
 	collider_->collider_is_trigger = true;
 }
 
-SabotageItem::~SabotageItem() {
+GardenTool::~GardenTool() {
 	delete collider_;
 	delete translate;
 	delete translate3D;
 }
 
 
-void SabotageItem::FixedUpdate()
+void GardenTool::FixedUpdate()
 {
 	collider_->center = *translate;
 }
 
-glm::mat4 SabotageItem::GetParentTransform()
+glm::mat4 GardenTool::GetParentTransform()
 {
 	return GetTranslation() * rotation;
 }
 
-ModelEnum SabotageItem::GetModelEnum() { return model; }
-AniMode SabotageItem::GetAniMode() { return modelAnim; }
+ModelEnum GardenTool::GetModelEnum() { return model; }
+AniMode GardenTool::GetAniMode() { return modelAnim; }
 
-void SabotageItem::SetModel(ModelEnum newModel, glm::vec3 pos)
+void GardenTool::SetModel(ModelEnum newModel, glm::vec3 pos)
 {
 	model = newModel;
 	*translate = glm::vec2(pos.x, pos.z);
@@ -43,52 +43,52 @@ void SabotageItem::SetModel(ModelEnum newModel, glm::vec3 pos)
 	//setModelChanged(true);
 }
 
-std::vector<Collider*> SabotageItem::GetColliders()
+std::vector<Collider*> GardenTool::GetColliders()
 {
 	return { collider_ };
 }
 
-glm::vec2* SabotageItem::GetWorldPosition()
+glm::vec2* GardenTool::GetWorldPosition()
 {
 	return translate;
 }
 
-glm::vec3 SabotageItem::GetPosition() const
+glm::vec3 GardenTool::GetPosition() const
 {
 	return glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2]);
 }
 
-void SabotageItem::SetPosition(glm::vec3 position)
+void GardenTool::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
 	*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }
 
-void SabotageItem::SetRotation(glm::mat4 rotation)
+void GardenTool::SetRotation(glm::mat4 rotation)
 {
 	this->rotation = rotation;
 }
 
-glm::mat4 SabotageItem::GetTranslation() {
+glm::mat4 GardenTool::GetTranslation() {
 	return glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2]));
 }
 
-glm::mat4 SabotageItem::GetRotation() const
+glm::mat4 GardenTool::GetRotation() const
 {
 	return rotation;
 }
 
-void SabotageItem::SetHeight(float height)
+void GardenTool::SetHeight(float height)
 {
 	(*translate3D)[1] = height;
 }
 
-float SabotageItem::GetHeight()
+float GardenTool::GetHeight()
 {
 	return (*translate3D)[1];
 }
 
-glm::mat4 SabotageItem::GetTransformation() {
+glm::mat4 GardenTool::GetTransformation() {
 	const glm::mat4 trans = glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2])) * rotation;
 	return isHeld ? trans * this->GetHoldTransform() : trans;
 }

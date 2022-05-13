@@ -2,7 +2,7 @@
 #include "Holdable.h"
 #include "Interactable.h"
 
-class SabotageItem : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
+class GardenTool : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 
 private:
 	ModelEnum model;
@@ -17,8 +17,8 @@ private:
 public:
 	AniMode modelAnim = NO_ANI;
 
-	SabotageItem(ModelEnum curr);
-	~SabotageItem();
+	GardenTool(ModelEnum curr);
+	~GardenTool();
 
 	void FixedUpdate() override;
 

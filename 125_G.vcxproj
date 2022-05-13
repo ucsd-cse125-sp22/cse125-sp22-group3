@@ -194,7 +194,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Seed.cpp" />
-    <ClCompile Include="SabotageItem.cpp" />
+    <ClCompile Include="GardenTool.cpp" />
     <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
@@ -219,7 +219,6 @@
     <ClCompile Include="Network\Server.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
-    <ClCompile Include="Tools.cpp" />
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
@@ -233,7 +232,7 @@
     <ClInclude Include="DepthMap.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Seed.h" />
-    <ClInclude Include="SabotageItem.h" />
+    <ClInclude Include="GardenTool.h" />
     <ClInclude Include="Shovel.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="UI\imgui\imconfig.h" />
@@ -269,11 +268,9 @@
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Plot.h" />
-    <ClInclude Include="Sabotageable.h" />
     <ClInclude Include="Network\Server.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Tools.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Vegetable.h" />
     <ClInclude Include="Window.h" />

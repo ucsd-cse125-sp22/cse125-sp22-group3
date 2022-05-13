@@ -1,6 +1,6 @@
 #pragma once
-#include "SabotageItem.h"
-class Shovel : public SabotageItem
+#include "GardenTool.h"
+class Shovel : public GardenTool
 {
 private:
 	float pickupHeight = -2; // TODO hello

@@ -12,7 +12,6 @@
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Tools.cpp" />
     <ClCompile Include="Plot.cpp" />
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="InputManager.cpp" />
@@ -34,7 +33,7 @@
     <ClCompile Include="World.cpp" />
     <ClCompile Include="FBO.cpp" />
     <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="SabotageItem.cpp" />
+    <ClCompile Include="GardenTool.cpp" />
     <ClCompile Include="Shovel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +48,6 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Vegetable.h" />
-    <ClInclude Include="Tools.h" />
     <ClInclude Include="Plot.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="Map.h" />
@@ -58,7 +56,6 @@
     <ClInclude Include="Harvestable.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Interactable.h" />
-    <ClInclude Include="Sabotageable.h" />
     <ClInclude Include="Network\Server.h" />
     <ClInclude Include="ColliderAABB.h" />
     <ClInclude Include="PhysicsObject.h" />
@@ -89,7 +86,7 @@
     <ClInclude Include="FBO.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ConfigReader.h" />
-    <ClInclude Include="SabotageItem.h" />
+    <ClInclude Include="GardenTool.h" />
     <ClInclude Include="Shovel.h" />
   </ItemGroup>
   <ItemGroup>
