@@ -55,16 +55,15 @@ void PhysicsEngine::Compute()
 			Collider* collider_2 = object_2->GetColliders()[0];
 			if (collider_1->CollidesWith(collider_2))
 			{
-				object_1->OnCollide(object_2);
-				object_2->OnCollide(object_1);
 
 				if (object_1->GetColliders()[0]->GetColliderIsTrigger() ||
 					object_2->GetColliders()[0]->GetColliderIsTrigger()) {
 					ResolveTriggerCollision(object_1, object_2);
-					continue;
+				}
+				else {
+					ResolveCollision(object_1, object_2);
 				}
 				
-				ResolveCollision(object_1, object_2);
 			}
 		}
 	}
@@ -134,6 +133,9 @@ void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject*
 //TODO take in Colliders instead of Physics Objects
 void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second)
 {
+	first->OnCollide(second);
+	second->OnCollide(first);
+
 	Collider* col_1 = first->GetColliders()[0];
 	Collider* col_2 = second->GetColliders()[0];
 	
