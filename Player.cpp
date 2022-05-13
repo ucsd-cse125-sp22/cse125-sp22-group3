@@ -87,7 +87,7 @@ AniMode Player::GetAniMode() { return modelAnim; }
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
-	if (entity != nullptr) {
+	if (entity != nullptr && entity != entityHeld) {
 		if (entityTriggered == nullptr) {
 			SetTriggeringEntity(entity);
 		}
