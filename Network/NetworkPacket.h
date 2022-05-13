@@ -5,7 +5,6 @@
 
 #define DEFAULT_PORT "2340"
 #define DEFAULT_BUFLEN 1024
-#define NUM_CLIENTS 1
 
 // the initial message that will be sent to client when waiting for other client to join
 struct ClientWaitPacket {

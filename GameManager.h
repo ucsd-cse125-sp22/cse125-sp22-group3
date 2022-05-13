@@ -10,6 +10,7 @@
 #include "Seed.h"
 #include "NPC.h"
 #include "Particle.h"
+#include "Shovel.h"
 #include <chrono>
 
 class GameManager : GameEntity

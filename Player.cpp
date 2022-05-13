@@ -59,8 +59,8 @@ void Player::FixedUpdate() {
 	
 	if (glm::length(curr_vel_) > 0) {
 		Move();
-		MoveHeld();
 	}
+	MoveHeld();
 
 	collider_->center = *translate;
 }
@@ -87,7 +87,9 @@ AniMode Player::GetAniMode() { return modelAnim; }
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
-	if (entity != nullptr) {
+	auto interactable = dynamic_cast<Interactable*>(object);
+
+	if (entity != nullptr && entity != entityHeld && interactable && interactable->CanInteract(this)) {
 		if (entityTriggered == nullptr) {
 			SetTriggeringEntity(entity);
 		}
@@ -265,6 +267,12 @@ void Player::MoveHeld() {
 			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
 			seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), seed->GetHeight(), (-1) * translate->y - (seedLocation.z)));
 			seed->SetRotation(held_rotation);
+		}
+		else if (auto shovel = dynamic_cast<Shovel*>(entityHeld)) {
+			const glm::vec4 location = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
+			shovel->SetPosition(glm::vec3(translate->x + (location.x), shovel->GetHeight(), (-1) * translate->y - (location.z)));
+			shovel->SetRotation(held_rotation);
 		}
 	}
 

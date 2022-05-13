@@ -7,16 +7,16 @@
 #include <filesystem>
 namespace fs = std::filesystem;
 
-bool GUI::show_GUI = false;
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
 GUIImage GUI::icon_images_list[NUM_ICON];
 GUIImage GUI::score_background; 
 GUIImage GUI::loading_background;
+GUIImage GUI::minimap_background;
+
 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
 GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
 int GUI::scoreboard_data[NUM_ICON];
-
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
@@ -25,6 +25,7 @@ int GUI::rack_image_idx;
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
+
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
@@ -55,8 +56,14 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
-	picture_dir = "./UI/Pictures";
+	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
+	GUI_show_buy_ui = false;
+	GUI_show_minimap = true;
+	GUI_show_stamina = true; 
+	GUI_show_scoreboard = true; 
+	GUI_show_sale_ui = false; 
+	GUI_show_timer = true; 
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -93,41 +100,37 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 * TODO: support interaction and multiple UI. now only render one ui, 
 */
 bool GUI::renderUI() {
-	
-
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	
-	//if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
-	//	GUI_showNPCui = !GUI_showNPCui;
-	//	rack_image_idx = 0;
-	//}
-	
+
 	/* build scoreboard */
-	ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-	ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
-	ImGui::Image((void*)(intptr_t)score_background.my_image_texture , ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-	ImGui::End();
-	ImGui::SetNextWindowPos(ImVec2(190*display_ratio, 190*display_ratio), 0, ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-	ImGui::Begin("ScoreBoard_content", NULL, TRANS_WINDOW_FLAG);
-	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
-	
-	for (int i = 0; i < NUM_ICON; i++) {
-		GUIImage image = icon_images_list[i];
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
-		ImGui::SameLine();
-		ImGui::Text("%d",scoreboard_data[i]);
+	if (GUI_show_scoreboard) {
+		ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
+		ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
+		ImGui::Image((void*)(intptr_t)score_background.my_image_texture, ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(190 * display_ratio, 190 * display_ratio), 0, ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
+		ImGui::Begin("ScoreBoard_content", NULL, TRANS_WINDOW_FLAG);
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+
+		for (int i = 0; i < NUM_ICON; i++) {
+			GUIImage image = icon_images_list[i];
+			ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
+			ImGui::SameLine();
+			ImGui::Text("%d", scoreboard_data[i]);
+		}
+		ImGui::PopStyleColor();
+		ImGui::End();
 	}
-	ImGui::PopStyleColor();
-	ImGui::End(); 
 	/* end of scoreboard */
 
-	/* build the seed sale page */
-	if(show_GUI == true) {		
+	/* build the sale page */
+	if(GUI_show_sale_ui) {		
+		//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (rack_image_idx < NUM_RACK_IMG - 1)
 				rack_image_idx++;
@@ -137,7 +140,6 @@ bool GUI::renderUI() {
 				rack_image_idx--;
 		}
 		else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
-			
 			InputManager::lastCmd = buy_command_map[rack_image_idx];
 		}
 		// etc.
@@ -148,21 +150,54 @@ bool GUI::renderUI() {
 		ImGui::SetNextWindowSize(ImVec2(window_width,window_height));
 		ImGui::Begin("Sale GUI", &open_ptr, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos((ImGui::GetContentRegionAvail() - size) * 0.5f);
-		//ImGui::Text("Hello there adeventurer!");	
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, size);//image.my_image_width, image.my_image_height));
-		//ImGui::Text("image demension:%dx%d", image.my_image_width, image.my_image_height);
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, size);
 		ImGui::End();
 	}
-	/*end of seed sale page*/
-	createMiniMap(); 
+	/*end of sale page*/
+	if (GUI_show_minimap) {
+		createMiniMap();
+	}
+	if (GUI_show_stamina) {
+		stamina_percent = 0.85; //TODO hardcode stamina percentage
+		createStamina();
+	}
+	if (GUI_show_timer) {
+		createTimer();
+	}
+
+	//test fading out
+	float padding = 64.0f; 
+	int test_width = 2000; 
+	int test_height = 2000; 
+	ImVec2 test_size = ImVec2(test_width * display_ratio, test_height*display_ratio);
+	ImGui::SetNextWindowSize(test_size);
+	ImGui::SetNextWindowPos(ImVec2(window_width - padding - test_size.x, padding ));
+	bool bptr; 
+	ImGui::Begin("testing fade" , & bptr, TRANS_WINDOW_FLAG );
+	GUIImage* image = &rack_images_list[0];
+	ImVec2 image_size = ImVec2(image->my_image_width * display_ratio * 0.5f, image->my_image_height * display_ratio * 0.5f);
+	ImGui::SetCursorPos(ImVec2(image_size.x* image->fade_ratio , 0 ));
+	ImGui::Image((void*)(intptr_t)image->my_image_texture, image_size);
+	if (image->fade_in) {
+		image->fade_ratio *= 0.8;
+		image->fade_ratio = image->fade_ratio < 0.0005 ? 0.0005: image->fade_ratio;
+	}else if (image->fade_ratio < 1) {
+		image->fade_ratio *= 1.25; 
+	}
+	ImGui::End(); 
+	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
+		image->fade_in = !image->fade_in; 
+	}
+	//end of fading out test
+	
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return show_GUI;
+	return GUI_show_sale_ui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
-void GUI::cleanUp() {
-	// Cleanup ImGui
+void GUI::cleanUp(){
+// Cleanup ImGui
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
@@ -251,6 +286,10 @@ void GUI::initializeImage() {
 		image->my_image_height *= 2.0f;
 		i++;
 	}
+
+	LoadTextureFromFile((picture_dir + std::string("/minimap_background.png")).c_str(), &(minimap_background.my_image_texture),
+		&(minimap_background.my_image_width), &(minimap_background.my_image_height));
+	
 }
 
 void GUI::initializeLoadingImage() {
@@ -330,68 +369,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	return true; 
 }
 
-//bool GUI::renderLoadScene(GLFWwindow* window) {
-//	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
-//	int idx = 0; 
-//	bool increase = true; 
-//	ImGuiWindowFlags window_flags = 0;
-//	window_flags |= ImGuiWindowFlags_NoBackground;
-//	window_flags |= ImGuiWindowFlags_NoTitleBar;
-//	window_flags |= ImGuiWindowFlags_NoResize;
-//	window_flags |= ImGuiWindowFlags_NoMove;
-//	window_flags |= ImGuiWindowFlags_NoScrollbar;
-//
-//	while (!glfwWindowShouldClose(my_window)) {
-//		
-//		if ((idx == 0 && !increase)|| (idx == 6 && increase)) {
-//			increase = !increase; 
-//		}
-//
-//		glfwPollEvents();
-//
-//		ImGui_ImplOpenGL3_NewFrame();
-//		ImGui_ImplGlfw_NewFrame();
-//		ImGui::NewFrame();
-//
-//		int width, height;
-//		glfwGetWindowSize(my_window, &width, &height);
-//		float display_ratio = 0.4f * width / 1280;
-//		ImVec2 size = ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio);
-//		ImGui::SetNextWindowSize(size);
-//		ImGui::SetNextWindowPos((ImVec2(width, height) - size) * 0.5f);
-//		ImGui::Begin("Loading Screen", NULL, window_flags);
-//		ImGui::Image((void*)(intptr_t)loading_bg[idx].my_image_texture, ImVec2(loading_bg[idx].my_image_width * display_ratio, loading_bg[idx].my_image_height * display_ratio));
-//		ImGui::End();
-//
-//		// Rendering
-//		int display_w, display_h;
-//		glfwGetFramebufferSize(my_window, &display_w, &display_h);
-//		glViewport(0, 0, display_w, display_h);
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//		ImGui::Render();
-//		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-//		glfwSwapBuffers(my_window);
-//		
-//		this_thread::sleep_for(chrono::milliseconds(300));
-//
-//		//handling the last image; 
-//		if (idx == 7) {
-//			break; 
-//		}else if (!show_loading && idx == 6) {
-//			idx++;
-//			continue; 
-//		}
-//
-//		if (increase) {
-//			idx++;
-//		}else {
-//			idx--; 
-//		}
-//
-//	}
-//	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
-//	return true; 
-//}
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -438,6 +415,34 @@ namespace ImGui {
 		return true;
 	}
 
+	bool ReverseBufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = size_arg;
+		size.x -= style.FramePadding.x * 2;
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+
+		// Render
+		const float circleStart = size.y * 0.7f;
+		const float circleEnd = size.y;
+		const float circleWidth = circleEnd - circleStart;
+
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, pos.y + circleStart), bg_col,ImDrawFlags_RoundCornersAll);
+		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1-value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col,ImDrawFlags_RoundCornersAll);
+		return true;
+	}
+
 }
 bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
@@ -478,10 +483,10 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 }
 bool GUI::ShowGUI(bool show)
 {
-	show_GUI = show;
-	if (show == true) {
+	if (GUI_show_sale_ui!=show) {
 		rack_image_idx = 1;
 	}
+	GUI_show_sale_ui = show;
 	return show;
 }
 /**
@@ -490,20 +495,27 @@ bool GUI::ShowGUI(bool show)
 */
 void GUI::createMiniMap() {
 	//get size of minimap 
-	float world_dim = 500.0f;
-	int width = 1200;
-	int height = 1200;
-	float padding = 32.0f;
+	float world_dim = 400.0f;
+	int width = 1000;
+	int height = 1000;
+	float padding = 64.0f * display_ratio;
+	bool bptr;
+
 	//size of minimap 
 	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::Begin("Minimap background", &bptr, TRANS_WINDOW_FLAG);
+	ImGui::Image((void*)(intptr_t)minimap_background.my_image_texture, size);
+	ImGui::End(); 
 
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	//ImVec2 center = ImVec2(padding + size.x / 2, window_height - padding - size.y / 2); // center of minimap
 	ImVec2 center = ImVec2(size.x / 2.0f, size.y /2.0f); // center of minimap
 
-	bool bptr;
-	ImGui::Begin("MiniMap", &bptr, MINI_MAP_FLAG);
+	ImGui::Begin("MiniMap", &bptr, TRANS_WINDOW_FLAG);
 	//place all player's icon:
 	for (int i = 0; i < 4; i++) {
 		GUIImage image = icon_images_list[i];
@@ -517,6 +529,40 @@ void GUI::createMiniMap() {
 	}
 	ImGui::End();
 }
+
+void GUI::createStamina() {
+	bool bptr;
+	int width = 160;
+	int height = 1600; 
+	float padding = 64.0f * display_ratio;
+	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 80);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+
+	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
+	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent, size, bg, col);
+	ImGui::End();
+
+}
+
+void GUI::createTimer() {
+	float padding = 64.0f * display_ratio;
+	int width = 600;
+	int height = 400;
+	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::Begin("Timer");
+	ImGui::Text("Placeholder for TIMER"); 
+	ImGui::End(); 
+}
+
+
+
+
 
 
 

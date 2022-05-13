@@ -4,6 +4,16 @@
 
 #include <unordered_map>
 
+static bool GUI_show_sale_ui; //use this to tigger the sale UI display 
+static bool GUI_show_scoreboard; 
+static bool GUI_show_minimap; 
+static bool GUI_show_stamina;
+static bool GUI_show_timer; 
+static bool GUI_show_buy_ui; 
+
+static float stamina_percent; //use this variable to set the stamina display
+
+
 enum InputCommands {
 	NONE,
 	MOVE_FORWARD,
@@ -44,6 +54,10 @@ enum ModelEnum
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
 
+	POISON,
+	WATERING_CAN,
+	SHOVEL,
+
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
 	WORLD_SEED_CORN,
@@ -64,11 +78,7 @@ enum ModelEnum
 	WORLD_MAP,
 
 	PARTICLE_GLOW,
-	PARTICLE_DUST,
-
-	POISON,
-	WATERING_CAN,
-	SHOVEL
+	PARTICLE_DUST
 };
 
 enum AniMode {

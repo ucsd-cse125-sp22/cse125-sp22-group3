@@ -35,30 +35,17 @@ out mat4 viewMat;
 void main()
 {
     if(hasAnimation) {
-        vec4 totalPosition = vec4(0.0f);
-        vec3 totalNormal = vec3(0.0f);
-
-        for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++)
-        {
-            if(boneIds[i] == -1) 
-                continue;
-
-            if(boneIds[i] >= 100) 
-            {
-                totalPosition = vec4(positions,1.0f);
-                totalNormal = normals;
-                break;
-            }
-        
-        
-            vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(positions,1.0f);
-            totalPosition += localPosition * weights[i];
-            vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normals;
-            totalNormal += localNormal * vec3(weights[i]);
-        }
+        mat4 bone_transform = finalBonesMatrices[boneIds[0]] * weights[0];
+		bone_transform += finalBonesMatrices[boneIds[1]] * weights[1];
+		bone_transform += finalBonesMatrices[boneIds[2]] * weights[2];
+		bone_transform += finalBonesMatrices[boneIds[3]] * weights[3];
     
-        FragPos = vec3(model * totalPosition);
-        Normal = mat3(transpose(inverse(model))) * totalNormal;  
+        vec4 totalPosition = bone_transform * vec4(positions, 1.0f);
+        vec4 totalNormal = bone_transform * vec4(normals, 0.0f);
+
+        FragPos = vec3(model * vec4(positions, 1.0f));
+        // FragPos = vec3(model * totalPosition);
+        Normal = mat3(transpose(inverse(model))) * vec3(totalNormal); 
         TexCoords = uvs;
 
         viewMat = view;

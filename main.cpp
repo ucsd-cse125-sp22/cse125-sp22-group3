@@ -3,6 +3,7 @@
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
 #include "./Network/ServerMain.cpp"
+#include "ConfigReader.h"
 #include <filesystem>
 #include "Model.h"
 #include <thread>         
@@ -10,8 +11,6 @@
 #include <map>
 
 namespace fs = std::filesystem;
-
-#define SERVER_ADDRESS "127.0.0.1" // TODO replace with config
 
 bool GUI::show_loading; 
 
@@ -48,6 +47,11 @@ void setup_opengl_settings()
 	// Set polygon drawing mode to fill front and back of each polygon.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+	// Enable transparency for meshes
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendEquation(GL_FUNC_ADD);
+
 	// Set clear color to black.
 	glClearColor(212.f/255, 242.f/255, 148.f/255, 1.0);
 }
@@ -72,9 +76,8 @@ void preload_texture_files() {
 	int i = 0;
 	for (auto& entry : fs::recursive_directory_iterator(load_dir)) {
 		std::cout << entry.path() << std::endl;
-		const char* epath = entry.path().string().c_str();
 		int width, height, nrComponents; 
-		unsigned char* data = stbi_load(epath, &width, &height, &nrComponents, 0);
+		unsigned char* data = stbi_load(entry.path().string().c_str(), &width, &height, &nrComponents, 0);
 		stbi_image_free(data);
 		i++;
 	}
@@ -89,44 +92,9 @@ void load_models(GLFWwindow* window)
 	bool flip_image = true; // variable use to flip the image 
 	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
-		tmp = Model(i); 
+		tmp = Model(i);
 		progress++;
 	}
-	//// Model constructor internally has logic to cache meshes
-	//Model BUMBUS = Model(CHAR_BUMBUS);
-	////Model BUMBUS2 = Model(CHAR_BUMBUS);
-	//Model POGO = Model(CHAR_POGO);
-	//Model SWAINKY = Model(CHAR_SWAINKY);
-	//Model GILMAN = Model(CHAR_GILMAN);
-
-	//Model CABBAGE = Model(VEG_CABBAGE);
-	//Model carrot = Model(VEG_CARROT);
-	//Model corn = Model(VEG_CORN);
-	//Model radish = Model(VEG_RADISH);
-	//Model tomato = Model(VEG_TOMATO);
-
-	//Model wpr = Model(WORLD_PLOT_RED);
-	//Model wpb = Model(WORLD_PLOT_BLUE);
-	//Model wpg = Model(WORLD_PLOT_GREEN);
-	//Model wpy = Model(WORLD_PLOT_YELLOW);
-
-	//Model wseed_carrot = Model(WORLD_SEED_CARROT);
-	//Model wseed_corn = Model(WORLD_SEED_CORN);
-	//Model wseed_cabbage = Model(WORLD_SEED_CABBAGE);
-	//Model wseed_raddish = Model(WORLD_SEED_RADISH);
-	//Model wseed_tomato = Model(WORLD_SEED_TOMATO);
-
-	//Model wflag_carrot = Model(WORLD_FLAG_CARROT);
-	//Model wflag_corn = Model(WORLD_FLAG_CORN);
-	//Model wflag_cabbage = Model(WORLD_FLAG_CABBAGE);
-	//Model wflag_raddish = Model(WORLD_FLAG_RADISH);
-	//Model wflag_tomato = Model(WORLD_FLAG_TOMATO);
-
-	//Model world_map = Model(WORLD_MAP);
-
-	//this_thread::sleep_for(chrono::milliseconds(5000));
-	//GUI::show_loading = false; 
-
 }
 
 int main(int argc, char* argv[])
@@ -159,35 +127,32 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 
 	GUI::show_loading = true;
-	//std::thread loadingThread(load_models, window);
+
 	// initialize IMGUI 
 	GUI::initializeGUI(window);
 	GUI::initializeImage();
 
 	// Initialize network client interface
-	Client* client = new Client(SERVER_ADDRESS, DEFAULT_PORT);
+	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("server.cfg");
+	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
-
-
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
-	//std::thread preload_thread(preload_texture_files); 
-	//GUI::renderLoadScene(window);
-	//preload_thread.join(); 
-	//loadingThread.join(); 
 	load_models(window); 
 	Window::show_GUI = false; 
+
+	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
 		{
+			num_clients = cw_packet.max_client;
 			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
 		});
 	fprintf(stderr, "All players connected, starting game\n");
-	//loadingGuithread.join();
-	//GUI::initializeGUI(window);
 	
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
+
 
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
@@ -200,9 +165,8 @@ int main(int argc, char* argv[])
 			out_packet.justMoved = InputManager::getMoved();
 			out_packet.movement = InputManager::getLastMovement();
 			out_packet.lastCommand = InputManager::getLastCommand();
-			
-			
 		}
+
 		InputManager::resetMoved();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -221,16 +185,13 @@ int main(int argc, char* argv[])
 				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-				if (sheader->ui_open && !GUI::show_GUI) {
-					GUI::ShowGUI(true);
-				}
-				else if (!sheader->ui_open && GUI::show_GUI){
-					GUI::ShowGUI(false);
-				}
-
-				for (int i = 0; i < NUM_CLIENTS; i++) {
+				//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
+				GUI::ShowGUI(sheader->ui_open);
+			
+				for (int i = 0; i < num_clients; i++) {
 					GUI::scoreboard_data[i]=sheader->balance[i];
 				}
+
 
 				Window::postprocessing->draw(Window::width, Window::height, Window::view);
 				for (int i = 0; i < sheader->num_models; i++)
@@ -312,7 +273,6 @@ int main(int argc, char* argv[])
 					if (first_iteration)
 						first_iteration = false;
 				}
-
 				
 				glUseProgram(0);
 				glActiveTexture(GL_TEXTURE0);

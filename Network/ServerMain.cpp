@@ -47,25 +47,34 @@ inline int ServerMain()
 	*/
 
 	World world{ WORLD_MAP };
+	World can{ WATERING_CAN };
 	Particle glow{ PARTICLE_GLOW };
-	//GameManager game({ &swainky }, { &cabbage, &corn, &radish, &carrot, &tomato}, { &plotGreen, &plotYellow, &plotBlue, &plotRed}, { &seedCorn,&seedCabbage ,&seedTomato ,&seedRadish,&seedCarrot});
 
 	//Plot plot{WORLD_PLOT};
-	plotRed.SetPosition({ 80,-5,0 });
-	plotBlue.SetPosition({ 80,-5,-20 });
-	plotYellow.SetPosition({ 80,-5,20 });
-	plotGreen.SetPosition({ 80,-5,40 });
-	fish.SetWorldPosition({ 100,30,100 });
-	
+	plotRed.SetPosition({ 100,-4, 100});
+	plotBlue.SetPosition({ -100,-4, -100});
+	plotYellow.SetPosition({ -100,-4, 100});
+	plotGreen.SetPosition({ 100,-4, -100});
+	fish.SetWorldPosition({ 0,30, 0 });
+	can.SetPosition({ 0, -4, -10 });
+	glow.SetPosition({ 0, -4, -10 });
+
 	bumbus.SetWorldPosition({ -20, 30, 0 });
 	pogo.SetWorldPosition({ 20, 30, 0 });
 	swainky.SetWorldPosition({ 0, 30, -20 });
 	gilman.SetWorldPosition({ 0, 30, 20 });
+	std::vector<Player*> all_players = { &bumbus, &pogo, &swainky, &gilman };
 
-	GameManager game({ &pogo, &bumbus, &gilman, &swainky });
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
+	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
+	GameManager game(players);
 
-	world.SetPosition({ 0, 0, -5.0f });
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
+
+	Shovel shovel{};
+	shovel.SetPosition({10, -4, 10});
+	game.AddEntities({ &shovel });
+
+	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (ClientPacket& cpacket : client_packet_vec) {

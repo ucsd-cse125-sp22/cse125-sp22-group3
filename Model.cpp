@@ -114,10 +114,11 @@ void Model::processNode(aiNode* node, const aiScene* scene) {
 
 Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 {
-	//std::cout << mesh->mName.C_Str() << std::endl;
-
 	// Has materials
 	bool hasMaterials = false;
+
+	// Is a particle
+	bool isParticle = false;
 
 	//std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
 
@@ -187,6 +188,7 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		// If it is, we are gonna add textures from its respective directory
 		else {
+			isParticle = true;
 			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
 			textures = particles;
 		}
@@ -194,6 +196,8 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	
 	ExtractBoneWeightForVertices(boneIds, weights, mesh, scene);
 	Mesh m = Mesh(pos, norms, uvs, indices, textures, boneIds, weights);
+
+	m.isParticle = isParticle;
 
 	return m;
 }
@@ -260,7 +264,6 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	std::cout << filename << std::endl; 
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 
@@ -300,28 +303,28 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 }
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
-	if (hasAni) {
-		//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
-		curr_time = glfwGetTime();
-		float delta = curr_time - last_time;
-		fixed_time += delta * anim_speed;
+	//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
+	curr_time = glfwGetTime();
+	float delta = curr_time - last_time;
+	fixed_time += (delta * anim_speed);
 
+	if (hasAni) {
 		CalculateBoneTransform(fixed_time);
-		last_time += delta;
 
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, finalBoneMatrices, shader);
+			mesh.draw(view, projection, parent, finalBoneMatrices, curr_time, shader);
 		}
-		
 	}
 
 	else {
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, shader);
+			mesh.draw(view, projection, parent, curr_time, shader);
 		}
 	}
+
+	last_time += delta;
 }
 
 void Model::draw(glm::mat4 parent, GLuint shader) {
@@ -354,7 +357,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 	{
 		//std::cout << mesh->mBones[boneIndex]->mName.data << std::endl;
 
-		int boneID = -1;
+		int boneID = 0;
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
 
 		// Does this bone exist already? If not, add to the map 
@@ -380,7 +383,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<glm::ivec4>& vBones, std::v
 			boneID = boneInfoMap[boneName].id;
 		}
 
-		assert(boneID != -1);
+		// assert(boneID != -1);
 		auto weights = mesh->mBones[boneIndex]->mWeights;
 		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
 
@@ -399,7 +402,7 @@ void Model::SetVertexBoneData(std::vector<glm::ivec4>& bones, std::vector<glm::v
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		if (weights[vertexId][i] == 0.f || bones[vertexId][i] == -1)
+		if (weights[vertexId][i] == 0.f)
 		{
 			weights[vertexId][i] = weight;
 			bones[vertexId][i] = boneID;
