@@ -55,7 +55,9 @@ inline int ServerMain()
 	plotBlue.SetPosition({ -100,-4, -100});
 	plotYellow.SetPosition({ -100,-4, 100});
 	plotGreen.SetPosition({ 100,-4, -100});
-	fish.SetWorldPosition({ 0,30,0 });
+	fish.SetWorldPosition({ 0,30, 0 });
+	can.SetPosition({ 0, -4, -10 });
+	glow.SetPosition({ 0, -4, -10 });
 
 	bumbus.SetWorldPosition({ -20, 30, 0 });
 	pogo.SetWorldPosition({ 20, 30, 0 });
@@ -65,7 +67,12 @@ inline int ServerMain()
 
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);
+
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
+
+	Shovel shovel{};
+	shovel.SetPosition({10, 0, 10});
+	game.AddEntities({ &shovel });
 
 	world.SetPosition({ 0, 0, -4.0f });
 

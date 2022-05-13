@@ -266,6 +266,12 @@ void Player::MoveHeld() {
 			seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), seed->GetHeight(), (-1) * translate->y - (seedLocation.z)));
 			seed->SetRotation(held_rotation);
 		}
+		else if (auto shovel = dynamic_cast<Shovel*>(entityHeld)) {
+			const glm::vec4 location = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
+			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
+			shovel->SetPosition(glm::vec3(translate->x + (location.x), shovel->GetHeight(), (-1) * translate->y - (location.z)));
+			shovel->SetRotation(held_rotation);
+		}
 	}
 
 }
