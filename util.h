@@ -57,6 +57,7 @@ enum ModelEnum
 	POISON,
 	WATERING_CAN,
 	SHOVEL,
+	HOE,
 
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
@@ -119,4 +120,14 @@ static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}}
 };
 
+static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
+	{WORLD_PLOT_RED, CHAR_BUMBUS},
+	{WORLD_PLOT_YELLOW, CHAR_POGO},
+	{WORLD_PLOT_BLUE, CHAR_GILMAN},
+	{WORLD_PLOT_GREEN, CHAR_SWAINKY},
+	{CHAR_BUMBUS, WORLD_PLOT_RED},
+	{CHAR_POGO, WORLD_PLOT_YELLOW},
+	{CHAR_GILMAN, WORLD_PLOT_BLUE},
+	{CHAR_SWAINKY, WORLD_PLOT_GREEN}
+};
 #endif

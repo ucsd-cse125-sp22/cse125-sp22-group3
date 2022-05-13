@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Hoe.h"
 
 #include "GameManager.h"
 
@@ -113,7 +114,21 @@ glm::vec2* Player::GetWorldPosition()
 {
 	return translate;
 }
-void Player::Use() {	
+
+void Player::Use() {
+	if (auto hoe = dynamic_cast<Hoe*>(entityHeld))
+	{
+		auto plot = new Plot(plot_ownership[this->GetModelEnum()]);
+		const float plotOffset = 7.5f;
+		glm::vec4 direction4 = glm::vec4(0, 0, -plotOffset, 1) * GetRotation();
+		glm::vec3 direction = glm::vec3(direction4/direction4.w);
+		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		plot->SetPosition(plotPosition);
+		GameManager::AddEntities({plot});
+
+		Drop();
+		GameManager::RemoveEntities({hoe});
+	}
 	auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
 	if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
 		auto interactable = dynamic_cast<Interactable*>(entityTriggered);
@@ -268,11 +283,11 @@ void Player::MoveHeld() {
 			seed->SetPosition(glm::vec3(translate->x + (seedLocation.x), seed->GetHeight(), (-1) * translate->y - (seedLocation.z)));
 			seed->SetRotation(held_rotation);
 		}
-		else if (auto shovel = dynamic_cast<Shovel*>(entityHeld)) {
+		else if (auto garden_tool = dynamic_cast<GardenTool*>(entityHeld)) {
 			const glm::vec4 location = glm::vec4(0, 0, -entityHeldDist, 1) * GetRotation();
 			const glm::mat4 held_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
-			shovel->SetPosition(glm::vec3(translate->x + (location.x), shovel->GetHeight(), (-1) * translate->y - (location.z)));
-			shovel->SetRotation(held_rotation);
+			garden_tool->SetPosition(glm::vec3(translate->x + (location.x), garden_tool->GetHeight(), (-1) * translate->y - (location.z)));
+			garden_tool->SetRotation(held_rotation);
 		}
 	}
 

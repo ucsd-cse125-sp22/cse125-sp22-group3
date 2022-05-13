@@ -191,6 +191,7 @@
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="FBO.cpp" />
+    <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Seed.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="FBO.h" />
     <ClInclude Include="glm.h" />
+    <ClInclude Include="Hoe.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
     <ClInclude Include="Particle.h" />

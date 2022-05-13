@@ -70,9 +70,7 @@ bool Plot::CanInteract(Player* player) {
 
 void Plot::OnInteract(Player* player) {
 	// anyone can destroy the plot with a shovel
-	fprintf(stderr, "Plot interact\n");
 	if (auto shovel = dynamic_cast<Shovel*>(player->GetHoldEntity())) {
-		fprintf(stderr, "Plot ded\n");
 		player->Drop();
 		player->SetTriggeringEntity(nullptr);
 
@@ -85,7 +83,7 @@ void Plot::OnInteract(Player* player) {
 		GameManager::RemoveEntities({ this, shovel });
 	}
 	// only plot owner can plant and pick up
-	else if (player->GetModelEnum() == Plot::plot_ownership[this->GetModelEnum()]) {
+	else if (player->GetModelEnum() == plot_ownership[this->GetModelEnum()]) {
 		if (player->isHolding && !isPlanted) {
 			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
 

@@ -117,6 +117,7 @@ bool Window::initializeObjects()
 	{ WATERING_CAN, animationShaderProgram  },
 	{ POISON, animationShaderProgram  },
 	{ SHOVEL, animationShaderProgram  },
+	{ HOE, animationShaderProgram  },
 
 	{ WORLD_PLOT_RED, animationShaderProgram  },
 	{ WORLD_PLOT_BLUE, animationShaderProgram },

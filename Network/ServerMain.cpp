@@ -74,6 +74,10 @@ inline int ServerMain()
 	shovel.SetPosition({10, -4, 10});
 	game.AddEntities({ &shovel });
 
+	Hoe hoe{};
+	hoe.SetPosition({ 10, -4, -10 });
+	game.AddEntities({ &hoe });
+
 	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
