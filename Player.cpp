@@ -59,8 +59,8 @@ void Player::FixedUpdate() {
 	
 	if (glm::length(curr_vel_) > 0) {
 		Move();
-		MoveHeld();
 	}
+	MoveHeld();
 
 	collider_->center = *translate;
 }
@@ -87,7 +87,9 @@ AniMode Player::GetAniMode() { return modelAnim; }
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
-	if (entity != nullptr && entity != entityHeld) {
+	auto interactable = dynamic_cast<Interactable*>(object);
+
+	if (entity != nullptr && entity != entityHeld && interactable && interactable->CanInteract(this)) {
 		if (entityTriggered == nullptr) {
 			SetTriggeringEntity(entity);
 		}
