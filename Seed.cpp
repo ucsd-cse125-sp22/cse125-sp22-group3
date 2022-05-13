@@ -25,7 +25,7 @@ Seed::~Seed() {
 
 void Seed::FixedUpdate()
 {
-	if (isPlanted) {
+	if (isPlanted && !isPoisoned) { // stop growth if poisoned
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (!isHarvestable && getIsReady()) {
 			isHarvestable = true;

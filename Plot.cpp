@@ -65,7 +65,8 @@ bool Plot::CanInteract(Player* player) {
 	bool can_use_tool = (player->GetIsHolding() && tool);
 	bool can_plant_seed = (player->GetIsHolding() && seed && !isPlanted);
 	bool can_harvest_veggie = (!player->GetIsHolding() && plantedVegetable && plantedVegetable->isHarvestable);
-	return  can_use_tool || can_plant_seed || can_harvest_veggie;
+	bool can_remove_poison = (plantedVegetable && plantedVegetable->isPoisoned);
+	return  can_use_tool || can_plant_seed || can_harvest_veggie || can_remove_poison;
 	//return true;
 }
 
@@ -91,8 +92,8 @@ void Plot::OnInteract(Player* player) {
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
 
-			GameManager::RemoveEntities({ seed });
-			SetPlantedVegetable(nullptr);
+			seed->isPoisoned = true;
+			seed->SetModel(WORLD_FLAG_POISON, GetTranslate());
 
 			// TODO if we wanna replace it with the poison flags
 			GameManager::RemoveEntities({ poisson });
@@ -124,7 +125,15 @@ void Plot::OnInteract(Player* player) {
 
 	// only plot owner can plant and pick up
 	else if (player->GetModelEnum() == plot_ownership[this->GetModelEnum()]) {
-		if (player->isHolding && !isPlanted) {
+		if (plantedVegetable && plantedVegetable->isPoisoned) {
+			Seed* poisoned_seed = plantedVegetable;
+
+			GameManager::RemoveEntities({ poisoned_seed });
+			SetPlantedVegetable(nullptr);
+
+			player->SetTriggeringEntity(nullptr);
+		}
+		else if (player->isHolding && !isPlanted) {
 			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
 
 				SetPlantedVegetable(seed);
