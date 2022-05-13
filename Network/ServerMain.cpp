@@ -51,17 +51,17 @@ inline int ServerMain()
 	Particle glow{ PARTICLE_GLOW };
 
 	//Plot plot{WORLD_PLOT};
-	plotRed.SetPosition({ 80,-4,0 });
-	plotBlue.SetPosition({ 80,-4,-20 });
-	plotYellow.SetPosition({ 80,-4,20 });
-	plotGreen.SetPosition({ 80,-4,40 });
-	fish.SetWorldPosition({ 100,30,100 });
-	
+	plotRed.SetPosition({ 100,-4, 100});
+	plotBlue.SetPosition({ -100,-4, -100});
+	plotYellow.SetPosition({ -100,-4, 100});
+	plotGreen.SetPosition({ 100,-4, -100});
+	fish.SetWorldPosition({ 0,30,0 });
+
 	bumbus.SetWorldPosition({ -20, 30, 0 });
 	pogo.SetWorldPosition({ 20, 30, 0 });
 	swainky.SetWorldPosition({ 0, 30, -20 });
 	gilman.SetWorldPosition({ 0, 30, 20 });
-	std::vector<Player*> all_players = { &pogo, &bumbus, &gilman, &swainky };
+	std::vector<Player*> all_players = { &bumbus, &pogo, &swainky, &gilman };
 
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);

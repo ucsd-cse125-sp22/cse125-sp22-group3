@@ -42,7 +42,7 @@ void GameManager::FixedUpdate()
 		entity->FixedUpdate();
 	}
 
-	printf("size: %d\n", physics.moving_collidables_.size());
+	// printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions
 	GameManager::physics.Compute();
