@@ -118,6 +118,9 @@ bool Window::initializeObjects()
 	{ POISON, animationShaderProgram  },
 	{ SHOVEL, animationShaderProgram  },
 	{ HOE, animationShaderProgram  },
+	{ NET, animationShaderProgram},
+	{ GLUE, animationShaderProgram},
+	{ FERTILIZER, animationShaderProgram},
 
 	{ WORLD_PLOT_RED, animationShaderProgram  },
 	{ WORLD_PLOT_BLUE, animationShaderProgram },

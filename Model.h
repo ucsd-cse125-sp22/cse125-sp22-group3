@@ -102,6 +102,9 @@ private:
 		{WATERING_CAN, "models/wateringCan/wateringCan.fbx"},
 		{SHOVEL, "models/shovel/shovel.fbx"},
 		{HOE, "models/shovel/hoe.fbx"},
+		{NET, "models/net/net.fbx"},
+		{FERTILIZER, "models/fertilizer/fertilizer.fbx"},
+		{GLUE, "models/glue/glue.fbx"},
 
 		{WORLD_PLOT_RED, "models/plots/plotRed.fbx"},
 		{WORLD_PLOT_BLUE, "models/plots/plotBlue.fbx"},

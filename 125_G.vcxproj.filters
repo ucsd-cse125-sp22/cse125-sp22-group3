@@ -37,6 +37,7 @@
     <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="Poison.cpp" />
+    <ClCompile Include="VeggieNet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Shovel.h" />
     <ClInclude Include="Hoe.h" />
     <ClInclude Include="Poison.h" />
+    <ClInclude Include="VeggieNet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

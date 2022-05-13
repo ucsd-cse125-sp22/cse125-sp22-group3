@@ -85,16 +85,41 @@ void Plot::OnInteract(Player* player) {
 	}
 	// anyone can poison 
 	if (auto poisson = dynamic_cast<Poison*>(player->GetHoldEntity())) {
-		player->Drop();
-		player->SetTriggeringEntity(nullptr);
 
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
+			player->Drop();
+			player->SetTriggeringEntity(nullptr);
+
 			GameManager::RemoveEntities({ seed });
 			SetPlantedVegetable(nullptr);
+
+			// TODO if we wanna replace it with the poison flags
+			GameManager::RemoveEntities({ poisson });
 		}
-		// TODO if we wanna replace it with the poison flags
-		GameManager::RemoveEntities({ poisson });
+	}
+	if (auto net = dynamic_cast<VeggieNet*>(player->GetHoldEntity()))
+	{
+		Seed* seed = plantedVegetable;
+		if (seed != nullptr && seed->isHarvestable)
+		{
+			player->Drop();
+			player->SetTriggeringEntity(nullptr);
+			GameManager::RemoveEntities({net});
+
+			auto seed_ = dynamic_cast<GameEntity*>(seed);
+			Vegetable* veggie = nullptr;
+
+			// Spawn the correct vegetable on the player
+			VeggieInfo veggie_info = veggie_map[seed->GetType()];
+			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
+			GameManager::AddEntities({ veggie });
+			GameManager::RemoveEntities({ seed });
+			SetPlantedVegetable(nullptr);
+
+			player->SetHoldEntity(veggie);
+			player->SetTriggeringEntity(nullptr);
+		}
 	}
 
 	// only plot owner can plant and pick up

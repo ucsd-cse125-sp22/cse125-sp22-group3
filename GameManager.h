@@ -13,6 +13,7 @@
 #include "Shovel.h"
 #include "Hoe.h"
 #include "Poison.h"
+#include "VeggieNet.h"
 #include <chrono>
 
 class GameManager : GameEntity

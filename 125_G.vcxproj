@@ -222,6 +222,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vegetable.cpp" />
+    <ClCompile Include="VeggieNet.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -277,6 +278,7 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Vegetable.h" />
+    <ClInclude Include="VeggieNet.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

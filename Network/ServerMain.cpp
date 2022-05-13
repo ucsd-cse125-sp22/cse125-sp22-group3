@@ -82,6 +82,10 @@ inline int ServerMain()
 	poisson.SetPosition({ -10, -4, -10 });
 	game.AddEntities({ &poisson });
 
+	VeggieNet net{};
+	net.SetPosition({ 20, 0, 10 });
+	game.AddEntities({ &net });
+
 	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
