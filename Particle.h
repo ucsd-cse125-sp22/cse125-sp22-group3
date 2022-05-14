@@ -3,7 +3,7 @@
 
 class Particle : public GameEntity, public Drawable {
 	public:
-		AniMode modelAnim = NO_ANI;
+		AniMode modelAnim = PARTICLE_STOP;
 
 		Particle(ModelEnum curr);
 		~Particle();

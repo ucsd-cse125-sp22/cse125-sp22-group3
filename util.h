@@ -93,7 +93,9 @@ enum AniMode {
 	IDLE_WALK,
 	IDLE,
 	WALK,
-	NO_ANI
+	NO_ANI,
+	PARTICLE_PLAY,
+	PARTICLE_STOP
 };
 
 enum class VegetableType {

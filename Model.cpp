@@ -189,6 +189,8 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 		// If it is, we are gonna add textures from its respective directory
 		else {
 			isParticle = true;
+			curr = PARTICLE_STOP;
+			last = PARTICLE_STOP;
 			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
 			textures = particles;
 		}
@@ -320,7 +322,9 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 	else {
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, curr_time, shader);
+			if (curr != PARTICLE_STOP) {
+				mesh.draw(view, projection, parent, curr_time, shader);
+			}
 		}
 	}
 
@@ -728,7 +732,11 @@ int Model::GetRotationIndex(float time, AnimationNode animationNode) {
 
 void Model::setAnimationMode(AniMode ani) {
 	// If we are not in the process of blending anything
-	if (ani != curr || blend == 0.0f) {
+	if (ani == PARTICLE_PLAY || ani == PARTICLE_STOP) {
+		curr = ani; last = ani;
+	}
+
+	else if (ani != curr || blend == 0.0f) {
 		last = curr;
 		curr = ani;
 
