@@ -224,6 +224,7 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="VeggieNet.cpp" />
+    <ClCompile Include="WateringCan.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -280,6 +281,7 @@
     <ClInclude Include="util.h" />
     <ClInclude Include="Vegetable.h" />
     <ClInclude Include="VeggieNet.h" />
+    <ClInclude Include="WateringCan.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

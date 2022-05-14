@@ -47,7 +47,6 @@ inline int ServerMain()
 	*/
 
 	World world{ WORLD_MAP };
-	World can{ WATERING_CAN };
 	Particle glow{ PARTICLE_GLOW };
 
 	//Plot plot{WORLD_PLOT};
@@ -56,8 +55,7 @@ inline int ServerMain()
 	plotYellow.SetPosition({ -100,-4, 100});
 	plotGreen.SetPosition({ 100,-4, -100});
 	fish.SetWorldPosition({ 0,30, 0 });
-	can.SetPosition({ 0, -4, -10 });
-	glow.SetPosition({ 0, -4, -10 });
+	glow.SetPosition({ 0, -4, 0 });
 
 	bumbus.SetWorldPosition({ -20, 30, 0 });
 	pogo.SetWorldPosition({ 20, 30, 0 });
@@ -68,7 +66,7 @@ inline int ServerMain()
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);
 
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow, &can});
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow});
 
 	Shovel shovel{};
 	shovel.SetPosition({10, -4, 10});
@@ -83,8 +81,12 @@ inline int ServerMain()
 	game.AddEntities({ &poisson });
 
 	VeggieNet net{};
-	net.SetPosition({ 20, 0, 10 });
+	net.SetPosition({ 20, -4, 10 });
 	game.AddEntities({ &net });
+
+	WateringCan can{};
+	can.SetPosition({ 20, -4, 20 });
+	game.AddEntities({ &can });
 
 	world.SetPosition({ 0, 0, -4.0f });
 

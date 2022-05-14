@@ -14,6 +14,7 @@
 #include "Hoe.h"
 #include "Poison.h"
 #include "VeggieNet.h"
+#include "WateringCan.h"
 #include <chrono>
 
 class GameManager : GameEntity
