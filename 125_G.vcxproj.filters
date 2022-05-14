@@ -41,6 +41,7 @@
     <ClCompile Include="Fertilizer.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="Glue.cpp" />
+    <ClCompile Include="GlueOnGround.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -100,6 +101,8 @@
     <ClInclude Include="WateringCan.h" />
     <ClInclude Include="Fertilizer.h" />
     <ClInclude Include="Glue.h" />
+    <ClInclude Include="SoundEngine.h" />
+    <ClInclude Include="GlueOnGround.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

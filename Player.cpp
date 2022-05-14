@@ -27,10 +27,6 @@ void Player::FixedUpdate() {
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	/*if (this->isGlued) {
-		move_input = glm::vec2({0, 0});
-	}*/
-
 	if (glm::length(move_input) <= 0) {
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
 		else {
@@ -147,20 +143,19 @@ void Player::Use() {
 
 		sound_plot_placement = true;
 	}
-	/*else if (auto glue = dynamic_cast<Glue*>(entityHeld)) {
-		if (!glue->isOnGround) {
-			printf("Setting glue on the ground");
-			const float glueOffset = 7.5f;
-			glm::vec4 direction4 = glm::vec4(0, 0, -glueOffset, 1) * GetRotation();
-			glm::vec3 direction = glm::vec3(direction4 / direction4.w);
-			glm::vec3 gluePosition = glm::vec3((*translate)[0], -3, -(*translate)[1]) + direction;
-			glue->SetModel(GLUE_ON_GROUND, gluePosition);
+	else if (auto glue = dynamic_cast<Glue*>(entityHeld)) {
+		auto glueOnGround = new GlueOnGround();
 
-			glue->isOnGround = true;
+		const float glueOffset = 9.5f;
+		glm::vec4 direction4 = glm::vec4(0, 0, -glueOffset, 1) * GetRotation();
+		glm::vec3 direction = glm::vec3(direction4 / direction4.w);
+		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glueOnGround->SetPosition(gluePosition);
+		GameManager::AddEntities({ glueOnGround });
 
-			Drop();
-		}
-	}*/
+		Drop();
+		GameManager::RemoveEntities({ glue });
+	}
 	else {
 		auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
 		if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {

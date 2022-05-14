@@ -2,8 +2,8 @@
 
 #include <unordered_map>
 
-#include "packages/SoLoud-wav.2020.2.7/build/native/include/soloud.h"
-#include "packages/SoLoud-wav.2020.2.7/build/native/include/soloud_wav.h"
+#include <soloud.h>
+#include <soloud_wav.h>
 
 enum SoundEnum
 {
