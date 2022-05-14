@@ -102,6 +102,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// how much money player currently has
 		float curr_balance = 20;
+		// glue
+		bool isGlued = false;
+		float glueTime = 0;
 
 		
 		
