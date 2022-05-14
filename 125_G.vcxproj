@@ -160,31 +160,31 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\glfw.3.3.7\build\native\lib\static\v143\x64;$(SolutionDir)\packages\glfw.3.3.7\build\native\lib\dynamic\v143\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SoLoud-wav.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\lib\x64\Release</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glfw3.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\glfw.3.3.7\build\native\lib\static\v143\x64;$(SolutionDir)\packages\glfw.3.3.7\build\native\lib\dynamic\v143\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SoLoud-wav.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\lib\x64\Release</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Server Release|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc141-mtd.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SoLoud-wav.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/libraries/assimp/lib;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\lib\x64\Release</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/libraries/assimp/include;$(SolutionDir)/libraries/assimp/build/include;$(SolutionDir)\packages\glfw.3.3.7\build\native\include\GLFW;$(SolutionDir)\packages\SoLoud-wav.2020.2.7\build\native\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
