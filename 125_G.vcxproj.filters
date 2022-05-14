@@ -39,6 +39,7 @@
     <ClCompile Include="Poison.cpp" />
     <ClCompile Include="VeggieNet.cpp" />
     <ClCompile Include="WateringCan.cpp" />
+    <ClCompile Include="Fertilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="Poison.h" />
     <ClInclude Include="VeggieNet.h" />
     <ClInclude Include="WateringCan.h" />
+    <ClInclude Include="Fertilizer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

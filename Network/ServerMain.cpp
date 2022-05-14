@@ -55,7 +55,7 @@ inline int ServerMain()
 	plotYellow.SetPosition({ -100,-4, 100});
 	plotGreen.SetPosition({ 100,-4, -100});
 	fish.SetWorldPosition({ 0,30, 0 });
-	glow.SetPosition({ 0, -4, 0 });
+	glow.SetPosition({ -30, -4, 0 });
 
 	bumbus.SetWorldPosition({ -20, 30, 0 });
 	pogo.SetWorldPosition({ 20, 30, 0 });
@@ -87,6 +87,10 @@ inline int ServerMain()
 	WateringCan can{};
 	can.SetPosition({ 20, -4, 20 });
 	game.AddEntities({ &can });
+
+	Fertilizer fert{};
+	fert.SetPosition({ 10, -4, 20 });
+	game.AddEntities({ &fert });
 
 	world.SetPosition({ 0, 0, -4.0f });
 
