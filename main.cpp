@@ -2,7 +2,7 @@
 #include "UI/GUI.h"
 #include "./Network/Client.h"
 #include "./Network/NetworkPacket.h"
-#include "./Network/ServerMain.cpp"
+#include "ServerMain.cpp"
 #include "ConfigReader.h"
 #include <filesystem>
 #include "Model.h"

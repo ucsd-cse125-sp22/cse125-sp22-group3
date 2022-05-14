@@ -199,6 +199,7 @@
     <ClCompile Include="Poison.cpp" />
     <ClCompile Include="Seed.cpp" />
     <ClCompile Include="GardenTool.cpp" />
+    <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
@@ -215,7 +216,6 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Network\ServerMain.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
