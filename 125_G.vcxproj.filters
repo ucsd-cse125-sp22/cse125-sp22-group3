@@ -19,7 +19,6 @@
     <ClCompile Include="ColliderCircle.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="DepthMap.cpp" />
-    <ClCompile Include="Network\ServerMain.cpp" />
     <ClCompile Include="UI\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="UI\imgui\imgui_tables.cpp" />
     <ClCompile Include="UI\imgui\imgui_widgets.cpp" />
@@ -38,6 +37,9 @@
     <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="Poison.cpp" />
     <ClCompile Include="VeggieNet.cpp" />
+    <ClCompile Include="WateringCan.cpp" />
+    <ClCompile Include="Fertilizer.cpp" />
+    <ClCompile Include="ServerMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -94,6 +96,8 @@
     <ClInclude Include="Hoe.h" />
     <ClInclude Include="Poison.h" />
     <ClInclude Include="VeggieNet.h" />
+    <ClInclude Include="WateringCan.h" />
+    <ClInclude Include="Fertilizer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

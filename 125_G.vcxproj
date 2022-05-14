@@ -192,12 +192,14 @@
     <ClCompile Include="ColliderAABB.cpp" />
     <ClCompile Include="DepthMap.cpp" />
     <ClCompile Include="FBO.cpp" />
+    <ClCompile Include="Fertilizer.cpp" />
     <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Poison.cpp" />
     <ClCompile Include="Seed.cpp" />
     <ClCompile Include="GardenTool.cpp" />
+    <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
@@ -214,7 +216,6 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Network\ServerMain.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -224,6 +225,7 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vegetable.cpp" />
     <ClCompile Include="VeggieNet.cpp" />
+    <ClCompile Include="WateringCan.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -231,6 +233,7 @@
     <ClInclude Include="ColliderAABB.h" />
     <ClInclude Include="ConfigReader.h" />
     <ClInclude Include="FBO.h" />
+    <ClInclude Include="Fertilizer.h" />
     <ClInclude Include="glm.h" />
     <ClInclude Include="Hoe.h" />
     <ClInclude Include="Holdable.h" />
@@ -280,6 +283,7 @@
     <ClInclude Include="util.h" />
     <ClInclude Include="Vegetable.h" />
     <ClInclude Include="VeggieNet.h" />
+    <ClInclude Include="WateringCan.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
