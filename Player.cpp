@@ -144,15 +144,17 @@ void Player::Use() {
 		sound_plot_placement = true;
 	}
 	else if (auto glue = dynamic_cast<Glue*>(entityHeld)) {
+		auto glueOnGround = new GlueOnGround();
+
 		const float glueOffset = 9.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -glueOffset, 1) * GetRotation();
 		glm::vec3 direction = glm::vec3(direction4 / direction4.w);
-		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, (*translate)[1]) + direction;
-		glue->SetModel(GLUE_ON_GROUND, gluePosition);
-
-		glue->isOnGround = true;
+		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glueOnGround->SetPosition(gluePosition);
+		GameManager::AddEntities({ glueOnGround });
 
 		Drop();
+		GameManager::RemoveEntities({ glue });
 	}
 	else {
 		auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);

@@ -194,6 +194,7 @@
     <ClCompile Include="FBO.cpp" />
     <ClCompile Include="Fertilizer.cpp" />
     <ClCompile Include="Glue.cpp" />
+    <ClCompile Include="GlueOnGround.cpp" />
     <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="Fertilizer.h" />
     <ClInclude Include="glm.h" />
     <ClInclude Include="Glue.h" />
+    <ClInclude Include="GlueOnGround.h" />
     <ClInclude Include="Hoe.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />

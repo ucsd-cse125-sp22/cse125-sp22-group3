@@ -7,7 +7,7 @@ Glue::Glue()
 }
 
 bool Glue::CanInteract(Player* player) {
-	return !player->GetIsHolding() && !isOnGround;
+	return !player->GetIsHolding();
 }
 
 void Glue::OnInteract(Player* player) {
