@@ -245,6 +245,7 @@
     <ClInclude Include="Seed.h" />
     <ClInclude Include="GardenTool.h" />
     <ClInclude Include="Shovel.h" />
+    <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="UI\imgui\imconfig.h" />
     <ClInclude Include="UI\imgui\imgui.h" />

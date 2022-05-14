@@ -9,8 +9,8 @@
 #include <thread>         
 #include <chrono>
 #include <map>
-#include "../../../packages/SoLoud-wav.2020.2.7/build/native/include/soloud.h"
-#include "../../../packages/SoLoud-wav.2020.2.7/build/native/include/soloud_wav.h"
+
+#include "SoundEngine.h"
 
 namespace fs = std::filesystem;
 
@@ -107,8 +107,8 @@ int main(int argc, char* argv[])
 	}
 
 	//TODO move somewhere
-	SoLoud::Soloud sound_engine;
-	sound_engine.init();
+	SoundEngine sound_engine{};
+	sound_engine.Init();
 	
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
@@ -319,7 +319,7 @@ int main(int argc, char* argv[])
 		//begin_time = end_time;
 	}
 
-	sound_engine.deinit();
+	sound_engine.DeInit();
 
 	// destroy objects created
 	Window::cleanUp();
