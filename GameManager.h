@@ -16,6 +16,7 @@
 #include "VeggieNet.h"
 #include "WateringCan.h"
 #include "Fertilizer.h"
+#include "Glue.h"
 #include <chrono>
 
 class GameManager : GameEntity

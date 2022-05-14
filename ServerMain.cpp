@@ -77,6 +77,10 @@ inline int ServerMain()
 	fert.SetPosition({ 10, -4, 20 });
 	game.AddEntities({ &fert });
 
+	Glue glue{};
+	glue.SetPosition({ 10, -4, 30 });
+	game.AddEntities({ &glue });
+
 	world.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {

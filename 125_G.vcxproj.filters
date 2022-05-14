@@ -40,6 +40,7 @@
     <ClCompile Include="WateringCan.cpp" />
     <ClCompile Include="Fertilizer.cpp" />
     <ClCompile Include="ServerMain.cpp" />
+    <ClCompile Include="Glue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="VeggieNet.h" />
     <ClInclude Include="WateringCan.h" />
     <ClInclude Include="Fertilizer.h" />
+    <ClInclude Include="Glue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
