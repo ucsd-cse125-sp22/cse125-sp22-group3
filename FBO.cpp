@@ -14,10 +14,10 @@ glm::vec3 FBO::lightPos = glm::vec3(-2.0f, 2.0f, -1.0f);
 FBO::FBO() {}
 
 FBO::FBO(float np, float fp) {
-    near = np;
-    far = fp;
+    near_ = np;
+    far_ = fp;
 
-    shadowCascadeLevels = { far / 50.0f, far / 25.0f, far / 10.0f, far / 2.0f };
+    shadowCascadeLevels = { far_ / 50.0f, far_ / 25.0f, far_ / 10.0f, far_ / 2.0f };
 	// Initialize frame buffer
 	glGenFramebuffers(1, &depthFBO);
 	glGenTextures(1, &dm);
@@ -212,7 +212,7 @@ void FBO::draw(int width, int height, glm::mat4 cam) {
     {
         if (i == 0)
         {
-            ret.push_back(setLightSpaceMatrix(near, shadowCascadeLevels[i], cam, width, height));
+            ret.push_back(setLightSpaceMatrix(near_, shadowCascadeLevels[i], cam, width, height));
         }
         else if (i < shadowCascadeLevels.size())
         {
@@ -220,7 +220,7 @@ void FBO::draw(int width, int height, glm::mat4 cam) {
         }
         else
         {
-            ret.push_back(setLightSpaceMatrix(shadowCascadeLevels[i - 1], far, cam, width, height));
+            ret.push_back(setLightSpaceMatrix(shadowCascadeLevels[i - 1], far_, cam, width, height));
         }
     }
 

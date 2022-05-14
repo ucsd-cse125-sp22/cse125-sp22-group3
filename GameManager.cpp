@@ -88,20 +88,26 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 	}
 
 	std::vector<std::pair<char*, int>> out_vec;
-	for (int client_idx = 0; client_idx < players_.size(); client_idx++) {
+	for (auto & player : players_) {
+		std::vector<SoundInfo> sound_infos = player->GetSounds();
+		
 		ServerHeader sheader{};
 		sheader.num_models = model_infos.size();
-		sheader.player_transform = players_[client_idx]->GetParentTransform();
-		sheader.player_sprinting = players_[client_idx]->sprint;
-		sheader.ui_open = players_[client_idx]->ui_open;
+		sheader.num_sounds = sound_infos.size();
+		sheader.player_transform = player->GetParentTransform();
+		sheader.player_sprinting = player->sprint;
+		sheader.ui_open = player->ui_open;
 		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
 		}
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
-		serverSerialize(server_buf, &sheader, model_infos.data());
+		serverSerialize(server_buf, &sheader, model_infos.data(), sound_infos.data());
 		out_vec.push_back(std::make_pair(server_buf, static_cast<int>(GetBufSize(&sheader))));
+
+		player->ResetSoundBools();
 	}
+	
 	return out_vec;
 }
 

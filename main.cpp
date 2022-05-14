@@ -106,7 +106,6 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	//TODO move somewhere
 	SoundEngine sound_engine{};
 	sound_engine.Init();
 	
@@ -176,133 +175,139 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len)
-			{
-				ServerHeader* sheader;
-				ModelInfo* model_arr;
-				serverDeserialize(recv_buf, &sheader, &model_arr);
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
+			ServerHeader* sheader;
+			ModelInfo* model_arr;
+			SoundInfo* sound_arr;
+			serverDeserialize(recv_buf, &sheader, &model_arr, &sound_arr);
 
-				//Rendering Code
-				const glm::mat4 player_transform = sheader->player_transform;
-				const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
-				
-				const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
-				const glm::vec3 look_at_point = player_pos; // The point we are looking at.
-				const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
-
-				//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
-				GUI::ShowGUI(sheader->ui_open);
+			//Rendering Code
+			const glm::mat4 player_transform = sheader->player_transform;
+			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 			
-				for (int i = 0; i < num_clients; i++) {
-					GUI::scoreboard_data[i]=sheader->balance[i];
+			const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
+			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
+			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
+
+			//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
+			GUI::ShowGUI(sheader->ui_open);
+		
+			for (int i = 0; i < num_clients; i++) {
+				GUI::scoreboard_data[i]=sheader->balance[i];
+			}
+
+			for (int i = 0; i < sheader->num_sounds; i++) {
+				const SoundInfo sound_info = sound_arr[i];
+
+				//TODO Add location of sound so we have panning
+				sound_engine.Play(sound_info.sound);
+			}
+
+			Window::postprocessing->draw(Window::width, Window::height, Window::view);
+			for (int i = 0; i < sheader->num_models; i++)
+			{
+				ModelInfo model_info = model_arr[i];
+
+				if (model_map.count(model_info.model_id) == 0) {
+					model_map[model_info.model_id] = new Model(model_info.model);
+				}
+				else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
+					delete model_map[model_info.model_id];
+					model_map[model_info.model_id] = new Model(model_info.model);
 				}
 
-
-				Window::postprocessing->draw(Window::width, Window::height, Window::view);
-				for (int i = 0; i < sheader->num_models; i++)
-				{
-					ModelInfo model_info = model_arr[i];
-
-					if (model_map.count(model_info.model_id) == 0) {
-						model_map[model_info.model_id] = new Model(model_info.model);
-					}
-					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
-						delete model_map[model_info.model_id];
-						model_map[model_info.model_id] = new Model(model_info.model);
-					}
-
-					if (model_info.is_player) {
-						GUI::player_pos[model_info.model] = ImVec2(
-							model_info.parent_transform[3][0],
-							model_info.parent_transform[3][2]);
-					}
-  
+				if (model_info.is_player) {
+					GUI::player_pos[model_info.model] = ImVec2(
+						model_info.parent_transform[3][0],
+						model_info.parent_transform[3][2]);
+				}
+				
   				Model& curr_model = *model_map[model_info.model_id];
 
-					//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
-					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
-						if (sheader->player_sprinting) {
-							curr_model.anim_speed = 3.0f;
-						}
-						else {
-							curr_model.anim_speed = 1.5f;
-						}
+				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
+				if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
+					if (sheader->player_sprinting) {
+						curr_model.anim_speed = 3.0f;
 					}
 					else {
-						curr_model.anim_speed = 1;
+						curr_model.anim_speed = 1.5f;
 					}
-					
-					curr_model.setAnimationMode(model_info.modelAnim);
-					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 				}
-
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-				glViewport(0, 0, Window::width, Window::height);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				else {
+					curr_model.anim_speed = 1;
+				}
 				
-				glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
+				curr_model.setAnimationMode(model_info.modelAnim);
+				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+			}
+		
 
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				// Window::renderDepthMap();
-				glCullFace(GL_BACK);
-				for (int i = 0; i < sheader->num_models; i++)
-				{
-					ModelInfo model_info = model_arr[i];
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glViewport(0, 0, Window::width, Window::height);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
 
-					if (model_map.count(model_info.model_id) == 0) {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			// Window::renderDepthMap();
+			glCullFace(GL_BACK);
+			for (int i = 0; i < sheader->num_models; i++)
+			{
+				ModelInfo model_info = model_arr[i];
+
+				if (model_map.count(model_info.model_id) == 0) {
+					model_map[model_info.model_id] = new Model(model_info.model);
+				}
+				else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
+						delete model_map[model_info.model_id];
 						model_map[model_info.model_id] = new Model(model_info.model);
-					}
-					else if (model_info.model != model_map[model_info.model_id]->getModelEnum()) {
-							delete model_map[model_info.model_id];
-							model_map[model_info.model_id] = new Model(model_info.model);
-					}
-
-					model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-
-					model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::modelShader[model_info.model]);
 				}
 
-				
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-				glUseProgram(Window::blurShaderProgram);
-				unsigned int amount = 2;
-				bool horizontal = true, first_iteration = true;
-				for (unsigned int i = 0; i < amount; i++)
-				{
-					glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "image"), 0);
-					glBindFramebuffer(GL_FRAMEBUFFER, FBO::pingpongFBO[horizontal]);
-					glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "horizontal"), horizontal);
-					glBindTexture(GL_TEXTURE_2D, first_iteration ? FBO::colorBuffers[1] : FBO::pColorBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
-					Window::renderDepthMap();
-					horizontal = !horizontal;
-					if (first_iteration)
-						first_iteration = false;
-				}
-				
-				glUseProgram(0);
-				glActiveTexture(GL_TEXTURE0);
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
-				
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				glUseProgram(Window::finalShaderProgram);
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[!horizontal]);
+				model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 
-				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "scene"), 0);
-				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloomBlur"), 1);
-				glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloom"), 1);
-				glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
+				model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::modelShader[model_info.model]);
+			}
+			
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glUseProgram(Window::blurShaderProgram);
+			unsigned int amount = 2;
+			bool horizontal = true, first_iteration = true;
+			for (unsigned int i = 0; i < amount; i++)
+			{
+				glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "image"), 0);
+				glBindFramebuffer(GL_FRAMEBUFFER, FBO::pingpongFBO[horizontal]);
+				glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "horizontal"), horizontal);
+				glBindTexture(GL_TEXTURE_2D, first_iteration ? FBO::colorBuffers[1] : FBO::pColorBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
 				Window::renderDepthMap();
-				glUseProgram(0);
-				
+				horizontal = !horizontal;
+				if (first_iteration)
+					first_iteration = false;
+			}
+			
+			glUseProgram(0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glUseProgram(Window::finalShaderProgram);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[!horizontal]);
 
-				free(sheader);
-				free(model_arr);
+			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "scene"), 0);
+			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloomBlur"), 1);
+			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloom"), 1);
+			glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
+			Window::renderDepthMap();
+			glUseProgram(0);
+			
 
-				// TODO render minimap here using minimap_pos vectors
-			});
+			free(sheader);
+			free(model_arr);
+
+			// TODO render minimap here using minimap_pos vectors
+		});
 
 		// Gets events, including input such as keyboard and mouse or window resizing
 		glfwPollEvents();

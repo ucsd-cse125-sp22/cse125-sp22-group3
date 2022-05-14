@@ -5,7 +5,9 @@
 #include "Drawable.h"
 #include "GameEntity.h"
 #include "PhysicsObject.h"
+#include "SoundEngine.h"
 #include "util.h"
+#include "Network/NetworkPacket.h"
 
 class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
@@ -38,6 +40,11 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// Moving player
 		void Move();
 		void MoveHeld();
+
+		// Sound Attributes
+		bool sound_buy = false;
+		bool sound_sell = false;
+		bool sound_plot_placement = false;
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();
@@ -45,8 +52,6 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::mat4 GetScale();
 
 		bool moveable = true;
-
-		
 
 	public:
 		// current animation, no custom get/set logic so is set as public field
@@ -64,6 +69,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::mat4 GetParentTransform() override;
 		ModelEnum GetModelEnum() override;
 		AniMode GetAniMode() override;
+
+		// The sound!!
+		std::vector<SoundInfo> GetSounds();
+		void ResetSoundBools();
 
 		// PhysicsObject
 		void OnCollide(PhysicsObject* object) override {}
@@ -105,7 +114,4 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// glue
 		bool isGlued = false;
 		float glueTime = 0;
-
-		
-		
 };

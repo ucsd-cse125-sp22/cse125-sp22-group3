@@ -23,7 +23,7 @@ class FBO {
 		unsigned int rbo;
 		unsigned int attachments[2];
 
-		float near, far;
+		float near_, far_;
 
 		glm::mat4 setLightSpaceMatrix(float np, float fp, glm::mat4 view, int width, int height);
 

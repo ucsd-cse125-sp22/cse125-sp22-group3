@@ -2,6 +2,7 @@
 #include "Hoe.h"
 
 #include "GameManager.h"
+#include "Network/NetworkPacket.h"
 
 Player::Player() {
 	translate = new glm::vec2(0.f,0.f);
@@ -90,6 +91,16 @@ glm::mat4 Player::GetParentTransform()
 ModelEnum Player::GetModelEnum() { return model; }
 AniMode Player::GetAniMode() { return modelAnim; }
 
+std::vector<SoundInfo> Player::GetSounds()
+{
+	std::vector<SoundInfo> output{};
+	if (sound_buy) output.push_back(SoundInfo{SFX_BUY, GetPosition()});
+	if (sound_sell) output.push_back(SoundInfo{SFX_SELL, GetPosition()});
+	if (sound_plot_placement) output.push_back(SoundInfo{SFX_PLOT_PLACE, GetPosition()});
+
+	return output;
+}
+
 void Player::OnTrigger(PhysicsObject* object)
 {
 	auto entity = dynamic_cast<GameEntity*>(object);
@@ -133,6 +144,8 @@ void Player::Use() {
 
 		Drop();
 		GameManager::RemoveEntities({hoe});
+
+		sound_plot_placement = true;
 	}
 	/*else if (auto glue = dynamic_cast<Glue*>(entityHeld)) {
 		if (!glue->isOnGround) {
@@ -187,7 +200,8 @@ void Player::Buy(VegetableType bought_vegetable) {
 		Seed* bought_seed = new Seed{ bought_vegetable, veggie_info.seed_model };
 		GameManager::AddEntities({ bought_seed });
 		SetHoldEntity(bought_seed);
-		
+
+		sound_buy = true;
 	}
 	CloseUI();
 	//printf("BUYING VEGGIE %f\n", curr_balance);
@@ -212,6 +226,8 @@ void Player::Sell(){
 		GameManager::RemoveEntities({ entityHeld });
 		entityHeld = nullptr;
 		isHolding = false;
+
+		sound_sell = true;
 	}
 	//printf("SELLING VEGGIE %f\n", curr_balance);
 }
@@ -249,6 +265,13 @@ void Player::DisableMovement()
 bool Player::GetMoveable()
 {
 	return moveable;
+}
+
+void Player::ResetSoundBools()
+{
+	sound_buy = false;
+	sound_sell = false;
+	sound_plot_placement = false;
 }
 
 glm::mat4 Player::GetRotation() {
