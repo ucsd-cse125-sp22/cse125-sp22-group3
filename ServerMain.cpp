@@ -47,11 +47,13 @@ inline int ServerMain()
 	*/
 
 	World world{ WORLD_MAP };
+	World water{ WORLD_WATER };
+	World leaves{ WORLD_LEAVES };
 	
 	Particle glow{ PARTICLE_GLOW };
 	glow.SetPosition({ -30, -4, 0 });
 	
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &fish, &glow });
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow });
 
 	Shovel shovel{};
 	shovel.SetPosition({ 10, -4, 10 });
@@ -82,6 +84,8 @@ inline int ServerMain()
 	game.AddEntities({ &glue });
 
 	world.SetPosition({ 0, 0, -4.0f });
+	water.SetPosition({ 0, 0, -4.0f });
+	leaves.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (ClientPacket& cpacket : client_packet_vec) {

@@ -125,7 +125,9 @@ private:
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
 		{WORLD_FLAG_POISON, "models/poisonedPlot/poisonedPlot.fbx"},
 
-		{WORLD_MAP, "models/world/borderlessMap.fbx"},
+		{WORLD_MAP, "models/world/world.fbx"},
+		{WORLD_WATER, "models/world/water.fbx"},
+		{WORLD_LEAVES, "models/world/leaves.fbx"},
 
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},

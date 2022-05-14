@@ -142,6 +142,8 @@ bool Window::initializeObjects()
 	{ WORLD_FLAG_POISON, animationShaderProgram  },
 
 	{ WORLD_MAP, worldShaderProgram },
+	{ WORLD_WATER, worldShaderProgram },
+	{ WORLD_LEAVES, worldShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram }

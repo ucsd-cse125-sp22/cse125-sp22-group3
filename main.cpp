@@ -131,8 +131,8 @@ int main(int argc, char* argv[])
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
 
-	GUI::show_loading = true;
 
+	GUI::show_loading = true;
 	// initialize IMGUI 
 	GUI::initializeGUI(window);
 	GUI::initializeImage();
@@ -241,7 +241,6 @@ int main(int argc, char* argv[])
 				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 			}
 		
-
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glViewport(0, 0, Window::width, Window::height);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
