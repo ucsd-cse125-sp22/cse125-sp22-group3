@@ -105,6 +105,7 @@ private:
 		{NET, "models/net/net.fbx"},
 		{FERTILIZER, "models/fertilizer/fertilizer.fbx"},
 		{GLUE, "models/glue/glue.fbx"},
+		{GLUE_ON_GROUND, "models/glueOnGround/glueOnGround.fbx"},
 
 		{WORLD_PLOT_RED, "models/plots/plotRed.fbx"},
 		{WORLD_PLOT_BLUE, "models/plots/plotBlue.fbx"},

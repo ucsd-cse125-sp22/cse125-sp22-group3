@@ -121,6 +121,7 @@ bool Window::initializeObjects()
 	{ NET, animationShaderProgram},
 	{ GLUE, animationShaderProgram},
 	{ FERTILIZER, animationShaderProgram},
+	{ GLUE_ON_GROUND,animationShaderProgram},
 
 	{ WORLD_PLOT_RED, animationShaderProgram  },
 	{ WORLD_PLOT_BLUE, animationShaderProgram },

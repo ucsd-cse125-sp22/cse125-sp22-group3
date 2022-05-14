@@ -61,6 +61,7 @@ enum ModelEnum
 	NET,
 	FERTILIZER,
 	GLUE,
+	GLUE_ON_GROUND,
 
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
@@ -134,4 +135,6 @@ static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
 	{CHAR_GILMAN, WORLD_PLOT_BLUE},
 	{CHAR_SWAINKY, WORLD_PLOT_GREEN}
 };
+
+static float maxGlueTime = 10;
 #endif

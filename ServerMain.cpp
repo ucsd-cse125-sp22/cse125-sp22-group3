@@ -78,7 +78,7 @@ inline int ServerMain()
 	game.AddEntities({ &fert });
 
 	Glue glue{};
-	glue.SetPosition({ 10, -4, 30 });
+	glue.SetPosition({ 10, -1, 30 });
 	game.AddEntities({ &glue });
 
 	world.SetPosition({ 0, 0, -4.0f });
