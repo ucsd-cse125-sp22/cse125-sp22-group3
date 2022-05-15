@@ -182,7 +182,6 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float ti
 void Mesh::particleDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float time, GLuint shader) {
     glUseProgram(shader);
 
-
     // Apply parent transformation
     glm::mat4 m = parent * model;
 
@@ -335,36 +334,38 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
 }
 
 void Mesh::draw(glm::mat4 parent, GLuint shader) {
-    glUseProgram(shader);
-    glm::mat4 m = parent * model;
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
-        glm::value_ptr(m));
+    if (!isParticle) {
+        glUseProgram(shader);
+        glm::mat4 m = parent * model;
+        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
+            glm::value_ptr(m));
 
-    glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
 
-    if (textures.size() > 0) {
+        if (textures.size() > 0) {
+            glActiveTexture(GL_TEXTURE0);
+
+            if (isParticle) {
+                glBindTexture(GL_TEXTURE_2D, textures[currentTextureIndex].id);
+            }
+
+            else {
+                glBindTexture(GL_TEXTURE_2D, textures[0].id);
+            }
+            glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+            glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+        }
+
+        // Bind the VAO
+        glBindVertexArray(VAO);
+
+        glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
+
+        // Unbind the VAO and shader program
+        glBindVertexArray(0);
+        glUseProgram(0);
         glActiveTexture(GL_TEXTURE0);
-
-        if (isParticle) {
-            glBindTexture(GL_TEXTURE_2D, textures[currentTextureIndex].id);
-        }
-
-        else {
-            glBindTexture(GL_TEXTURE_2D, textures[0].id);
-        }
-        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
-        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
     }
-
-    // Bind the VAO
-    glBindVertexArray(VAO);
-
-    glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
-
-    // Unbind the VAO and shader program
-    glBindVertexArray(0);
-    glUseProgram(0);
-    glActiveTexture(GL_TEXTURE0);
 }
 
 void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
@@ -374,6 +375,7 @@ void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
         glm::value_ptr(m));
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
+    glUniform1i(glGetUniformLocation(shader, "isLeaf"), 1);
     glUniform1f(glGetUniformLocation(shader, "blend"), blend);
 
     if (textures.size() > 0) {

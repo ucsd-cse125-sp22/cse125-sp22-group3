@@ -20,6 +20,7 @@ uniform mat4 model;
 uniform float blend;
 
 uniform bool hasAnimation;
+uniform bool isLeaf;
 
 uniform sampler2D leaf;
 
@@ -28,9 +29,8 @@ void main()
     if(!hasAnimation) {
         vs_out.v_TexCoord = uvs;
 
-        vec4 tex = texture(leaf, uvs);
-
-        if(tex.rgb != vec3(0.0f)) {
+        if(isLeaf) {
+            vec4 tex = texture(leaf, uvs);
             tex = tex - vec4(0.5f);
             tex *= 2.0f;
 
@@ -39,7 +39,7 @@ void main()
 
             gl_Position = model * vec4(newPos, 1.0f);
         }
-        
+
         else {
             gl_Position = model * vec4(positions, 1.0);
         }
