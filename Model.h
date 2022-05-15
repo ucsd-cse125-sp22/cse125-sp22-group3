@@ -98,6 +98,7 @@ private:
 		{VEG_CORN, "models/corn/corn.fbx"}, 
 		{VEG_RADISH, "models/radish/radish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
+		{VEG_GOLDEN_EGGPLANT, "models/goldenEggplant/goldentEggplant.fbx"},
 
 		{POISON, "models/poison/poison.fbx"},
 		{WATERING_CAN, "models/wateringCan/wateringCan.fbx"},
@@ -107,6 +108,8 @@ private:
 		{FERTILIZER, "models/fertilizer/fertilizer.fbx"},
 		{GLUE, "models/glue/glue.fbx"},
 		{GLUE_ON_GROUND, "models/glueOnGround/glueOnGround.fbx"},
+		{ OATS, "models/oats/oats.fbx" },
+		{ SOJU, "models/soju/soju.fbx" },
 
 		{WORLD_PLOT_RED, "models/plots/plotRed.fbx"},
 		{WORLD_PLOT_BLUE, "models/plots/plotBlue.fbx"},

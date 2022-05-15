@@ -53,6 +53,7 @@ enum ModelEnum
 	VEG_CORN,
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
+	VEG_GOLDEN_EGGPLANT,
 
 	POISON,
 	WATERING_CAN,
@@ -62,6 +63,8 @@ enum ModelEnum
 	FERTILIZER,
 	GLUE,
 	GLUE_ON_GROUND,
+	OATS,
+	SOJU,
 
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
@@ -86,7 +89,9 @@ enum ModelEnum
 	WORLD_LEAVES,
 
 	PARTICLE_GLOW,
-	PARTICLE_DUST
+	PARTICLE_DUST,
+
+	
 };
 
 enum AniMode {

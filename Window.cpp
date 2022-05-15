@@ -121,6 +121,7 @@ bool Window::initializeObjects()
 	{ VEG_CORN, animationShaderProgram  },
 	{ VEG_RADISH, animationShaderProgram  },
 	{ VEG_TOMATO, animationShaderProgram  },
+	{ VEG_GOLDEN_EGGPLANT, animationShaderProgram  },
 
 	{ WATERING_CAN, animationShaderProgram  },
 	{ POISON, animationShaderProgram  },
@@ -130,6 +131,8 @@ bool Window::initializeObjects()
 	{ GLUE, animationShaderProgram},
 	{ FERTILIZER, animationShaderProgram},
 	{ GLUE_ON_GROUND,animationShaderProgram},
+	{ OATS, animationShaderProgram  },
+	{ SOJU, animationShaderProgram  },
 
 	{ WORLD_PLOT_RED, animationShaderProgram  },
 	{ WORLD_PLOT_BLUE, animationShaderProgram },

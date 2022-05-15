@@ -1,7 +1,7 @@
 #pragma once
 #include "Holdable.h"
 #include "Interactable.h"
-
+#include "GameManager.h"
 class GlueOnGround : public PhysicsObject, public GameEntity, public Drawable
 {
 
@@ -24,8 +24,8 @@ public:
 	void FixedUpdate() override;
 
 	// PhysicsObject
-	void OnCollide(PhysicsObject* object) override {};
-	void OnTrigger(PhysicsObject* object) override {};
+	void OnCollide(PhysicsObject* object) override;
+	void OnTrigger(PhysicsObject* object) override {}; 
 	std::vector<Collider*> GetColliders() override;
 	glm::vec2* GetWorldPosition() override;
 
@@ -41,5 +41,11 @@ public:
 	void SetPosition(glm::vec3 position);
 	void SetRotation(glm::mat4 rotation);
 	glm::mat4 GetRotation() const;
+
+	// glue info
+	Player* ownerOfGlue = nullptr;
+	Player* gluedPlayer = nullptr;
+	float glueTime = 0;
+	float maxGlueTime = 10;
 };
 
