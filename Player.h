@@ -113,7 +113,12 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// how much money player currently has
 		float curr_balance = 20;
 
+		// particles
 		GameEntity* dust_particle = nullptr;
+
+		// stamina
+		float staminaIncreaseRate = 10;
+		float staminaDecreaseRate = 30;
 		
 		
 };

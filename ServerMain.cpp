@@ -51,7 +51,7 @@ inline int ServerMain()
 	World leaves{ WORLD_LEAVES };
 	
 	Particle glow{ PARTICLE_GLOW };
-	glow.SetPosition({ -30, -4, 0 });
+	glow.SetPosition({ -30, glow.glowParticleHeight, 0 });
 	
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow });
 

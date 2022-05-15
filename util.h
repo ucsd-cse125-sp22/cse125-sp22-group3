@@ -11,7 +11,7 @@ static bool GUI_show_stamina;
 static bool GUI_show_timer; 
 static bool GUI_show_buy_ui; 
 
-static float stamina_percent; //use this variable to set the stamina display
+static float stamina_percent=100; //use this variable to set the stamina display
 
 
 enum InputCommands {
