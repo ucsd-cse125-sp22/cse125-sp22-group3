@@ -297,6 +297,8 @@
     <None Include="packages.config" />
     <None Include="shaders\animation.frag" />
     <None Include="shaders\animation.vert" />
+    <None Include="shaders\leaves.frag" />
+    <None Include="shaders\leaves.vert" />
     <None Include="shaders\model.frag" />
     <None Include="shaders\model.vert" />
     <None Include="shaders\shader.frag" />

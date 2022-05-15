@@ -73,6 +73,9 @@ class Mesh {
 		// is this mesh a particle?
 		bool isParticle = false;
 
+		// is this mesh a leaf
+		bool isLeaf = false;
+
 		// Constructor + Deconstructors
 		Mesh();
 
@@ -88,6 +91,7 @@ class Mesh {
 
 		// Render depth map
 		void draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shader);
+		void draw(glm::mat4 parent, float blend, GLuint shader);
 		void draw(glm::mat4 parent, GLuint shader);
 };
 

@@ -34,6 +34,7 @@ glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window
 
 // Shader Program ID
 GLuint Window::worldShaderProgram; 
+GLuint Window::leafShaderProgram; 
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
 GLuint Window::shadowShaderProgram; 
@@ -48,6 +49,7 @@ bool Window::show_GUI = true;
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");
+	leafShaderProgram = LoadShaders("shaders/leaves.vert", "shaders/leaves.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
 	shadowShaderProgram = LoadShaders("shaders/shadows.vert", "shaders/shadows.frag", "shaders/shadows.geom");
@@ -95,6 +97,12 @@ bool Window::initializeProgram() {
 		std::cerr << "Failed to initialize shader program" << std::endl;
 		return false;
 	}
+
+	if (!leafShaderProgram) {
+		std::cerr << "Failed to initialize shader program" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
@@ -143,7 +151,7 @@ bool Window::initializeObjects()
 
 	{ WORLD_MAP, worldShaderProgram },
 	{ WORLD_WATER, worldShaderProgram },
-	{ WORLD_LEAVES, worldShaderProgram },
+	{ WORLD_LEAVES, leafShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram }

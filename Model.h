@@ -14,6 +14,7 @@
 #include <map>
 #include <stack>
 #include <unordered_set>
+#include <string>
 
 #include "assimpConvert.h"
 #include "stb_image.h"
@@ -205,6 +206,7 @@ public:
 	int GetRotationIndex(float time, AnimationNode animationNode);
 
 	// Set or get animation data
+	void leafPingPong();
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);

@@ -17,14 +17,32 @@ const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 uniform mat4 lightSpaceMatrix;
 uniform mat4 model;
+uniform float blend;
 
 uniform bool hasAnimation;
+
+uniform sampler2D leaf;
 
 void main()
 {
     if(!hasAnimation) {
         vs_out.v_TexCoord = uvs;
-        gl_Position = model * vec4(positions, 1.0);
+
+        vec4 tex = texture(leaf, uvs);
+
+        if(tex.rgb != vec3(0.0f)) {
+            tex = tex - vec4(0.5f);
+            tex *= 2.0f;
+
+            vec3 movement = smoothstep(normals, (normals * vec3(tex)), vec3(blend));
+            vec3 newPos = positions + movement;
+
+            gl_Position = model * vec4(newPos, 1.0f);
+        }
+        
+        else {
+            gl_Position = model * vec4(positions, 1.0);
+        }
     }
 
     else {

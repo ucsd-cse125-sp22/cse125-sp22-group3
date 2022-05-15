@@ -139,7 +139,13 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float ti
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
         // time
-        glUniform1f(glGetUniformLocation(shaderProgram, "time"), time);
+        if (!isLeaf) {
+            glUniform1f(glGetUniformLocation(shaderProgram, "time"), time);
+        }
+
+        else {
+            glUniform1f(glGetUniformLocation(shaderProgram, "blend"), time);
+        }
 
         // for shadows
         for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
@@ -258,8 +264,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, false, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, false, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
-    
-    // time
+
     glUniform1f(glGetUniformLocation(shaderProgram, "time"), time);
 
     // transformations
@@ -348,6 +353,38 @@ void Mesh::draw(glm::mat4 parent, GLuint shader) {
             glBindTexture(GL_TEXTURE_2D, textures[0].id);
         }
         glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+    }
+
+    // Bind the VAO
+    glBindVertexArray(VAO);
+
+    glDrawElements(GL_TRIANGLES, indices.size() * 3, GL_UNSIGNED_INT, 0);
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
+    glUseProgram(shader);
+    glm::mat4 m = parent * model;
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE,
+        glm::value_ptr(m));
+
+    glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
+    glUniform1f(glGetUniformLocation(shader, "blend"), blend);
+
+    if (textures.size() > 0) {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textures[0].id);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, textures[1].id);
+
+        glUniform1i(glGetUniformLocation(shader, "diffuse"), 0);
+        glUniform1i(glGetUniformLocation(shader, "leaf"), 1);
+
         glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
     }
 

@@ -41,6 +41,7 @@ public:
 
 	// Shader Program ID
 	static GLuint worldShaderProgram;
+	static GLuint leafShaderProgram;
 	static GLuint modelShaderProgram;
 	static GLuint shadowShaderProgram;
 	static GLuint animationShaderProgram;

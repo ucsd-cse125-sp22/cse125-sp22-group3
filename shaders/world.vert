@@ -26,7 +26,6 @@ uniform mat4 finalBonesMatrices[MAX_BONES];
 // Outputs of the vertex shader are the inputs of the same name of the fragment shader.
 // The default output, gl_Position, should be assigned something. You can define as many
 // extra outputs as you need.
-out float sampleExtraOutput;
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 TexCoords;
