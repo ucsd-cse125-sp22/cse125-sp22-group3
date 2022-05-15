@@ -103,7 +103,7 @@ void Plot::OnInteract(Player* player) {
 			seed->isPoisoned = true;
 			printf("POISONED PLANT\n");
 			glm::vec3 trans = GetTranslate();
-			seed->SetModel(WORLD_FLAG_POISON, glm::vec3(trans[0],-1, trans[2]));
+			seed->SetModel(WORLD_FLAG_POISON, glm::vec3(trans[0],poisonFlagHeight, trans[2]));
 
 			// TODO if we wanna replace it with the poison flags
 			GameManager::RemoveEntities({ poisson });

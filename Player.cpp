@@ -12,7 +12,7 @@ Player::Player() {
 	dust_particle = new Particle(ModelEnum::PARTICLE_DUST);
 	auto particle_ = dynamic_cast<Particle*>(dust_particle);
 	particle_->modelAnim = PARTICLE_STOP;
-	particle_->SetPosition(glm::vec3(( * translate)[0], -4, -(*translate)[1]));
+	particle_->SetPosition(glm::vec3(( * translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
 	GameManager::AddEntities({ dust_particle });
 }
 
@@ -28,10 +28,17 @@ Player::Player(ModelEnum curr) : Player() {
 }
 
 void Player::FixedUpdate() {
+	printf("stamina percent: %f\n", stamina_percent);
+
+	// cant sprint with no stamina
+	
+
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) <= 0) {
+		// increment stamina
+		stamina_percent = fmin(stamina_percent + (delta*staminaIncreaseRate), 100);
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
@@ -47,6 +54,20 @@ void Player::FixedUpdate() {
 			this->modelAnim = DANCE;
 	}
 	else {
+		// increment stamina
+		if(sprint)
+			stamina_percent = fmax(stamina_percent - (delta*staminaDecreaseRate), 0);
+		else {
+			stamina_percent = fmin(stamina_percent + (delta * staminaIncreaseRate), 100);
+		}
+
+		// check if enough stamina to run
+		if (stamina_percent == 0) {
+			auto particle_ = dynamic_cast<Particle*>(dust_particle);
+			particle_->modelAnim = PARTICLE_STOP;
+			sprint = false;
+		}
+
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
 		curr_vel_ += base_accel_ * move_input * delta;
@@ -82,9 +103,9 @@ void Player::Move() {
 
 		rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
 
-		// move particle
+		// move dust particle
 		auto particle_ = dynamic_cast<Particle*>(dust_particle);
-		particle_->SetPosition(glm::vec3((*translate)[0], -4, -(*translate)[1]));
+		particle_->SetPosition(glm::vec3((*translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
 		//particle_->SetRotation(GetParentTransform());
 	}
 }
@@ -193,9 +214,7 @@ void Player::Dance() {
 void Player::Buy(VegetableType bought_vegetable) {
 	
 	VeggieInfo veggie = veggie_map[bought_vegetable];
-	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (!isHolding && veggie.seed_price <= curr_balance) {
-		//SetTriggeringEntity(nullptr);
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
 
@@ -237,8 +256,10 @@ void Player::Sell(){
 }
 
 void Player::SetSprint(bool sprinting) {
-	// first time starting to sprint
+	
+	// first time starting to sprint setting particles
 	if (!sprint && sprinting) {
+
 		auto particle_ = dynamic_cast<Particle*>(dust_particle);
 		particle_->modelAnim = PARTICLE_PLAY;
 	}
@@ -247,6 +268,7 @@ void Player::SetSprint(bool sprinting) {
 		auto particle_ = dynamic_cast<Particle*>(dust_particle);
 		particle_->modelAnim = PARTICLE_STOP;
 	}
+	
 	sprint = sprinting;
 
 }

@@ -32,7 +32,7 @@ void Seed::FixedUpdate()
 			glow_particle = new Particle(PARTICLE_GLOW);
 			auto particle_ = dynamic_cast<Particle*>(glow_particle);
 			particle_->modelAnim = PARTICLE_PLAY;
-			particle_->SetPosition(glm::vec3((*translate)[0], -4, -(*translate)[1]));
+			particle_->SetPosition(glm::vec3((*translate)[0], particle_->glowParticleHeight, -(*translate)[1]));
 			GameManager::AddEntities({ glow_particle });
 
 

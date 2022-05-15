@@ -21,6 +21,8 @@ class Particle : public GameEntity, public Drawable {
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::mat4 rotation);
 		glm::mat4 GetRotation() const;
+		float glowParticleHeight = -3;
+		float dustParticleHeight = -3;
 
 	private:
 		// Transformations
@@ -32,4 +34,6 @@ class Particle : public GameEntity, public Drawable {
 		// Get matrix transformation
 		glm::mat4 GetTransformation();
 		glm::mat4 GetTranslation();
+
+
 };
