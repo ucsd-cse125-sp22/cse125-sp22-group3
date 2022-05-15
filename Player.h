@@ -9,6 +9,7 @@
 #include "util.h"
 #include "Network/NetworkPacket.h"
 
+
 class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
 		// Transformations for our player
@@ -112,6 +113,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// how much money player currently has
 		float curr_balance = 20;
 
+		GameEntity* dust_particle;
 		
 		
 };
