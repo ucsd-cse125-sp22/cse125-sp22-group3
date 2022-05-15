@@ -113,7 +113,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// how much money player currently has
 		float curr_balance = 20;
 
-		GameEntity* dust_particle;
+		GameEntity* dust_particle = nullptr;
 		
 		
 };
