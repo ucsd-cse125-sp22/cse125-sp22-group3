@@ -267,7 +267,7 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 
 	std::string file = filename + "/" + filename + std::to_string(i) + fileType;
 	unsigned int result = TextureFromFile(file.c_str(), directory);
-
+	printf("HII %i\n", result);
 	while (result != -1) {
 		// load texture
 		Texture texture;
@@ -279,7 +279,7 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 
 		file = filename + "/" + filename + std::to_string(i) + fileType;
 		result = TextureFromFile(file.c_str(), directory);
-
+		printf("HII %i\n", result);
 		i++;
 	}
 	return textures;

@@ -1,6 +1,5 @@
 #include "Player.h"
 #include "Hoe.h"
-
 #include "GameManager.h"
 #include "Network/NetworkPacket.h"
 
@@ -10,6 +9,10 @@ Player::Player() {
 	scale = glm::vec3(0.0f);
 
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
+	dust_particle = new Particle(ModelEnum::PARTICLE_DUST);
+	auto particle_ = dynamic_cast<Particle*>(dust_particle);
+	particle_->modelAnim = PARTICLE_PLAY;
+	GameManager::AddEntities({ dust_particle });
 }
 
 GameEntity* Player::GetHoldEntity()
