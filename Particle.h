@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GameEntity.h"
 #include "Drawable.h"
 
@@ -23,6 +25,7 @@ class Particle : public GameEntity, public Drawable {
 		glm::mat4 GetRotation() const;
 		float glowParticleHeight = -3;
 		float dustParticleHeight = -3;
+		float dustParticleZOffset = -4.f;
 
 	private:
 		// Transformations
