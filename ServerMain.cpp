@@ -73,7 +73,7 @@ inline int ServerMain()
 	game.AddEntities({ &net });
 
 	WateringCan can{};
-	can.SetPosition({ 20, -4, 20 });
+	can.SetPosition({ 20, -2, 20 });
 	game.AddEntities({ &can });
 
 	Fertilizer fert{};

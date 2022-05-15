@@ -87,8 +87,10 @@ void Player::FixedUpdate() {
 	collider_->center = *translate;
 	
 	// move dust particle
-	dust_particle->SetPosition(glm::vec3((*translate)[0], dust_particle->dustParticleHeight, -(*translate)[1] - dust_particle->dustParticleZOffset));
-	//dust_particle->SetRotation(GetParentTransform());
+	const glm::vec4 particleLocation = glm::vec4(0, dust_particle->dustParticleHeight, -dust_particle->dustParticleZOffset, 1) * GetRotation();
+	const glm::mat4 particle_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
+	dust_particle->SetPosition(glm::vec3(translate->x + (particleLocation.x), dust_particle->dustParticleHeight, (-1) * translate->y - (particleLocation.z)));
+	dust_particle->SetRotation(particle_rotation);
 }
 
 
@@ -158,7 +160,7 @@ void Player::Use() {
 		const float plotOffset = 7.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -plotOffset, 1) * GetRotation();
 		glm::vec3 direction = glm::vec3(direction4/direction4.w);
-		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + glm::vec3(direction.x, direction.y, -direction.z);
 		plot->SetPosition(plotPosition);
 		GameManager::AddEntities({plot});
 
@@ -173,7 +175,7 @@ void Player::Use() {
 		const float glueOffset = 9.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -glueOffset, 1) * GetRotation();
 		glm::vec3 direction = glm::vec3(direction4 / direction4.w);
-		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + glm::vec3(direction.x, direction.y, -direction.z);;
 		glueOnGround->SetPosition(gluePosition);
 		GameManager::AddEntities({ glueOnGround });
 		glueOnGround->ownerOfGlue = this; // set owner

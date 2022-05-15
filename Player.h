@@ -118,7 +118,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// stamina
 		float staminaIncreaseRate = 10;
-		float staminaDecreaseRate = 30;
+		float staminaDecreaseRate = 0;
 
 		// glue
 		bool isGlued = false;
