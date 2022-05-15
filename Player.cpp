@@ -86,6 +86,10 @@ void Player::FixedUpdate() {
 	MoveHeld();
 
 	collider_->center = *translate;
+	// move dust particle
+	auto particle_ = dynamic_cast<Particle*>(dust_particle);
+	particle_->SetPosition(glm::vec3((*translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
+	//particle_->SetRotation(GetParentTransform());
 }
 
 
@@ -98,11 +102,6 @@ void Player::Move() {
 		*translate += distance;
 
 		rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
-
-		// move dust particle
-		auto particle_ = dynamic_cast<Particle*>(dust_particle);
-		particle_->SetPosition(glm::vec3((*translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
-		//particle_->SetRotation(GetParentTransform());
 	}
 }
 
