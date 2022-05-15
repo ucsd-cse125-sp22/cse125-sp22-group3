@@ -28,15 +28,11 @@ Player::Player(ModelEnum curr) : Player() {
 }
 
 void Player::FixedUpdate() {
-	printf("stamina percent: %f\n", stamina_percent);
-
-	// cant sprint with no stamina
-	
 
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	if (glm::length(move_input) <= 0) {
+	if (glm::length(move_input) <= 0 || isGlued) {
 		// increment stamina
 		stamina_percent = fmin(stamina_percent + (delta*staminaIncreaseRate), 100);
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
@@ -182,7 +178,7 @@ void Player::Use() {
 		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
 		glueOnGround->SetPosition(gluePosition);
 		GameManager::AddEntities({ glueOnGround });
-
+		glueOnGround->ownerOfGlue = this; // set owner
 		Drop();
 		GameManager::RemoveEntities({ glue });
 	}

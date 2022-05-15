@@ -19,6 +19,28 @@ GlueOnGround::~GlueOnGround() {
 void GlueOnGround::FixedUpdate()
 {
 	collider_->center = *translate;
+	if (gluedPlayer != nullptr) {
+		const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
+		glueTime += delta;
+	}
+	if (glueTime >= maxGlueTime) {
+		gluedPlayer->isGlued = false;
+		GameManager::RemoveEntities({ this });
+	}
+}
+
+void GlueOnGround::OnCollide(PhysicsObject *object) {
+	if (auto player = dynamic_cast<Player*>(object)) {
+		if (ownerOfGlue == player || gluedPlayer !=nullptr)
+			return;
+		else {
+		
+			gluedPlayer = player;
+			player->isGlued = true;
+
+			glueTime = 0;
+		}
+	}
 }
 
 glm::mat4 GlueOnGround::GetParentTransform()
