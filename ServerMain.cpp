@@ -22,9 +22,9 @@ inline int ServerMain()
 	NPC fish{ CHAR_NPC };
 	fish.SetWorldPosition({ 0,30, 0 });
 
-	Plot plotRed{ OATS };
-	Plot plotBlue{ SOJU };
-	Plot plotYellow{ VEG_GOLDEN_EGGPLANT };
+	Plot plotRed{ WORLD_PLOT_RED };
+	Plot plotBlue{ WORLD_PLOT_BLUE };
+	Plot plotYellow{ WORLD_PLOT_YELLOW };
 	Plot plotGreen{ WORLD_PLOT_GREEN };
 
 	plotRed.SetPosition({ 100,-4, 100 });
