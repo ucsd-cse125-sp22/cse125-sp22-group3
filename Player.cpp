@@ -11,7 +11,8 @@ Player::Player() {
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
 	dust_particle = new Particle(ModelEnum::PARTICLE_DUST);
 	auto particle_ = dynamic_cast<Particle*>(dust_particle);
-	particle_->modelAnim = PARTICLE_PLAY;
+	particle_->modelAnim = PARTICLE_STOP;
+	particle_->SetPosition(glm::vec3(( * translate)[0], -4, -(*translate)[1]));
 	GameManager::AddEntities({ dust_particle });
 }
 
@@ -51,7 +52,6 @@ void Player::FixedUpdate() {
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
 		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
-		
 		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
@@ -74,12 +74,18 @@ void Player::FixedUpdate() {
 
 void Player::Move() {
 	if (GetMoveable()) {
-
+		
+		//move player
 		const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 		const glm::vec2 distance = delta * curr_vel_;
 		*translate += distance;
 
 		rotate.y = atan2(curr_vel_.x, -curr_vel_.y); //TODO fix this potentially
+
+		// move particle
+		auto particle_ = dynamic_cast<Particle*>(dust_particle);
+		particle_->SetPosition(glm::vec3((*translate)[0], -4, -(*translate)[1]));
+		//particle_->SetRotation(GetParentTransform());
 	}
 }
 
@@ -231,8 +237,15 @@ void Player::Sell(){
 }
 
 void Player::SetSprint(bool sprinting) {
-	if (sprint != true && sprinting) {
-		printf("first time sprinting\n");
+	// first time starting to sprint
+	if (!sprint && sprinting) {
+		auto particle_ = dynamic_cast<Particle*>(dust_particle);
+		particle_->modelAnim = PARTICLE_PLAY;
+	}
+	// ending sprint
+	else if (sprint && !sprinting) {
+		auto particle_ = dynamic_cast<Particle*>(dust_particle);
+		particle_->modelAnim = PARTICLE_STOP;
 	}
 	sprint = sprinting;
 
