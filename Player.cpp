@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "Hoe.h"
-#include "GameManager.h"
 #include "Network/NetworkPacket.h"
+#include "GameManager.h"
 
 Player::Player() {
 	translate = new glm::vec2(0.f,0.f);
@@ -9,11 +9,11 @@ Player::Player() {
 	scale = glm::vec3(0.0f);
 
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
-	dust_particle = new Particle(ModelEnum::PARTICLE_DUST);
-	auto particle_ = dynamic_cast<Particle*>(dust_particle);
-	particle_->modelAnim = PARTICLE_STOP;
-	particle_->SetPosition(glm::vec3(( * translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
-	GameManager::AddEntities({ dust_particle });
+
+	dust_particle = new Particle(PARTICLE_DUST);
+	dust_particle->modelAnim = PARTICLE_STOP;
+	dust_particle->SetPosition(glm::vec3(( * translate)[0], dust_particle->dustParticleHeight, -(*translate)[1]));
+	//GameManager::AddEntities({ dust_particle });
 }
 
 GameEntity* Player::GetHoldEntity()
@@ -59,8 +59,7 @@ void Player::FixedUpdate() {
 
 		// check if enough stamina to run
 		if (stamina_percent == 0) {
-			auto particle_ = dynamic_cast<Particle*>(dust_particle);
-			particle_->modelAnim = PARTICLE_STOP;
+			dust_particle->modelAnim = PARTICLE_STOP;
 			sprint = false;
 		}
 
@@ -86,10 +85,10 @@ void Player::FixedUpdate() {
 	MoveHeld();
 
 	collider_->center = *translate;
+	
 	// move dust particle
-	auto particle_ = dynamic_cast<Particle*>(dust_particle);
-	particle_->SetPosition(glm::vec3((*translate)[0], particle_->dustParticleHeight, -(*translate)[1]));
-	//particle_->SetRotation(GetParentTransform());
+	dust_particle->SetPosition(glm::vec3((*translate)[0], dust_particle->dustParticleHeight, -(*translate)[1] - dust_particle->dustParticleZOffset));
+	//dust_particle->SetRotation(GetParentTransform());
 }
 
 
@@ -254,14 +253,11 @@ void Player::SetSprint(bool sprinting) {
 	
 	// first time starting to sprint setting particles
 	if (!sprint && sprinting) {
-
-		auto particle_ = dynamic_cast<Particle*>(dust_particle);
-		particle_->modelAnim = PARTICLE_PLAY;
+		dust_particle->modelAnim = PARTICLE_PLAY;
 	}
 	// ending sprint
 	else if (sprint && !sprinting) {
-		auto particle_ = dynamic_cast<Particle*>(dust_particle);
-		particle_->modelAnim = PARTICLE_STOP;
+		dust_particle->modelAnim = PARTICLE_STOP;
 	}
 	
 	sprint = sprinting;
