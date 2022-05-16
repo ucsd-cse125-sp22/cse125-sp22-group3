@@ -146,12 +146,13 @@ int main(int argc, char* argv[])
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 	load_models(window); 
 	Window::show_GUI = false; 
-
+	GUI::renderWaitingClient(1, 1);
 	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
 		{
 			num_clients = cw_packet.max_client;
 			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
+			GUI::renderWaitingClient(cw_packet.client_joined, cw_packet.max_client); 
 		});
 	fprintf(stderr, "All players connected, starting game\n");
 	
