@@ -515,6 +515,7 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	glfwSwapBuffers(window);
 	return !flip_image;
 }
+
 bool GUI::ShowGUI(bool show)
 {
 	if (GUI_show_sale_ui!=show) {
@@ -608,6 +609,35 @@ void GUI::createTimer() {
 	ImGui::End();
 }
 
+void GUI::renderWaitingClient(int client_joined, int max_client) {
+	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
+	glfwPollEvents();
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImGui::Begin("Loading Background", NULL, TRANS_WINDOW_FLAG);
+	ImGui::Image((void*)(intptr_t)loading_background.my_image_texture, \
+		ImVec2(window_width, window_width / loading_background.my_image_width * loading_background.my_image_height));
+	ImGui::End();
+	ImGui::SetNextWindowPos(ImVec2(32.0f * display_ratio, window_height / 3 * 2));
+	ImGui::Begin("Loading Status", NULL, TRANS_WINDOW_FLAG);
+	ImGui::Text("%d of %d client joined...");
+	ImGui::End(); 
+
+	// Rendering
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	glfwSwapBuffers(my_window);
+}
 
 
 

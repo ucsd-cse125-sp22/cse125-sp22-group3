@@ -65,6 +65,7 @@ public:
 	static bool renderLoadScene(GLFWwindow* window);
 	static void initializeLoadingImage(); 
 	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
+	static void renderWaitingClient(int client_joined, int max_client); 
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
