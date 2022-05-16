@@ -98,7 +98,7 @@ private:
 		{VEG_CORN, "models/corn/corn.fbx"}, 
 		{VEG_RADISH, "models/radish/radish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
-		{VEG_GOLDEN_EGGPLANT, "models/goldenEggplant/goldentEggplant.fbx"},
+		{VEG_GOLDEN_EGGPLANT, "models/goldenEggplant/goldenEggplant.fbx"},
 
 		{POISON, "models/poison/poison.fbx"},
 		{WATERING_CAN, "models/wateringCan/wateringCan.fbx"},

@@ -346,15 +346,7 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 		for each (Mesh mesh in meshes)
 		{
 			if (curr != PARTICLE_STOP) {
-
-				if (model != WORLD_LEAVES) {
-					mesh.draw(view, projection, parent, curr_time, shader);
-				}
-
-				else {
-					// leafPingPong();
-					mesh.draw(view, projection, parent, blend, shader);
-				}
+				mesh.draw(view, projection, parent, curr_time, shader);
 			}
 		}
 	}

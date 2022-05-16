@@ -138,15 +138,8 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float ti
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, false, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-        // time
-        if (!isLeaf) {
-            glUniform1f(glGetUniformLocation(shaderProgram, "time"), time);
-        }
 
-        else {
-            glUniform1f(glGetUniformLocation(shaderProgram, "blend"), time);
-        }
-
+        glUniform1f(glGetUniformLocation(shaderProgram, "time"), time);
         // for shadows
         for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
         {
@@ -376,7 +369,7 @@ void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
 
     glUniform1i(glGetUniformLocation(shader, "hasAnimation"), 0);
     glUniform1i(glGetUniformLocation(shader, "isLeaf"), 1);
-    glUniform1f(glGetUniformLocation(shader, "blend"), blend);
+    glUniform1f(glGetUniformLocation(shader, "time"), blend);
 
     if (textures.size() > 0) {
         glActiveTexture(GL_TEXTURE0);
