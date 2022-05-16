@@ -8,6 +8,7 @@
 #include "SoundEngine.h"
 #include "util.h"
 #include "Network/NetworkPacket.h"
+#include "Particle.h"
 
 class Player : public Drawable, public GameEntity, public PhysicsObject {
 	private:
@@ -112,6 +113,13 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		// how much money player currently has
 		float curr_balance = 20;
 
-		
-		
+		// particles
+		Particle* dust_particle = nullptr;
+
+		// stamina
+		float staminaIncreaseRate = 10;
+		float staminaDecreaseRate = 0;
+
+		// glue
+		bool isGlued = false;
 };

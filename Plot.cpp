@@ -78,8 +78,16 @@ void Plot::OnInteract(Player* player) {
 
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
+
+			// TODO: REMOVE THIS IF WE DO DESTRUCTOR CALLS
+			if (seed->glow_particle != nullptr) {
+				GameManager::RemoveEntities({ seed->glow_particle });
+			}
+
 			GameManager::RemoveEntities({ seed });
 			SetPlantedVegetable(nullptr);
+
+			
 		}
 
 		GameManager::RemoveEntities({ this, shovel });
@@ -93,7 +101,9 @@ void Plot::OnInteract(Player* player) {
 			player->SetTriggeringEntity(nullptr);
 
 			seed->isPoisoned = true;
-			seed->SetModel(WORLD_FLAG_POISON, GetTranslate());
+			printf("POISONED PLANT\n");
+			glm::vec3 trans = GetTranslate();
+			seed->SetModel(WORLD_FLAG_POISON, glm::vec3(trans[0],poisonFlagHeight, trans[2]));
 
 			// TODO if we wanna replace it with the poison flags
 			GameManager::RemoveEntities({ poisson });
@@ -127,9 +137,12 @@ void Plot::OnInteract(Player* player) {
 	else if (player->GetModelEnum() == plot_ownership[this->GetModelEnum()]) {
 		if (plantedVegetable && plantedVegetable->isPoisoned) {
 			Seed* poisoned_seed = plantedVegetable;
-
+			printf("REMOVING POISONED PLANT\n");
 			GameManager::RemoveEntities({ poisoned_seed });
 			SetPlantedVegetable(nullptr);
+			if (poisoned_seed->glow_particle != nullptr) {
+				GameManager::RemoveEntities({ poisoned_seed->glow_particle });
+			}
 
 			player->SetTriggeringEntity(nullptr);
 		}
@@ -150,10 +163,29 @@ void Plot::OnInteract(Player* player) {
 		}
 		else if (!player->isHolding) {
 			Seed* seed = plantedVegetable;
-			if (seed != nullptr && plantedVegetable->isHarvestable) {
+			// remove poisoned seed
+			if (seed != nullptr && seed->isPoisoned) {
+				auto seed_ = dynamic_cast<GameEntity*>(seed);
+
+				// remove particle
+				if (seed->glow_particle != nullptr) {
+					GameManager::RemoveEntities({ seed->glow_particle });
+				}
+
+				if (seed_ != nullptr) {
+					GameManager::RemoveEntities({ seed_ });
+					SetPlantedVegetable(nullptr);
+				}
+			}
+			else if (seed != nullptr && plantedVegetable->isHarvestable) {
 				// Remove the seed
 				VegetableType veggieType = GetPlantedVegetable();
 				auto seed_ = dynamic_cast<GameEntity*>(seed);
+
+				// remove particle
+				if (seed->glow_particle != nullptr) {
+					GameManager::RemoveEntities({ seed->glow_particle });
+				}
 
 				Vegetable* veggie = nullptr;
 				// Spawn the correct vegetable on the player

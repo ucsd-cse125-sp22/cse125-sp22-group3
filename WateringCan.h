@@ -4,8 +4,8 @@ class WateringCan :
     public GardenTool
 {
 private:
-	float pickupHeight = -2; // TODO hello
-	float dropHeight = -4; // TODO danica
+	float pickupHeight = -1.5; // TODO hello
+	float dropHeight = -2; // TODO danica
 	glm::mat4 hold_transformation_{}; // TODO ici
 
 public:

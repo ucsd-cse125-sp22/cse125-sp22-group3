@@ -1,8 +1,7 @@
 #include "Player.h"
 #include "Hoe.h"
-
-#include "GameManager.h"
 #include "Network/NetworkPacket.h"
+#include "GameManager.h"
 
 Player::Player() {
 	translate = new glm::vec2(0.f,0.f);
@@ -10,6 +9,11 @@ Player::Player() {
 	scale = glm::vec3(0.0f);
 
 	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
+
+	dust_particle = new Particle(PARTICLE_DUST);
+	dust_particle->modelAnim = PARTICLE_STOP;
+	dust_particle->SetPosition(glm::vec3(( * translate)[0], dust_particle->dustParticleHeight, -(*translate)[1]));
+	//GameManager::AddEntities({ dust_particle });
 }
 
 GameEntity* Player::GetHoldEntity()
@@ -24,10 +28,13 @@ Player::Player(ModelEnum curr) : Player() {
 }
 
 void Player::FixedUpdate() {
+
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
-	if (glm::length(move_input) <= 0) {
+	if (glm::length(move_input) <= 0 || isGlued) {
+		// increment stamina
+		stamina_percent = fmin(stamina_percent + (delta*staminaIncreaseRate), 100);
 		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
 		else {
 			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
@@ -43,12 +50,24 @@ void Player::FixedUpdate() {
 			this->modelAnim = DANCE;
 	}
 	else {
+		// increment stamina
+		if(sprint)
+			stamina_percent = fmax(stamina_percent - (delta*staminaDecreaseRate), 0);
+		else {
+			stamina_percent = fmin(stamina_percent + (delta * staminaIncreaseRate), 100);
+		}
+
+		// check if enough stamina to run
+		if (stamina_percent == 0) {
+			dust_particle->modelAnim = PARTICLE_STOP;
+			sprint = false;
+		}
+
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
 		curr_vel_ += base_accel_ * move_input * delta;
 		// Cap our speed at some max velocity
 		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
-		
 		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}
@@ -66,12 +85,19 @@ void Player::FixedUpdate() {
 	MoveHeld();
 
 	collider_->center = *translate;
+	
+	// move dust particle
+	const glm::vec4 particleLocation = glm::vec4(0, dust_particle->dustParticleHeight, -dust_particle->dustParticleZOffset, 1) * GetRotation();
+	const glm::mat4 particle_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
+	dust_particle->SetPosition(glm::vec3(translate->x + (particleLocation.x), dust_particle->dustParticleHeight, (-1) * translate->y - (particleLocation.z)));
+	dust_particle->SetRotation(particle_rotation);
 }
 
 
 void Player::Move() {
 	if (GetMoveable()) {
-
+		
+		//move player
 		const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 		const glm::vec2 distance = delta * curr_vel_;
 		*translate += distance;
@@ -134,7 +160,7 @@ void Player::Use() {
 		const float plotOffset = 7.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -plotOffset, 1) * GetRotation();
 		glm::vec3 direction = glm::vec3(direction4/direction4.w);
-		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + glm::vec3(direction.x, direction.y, -direction.z);
 		plot->SetPosition(plotPosition);
 		GameManager::AddEntities({plot});
 
@@ -149,10 +175,10 @@ void Player::Use() {
 		const float glueOffset = 9.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -glueOffset, 1) * GetRotation();
 		glm::vec3 direction = glm::vec3(direction4 / direction4.w);
-		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + direction;
+		glm::vec3 gluePosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + glm::vec3(direction.x, direction.y, -direction.z);;
 		glueOnGround->SetPosition(gluePosition);
 		GameManager::AddEntities({ glueOnGround });
-
+		glueOnGround->ownerOfGlue = this; // set owner
 		Drop();
 		GameManager::RemoveEntities({ glue });
 	}
@@ -184,9 +210,7 @@ void Player::Dance() {
 void Player::Buy(VegetableType bought_vegetable) {
 	
 	VeggieInfo veggie = veggie_map[bought_vegetable];
-	// TODO: Check if NPC is interactable... unless we don't have to do that?
 	if (!isHolding && veggie.seed_price <= curr_balance) {
-		//SetTriggeringEntity(nullptr);
 		curr_balance -= veggie.seed_price;
 		isHolding = true;
 
@@ -228,9 +252,16 @@ void Player::Sell(){
 }
 
 void Player::SetSprint(bool sprinting) {
-	if (sprint != true && sprinting) {
-		printf("first time sprinting\n");
+	
+	// first time starting to sprint setting particles
+	if (!sprint && sprinting) {
+		dust_particle->modelAnim = PARTICLE_PLAY;
 	}
+	// ending sprint
+	else if (sprint && !sprinting) {
+		dust_particle->modelAnim = PARTICLE_STOP;
+	}
+	
 	sprint = sprinting;
 
 }

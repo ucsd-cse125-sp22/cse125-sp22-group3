@@ -4,6 +4,7 @@ Particle::Particle(ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
+	translate3D = new glm::vec3(0.f, 0.f, 0.f);
 	rotation = glm::rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
@@ -25,7 +26,7 @@ glm::vec3 Particle::GetPosition() const
 }
 
 glm::mat4 Particle::GetTranslation() {
-	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1]));
+	return glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2]));
 }
 
 glm::mat4 Particle::GetRotation() const
@@ -36,6 +37,7 @@ glm::mat4 Particle::GetRotation() const
 void Particle::SetPosition(glm::vec3 position)
 {
 	*translate = glm::vec2(position[0], -position[2]);
+	*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }
 
 void Particle::SetRotation(glm::mat4 rotation)
@@ -44,5 +46,5 @@ void Particle::SetRotation(glm::mat4 rotation)
 }
 
 glm::mat4 Particle::GetTransformation() {
-	return glm::translate(glm::vec3((*translate)[0], 0, -(*translate)[1])) * rotation;
+	return glm::translate(glm::vec3((*translate3D)[0], (*translate3D)[1], -(*translate3D)[2])) * rotation;
 }

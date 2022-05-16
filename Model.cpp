@@ -267,7 +267,7 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 
 	std::string file = filename + "/" + filename + std::to_string(i) + fileType;
 	unsigned int result = TextureFromFile(file.c_str(), directory);
-
+	printf("HII %i\n", result);
 	while (result != -1) {
 		// load texture
 		Texture texture;
@@ -279,7 +279,6 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 
 		file = filename + "/" + filename + std::to_string(i) + fileType;
 		result = TextureFromFile(file.c_str(), directory);
-
 		i++;
 	}
 	return textures;
@@ -347,15 +346,7 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 		for each (Mesh mesh in meshes)
 		{
 			if (curr != PARTICLE_STOP) {
-
-				if (model != WORLD_LEAVES) {
-					mesh.draw(view, projection, parent, curr_time, shader);
-				}
-
-				else {
-					// leafPingPong();
-					mesh.draw(view, projection, parent, blend, shader);
-				}
+				mesh.draw(view, projection, parent, curr_time, shader);
 			}
 		}
 	}

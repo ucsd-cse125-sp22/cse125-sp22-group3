@@ -73,6 +73,7 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 {
 	std::vector<ModelInfo> model_infos;
+	int particles = 0;
 	for (GameEntity* entity : GameManager::game_entities) {
 
 		auto drawable = dynamic_cast<Drawable*>(entity);
@@ -84,12 +85,25 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 				drawable->GetParentTransform(),
 				dynamic_cast<Player*>(entity) != nullptr
 			});
+			
 		}
 	}
 
+	int i = 0;
 	std::vector<std::pair<char*, int>> out_vec;
 	for (auto & player : players_) {
 		std::vector<SoundInfo> sound_infos = player->GetSounds();
+		//Draw particles!
+		if (player->dust_particle != nullptr)
+		{
+			model_infos.push_back(ModelInfo{
+				reinterpret_cast<uintptr_t>(player->dust_particle),
+				player->dust_particle->GetModelEnum(),
+				player->dust_particle->GetAniMode(),
+				player->dust_particle->GetParentTransform(),
+				false
+				});
+		}
 		
 		ServerHeader sheader{};
 		sheader.num_models = model_infos.size();
@@ -100,6 +114,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
 		}
+		
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
 		serverSerialize(server_buf, &sheader, model_infos.data(), sound_infos.data());

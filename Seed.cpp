@@ -28,6 +28,14 @@ void Seed::FixedUpdate()
 	if (isPlanted && !isPoisoned) { // stop growth if poisoned
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (!isHarvestable && getIsReady()) {
+			printf("GLOWING\n");
+			glow_particle = new Particle(PARTICLE_GLOW);
+			auto particle_ = dynamic_cast<Particle*>(glow_particle);
+			particle_->modelAnim = PARTICLE_PLAY;
+			particle_->SetPosition(glm::vec3((*translate)[0], particle_->glowParticleHeight, -(*translate)[1]));
+			GameManager::AddEntities({ glow_particle });
+
+
 			isHarvestable = true;
 			VeggieInfo veggie = veggie_map[type];
 			model = veggie.veggie_model;

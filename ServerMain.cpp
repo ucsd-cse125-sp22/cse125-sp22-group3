@@ -51,7 +51,8 @@ inline int ServerMain()
 	World leaves{ WORLD_LEAVES };
 	
 	Particle glow{ PARTICLE_GLOW };
-	glow.SetPosition({ -30, -4, 0 });
+	glow.modelAnim = PARTICLE_PLAY;
+	glow.SetPosition({ -30, glow.glowParticleHeight, 0 });
 	
 	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow });
 
@@ -72,7 +73,7 @@ inline int ServerMain()
 	game.AddEntities({ &net });
 
 	WateringCan can{};
-	can.SetPosition({ 20, -4, 20 });
+	can.SetPosition({ 20, -2, 20 });
 	game.AddEntities({ &can });
 
 	Fertilizer fert{};

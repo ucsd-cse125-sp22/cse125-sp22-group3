@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 			for (int i = 0; i < sheader->num_models; i++)
 			{
 				ModelInfo model_info = model_arr[i];
-
+				
 				if (model_map.count(model_info.model_id) == 0) {
 					model_map[model_info.model_id] = new Model(model_info.model);
 				}

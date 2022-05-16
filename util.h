@@ -13,7 +13,7 @@ static bool GUI_show_buy_ui;
 static std::string GUI_timer_string; 
 static float GUI_timer_percent; // use this variable to set the timer display
 
-static float stamina_percent; //use this variable to set the stamina display
+static float stamina_percent=100; //use this variable to set the stamina display
 
 
 enum InputCommands {
@@ -55,6 +55,7 @@ enum ModelEnum
 	VEG_CORN,
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking
+	VEG_GOLDEN_EGGPLANT,
 
 	POISON,
 	WATERING_CAN,
@@ -64,6 +65,8 @@ enum ModelEnum
 	FERTILIZER,
 	GLUE,
 	GLUE_ON_GROUND,
+	OATS,
+	SOJU,
 
 	WORLD_SEED_CABBAGE,
 	WORLD_SEED_CARROT,
@@ -88,7 +91,9 @@ enum ModelEnum
 	WORLD_LEAVES,
 
 	PARTICLE_GLOW,
-	PARTICLE_DUST
+	PARTICLE_DUST,
+
+	
 };
 
 enum AniMode {

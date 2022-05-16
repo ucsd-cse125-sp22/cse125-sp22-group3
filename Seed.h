@@ -70,5 +70,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		void SetHeight(float height);
 		float GetHeight();
 
+		GameEntity* glow_particle = nullptr;
+
 		
 };
