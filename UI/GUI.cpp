@@ -623,9 +623,10 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	ImGui::NewFrame();
 
 	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Loading Background", NULL, TRANS_WINDOW_FLAG);
 	ImGui::Image((void*)(intptr_t)loading_background.my_image_texture, \
-		ImVec2(window_width, window_width / loading_background.my_image_width * loading_background.my_image_height));
+		ImVec2(window_width, window_width * loading_background.my_image_height / loading_background.my_image_width ));
 	ImGui::End();
 	ImGui::SetNextWindowPos(ImVec2(32.0f * display_ratio, window_height / 3 * 2));
 	ImGui::Begin("Loading Status", NULL, TRANS_WINDOW_FLAG);

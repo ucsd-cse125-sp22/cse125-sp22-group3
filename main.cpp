@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
 	load_models(window); 
 	Window::show_GUI = false; 
-
+	GUI::renderWaitingClient(1, 1);
 	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
 		{
