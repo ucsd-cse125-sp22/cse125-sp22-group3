@@ -49,12 +49,13 @@ inline int ServerMain()
 	World world{ WORLD_MAP };
 	World water{ WORLD_WATER };
 	World leaves{ WORLD_LEAVES };
+	World grass{ WORLD_GRASS };
 	
 	Particle glow{ PARTICLE_GLOW };
 	glow.modelAnim = PARTICLE_PLAY;
 	glow.SetPosition({ -30, glow.glowParticleHeight, 0 });
 	
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow });
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow, &grass });
 
 	Shovel shovel{};
 	shovel.SetPosition({ 10, -4, 10 });
@@ -87,6 +88,7 @@ inline int ServerMain()
 	world.SetPosition({ 0, 0, -4.0f });
 	water.SetPosition({ 0, 0, -4.0f });
 	leaves.SetPosition({ 0, 0, -4.0f });
+	grass.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
 		for (ClientPacket& cpacket : client_packet_vec) {
