@@ -31,16 +31,20 @@ Player::Player(ModelEnum curr) : Player() {
 }
 
 void Player::FixedUpdate() {
-
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) <= 0 || isGlued) {
 		// increment stamina
 		stamina_percent = fmin(stamina_percent + (delta*staminaIncreaseRate), 100);
-		if (glm::length(curr_vel_) < friction_ * delta) curr_vel_ = glm::vec2(0,0);
+
+		float applied_friction = intoxicationTimeRemaining > 0 ? drunk_friction_ : base_friction_;
+		if (glm::length(curr_vel_) < applied_friction * delta)
+		{
+			curr_vel_ = glm::vec2(0,0);
+		}
 		else {
-			curr_vel_ -= glm::normalize(curr_vel_) * friction_ * delta;
+			curr_vel_ -= glm::normalize(curr_vel_) * applied_friction * delta;
 		}
 
 		if (isHolding) {
@@ -68,7 +72,8 @@ void Player::FixedUpdate() {
 
 		// Accelerate in our inputted direction
 		// Transform input from 2D to 3D Plane
-		curr_vel_ += base_accel_ * move_input * delta;
+		float applied_accel = intoxicationTimeRemaining > 0 ? drunk_accel_ : base_accel_;
+		curr_vel_ += applied_accel * move_input * delta;
 		// Cap our speed at some max velocity
 		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
 		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
@@ -97,6 +102,10 @@ void Player::FixedUpdate() {
 	const glm::mat4 particle_rotation = glm::rotate(rotate.y, glm::vec3(0, 1, 0));
 	dust_particle->SetPosition(glm::vec3(translate->x + (particleLocation.x), dust_particle->dustParticleHeight, (-1) * translate->y - (particleLocation.z)));
 	dust_particle->SetRotation(particle_rotation);
+
+	if (intoxicationTimeRemaining > 0) {
+		intoxicationTimeRemaining -= delta;
+	}
 }
 
 
@@ -127,6 +136,22 @@ std::vector<SoundInfo> Player::GetSounds()
 	if (sound_plot_placement) output.push_back(SoundInfo{SFX_PLOT_PLACE, GetPosition()});
 
 	return output;
+}
+
+bool Player::CanInteract(Player* other_player) {
+	bool holds_soju = (other_player->GetIsHolding() && dynamic_cast<Soju*>(other_player->GetHoldEntity()));
+	return holds_soju;
+}
+
+void Player::OnInteract(Player* other_player) {
+	if (auto soju = dynamic_cast<Soju*>(other_player->GetHoldEntity())) 
+	{
+		other_player->Drop();
+		other_player->SetTriggeringEntity(nullptr);
+		GameManager::RemoveEntities({ soju });
+		
+		intoxicationTimeRemaining = maxIntoxicationTime;
+	}
 }
 
 void Player::OnTrigger(PhysicsObject* object)

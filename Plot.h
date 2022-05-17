@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Interactable.h"
+#include "Player.h"
 #include "Vegetable.h"
 #include "Seed.h"
 

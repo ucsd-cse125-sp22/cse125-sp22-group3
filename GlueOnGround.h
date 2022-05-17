@@ -1,6 +1,6 @@
 #pragma once
 #include "Holdable.h"
-#include "Interactable.h"
+#include "Player.h"
 #include "GameManager.h"
 class GlueOnGround : public PhysicsObject, public GameEntity, public Drawable
 {

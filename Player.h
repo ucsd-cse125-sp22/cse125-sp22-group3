@@ -10,7 +10,18 @@
 #include "Network/NetworkPacket.h"
 #include "Particle.h"
 
-class Player : public Drawable, public GameEntity, public PhysicsObject {
+class Player;
+
+class Interactable {
+public:
+	virtual bool CanInteract(Player* player) = 0;
+	virtual void OnInteract(Player* player) = 0;
+
+	// Is this holdable
+	bool isHoldable;
+};
+
+class Player : public Drawable, public GameEntity, public PhysicsObject, public Interactable {
 	private:
 		// Transformations for our player
 		glm::vec2* translate = nullptr;
@@ -18,8 +29,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		glm::vec3 scale;
 
 		// Player Movement Attributes
-		float friction_ = 50.f; // Resistance in Units/Sec
+		float base_friction_ = 50.f; // Resistance in Units/Sec
+		float drunk_friction_ = 5.f;
 		float base_accel_ = 200.f; // Acceleration in Units/Sec^2
+		float drunk_accel_ = 20.f;
 		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
 		float max_sprint_velocity_ = 30.f;
 		float entityHeldDist = 2.5f; // distance of entity from player
@@ -81,6 +94,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 		void OnTrigger(PhysicsObject* object) override;
 		std::vector<Collider*> GetColliders() override;
 		glm::vec2* GetWorldPosition() override;
+
+		// Interactable
+		bool CanInteract(Player* other_player);
+		void OnInteract(Player* other_player);
 		
 		// Input
 		glm::vec2 move_input{0,0};
@@ -123,4 +140,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// glue
 		bool isGlued = false;
+
+		// soju
+		float intoxicationTimeRemaining = 0;
+		float maxIntoxicationTime = 30;
 };

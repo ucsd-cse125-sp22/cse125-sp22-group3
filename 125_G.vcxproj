@@ -279,7 +279,6 @@
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Harvestable.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Interactable.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Mesh.h" />

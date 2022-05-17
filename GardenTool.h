@@ -1,6 +1,6 @@
 #pragma once
 #include "Holdable.h"
-#include "Interactable.h"
+#include "Player.h"
 
 class GardenTool : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 
