@@ -98,7 +98,7 @@ private:
 		{VEG_CORN, "models/corn/corn.fbx"}, 
 		{VEG_RADISH, "models/radish/radish.fbx"},
 		{VEG_TOMATO, "models/tomato/tomato.fbx"},
-		{VEG_GOLDEN_EGGPLANT, "models/goldenEggplant/goldentEggplant.fbx"},
+		{VEG_GOLDEN_EGGPLANT, "models/goldenEggplant/goldenEggplant.fbx"},
 
 		{POISON, "models/poison/poison.fbx"},
 		{WATERING_CAN, "models/wateringCan/wateringCan.fbx"},
@@ -132,6 +132,7 @@ private:
 		{WORLD_MAP, "models/world/world.fbx"},
 		{WORLD_WATER, "models/world/water.fbx"},
 		{WORLD_LEAVES, "models/world/leaves.fbx"},
+		{WORLD_GRASS, "models/world/grass.fbx"},
 
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},

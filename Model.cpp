@@ -119,7 +119,7 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 	// Is a particle
 	bool isParticle = false;
-	bool isLeaf = false;
+	int isLeaf = 0;
 
 	//std::cout << "bones: " << mesh->mNumBones << " vertices: " << mesh->mNumVertices << std::endl;
 
@@ -186,12 +186,11 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 			std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 			textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-			if (model == WORLD_LEAVES) {
-				isLeaf = true;
+			if (model == WORLD_LEAVES || model == WORLD_GRASS) {
+				isLeaf = model == WORLD_LEAVES ? 1 : 2;
 
 				srand(static_cast <unsigned> (time(0)));
 				std::string randNoise = std::to_string(rand() % 3);
-				float randOffset = 0.00001f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.00005f - 0.00001f)));
 
 				std::string filepath = "noise/" + randNoise + ".png";
 				// unsigned int result = TextureFromFile(filepath.c_str(), directory);
@@ -202,10 +201,6 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 				texture.type = "texture_height";
 				texture.path = filepath;
 				textures.push_back(texture);
-
-				// change blend factor
-				blendOffset = randOffset;
-				blend = 0.25f;
 			}
 		}
 
@@ -222,9 +217,10 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 	ExtractBoneWeightForVertices(boneIds, weights, mesh, scene);
 	Mesh m = Mesh(pos, norms, uvs, indices, textures, boneIds, weights);
 
-	m.isLeaf = isLeaf;
-	m.isParticle = isParticle;
+	if (isLeaf == 1) { m.strength = 0.0025f; m.speed = 0.5; }
+	else if (isLeaf == 2) { m.strength = 0.0f; m.speed = 1.0; }
 
+	m.isParticle = isParticle;
 	return m;
 }
 
@@ -346,15 +342,7 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 		for each (Mesh mesh in meshes)
 		{
 			if (curr != PARTICLE_STOP) {
-
-				if (model != WORLD_LEAVES) {
-					mesh.draw(view, projection, parent, curr_time, shader);
-				}
-
-				else {
-					// leafPingPong();
-					mesh.draw(view, projection, parent, blend, shader);
-				}
+				mesh.draw(view, projection, parent, curr_time, shader);
 			}
 		}
 	}
@@ -381,13 +369,12 @@ void Model::draw(glm::mat4 parent, GLuint shader) {
 	else {
 		for each (Mesh mesh in meshes)
 		{
-			if (model != WORLD_LEAVES) {
+			if (model != WORLD_LEAVES && model != WORLD_GRASS) {
 				mesh.draw(parent, shader);
 			}
 
 			else {
-				leafPingPong();
-				mesh.draw(parent, blend, shader);
+				mesh.draw(parent, curr_time, shader);
 			}
 		}
 	}
