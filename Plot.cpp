@@ -146,19 +146,26 @@ void Plot::OnInteract(Player* player) {
 
 			player->SetTriggeringEntity(nullptr);
 		}
-		else if (player->isHolding && !isPlanted) {
+		else if (player->isHolding) {
 			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
+				if (!isPlanted)
+				{
+					SetPlantedVegetable(seed);
 
-				SetPlantedVegetable(seed);
-
-				VeggieInfo veggie = veggie_map[seed->GetType()];
-				seed->SetModel(veggie.flag_model, GetTranslate());
-				seed->SetPlanted();
-				player->Drop();
-				player->SetTriggeringEntity(nullptr);
+					VeggieInfo veggie = veggie_map[seed->GetType()];
+					seed->SetModel(veggie.flag_model, GetTranslate());
+					seed->SetPlanted();
+					player->Drop();
+					player->SetTriggeringEntity(nullptr);
+				}
 			}
-			else {
-				printf("Warning: You can only plant seeds not veggies bro\n");
+			else if (auto _ = dynamic_cast<WateringCan*>(player->GetHoldEntity()))
+			{
+				plantedVegetable->waterSeed();
+			}
+			else if (auto _ = dynamic_cast<Fertilizer*>(player->GetHoldEntity()))
+			{
+				plantedVegetable->fertilizeSeed();
 			}
 		}
 		else if (!player->isHolding) {

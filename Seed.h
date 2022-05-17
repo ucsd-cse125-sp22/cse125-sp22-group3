@@ -14,6 +14,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 
 		ColliderCircle* collider_;
 		bool isPlanted = false;
+	
 		// Transformations
 		glm::vec2* translate = nullptr;
 		glm::vec3* translate3D = nullptr;
@@ -67,9 +68,14 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		bool getIsReady();
 		bool isHarvestable = false;
 		bool isPoisoned = false;
+		void waterSeed();
+		void fertilizeSeed();
+		bool isWatered = false;
+		bool isFertilized = false;
+		Particle* waterParticle;
+		Particle* fertilizeParticle;
 
 		// translation for player interact;
-		
 		void SetHeight(float height);
 		float GetHeight();
 

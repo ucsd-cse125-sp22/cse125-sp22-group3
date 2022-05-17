@@ -23,10 +23,33 @@ Seed::~Seed() {
 	delete translate3D;
 }
 
+void Seed::waterSeed()
+{
+	isWatered = true;
+	if (waterParticle)
+	{
+		waterParticle->modelAnim = PARTICLE_STOP;
+		GameManager::RemoveEntities({ waterParticle });
+		waterParticle = nullptr;
+	}
+}
+
+void Seed::fertilizeSeed()
+{
+	isFertilized = true;
+	if (fertilizeParticle)
+	{
+		fertilizeParticle->modelAnim = PARTICLE_STOP;
+		GameManager::RemoveEntities({ fertilizeParticle });
+		fertilizeParticle = nullptr;
+	}
+}
 
 void Seed::FixedUpdate()
 {
-	if (isPlanted && !isPoisoned) { // stop growth if poisoned
+	bool needsWater = veggie_map[type].requires_water;
+	bool needsFert = veggie_map[type].requires_fertilizer;
+	if (isPlanted && !isPoisoned && !(needsWater && !isWatered) && !(needsFert && !isFertilized)) { // stop growth if poisoned
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (!isHarvestable && getIsReady()) {
 			printf("GLOWING\n");
@@ -35,7 +58,6 @@ void Seed::FixedUpdate()
 			particle_->modelAnim = PARTICLE_PLAY;
 			particle_->SetPosition(glm::vec3((*translate)[0], particle_->glowParticleHeight, -(*translate)[1]));
 			GameManager::AddEntities({ glow_particle });
-
 
 			isHarvestable = true;
 			VeggieInfo veggie = veggie_map[type];
@@ -165,6 +187,22 @@ void Seed::SetPlanted()
 {
 	isPlanted = true;
 	plantedTime = 0;
+	
+	if (veggie_map[type].requires_water)
+	{
+		waterParticle = new Particle(PARTICLE_GLOW);
+		waterParticle->SetPosition(glm::vec3((*translate)[0], waterParticle->glowParticleHeight, -(*translate)[1]));
+		GameManager::AddEntities({ waterParticle });
+		waterParticle->modelAnim = PARTICLE_PLAY;
+	}
+	
+	if (veggie_map[type].requires_fertilizer)
+	{
+		fertilizeParticle = new Particle(PARTICLE_DUST);
+		fertilizeParticle->SetPosition(glm::vec3((*translate)[0], fertilizeParticle->glowParticleHeight, -(*translate)[1]));
+		GameManager::AddEntities({ fertilizeParticle });
+		fertilizeParticle->modelAnim = PARTICLE_PLAY;
+	}
 }
 
 glm::mat4 Seed::GetTransformation() {
