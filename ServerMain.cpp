@@ -62,35 +62,35 @@ inline int ServerMain()
 	game.AddEntities({ &shovel });
 
 	Hoe hoe{};
-	hoe.SetPosition({ 10, -4, -10 });
+	hoe.SetPosition({ 20, -4, 10 });
 	game.AddEntities({ &hoe });
 
 	Poison poisson{};
-	poisson.SetPosition({ -10, -4, -10 });
+	poisson.SetPosition({ 10, -4, 20 });
 	game.AddEntities({ &poisson });
 
 	VeggieNet net{};
-	net.SetPosition({ 20, -4, 10 });
+	net.SetPosition({ 20, -4, 20 });
 	game.AddEntities({ &net });
 
-	WateringCan can{};
-	can.SetPosition({ 20, -2, 20 });
-	game.AddEntities({ &can });
-
-	Fertilizer fert{};
-	fert.SetPosition({ 10, -4, 20 });
-	game.AddEntities({ &fert });
-
 	Glue glue{};
-	glue.SetPosition({ 10, -1, 30 });
+	glue.SetPosition({ 30, -1, 20 });
 	game.AddEntities({ &glue });
 
+	Fertilizer fert{};
+	fert.SetPosition({ 10, -4, 30 });
+	game.AddEntities({ &fert });
+
+	WateringCan can{};
+	can.SetPosition({ 20, -2, 30 });
+	game.AddEntities({ &can });
+
 	Soju soju{};
-	soju.SetPosition({ 20, -4, 30 });
+	soju.SetPosition({ 30, -4, 30 });
 	game.AddEntities({ &soju });
 
 	Oat oat{};
-	oat.SetPosition({ 30, -4, 30 });
+	oat.SetPosition({ 40, -4, 30 });
 	game.AddEntities({ &oat });
 
 	world.SetPosition({ 0, 0, -4.0f });

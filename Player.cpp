@@ -8,7 +8,10 @@ Player::Player() {
 	rotate = glm::vec3(0.0f);
 	scale = glm::vec3(0.0f);
 
-	collider_ = new ColliderCircle(glm::vec2(0,0), 3, false);
+	ColliderCircle *collider = new ColliderCircle(glm::vec2(0,0), 3, false);
+	ColliderCircle *collider_trigger = new ColliderCircle(glm::vec2(0,0), 3, false);
+	collider_trigger->collider_is_trigger = true;
+	colliders_ = {collider, collider_trigger};
 
 	dust_particle = new Particle(PARTICLE_DUST);
 	dust_particle->modelAnim = PARTICLE_STOP;
@@ -84,7 +87,10 @@ void Player::FixedUpdate() {
 	}
 	MoveHeld();
 
-	collider_->center = *translate;
+	for (ColliderCircle *collider_ : colliders_)
+	{
+		collider_->center = *translate;
+	}
 	
 	// move dust particle
 	const glm::vec4 particleLocation = glm::vec4(0, dust_particle->dustParticleHeight, -dust_particle->dustParticleZOffset, 1) * GetRotation();
@@ -145,7 +151,12 @@ void Player::OnTrigger(PhysicsObject* object)
 
 std::vector<Collider*> Player::GetColliders()
 {
-	return { collider_ };
+	std::vector<Collider*> to_return;
+	for (ColliderCircle *col : colliders_)
+	{
+		to_return.push_back(col);
+	}
+	return to_return;
 }
 
 glm::vec2* Player::GetWorldPosition()
@@ -184,10 +195,35 @@ void Player::Use() {
 	}
 	else {
 		auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
-		if (entity != nullptr && collider_->CollidesWith(entity->GetColliders()[0])) {
-			auto interactable = dynamic_cast<Interactable*>(entityTriggered);
-			if (interactable != nullptr && interactable->CanInteract(this)) {
-				interactable->OnInteract(this);
+		if (entity != nullptr) {
+			Collider* this_trigger_col;
+			Collider* that_trigger_col;
+
+			for (Collider *c : this->GetColliders())
+			{
+				if (c->GetColliderIsTrigger())
+				{
+					this_trigger_col = c;
+					break;
+				}
+			}
+
+			for (Collider *c : entity->GetColliders())
+			{
+				if (c->GetColliderIsTrigger())
+				{
+					that_trigger_col = c;
+					break;
+				}
+			}
+			
+			if (this_trigger_col && that_trigger_col && this_trigger_col->CollidesWith(that_trigger_col))
+			{
+				auto interactable = dynamic_cast<Interactable*>(entityTriggered);
+				if (interactable != nullptr && interactable->CanInteract(this))
+				{
+					interactable->OnInteract(this);
+				}
 			}
 		}
 	}

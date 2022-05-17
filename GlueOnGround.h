@@ -24,8 +24,8 @@ public:
 	void FixedUpdate() override;
 
 	// PhysicsObject
-	void OnCollide(PhysicsObject* object) override;
-	void OnTrigger(PhysicsObject* object) override {}; 
+	void OnCollide(PhysicsObject* object) override {};
+	void OnTrigger(PhysicsObject* object) override; 
 	std::vector<Collider*> GetColliders() override;
 	glm::vec2* GetWorldPosition() override;
 

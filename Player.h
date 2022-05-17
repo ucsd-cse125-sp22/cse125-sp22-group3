@@ -36,7 +36,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// Current Player Collider
 		// Player will use a Circle Collider
-		ColliderCircle* collider_;
+		// ColliderCircle* collider_;
+		std::vector<ColliderCircle*> colliders_;
 
 		// Moving player
 		void Move();
@@ -118,7 +119,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject {
 
 		// stamina
 		float staminaIncreaseRate = 10;
-		float staminaDecreaseRate = 0;
+		float staminaDecreaseRate = 30;
 
 		// glue
 		bool isGlued = false;

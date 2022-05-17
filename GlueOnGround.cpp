@@ -29,7 +29,7 @@ void GlueOnGround::FixedUpdate()
 	}
 }
 
-void GlueOnGround::OnCollide(PhysicsObject *object) {
+void GlueOnGround::OnTrigger(PhysicsObject *object) {
 	if (auto player = dynamic_cast<Player*>(object)) {
 		if (ownerOfGlue == player || gluedPlayer !=nullptr)
 			return;

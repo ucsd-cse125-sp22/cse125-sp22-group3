@@ -50,20 +50,24 @@ void PhysicsEngine::Compute()
 			PhysicsObject* object_1 = moving_collidables_[i];
 			PhysicsObject* object_2 = moving_collidables_[j];
 
-			//TODO fix this to be more general for objects with more than one collider
-			Collider* collider_1 = object_1->GetColliders()[0];
-			Collider* collider_2 = object_2->GetColliders()[0];
-			if (collider_1->CollidesWith(collider_2))
+			for (Collider* collider_1 : object_1->GetColliders())
 			{
-
-				if (object_1->GetColliders()[0]->GetColliderIsTrigger() ||
-					object_2->GetColliders()[0]->GetColliderIsTrigger()) {
-					ResolveTriggerCollision(object_1, object_2);
+				for (Collider* collider_2 : object_2->GetColliders())
+				{
+					if (collider_1->CollidesWith(collider_2))
+					{
+						if (collider_1->GetColliderIsTrigger() &&
+							collider_2->GetColliderIsTrigger())
+						{
+							ResolveTriggerCollision(object_1, object_2);
+						}
+						else if (!collider_1->GetColliderIsTrigger() &&
+							!collider_2->GetColliderIsTrigger())
+						{
+							ResolveCollision(object_1, object_2);
+						}
+					}
 				}
-				else {
-					ResolveCollision(object_1, object_2);
-				}
-				
 			}
 		}
 	}
@@ -115,19 +119,8 @@ inline void ResolveAABBToAABBCollision(ColliderAABB* aabb_1, ColliderAABB* aabb_
 }
 
 void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second) {
-	if (first->GetColliders()[0]->GetColliderIsTrigger()) {
-		second->OnTrigger(first);
-	}
-	else {
-		second->OnCollide(first);
-	}
-
-	if (second->GetColliders()[0]->GetColliderIsTrigger()) {
-		first->OnTrigger(second);
-	}
-	else {
-		first->OnCollide(second);
-	}
+	first->OnTrigger(second);
+	second->OnTrigger(first);
 }
 
 //TODO take in Colliders instead of Physics Objects
