@@ -2,6 +2,7 @@
 
 #include "Vegetable.h"
 #include "Holdable.h"
+#include "Indicator.h"
 #include "Interactable.h"
 
 class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
@@ -20,6 +21,7 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 
 		float pickupHeight = -1;
 		float dropHeight = -4;
+		float indicatorHeight = 3;
 
 	public:
 		AniMode modelAnim = NO_ANI;
@@ -71,6 +73,8 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		float GetHeight();
 
 		GameEntity* glow_particle = nullptr;
+		GameEntity* indicate_product = nullptr;
 
+		//TODO: ADD WATER/FERTILIZE FUNCTIONS
 		
 };

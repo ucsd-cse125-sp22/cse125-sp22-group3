@@ -14,6 +14,7 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	collider_->collider_is_trigger = true;
 
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
+	
 }
 
 Seed::~Seed() {
@@ -60,7 +61,19 @@ void Seed::SetModel(ModelEnum newModel, glm::vec3 pos)
 	//*translate3D = pos;
 	// rotate 90 degrees towards viewer
 	rotation = glm::rotate(glm::mat4(1.0f), 3.14f, glm::vec3(0,1,0));
-	//setModelChanged(true);
+
+
+	if (newModel != WORLD_FLAG_POISON && (veggie_map[type].requires_water || veggie_map[type].requires_fertilizer)) {
+		indicate_product = new Indicator(type);
+		auto indicator_ = dynamic_cast<Indicator*>(indicate_product);
+		indicator_->SetPosition(glm::vec3((*translate)[0], indicatorHeight, -(*translate)[1]));
+		GameManager::AddEntities({ indicate_product });
+	}
+	else if (newModel == WORLD_FLAG_POISON && indicate_product !=nullptr) {
+		GameManager::RemoveEntities({ indicate_product });
+		indicate_product = nullptr;
+		// can remove glow particle here too if you want
+	}
 }
 
 std::vector<Collider*> Seed::GetColliders()

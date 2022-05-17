@@ -129,6 +129,9 @@ private:
 		{WORLD_FLAG_TOMATO, "models/plots/flagTomato.fbx"},
 		{WORLD_FLAG_POISON, "models/poisonedPlot/poisonedPlot.fbx"},
 
+		{INDICATOR_WATER, "models/indicators/waterIndicator.fbx"},
+		{INDICATOR_FERTILIZER, "models/indicators/fertilizerIndicator.fbx"},
+
 		{WORLD_MAP, "models/world/world.fbx"},
 		{WORLD_WATER, "models/world/water.fbx"},
 		{WORLD_LEAVES, "models/world/leaves.fbx"},

@@ -152,6 +152,9 @@ bool Window::initializeObjects()
 	{ WORLD_FLAG_TOMATO, animationShaderProgram  },
 	{ WORLD_FLAG_POISON, animationShaderProgram  },
 
+	{INDICATOR_WATER,animationShaderProgram},
+	{INDICATOR_FERTILIZER,animationShaderProgram},
+
 	{ WORLD_MAP, worldShaderProgram },
 	{ WORLD_WATER, worldShaderProgram },
 	{ WORLD_LEAVES, leafShaderProgram },
