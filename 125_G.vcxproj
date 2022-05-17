@@ -198,6 +198,7 @@
     <ClCompile Include="Hoe.cpp" />
     <ClCompile Include="Indicator.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Oat.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Poison.cpp" />
     <ClCompile Include="Seed.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Hoe.h" />
     <ClInclude Include="Holdable.h" />
     <ClInclude Include="DepthMap.h" />
+    <ClInclude Include="Oat.h" />
     <ClInclude Include="Indicator.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Poison.h" />

@@ -19,6 +19,7 @@
 #include "Glue.h"
 #include "GlueOnGround.h"
 #include "Soju.h"
+#include "Oat.h"
 #include <chrono>
 
 class GameManager : GameEntity

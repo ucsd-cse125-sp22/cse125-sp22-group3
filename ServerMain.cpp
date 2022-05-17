@@ -89,6 +89,10 @@ inline int ServerMain()
 	soju.SetPosition({ 20, -4, 30 });
 	game.AddEntities({ &soju });
 
+	Oat oat{};
+	oat.SetPosition({ 30, -4, 30 });
+	game.AddEntities({ &oat });
+
 	world.SetPosition({ 0, 0, -4.0f });
 	water.SetPosition({ 0, 0, -4.0f });
 	leaves.SetPosition({ 0, 0, -4.0f });
