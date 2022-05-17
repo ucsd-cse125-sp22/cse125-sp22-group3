@@ -18,6 +18,7 @@
 #include "Fertilizer.h"
 #include "Glue.h"
 #include "GlueOnGround.h"
+#include "Soju.h"
 #include <chrono>
 
 class GameManager : GameEntity

@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Server Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -204,6 +204,7 @@
     <ClCompile Include="GardenTool.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="Shovel.cpp" />
+    <ClCompile Include="Soju.cpp" />
     <ClCompile Include="UI\GUI.cpp" />
     <ClCompile Include="UI\imgui\imgui.cpp" />
     <ClCompile Include="UI\imgui\imgui_demo.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Seed.h" />
     <ClInclude Include="GardenTool.h" />
     <ClInclude Include="Shovel.h" />
+    <ClInclude Include="Soju.h" />
     <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="UI\GUI.h" />
     <ClInclude Include="UI\imgui\imconfig.h" />

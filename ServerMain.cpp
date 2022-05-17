@@ -85,6 +85,10 @@ inline int ServerMain()
 	glue.SetPosition({ 10, -1, 30 });
 	game.AddEntities({ &glue });
 
+	Soju soju{};
+	soju.SetPosition({ 20, -4, 30 });
+	game.AddEntities({ &soju });
+
 	world.SetPosition({ 0, 0, -4.0f });
 	water.SetPosition({ 0, 0, -4.0f });
 	leaves.SetPosition({ 0, 0, -4.0f });
