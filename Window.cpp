@@ -155,6 +155,7 @@ bool Window::initializeObjects()
 	{ WORLD_MAP, worldShaderProgram },
 	{ WORLD_WATER, worldShaderProgram },
 	{ WORLD_LEAVES, leafShaderProgram },
+	{ WORLD_GRASS, leafShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram }

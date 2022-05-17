@@ -15,11 +15,12 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform float time;
+uniform float waveSpeed;
+uniform float strength;
 
 // Outputs of the vertex shader are the inputs of the same name of the fragment shader.
 // The default output, gl_Position, should be assigned something. You can define as many
 // extra outputs as you need.
-out float sampleExtraOutput;
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 TexCoords;
@@ -31,12 +32,17 @@ void main()
 {
     FragPos = vec3(model * vec4(positions, 1.0));
     Normal = mat3(transpose(inverse(model))) * normals;  
-    vec4 tex = texture(texture_height1, uvs + vec2(time * 0.0025f));
+    vec4 tex = texture(texture_height1, uvs + vec2(time * strength, time * strength));
     tex = tex * 2.0f - vec4(1.0f);
-    tex *= 5.0f;
+    tex *= 2.5f;
 
-    // vec3 movement = smoothstep(normals, normals * vec3(tex)), vec3(blend));
-    vec3 newPos = positions + normals * vec3(tex);
+    vec3 newPos = positions;
+
+    if(positions.y > 0.0f) { 
+        newPos = positions + vec3(0.5f, 0.0f, 0.0f) * sin(time * waveSpeed);
+    }
+
+    newPos = newPos + normals * vec3(tex);
     TexCoords = uvs;
 
     viewMat = view;

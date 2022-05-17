@@ -66,15 +66,15 @@ class Mesh {
 		// true if mesh has texture - false otherwise
 		bool hasTexture;
 
-		// for particles only
-		int currentTextureIndex = 0;
-		float totalChange = 0.0f;
+		// for leaves and grass
+		float speed = 0.0f;
+		float strength = 0.0f;
 
 		// is this mesh a particle?
 		bool isParticle = false;
 
 		// is this mesh a leaf
-		bool isLeaf = false;
+		int isLeaf = 0;
 
 		// Constructor + Deconstructors
 		Mesh();
