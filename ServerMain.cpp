@@ -99,6 +99,8 @@ inline int ServerMain()
 	grass.SetPosition({ 0, 0, -4.0f });
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
+		game.StartGameTime();
+
 		for (ClientPacket& cpacket : client_packet_vec) {
 			if (cpacket.justMoved)
 			{

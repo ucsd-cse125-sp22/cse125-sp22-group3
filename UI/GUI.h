@@ -55,6 +55,7 @@ public:
 	static bool show_loading;
 	static bool prev_show_sale_ui; 
 	static int rack_image_idx;
+	static float timer_percent; 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
@@ -74,7 +75,8 @@ public:
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
 	static void createStamina();
-	static void createTimer(); 
+	static void createTimer(float ratio); 
+	static void setTimer(float time);
 };
 
 

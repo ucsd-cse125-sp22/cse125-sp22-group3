@@ -59,6 +59,8 @@ struct ServerHeader {
 	int num_sounds;
 	bool ui_open;
 	float balance[4];
+	double time_remaining_seconds;
+	double time_max_seconds;
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr, struct SoundInfo* sound_arr) {

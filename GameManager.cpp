@@ -111,6 +111,8 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.player_transform = player->GetParentTransform();
 		sheader.player_sprinting = player->sprint;
 		sheader.ui_open = player->ui_open;
+		sheader.time_remaining_seconds = GameManager::GetRemainingSeconds();
+		sheader.time_max_seconds = GAME_TIME_MINS * 60.f;
 		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
 		}
@@ -174,4 +176,17 @@ void GameManager::UpdateFixedDeltaTime()
 {
 	last_time_ = curr_time_;
 	curr_time_ = std::chrono::steady_clock::now();
+}
+
+void GameManager::StartGameTime() {
+	if (!isStarted) {
+		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(15);
+		isStarted = true;
+	}
+}
+
+double GameManager::GetRemainingSeconds() {
+	auto curr_time = std::chrono::steady_clock::now();
+	const std::chrono::duration<double> elapsed_seconds = game_end_time_ - curr_time;
+	return elapsed_seconds.count();
 }

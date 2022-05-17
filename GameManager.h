@@ -59,6 +59,9 @@ public:
     static void UpdateFixedDeltaTime();
     static double GetFixedDeltaTime();
 
+    void GameManager::StartGameTime();
+    double GameManager::GetRemainingSeconds();
+
 private:
     std::vector<Player*> players_{}; //TODO what the heck
     std::vector<Vegetable*> vegetables_{};
@@ -67,6 +70,8 @@ private:
     
     static std::chrono::steady_clock::time_point last_time_;
     static std::chrono::steady_clock::time_point curr_time_;
+    std::chrono::steady_clock::time_point game_end_time_;
+    bool isStarted = false;
 };
 
 #endif

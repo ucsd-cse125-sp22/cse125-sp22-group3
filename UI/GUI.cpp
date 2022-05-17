@@ -23,13 +23,123 @@ float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
 bool GUI::prev_show_sale_ui;
+float GUI::timer_percent;
+
 
 
 int GUI::rack_image_idx; 
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
+namespace ImGui {
 
+	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = size_arg;
+		size.x -= style.FramePadding.x * 2;
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+
+		// Render
+		const float circleStart = size.x * 0.7f;
+		const float circleEnd = size.x;
+		const float circleWidth = circleEnd - circleStart;
+
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart, bb.Max.y), bg_col);
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart * value, bb.Max.y), fg_col);
+
+		const float t = g.Time;
+		const float r = size.y / 2;
+		const float speed = 1.5f;
+
+		const float a = speed * 0;
+		const float b = speed * 0.333f;
+		const float c = speed * 0.666f;
+
+		const float o1 = (circleWidth + r) * (t + a - speed * (int)((t + a) / speed)) / speed;
+		const float o2 = (circleWidth + r) * (t + b - speed * (int)((t + b) / speed)) / speed;
+		const float o3 = (circleWidth + r) * (t + c - speed * (int)((t + c) / speed)) / speed;
+
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
+		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
+		return true;
+	}
+
+	bool ReverseBufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return false;
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size = size_arg;
+		size.x -= style.FramePadding.x * 2;
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+
+		// Render
+		const float circleStart = size.y;
+		const float circleEnd = size.y;
+		const float circleWidth = circleEnd - circleStart;
+
+		window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, pos.y + circleStart), bg_col, ImDrawFlags_RoundCornersAll);
+		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1 - value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col, ImDrawFlags_RoundCornersAll);
+		return true;
+	}
+	ImVec2 Spinner(const char* label, float radius, int thickness, float ratio, const ImU32& color) {
+		ImGuiWindow* window = GetCurrentWindow();
+		if (window->SkipItems)
+			return ImVec2(0, 0);
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		ImVec2 pos = window->DC.CursorPos;
+		ImVec2 size((radius) * 2, (radius) * 2);
+
+		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return ImVec2(0, 0);
+
+		// Render
+		window->DrawList->PathClear();
+
+		int num_segments = 30;
+		int start = 1; //abs(ImSin(g.Time * 1.8f) * (num_segments - 5));
+
+		const float a_min = IM_PI * 1.5f; // IM_PI * 2.0f * ((float)start) / (float)num_segments;
+
+		const ImVec2 centre = ImVec2(pos.x + radius + thickness, pos.y + radius + thickness);
+
+		for (int i = 0; i <= num_segments * ratio; i++) {
+			const float a = a_min + ((float)i / (float)num_segments) * IM_PI * 2.0f;
+			window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a) * radius,
+				centre.y + ImSin(a) * radius));
+		}
+		window->DrawList->PathStroke(color, false, thickness);
+		return centre;
+	}
+}
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
 void GUI::initializeGUI(GLFWwindow* window) {
@@ -186,7 +296,26 @@ bool GUI::renderUI() {
 		createStamina();
 	}
 	if (GUI_show_timer) {
-		createTimer();
+		float padding = 64.0f * display_ratio;
+		int width = 600;
+		int height = 600;
+		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
+		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+		//float ratio = GUI_timer_percent;
+		float ratio = timer_percent;
+		ImGui::SetNextWindowSize(size);
+		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
+		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, col);
+		ImGui::End();
+		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+		ImGui::SetNextWindowSize(size);
+		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
+		float font_size = ImGui::GetFontSize();
+		float text_size = font_size * GUI_timer_string.size() / 2;
+		ImGui::SetCursorPos(ImVec2(size.x * 0.5f - text_size * 0.5f, size.y * 0.5f - font_size * 0.5f));
+		ImGui::Text(GUI_timer_string.c_str());
+		ImGui::End();
 	}
 
 	//test fading out
@@ -404,115 +533,7 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	return true; 
 }
 
-namespace ImGui {
 
-	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
-		ImGuiWindow* window = GetCurrentWindow();
-		if (window->SkipItems)
-			return false;
-
-		ImGuiContext& g = *GImGui;
-		const ImGuiStyle& style = g.Style;
-		const ImGuiID id = window->GetID(label);
-
-		ImVec2 pos = window->DC.CursorPos;
-		ImVec2 size = size_arg;
-		size.x -= style.FramePadding.x * 2;
-
-		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
-		ItemSize(bb, style.FramePadding.y);
-		if (!ItemAdd(bb, id))
-			return false;
-
-		// Render
-		const float circleStart = size.x * 0.7f;
-		const float circleEnd = size.x;
-		const float circleWidth = circleEnd - circleStart;
-
-		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart, bb.Max.y), bg_col);
-		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart * value, bb.Max.y), fg_col);
-
-		const float t = g.Time;
-		const float r = size.y / 2;
-		const float speed = 1.5f;
-
-		const float a = speed * 0;
-		const float b = speed * 0.333f;
-		const float c = speed * 0.666f;
-
-		const float o1 = (circleWidth + r) * (t + a - speed * (int)((t + a) / speed)) / speed;
-		const float o2 = (circleWidth + r) * (t + b - speed * (int)((t + b) / speed)) / speed;
-		const float o3 = (circleWidth + r) * (t + c - speed * (int)((t + c) / speed)) / speed;
-
-		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
-		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
-		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
-		return true;
-	}
-
-	bool ReverseBufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
-		ImGuiWindow* window = GetCurrentWindow();
-		if (window->SkipItems)
-			return false;
-
-		ImGuiContext& g = *GImGui;
-		const ImGuiStyle& style = g.Style;
-		const ImGuiID id = window->GetID(label);
-
-		ImVec2 pos = window->DC.CursorPos;
-		ImVec2 size = size_arg;
-		size.x -= style.FramePadding.x * 2;
-
-		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
-		ItemSize(bb, style.FramePadding.y);
-		if (!ItemAdd(bb, id))
-			return false;
-
-		// Render
-		const float circleStart = size.y;
-		const float circleEnd = size.y;
-		const float circleWidth = circleEnd - circleStart;
-
-		window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, pos.y + circleStart), bg_col,ImDrawFlags_RoundCornersAll);
-		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1-value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col,ImDrawFlags_RoundCornersAll);
-		return true;
-	}
-	ImVec2 Spinner(const char* label, float radius, int thickness, float ratio, const ImU32& color) {
-		ImGuiWindow* window = GetCurrentWindow();
-		if (window->SkipItems)
-			return ImVec2(0, 0);
-
-		ImGuiContext& g = *GImGui;
-		const ImGuiStyle& style = g.Style;
-		const ImGuiID id = window->GetID(label);
-
-		ImVec2 pos = window->DC.CursorPos;
-		ImVec2 size((radius) * 2, (radius ) * 2);
-
-		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
-		ItemSize(bb, style.FramePadding.y);
-		if (!ItemAdd(bb, id))
-			return ImVec2(0,0);
-
-		// Render
-		window->DrawList->PathClear();
-
-		int num_segments = 30;
-		int start = 1; //abs(ImSin(g.Time * 1.8f) * (num_segments - 5));
-
-		const float a_min = IM_PI * 1.5f ; // IM_PI * 2.0f * ((float)start) / (float)num_segments;
-
-		const ImVec2 centre = ImVec2(pos.x + radius + thickness, pos.y + radius + thickness );
-
-		for (int i = 0;  i<=num_segments * ratio; i++) {
-			const float a = a_min + ((float)i / (float)num_segments) * IM_PI * 2.0f;
-			window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a) * radius,
-				centre.y + ImSin(a) * radius));
-		}
-		window->DrawList->PathStroke(color, false, thickness);
-		return centre; 
-	}
-}
 bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
@@ -620,14 +641,13 @@ void GUI::createStamina() {
 
 }
 
-void GUI::createTimer() {
+void GUI::createTimer(float ratio) {
 	float padding = 64.0f * display_ratio;
 	int width = 600;
 	int height = 600;
 	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
 	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-	GUI_timer_percent = 0.75; // TODO: hardcode time percent, remove after connect to server output
-	float ratio = GUI_timer_percent;
+	//float ratio = GUI_timer_percent;
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Timer", NULL,TRANS_WINDOW_FLAG);
@@ -635,7 +655,6 @@ void GUI::createTimer() {
 	ImGui::End(); 
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::SetNextWindowSize(size);
-	GUI_timer_string = std::string("10min"); //TODO hardcoded time display, remove after connect to server output
 	ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
 	float font_size = ImGui::GetFontSize();
 	float text_size = font_size * GUI_timer_string.size() / 2; 
@@ -675,7 +694,9 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	glfwSwapBuffers(my_window);
 }
 
-
+void GUI::setTimer(float time) {
+	timer_percent = time; 
+}
 
 
 

@@ -197,6 +197,14 @@ int main(int argc, char* argv[])
 				GUI::scoreboard_data[i]=sheader->balance[i];
 			}
 
+			//GUI_timer_percent = 1 - (sheader->time_remaining_seconds / sheader->time_max_seconds);
+			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
+
+			char strbuf[1024];
+			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
+			sprintf(strbuf, "%d:%d", rem_s / 60, rem_s % 60);
+			GUI_timer_string = std::string(strbuf);
+
 			for (int i = 0; i < sheader->num_sounds; i++) {
 				const SoundInfo sound_info = sound_arr[i];
 
