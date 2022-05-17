@@ -22,11 +22,13 @@
 #define NUM_RACK_IMG 6
 #define NUM_LOAD_IMG 8
 #define NUM_CHASE_IMG 2 
+#define NUM_FISH_IMG 3
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
 
 #define MINI_MAP_FLAG ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
+
 
 //using namespace std;
 
@@ -51,10 +53,12 @@ public:
 	static GUIImage minimap_background; 
 	static GUIImage loading_bg[NUM_LOAD_IMG]; 
 	static bool show_loading;
+	static bool prev_show_sale_ui; 
 	static int rack_image_idx;
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
+	static GUIImage fish_images_list[NUM_FISH_IMG];
 	static int scoreboard_data[NUM_ICON];
 	static ImVec2 player_pos[4]; 
 	static void initializeGUI(GLFWwindow* window);
