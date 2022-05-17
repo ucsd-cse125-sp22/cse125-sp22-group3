@@ -135,8 +135,10 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		Particle* dust_particle = nullptr;
 
 		// stamina
-		float staminaIncreaseRate = 10;
-		float staminaDecreaseRate = 30;
+		float baseStaminaIncreaseRate = 10;
+		float oatStaminaIncreaseRate = 50;
+		float baseStaminaDecreaseRate = 30;
+		float oatStaminaDecreaseRate = 5;
 
 		// glue
 		bool isGlued = false;
@@ -144,4 +146,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		// soju
 		float intoxicationTimeRemaining = 0;
 		float maxIntoxicationTime = 30;
+
+		// oats
+		float oatTimeRemaining = 0;
+		float maxOatTime = 10;
 };

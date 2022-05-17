@@ -36,7 +36,8 @@ void Player::FixedUpdate() {
 	// If no movement is given apply friction (epsilon to account for FP errors)
 	if (glm::length(move_input) <= 0 || isGlued) {
 		// increment stamina
-		stamina_percent = fmin(stamina_percent + (delta*staminaIncreaseRate), 100);
+		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
+		stamina_percent = fmin(stamina_percent + (delta*appliedStaminaIncreaseRate), 100);
 
 		float applied_friction = intoxicationTimeRemaining > 0 ? drunk_friction_ : base_friction_;
 		if (glm::length(curr_vel_) < applied_friction * delta)
@@ -57,11 +58,13 @@ void Player::FixedUpdate() {
 			this->modelAnim = DANCE;
 	}
 	else {
-		// increment stamina
+		// decrement stamina
+		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
+		float appliedStaminaDecreaseRate = oatTimeRemaining > 0 ? oatStaminaDecreaseRate : baseStaminaDecreaseRate;
 		if(sprint)
-			stamina_percent = fmax(stamina_percent - (delta*staminaDecreaseRate), 0);
+			stamina_percent = fmax(stamina_percent - (delta * appliedStaminaDecreaseRate), 0);
 		else {
-			stamina_percent = fmin(stamina_percent + (delta * staminaIncreaseRate), 100);
+			stamina_percent = fmin(stamina_percent + (delta * appliedStaminaIncreaseRate), 100);
 		}
 
 		// check if enough stamina to run
@@ -105,6 +108,10 @@ void Player::FixedUpdate() {
 
 	if (intoxicationTimeRemaining > 0) {
 		intoxicationTimeRemaining -= delta;
+	}
+
+	if (oatTimeRemaining > 0) {
+		oatTimeRemaining -= delta;
 	}
 }
 
@@ -217,6 +224,12 @@ void Player::Use() {
 		glueOnGround->ownerOfGlue = this; // set owner
 		Drop();
 		GameManager::RemoveEntities({ glue });
+	}
+	else if (auto oatmeal = dynamic_cast<Oat*>(entityHeld)) {
+		Drop();
+		GameManager::RemoveEntities({ oatmeal });
+
+		oatTimeRemaining = maxOatTime;
 	}
 	else {
 		auto entity = dynamic_cast<PhysicsObject*>(entityTriggered);
