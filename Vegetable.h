@@ -1,8 +1,13 @@
 #pragma once
 
-#include "Player.h"
+#include "ColliderCircle.h"
+#include "Drawable.h"
+#include "GameEntity.h"
+#include "Interactable.h"
 #include "Harvestable.h"
 #include "Holdable.h"
+#include "PhysicsObject.h"
+#include "Player.h"
 
 class Vegetable : public Interactable, public PhysicsObject, public Drawable, public GameEntity, public Holdable {
     public:

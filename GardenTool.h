@@ -1,5 +1,10 @@
 #pragma once
+#include "ColliderCircle.h"
+#include "Drawable.h"
+#include "GameEntity.h"
 #include "Holdable.h"
+#include "Interactable.h"
+#include "PhysicsObject.h"
 #include "Player.h"
 
 class GardenTool : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {

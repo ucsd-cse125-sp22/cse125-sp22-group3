@@ -5,21 +5,11 @@
 #include "Drawable.h"
 #include "GameEntity.h"
 #include "PhysicsObject.h"
+#include "Interactable.h"
 #include "SoundEngine.h"
 #include "util.h"
 #include "Network/NetworkPacket.h"
 #include "Particle.h"
-
-class Player;
-
-class Interactable {
-public:
-	virtual bool CanInteract(Player* player) = 0;
-	virtual void OnInteract(Player* player) = 0;
-
-	// Is this holdable
-	bool isHoldable;
-};
 
 class Player : public Drawable, public GameEntity, public PhysicsObject, public Interactable {
 	private:

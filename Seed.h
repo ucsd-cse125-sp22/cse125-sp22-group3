@@ -4,7 +4,6 @@
 #include "Holdable.h"
 #include "Indicator.h"
 #include "Interactable.h"
-#include "Player.h"
 
 class Seed : public Interactable, public Holdable, public PhysicsObject, public GameEntity, public Drawable {
 	
