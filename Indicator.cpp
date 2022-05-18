@@ -4,11 +4,9 @@ Indicator::Indicator(VegetableType veggie) {
 	type = veggie;
 	if (veggie_map[type].requires_water) {
 		model = INDICATOR_WATER;
-		requiresWater = true;
 	}
 	else if (veggie_map[type].requires_fertilizer) {
 		model = INDICATOR_FERTILIZER;
-		requiresFertilizer = true;
 	}
 	else {
 		model = INDICATOR_WATER;
@@ -68,4 +66,12 @@ void Indicator::SetRotation(glm::mat4 rotation)
 
 glm::mat4 Indicator::GetTransformation() {
 	return glm::translate(glm::vec3((*translate3D)[0], currHeight, -(*translate3D)[2])) * rotation;
+}
+
+void Indicator::SetWater() {
+	model = INDICATOR_WATER;
+}
+
+void Indicator::SetFertilize() {
+	model = INDICATOR_FERTILIZER;
 }
