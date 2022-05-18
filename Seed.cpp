@@ -14,7 +14,8 @@ Seed::Seed(VegetableType vegetable, ModelEnum curr) {
 	collider_->collider_is_trigger = true;
 
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
-	
+	requiresWater = veggie_map[type].requires_water;
+	requiresFertilizer = veggie_map[type].requires_fertilizer;
 }
 
 Seed::~Seed() {
@@ -25,34 +26,45 @@ Seed::~Seed() {
 
 void Seed::waterSeed()
 {
-	isWatered = true;
-	if (waterParticle)
+	
+	if (requiresWater)
 	{
-		waterParticle->modelAnim = PARTICLE_STOP;
-		GameManager::RemoveEntities({ waterParticle });
-		waterParticle = nullptr;
+		if (requiresFertilizer) {
+			auto indicate_ = dynamic_cast<Indicator*>(indicate_product);
+			indicate_->SetFertilize();
+		}
+		else {
+			GameManager::RemoveEntities({ indicate_product });
+			indicate_product = nullptr;
+		}
 	}
+	requiresWater = false;
 }
 
 void Seed::fertilizeSeed()
 {
-	isFertilized = true;
-	if (fertilizeParticle)
+	
+	if (requiresFertilizer)
 	{
-		fertilizeParticle->modelAnim = PARTICLE_STOP;
-		GameManager::RemoveEntities({ fertilizeParticle });
-		fertilizeParticle = nullptr;
+		if (requiresWater) {
+			auto indicate_ = dynamic_cast<Indicator*>(indicate_product);
+			indicate_->SetWater();
+		}
+		else {
+			GameManager::RemoveEntities({ indicate_product });
+			indicate_product = nullptr;
+		}
 	}
+	requiresFertilizer = false;
 }
 
 void Seed::FixedUpdate()
 {
 	bool needsWater = veggie_map[type].requires_water;
 	bool needsFert = veggie_map[type].requires_fertilizer;
-	if (isPlanted && !isPoisoned && !(needsWater && !isWatered) && !(needsFert && !isFertilized)) { // stop growth if poisoned
+	if (isPlanted && !isPoisoned && !requiresWater && !requiresFertilizer) { // stop growth if poisoned
 		plantedTime += GameManager::GetFixedDeltaTime();
 		if (!isHarvestable && getIsReady()) {
-			printf("GLOWING\n");
 			glow_particle = new Particle(PARTICLE_GLOW);
 			auto particle_ = dynamic_cast<Particle*>(glow_particle);
 			particle_->modelAnim = PARTICLE_PLAY;
@@ -85,17 +97,6 @@ void Seed::SetModel(ModelEnum newModel, glm::vec3 pos)
 	rotation = glm::rotate(glm::mat4(1.0f), 3.14f, glm::vec3(0,1,0));
 
 
-	if (newModel != WORLD_FLAG_POISON && (veggie_map[type].requires_water || veggie_map[type].requires_fertilizer)) {
-		indicate_product = new Indicator(type);
-		auto indicator_ = dynamic_cast<Indicator*>(indicate_product);
-		indicator_->SetPosition(glm::vec3((*translate)[0], indicatorHeight, -(*translate)[1]));
-		GameManager::AddEntities({ indicate_product });
-	}
-	else if (newModel == WORLD_FLAG_POISON && indicate_product !=nullptr) {
-		GameManager::RemoveEntities({ indicate_product });
-		indicate_product = nullptr;
-		// can remove glow particle here too if you want
-	}
 }
 
 std::vector<Collider*> Seed::GetColliders()
@@ -187,21 +188,12 @@ void Seed::SetPlanted()
 {
 	isPlanted = true;
 	plantedTime = 0;
-	
-	if (veggie_map[type].requires_water)
-	{
-		waterParticle = new Particle(PARTICLE_GLOW);
-		waterParticle->SetPosition(glm::vec3((*translate)[0], waterParticle->glowParticleHeight, -(*translate)[1]));
-		GameManager::AddEntities({ waterParticle });
-		waterParticle->modelAnim = PARTICLE_PLAY;
-	}
-	
-	if (veggie_map[type].requires_fertilizer)
-	{
-		fertilizeParticle = new Particle(PARTICLE_DUST);
-		fertilizeParticle->SetPosition(glm::vec3((*translate)[0], fertilizeParticle->glowParticleHeight, -(*translate)[1]));
-		GameManager::AddEntities({ fertilizeParticle });
-		fertilizeParticle->modelAnim = PARTICLE_PLAY;
+
+	if ((veggie_map[type].requires_water || veggie_map[type].requires_fertilizer)) {
+		indicate_product = new Indicator(type);
+		auto indicator_ = dynamic_cast<Indicator*>(indicate_product);
+		indicator_->SetPosition(glm::vec3((*translate)[0], indicatorHeight, -(*translate)[1]));
+		GameManager::AddEntities({ indicate_product });
 	}
 }
 

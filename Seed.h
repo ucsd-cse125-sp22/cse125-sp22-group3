@@ -69,10 +69,8 @@ class Seed : public Interactable, public Holdable, public PhysicsObject, public 
 		bool isPoisoned = false;
 		void waterSeed();
 		void fertilizeSeed();
-		bool isWatered = false;
-		bool isFertilized = false;
-		Particle* waterParticle;
-		Particle* fertilizeParticle;
+		bool requiresWater = false;
+		bool requiresFertilizer = false;
 
 		// translation for player interact;
 		void SetHeight(float height);

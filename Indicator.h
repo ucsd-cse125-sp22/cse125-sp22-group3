@@ -23,11 +23,8 @@ public:
 	void SetPosition(glm::vec3 position);
 	void SetRotation(glm::mat4 rotation);
 	glm::mat4 GetRotation() const;
-
-	// indicator stuff
-	bool requiresWater = false;
-	bool requiresFertilizer = false;
-
+	void SetWater();
+	void SetFertilize();
 
 
 private:
