@@ -294,6 +294,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 		Seed* bought_seed = new Seed{ bought_vegetable, veggie_info.seed_model };
 		GameManager::AddEntities({ bought_seed });
 		SetHoldEntity(bought_seed);
+		bought_seed->holding_player = this;
 
 		sound_buy = true;
 	}

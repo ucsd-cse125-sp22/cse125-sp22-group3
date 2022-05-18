@@ -209,6 +209,7 @@ void Plot::OnInteract(Player* player) {
 				}
 				player->SetHoldEntity(veggie);
 				player->SetTriggeringEntity(nullptr);
+				veggie->holding_player = player;
 			}
 		}
 	}
