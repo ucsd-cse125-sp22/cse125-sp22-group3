@@ -114,6 +114,7 @@ enum class VegetableType {
 	CORN,
 	CARROT,
 	RADISH,
+	GOLDEN_EGGPLANT,
 	NOVEGGIE
 };
 
@@ -134,7 +135,8 @@ static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::CABBAGE, VeggieInfo{VEG_CABBAGE, WORLD_FLAG_CABBAGE, WORLD_SEED_CABBAGE, 5, 2, 6, true, false}},
 	{VegetableType::CORN, VeggieInfo{VEG_CORN, WORLD_FLAG_CORN, WORLD_SEED_CORN, 25, 2, 10, false, false}},
 	{VegetableType::CARROT, VeggieInfo{VEG_CARROT, WORLD_FLAG_CARROT, WORLD_SEED_CARROT, 5, 1, 5, false, false}},
-	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}}
+	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}},
+	{VegetableType::GOLDEN_EGGPLANT, VeggieInfo{VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, 0, 0, 100, false, false}}
 };
 
 static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {

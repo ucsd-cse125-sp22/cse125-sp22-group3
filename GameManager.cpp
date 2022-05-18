@@ -41,7 +41,12 @@ void GameManager::FixedUpdate()
 	for (GameEntity* entity : GameManager::game_entities) {
 		entity->FixedUpdate();
 	}
-
+	printf("time: %f\n",GameManager::GetRemainingSeconds());
+	if (!eggplantSpawned&&GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
+		
+		AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
+		eggplantSpawned = true;
+	}
 	// printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions

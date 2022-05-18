@@ -21,7 +21,7 @@ bool InputManager::getMoved() {
 }
 
 void InputManager::resetMoved() {
-	justMoved = false;
+	justMoved = true;
 	lastCmd = NONE;
 }
 
