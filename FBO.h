@@ -41,7 +41,11 @@ class FBO {
 		static std::vector<glm::mat4> lightSpaceMatrix;
 		static std::vector<float> shadowCascadeLevels;
 
+		// light
 		static glm::vec3 lightPos;
+
+		// player positions
+		static std::vector<glm::vec3> playerPos;
 
 		// Bloom
 		static unsigned int colorBuffers[2];

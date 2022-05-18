@@ -3,6 +3,7 @@
 // static variables
 std::vector<glm::mat4> FBO::lightSpaceMatrix;
 std::vector<float> FBO::shadowCascadeLevels;
+std::vector<glm::vec3> FBO::playerPos;
 unsigned int FBO::sceneFBO;
 unsigned int FBO::pingpongFBO[2];
 unsigned int FBO::colorBuffers[2];
