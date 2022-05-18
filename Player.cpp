@@ -62,8 +62,10 @@ void Player::FixedUpdate() {
 		// decrement stamina
 		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
 		float appliedStaminaDecreaseRate = oatTimeRemaining > 0 ? oatStaminaDecreaseRate : baseStaminaDecreaseRate;
-		if(sprint)
+		if(sprint) {
 			curr_stamina = fmax(curr_stamina - (delta * appliedStaminaDecreaseRate), 0);
+			dust_particle->modelAnim = PARTICLE_PLAY;
+		}
 		else {
 			curr_stamina = fmin(curr_stamina + (delta * appliedStaminaIncreaseRate), 100);
 		}
@@ -329,12 +331,8 @@ void Player::Sell(){
 
 void Player::SetSprint(bool sprinting) {
 	
-	// first time starting to sprint setting particles
-	if (!sprint && sprinting) {
-		dust_particle->modelAnim = PARTICLE_PLAY;
-	}
 	// ending sprint
-	else if (sprint && !sprinting) {
+	if (sprint && !sprinting) {
 		dust_particle->modelAnim = PARTICLE_STOP;
 	}
 	

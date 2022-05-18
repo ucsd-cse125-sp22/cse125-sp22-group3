@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
 			rot_y = util_RotateAroundAxis(mouse_delta[1] * InputManager::camera_speed, glm::normalize(right_axis));
 		}
 		eye_offset = rot_x * rot_y * eye_offset;
-		if (eye_offset[1] < 10) eye_offset[1] = 10;
+		if (eye_offset[1] < 20) eye_offset[1] = 20;
 		eye_offset = glm::normalize(eye_offset) * InputManager::camera_dist;
 
 		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
