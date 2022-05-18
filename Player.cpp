@@ -38,7 +38,7 @@ void Player::FixedUpdate() {
 	if (glm::length(move_input) <= 0 || isGlued) {
 		// increment stamina
 		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
-		GUI::stamina_percent = fmin(GUI::stamina_percent + (delta*appliedStaminaIncreaseRate), 100);
+		curr_stamina = fmin(curr_stamina + (delta*appliedStaminaIncreaseRate), 100);
 
 		float applied_friction = intoxicationTimeRemaining > 0 ? drunk_friction_ : base_friction_;
 		if (glm::length(curr_vel_) < applied_friction * delta)
@@ -63,13 +63,13 @@ void Player::FixedUpdate() {
 		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
 		float appliedStaminaDecreaseRate = oatTimeRemaining > 0 ? oatStaminaDecreaseRate : baseStaminaDecreaseRate;
 		if(sprint)
-			GUI::stamina_percent = fmax(GUI::stamina_percent - (delta * appliedStaminaDecreaseRate), 0);
+			curr_stamina = fmax(curr_stamina - (delta * appliedStaminaDecreaseRate), 0);
 		else {
-			GUI::stamina_percent = fmin(GUI::stamina_percent + (delta * appliedStaminaIncreaseRate), 100);
+			curr_stamina = fmin(curr_stamina + (delta * appliedStaminaIncreaseRate), 100);
 		}
 
 		// check if enough stamina to run
-		if (GUI::stamina_percent == 0) {
+		if (curr_stamina == 0) {
 			dust_particle->modelAnim = PARTICLE_STOP;
 			sprint = false;
 		}

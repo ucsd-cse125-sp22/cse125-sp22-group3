@@ -645,6 +645,7 @@ void GUI::createStamina() {
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
+	printf("hiiii %f\n", stamina_percent);
 	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, size, bg, col);
 	ImGui::End();
 

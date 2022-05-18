@@ -249,6 +249,8 @@ int main(int argc, char* argv[])
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
 					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
+
+					GUI::stamina_percent = sheader->stamina_bar;
 				}
 				
   				Model& curr_model = *model_map[model_info.model_id];

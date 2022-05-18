@@ -129,7 +129,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		float oatStaminaIncreaseRate = 50;
 		float baseStaminaDecreaseRate = 30;
 		float oatStaminaDecreaseRate = 5;
-
+		float curr_stamina = 100;
 		// glue
 		bool isGlued = false;
 
