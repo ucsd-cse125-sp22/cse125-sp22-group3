@@ -93,23 +93,20 @@ void Plot::OnInteract(Player* player) {
 		GameManager::RemoveEntities({ this, shovel });
 	}
 	// anyone can poison 
-	if (auto poisson = dynamic_cast<Poison*>(player->GetHoldEntity())) {
+	else if (auto bouteille_poisson = dynamic_cast<Poison*>(player->GetHoldEntity())) {
 
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
+			GameManager::RemoveEntities({ bouteille_poisson });
 
 			seed->isPoisoned = true;
-			printf("POISONED PLANT\n");
 			glm::vec3 trans = GetTranslate();
 			seed->SetModel(WORLD_FLAG_POISON, glm::vec3(trans[0],poisonFlagHeight, trans[2]));
-
-			// TODO if we wanna replace it with the poison flags
-			GameManager::RemoveEntities({ poisson });
 		}
 	}
-	if (auto net = dynamic_cast<VeggieNet*>(player->GetHoldEntity()))
+	else if (auto net = dynamic_cast<VeggieNet*>(player->GetHoldEntity()))
 	{
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr && seed->isHarvestable)
@@ -137,7 +134,6 @@ void Plot::OnInteract(Player* player) {
 	else if (player->GetModelEnum() == plot_ownership[this->GetModelEnum()]) {
 		if (plantedVegetable && plantedVegetable->isPoisoned) {
 			Seed* poisoned_seed = plantedVegetable;
-			printf("REMOVING POISONED PLANT\n");
 			GameManager::RemoveEntities({ poisoned_seed });
 			SetPlantedVegetable(nullptr);
 			if (poisoned_seed->glow_particle != nullptr) {
