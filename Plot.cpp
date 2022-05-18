@@ -155,13 +155,21 @@ void Plot::OnInteract(Player* player) {
 					player->SetTriggeringEntity(nullptr);
 				}
 			}
-			else if (auto _ = dynamic_cast<WateringCan*>(player->GetHoldEntity()))
+			else if (auto wateringCan = dynamic_cast<WateringCan*>(player->GetHoldEntity()))
 			{
-				plantedVegetable->waterSeed();
+				if(isPlanted)
+					plantedVegetable->waterSeed();
 			}
-			else if (auto _ = dynamic_cast<Fertilizer*>(player->GetHoldEntity()))
+			else if (auto fertilizer = dynamic_cast<Fertilizer*>(player->GetHoldEntity()))
 			{
-				plantedVegetable->fertilizeSeed();
+				//TODO:Check if needs fertilizer then delete
+				//if(plantedVegetable->)
+				if (isPlanted && plantedVegetable->requiresFertilizer) {
+					plantedVegetable->fertilizeSeed();
+					GameManager::RemoveEntities({ fertilizer });
+					player->Drop();
+					player->SetTriggeringEntity(nullptr);
+				}
 			}
 		}
 		else if (!player->isHolding) {
