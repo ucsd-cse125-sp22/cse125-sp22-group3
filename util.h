@@ -149,4 +149,19 @@ static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
 };
 
 static float maxGlueTime = 10;
+
+static glm::mat3 util_RotateAroundAxis(const float degrees, const glm::vec3& axis)
+{
+	float deg = glm::radians(degrees);
+	glm::mat3 one = cosf(deg) * glm::mat3(1.0);
+	glm::mat3 two = (1 - cosf(deg)) * (glm::mat3(axis, glm::vec3(), glm::vec3()) * glm::mat3(axis[0], 0, 0, axis[1], 0, 0, axis[2], 0, 0));
+	glm::mat3 three = sinf(deg) * (glm::mat3(0, axis[2], -axis[1], -axis[2], 0, axis[0], axis[1], -axis[0], 0));
+	return one + two + three;
+}
+
+static glm::mat2 util_Rotate2D(const float degrees)
+{
+	return glm::mat2(cosf(degrees),sinf(degrees),-sinf(degrees),cosf(degrees));
+}
+
 #endif

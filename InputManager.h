@@ -14,11 +14,16 @@ class InputManager {
 
         static bool getMoved();
         static void resetMoved();
+        static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
+		static glm::vec2 GetCursorDelta();
 
         static bool justMoved;
         static glm::vec2 lastMovement;
+		inline static glm::vec2 last_cursor = glm::vec2{0.f,0.f};
+		inline static glm::vec2 current_cursor = glm::vec2{0.f,0.f};
 
-
+		inline static constexpr float camera_speed = 0.1f;
+		inline static constexpr float camera_dist = 42.f;
 	private:
        
 
