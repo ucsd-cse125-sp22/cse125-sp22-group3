@@ -10,9 +10,6 @@ static bool GUI_show_minimap;
 static bool GUI_show_stamina;
 static bool GUI_show_timer; 
 static bool GUI_show_buy_ui; 
-static std::string GUI_timer_string; 
-
-static float stamina_percent=100; //use this variable to set the stamina display
 
 #define GAME_TIME_MINS 15
 

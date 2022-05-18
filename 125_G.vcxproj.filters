@@ -43,6 +43,8 @@
     <ClCompile Include="Glue.cpp" />
     <ClCompile Include="GlueOnGround.cpp" />
     <ClCompile Include="Indicator.cpp" />
+    <ClCompile Include="Oat.cpp" />
+    <ClCompile Include="Soju.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -105,6 +107,8 @@
     <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="GlueOnGround.h" />
     <ClInclude Include="Indicator.h" />
+    <ClInclude Include="Oat.h" />
+    <ClInclude Include="Soju.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

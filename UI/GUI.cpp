@@ -24,6 +24,9 @@ int GUI::window_height;
 int GUI::window_width;
 bool GUI::prev_show_sale_ui;
 float GUI::timer_percent;
+float GUI::stamina_percent;
+std::string GUI::GUI_timer_string;
+
 
 
 
@@ -104,7 +107,7 @@ namespace ImGui {
 		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1 - value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col, ImDrawFlags_RoundCornersAll);
 		return true;
 	}
-	ImVec2 Spinner(const char* label, float radius, int thickness, float ratio, const ImU32& color) {
+	ImVec2 Spinner(const char* label, float radius, int thickness, float ratio, const ImU32& color, int num_segments) {
 		ImGuiWindow* window = GetCurrentWindow();
 		if (window->SkipItems)
 			return ImVec2(0, 0);
@@ -124,14 +127,13 @@ namespace ImGui {
 		// Render
 		window->DrawList->PathClear();
 
-		int num_segments = 30;
 		int start = 1; //abs(ImSin(g.Time * 1.8f) * (num_segments - 5));
 
 		const float a_min = IM_PI * 1.5f; // IM_PI * 2.0f * ((float)start) / (float)num_segments;
 
 		const ImVec2 centre = ImVec2(pos.x + radius + thickness, pos.y + radius + thickness);
 
-		for (int i = 0; i <= num_segments * ratio; i++) {
+		for (int i = 0; i <= (num_segments+1) * ratio; i++) {
 			const float a = a_min + ((float)i / (float)num_segments) * IM_PI * 2.0f;
 			window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a) * radius,
 				centre.y + ImSin(a) * radius));
@@ -179,6 +181,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_sale_ui = false; 
 	GUI_show_timer = true; 
 	prev_show_sale_ui = false; 
+	stamina_percent = 100; 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	//io.Fonts->AddFontFromFileTTF("font.ttf", 18.0f);
@@ -292,7 +295,7 @@ bool GUI::renderUI() {
 		createMiniMap();
 	}
 	if (GUI_show_stamina) {
-		stamina_percent = 0.85; //TODO hardcode stamina percentage
+		//stamina_percent = 0.85; //TODO hardcode stamina percentage
 		createStamina();
 	}
 	if (GUI_show_timer) {
@@ -301,12 +304,18 @@ bool GUI::renderUI() {
 		int height = 600;
 		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
 		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+
 		//float ratio = GUI_timer_percent;
 		float ratio = timer_percent;
+		//std::cout << "the timer percent is " << ratio << std::endl;
 		ImGui::SetNextWindowSize(size);
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
-		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, col);
+		ImGui::SetCursorPos(ImVec2(0, 0));
+		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, bg, 30);
+		ImGui::SetCursorPos(ImVec2(0, 0));
+		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, col, 120);
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(size);
@@ -636,7 +645,7 @@ void GUI::createStamina() {
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
-	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent, size, bg, col);
+	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, size, bg, col);
 	ImGui::End();
 
 }
@@ -651,7 +660,7 @@ void GUI::createTimer(float ratio) {
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Timer", NULL,TRANS_WINDOW_FLAG);
-	ImVec2 center = ImGui::Spinner("##spinner", 200*display_ratio, 80*display_ratio, ratio, col);
+	ImVec2 center = ImGui::Spinner("##spinner", 200*display_ratio, 80*display_ratio, ratio, col, 120);
 	ImGui::End(); 
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::SetNextWindowSize(size);

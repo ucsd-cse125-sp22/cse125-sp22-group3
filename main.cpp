@@ -203,7 +203,7 @@ int main(int argc, char* argv[])
 			char strbuf[1024];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			sprintf(strbuf, "%d:%d", rem_s / 60, rem_s % 60);
-			GUI_timer_string = std::string(strbuf);
+			GUI::GUI_timer_string = std::string(strbuf);
 
 			for (int i = 0; i < sheader->num_sounds; i++) {
 				const SoundInfo sound_info = sound_arr[i];

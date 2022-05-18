@@ -56,6 +56,9 @@ public:
 	static bool prev_show_sale_ui; 
 	static int rack_image_idx;
 	static float timer_percent; 
+	static float stamina_percent; //use this variable to set the stamina display
+
+	static std::string GUI_timer_string;
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];

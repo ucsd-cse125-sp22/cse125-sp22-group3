@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Hoe.h"
+#include "./UI/GUI.h"
 #include "Network/NetworkPacket.h"
 #include "GameManager.h"
 
@@ -37,7 +38,7 @@ void Player::FixedUpdate() {
 	if (glm::length(move_input) <= 0 || isGlued) {
 		// increment stamina
 		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
-		stamina_percent = fmin(stamina_percent + (delta*appliedStaminaIncreaseRate), 100);
+		GUI::stamina_percent = fmin(GUI::stamina_percent + (delta*appliedStaminaIncreaseRate), 100);
 
 		float applied_friction = intoxicationTimeRemaining > 0 ? drunk_friction_ : base_friction_;
 		if (glm::length(curr_vel_) < applied_friction * delta)
@@ -62,13 +63,13 @@ void Player::FixedUpdate() {
 		float appliedStaminaIncreaseRate = oatTimeRemaining > 0 ? oatStaminaIncreaseRate : baseStaminaIncreaseRate;
 		float appliedStaminaDecreaseRate = oatTimeRemaining > 0 ? oatStaminaDecreaseRate : baseStaminaDecreaseRate;
 		if(sprint)
-			stamina_percent = fmax(stamina_percent - (delta * appliedStaminaDecreaseRate), 0);
+			GUI::stamina_percent = fmax(GUI::stamina_percent - (delta * appliedStaminaDecreaseRate), 0);
 		else {
-			stamina_percent = fmin(stamina_percent + (delta * appliedStaminaIncreaseRate), 100);
+			GUI::stamina_percent = fmin(GUI::stamina_percent + (delta * appliedStaminaIncreaseRate), 100);
 		}
 
 		// check if enough stamina to run
-		if (stamina_percent == 0) {
+		if (GUI::stamina_percent == 0) {
 			dust_particle->modelAnim = PARTICLE_STOP;
 			sprint = false;
 		}
