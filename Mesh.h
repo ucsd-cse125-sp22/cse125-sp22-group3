@@ -73,9 +73,6 @@ class Mesh {
 		// is this mesh a particle?
 		bool isParticle = false;
 
-		// is this mesh a leaf
-		int isLeaf = 0;
-
 		// Constructor + Deconstructors
 		Mesh();
 

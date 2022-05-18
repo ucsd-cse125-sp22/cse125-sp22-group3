@@ -194,6 +194,7 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		std::vector<glm::vec3> players;
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
 			ServerHeader* sheader;
 			ModelInfo* model_arr;
@@ -247,10 +248,11 @@ int main(int argc, char* argv[])
 					GUI::player_pos[model_info.model] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
+					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
 				}
 				
   				Model& curr_model = *model_map[model_info.model_id];
-
+				FBO::playerPos = players;
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 				if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
 					if (sheader->player_sprinting) {

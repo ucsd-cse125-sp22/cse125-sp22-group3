@@ -14,6 +14,7 @@ in mat4 viewMat;
 
 uniform vec3 viewPos;
 uniform vec3 lightPos;
+uniform vec3 playerLight[4];
 uniform sampler2D texture_diffuse1;
 uniform sampler2DArray shadowMap;
 
@@ -32,6 +33,29 @@ const vec3 sunset = vec3(0.701, 0.337, 0.078);
 const vec3 sunrise = vec3(0.890, 0.290, 0.439);
 
 out vec4 fragColor;
+
+vec3 CalcPointLight(vec3 lightPos, vec3 viewDir, vec3 norm, vec3 lightColor, vec3 tex) {
+    vec3 lightDir = normalize(lightPos - FragPos);
+    // diffuse shading
+    float diff = max(dot(norm, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 5.0f);
+    // attenuation
+    float distance = length(lightPos - FragPos);
+    float attenuation = 1.0 / (1.0f + 0.09f * distance + 
+  			     0.1f * (distance * distance));    
+    // combine results
+    vec3 ambient2  = lightColor  * vec3(tex);
+    vec3 diffuse2  = lightColor * diff * vec3(tex);
+    vec3 specular2 = vec3(0.5f) * spec * vec3(tex);
+
+    ambient2  *= attenuation;
+    diffuse2  *= attenuation;
+    specular2 *= attenuation;
+
+    return vec3(ambient2 + diffuse2 + specular2);
+}
 
 void main()
 {
@@ -112,10 +136,13 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
+
+    vec4 result = vec4(0.0f);
     float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
     // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
     vec3 lightColor = day;
 
+    /*
     if(convTime >= 4.0f && convTime < 4.75f) {
         float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
         lightColor = mix(day, sunset, interpolate);
@@ -124,15 +151,33 @@ void main()
     else if(convTime >= 4.75f && convTime < 5.5f) {
         float interpolate = clamp((convTime - 4.75f) / 0.75f, 0.0f, 1.0f);
         lightColor = mix(sunset, night, interpolate);
+
+        for(int i = 0; i < 4; i++) {
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                (vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * interpolate);
+        }
     }
 
     else if(convTime >= 5.5f && convTime < 9.5f) {
         lightColor = night;
+
+        for(int i = 0; i < 4; i++) {
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f);
+        }
     }
 
     else if(convTime >= 9.5f && convTime < 10.25f) {
         float interpolate = clamp((convTime - 9.5f) / 0.75f, 0.0f, 1.0f);
         lightColor = mix(night, sunrise, interpolate);
+
+        for(int i = 0; i < 4; i++) {
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * (1.0f - interpolate);
+        }
     }
 
     else if(convTime >= 10.25f && convTime < 11.0f) {
@@ -143,13 +188,15 @@ void main()
     else if(convTime >= 11.0f) {
         lightColor = day;
     }
+    */
 
-    lightColor = day;
     vec3 ambient = lightColor * vec3(tex);
     vec3 diffuse = lightColor * diff * vec3(tex);
     vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(tex);
     
-    vec4 result = vec4(ambient + (1.0 - shadow) * (diffuse + specular), 1.0f);
+    result += vec4(vec3(ambient + (1.0 - shadow) * (diffuse + specular)), 1.0f);
+    
+
     float brightness = dot(vec3(result), vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1.0) {
         BrightColor = result;
