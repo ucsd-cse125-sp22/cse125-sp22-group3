@@ -18,19 +18,20 @@ GUIImage GUI::loading_bg[NUM_LOAD_IMG];
 GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
 int GUI::scoreboard_data[NUM_ICON];
 GUIImage GUI::fish_images_list[NUM_FISH_IMG];
+GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
+GUIImage GUI::curtain_img;
 
 float GUI::display_ratio;
 int GUI::window_height;
 int GUI::window_width;
-bool GUI::prev_show_sale_ui;
 float GUI::timer_percent;
 float GUI::stamina_percent;
 std::string GUI::GUI_timer_string;
-
-
-
+bool GUI::sale_tools; // default to false ( saleing seed), true if show tool shed
 
 int GUI::rack_image_idx; 
+int GUI::tool_image_idx;
+
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
@@ -180,7 +181,6 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_scoreboard = true; 
 	GUI_show_sale_ui = false; 
 	GUI_show_timer = true; 
-	prev_show_sale_ui = false; 
 	stamina_percent = 100; 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -246,49 +246,85 @@ bool GUI::renderUI() {
 	/* end of scoreboard */
 
 	/* build the sale page */
-	if(GUI_show_sale_ui) {		
+	if(GUI_show_sale_ui) {
 		//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
+		// press up arrow key to return to the seed rack
+		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) {
+			if (sale_tools) {
+				curtain_img.fade_in = true; 
+				(&rack_images_list[rack_image_idx])->fade_in = true;
+			}
+			sale_tools = false;
+		}else if(ImGui::IsKeyPressed(ImGuiKey_DownArrow)){
+			if (!sale_tools) {
+				curtain_img.fade_in = false;
+				(&rack_images_list[rack_image_idx])->fade_in = false;
+			}
+			sale_tools = true; 
+		}
+
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-			if (rack_image_idx < NUM_RACK_IMG - 1)
+			if (!sale_tools && rack_image_idx < NUM_RACK_IMG - 1){
 				rack_image_idx++;
-		}
-		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if (rack_image_idx > 1)
+			} else if (sale_tools && tool_image_idx < NUM_TOOL_IMG - 1) {
+				tool_image_idx++; 
+			}
+		} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
+			if (!sale_tools && rack_image_idx > 1) {
 				rack_image_idx--;
-		}
-		else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+			} else if (sale_tools && tool_image_idx > 1) {
+				tool_image_idx--;
+			}
+		} else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+			// TODO: send buy command for buying tools
 			InputManager::lastCmd = buy_command_map[rack_image_idx];
 		}
+
+
 		// etc.
 		bool open_ptr = true;
 		GUIImage* rack_image = &rack_images_list[rack_image_idx];
-		GUIImage fish_image = fish_images_list[rack_image_idx%3];
+		GUIImage* tool_image = &tool_images_list[tool_image_idx]; 
+		GUIImage fish_image = fish_images_list[(rack_image_idx+tool_image_idx)%3];
 
 		ImVec2 rack_size = ImVec2(rack_image->my_image_width * display_ratio, rack_image->my_image_height * display_ratio);
 		ImVec2 fish_size = ImVec2(window_width, window_width * fish_image.my_image_height / fish_image.my_image_width);
+		ImVec2 tool_size = fish_size;
+		ImVec2 curtain_size = ImVec2(fish_size.y/curtain_img.my_image_height * curtain_img.my_image_width, fish_size.y);
+
 		ImGui::SetNextWindowSize(ImVec2(window_width,window_height));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		ImGui::Begin("Sale GUI", &open_ptr, TRANS_WINDOW_FLAG);
+		ImGui::SetScrollX(0); //prevent scroll cause the context is actually larger than the window 
+		ImGui::SetScrollY(0); 
+		// add tool shed layer
+		ImGui::SetCursorPos(ImVec2(0, 0));
+		ImGui::Image((void*)(intptr_t)tool_image->my_image_texture, tool_size); 
 		
+		// add the curtain layer 
+		ImGui::SetCursorPos(ImVec2(window_width - curtain_size.x + curtain_img.fade_ratio * curtain_size.x, 0));
+		if (curtain_img.fade_in) {
+			curtain_img.fade_ratio = curtain_img.fade_ratio < 0.001 ? 0.001 : curtain_img.fade_ratio * 0.8;
+		} else {
+			curtain_img.fade_ratio = curtain_img.fade_ratio < 1 ? curtain_img.fade_ratio * 1.5 : 1; 
+		}
+		ImGui::Image((void*)(intptr_t)curtain_img.my_image_texture, curtain_size);
+
+		// add the fish layer
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)fish_image.my_image_texture, fish_size);
 
-		ImGui::SetCursorPos(ImVec2(window_width - rack_size.x, window_height * 0.9 - rack_size.y ));
-		if ( rack_image_idx == 1 && rack_image->fade_ratio > 0.001) {
-			ImGui::SetCursorPos(ImVec2(window_width - rack_size.x + rack_image->fade_ratio * rack_size.x * 2 , window_height * 0.9 - rack_size.y));
-			if (rack_image->fade_in) {
-				rack_image->fade_ratio = rack_image->fade_ratio < 0.001 ? 0.001 : rack_image->fade_ratio * 0.8;
-			}
+		// add the rack layer
+		ImGui::SetCursorPos(ImVec2(window_width - rack_size.x + rack_image->fade_ratio * rack_size.x, window_height * 0.9 - rack_size.y));
+		if (rack_image->fade_in) {
+			rack_image->fade_ratio = rack_image->fade_ratio <= 0.001 ? 0.001 : rack_image->fade_ratio * 0.8;
+		} else {
+			rack_image->fade_ratio = rack_image->fade_ratio < 1?  rack_image->fade_ratio*1.5 : 1;
 		}
 		ImGui::Image((void*)(intptr_t)rack_image->my_image_texture, rack_size);
-		ImGui::End();
-	} else {
-		GUIImage* rack_image = &rack_images_list[1];
-		rack_image->fade_ratio = 1; 
-	}
 
-	prev_show_sale_ui = GUI_show_sale_ui;
-	
+		ImGui::End();
+	} 
 
 	/*end of sale page*/
 	if (GUI_show_minimap) {
@@ -433,24 +469,6 @@ void GUI::initializeImage() {
 	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
 
-	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
-	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
-		&(loading_background.my_image_width), &(loading_background.my_image_height));
-
-
-	i = 0;
-	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
-	for (auto& entry : fs::directory_iterator(chase_dir)) {
-		//std::cout << entry.path() << std::endl;
-		GUIImage* image = &(chase_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
-			&(image->my_image_width), &(image->my_image_height));
-		image->my_image_width *= 2.0f;
-		image->my_image_height *= 2.0f;
-		i++;
-	}
-
 	LoadTextureFromFile((picture_dir + std::string("/minimap_background.png")).c_str(), &(minimap_background.my_image_texture),
 		&(minimap_background.my_image_width), &(minimap_background.my_image_height));
 	i = 0; 
@@ -463,17 +481,38 @@ void GUI::initializeImage() {
 			&(image->my_image_width), &(image->my_image_height));
 		i++;
 	}
-}
 
-void GUI::initializeLoadingImage() {
-	const char* load_dir = (picture_dir + std::string("/loading")).c_str();
-	int i = 0;
-	for (auto& entry : fs::directory_iterator(load_dir)) {
+	i = 0;
+	const char* tool_dir = (picture_dir + std::string("/tools")).c_str();
+	for (auto& entry : fs::directory_iterator(tool_dir)) {
 		//std::cout << entry.path() << std::endl;
-		GUIImage* image = &(loading_bg[i]);
+		GUIImage* image = &(tool_images_list[i]);
 		const char* epath = entry.path().string().c_str();
 		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
+		i++;
+	}
+
+	LoadTextureFromFile((picture_dir + std::string("/curtain-shed-side.png")).c_str(), &(curtain_img.my_image_texture),
+		&(curtain_img.my_image_width), &(curtain_img.my_image_height));
+}
+
+void GUI::initializeLoadingImage() {
+	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
+	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
+		&(loading_background.my_image_width), &(loading_background.my_image_height));
+
+
+	int i = 0;
+	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
+	for (auto& entry : fs::directory_iterator(chase_dir)) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(chase_images_list[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 2.0f;
+		image->my_image_height *= 2.0f;
 		i++;
 	}
 }
@@ -585,6 +624,13 @@ bool GUI::ShowGUI(bool show)
 {
 	if (GUI_show_sale_ui!=show) {
 		rack_image_idx = 1;
+		tool_image_idx = 1; 
+		(&rack_images_list[1])->fade_ratio = 1;
+		(&rack_images_list[1])->fade_in = true;
+
+		curtain_img.fade_ratio = 0.001; 
+		curtain_img.fade_in = true;
+
 	}
 	GUI_show_sale_ui = show;
 	return show;

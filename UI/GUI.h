@@ -23,8 +23,10 @@
 #define NUM_LOAD_IMG 8
 #define NUM_CHASE_IMG 2 
 #define NUM_FISH_IMG 3
+#define NUM_TOOL_IMG 10
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
-						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
+						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
+						  ImGuiWindowFlags_NoInputs 
 
 #define MINI_MAP_FLAG ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
@@ -37,8 +39,8 @@ public:
 	int my_image_width = 0;
 	int my_image_height = 0;
 	GLuint my_image_texture = 0;
-	float fade_ratio = 1; 
-	bool fade_in=true; // true for fade in, false for fade out; 
+	float fade_ratio = 0.001; 
+	bool fade_in = true; // true for fade in, false for fade out; 
 
 };
 class GUI {
@@ -52,9 +54,11 @@ public:
 	static GUIImage loading_background; 
 	static GUIImage minimap_background; 
 	static GUIImage loading_bg[NUM_LOAD_IMG]; 
+
+	static bool sale_tools; // default to false ( saleing seed), true if show tool shed
 	static bool show_loading;
-	static bool prev_show_sale_ui; 
 	static int rack_image_idx;
+	static int tool_image_idx; 
 	static float timer_percent; 
 	static float stamina_percent; //use this variable to set the stamina display
 
@@ -63,6 +67,8 @@ public:
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
 	static GUIImage fish_images_list[NUM_FISH_IMG];
+	static GUIImage tool_images_list[NUM_TOOL_IMG];
+	static GUIImage curtain_img;
 	static int scoreboard_data[NUM_ICON];
 	static ImVec2 player_pos[4]; 
 	static void initializeGUI(GLFWwindow* window);

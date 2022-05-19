@@ -89,7 +89,7 @@ void preload_texture_files() {
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
-	int size = PARTICLE_GLOW - CHAR_BUMBUS+2; 
+	int size = PARTICLE_GLOW - CHAR_BUMBUS+4; 
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image 
 	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
@@ -97,6 +97,10 @@ void load_models(GLFWwindow* window)
 		tmp = Model(i);
 		progress++;
 	}
+	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
+	GUI::initializeImage();
+	progress++;
+	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 }
 
 int main(int argc, char* argv[])
@@ -135,7 +139,7 @@ int main(int argc, char* argv[])
 	GUI::show_loading = true;
 	// initialize IMGUI 
 	GUI::initializeGUI(window);
-	GUI::initializeImage();
+	GUI::initializeLoadingImage();
 
 	// Initialize network client interface
 	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("server.cfg");
