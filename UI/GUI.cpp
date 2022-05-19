@@ -211,6 +211,19 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 	{5, BUY_TOMATO},
 };
 
+char* GUI::seed_type_list[] = { "Carrot", "Cabbage", "Corn","Radish", "Tomato"};
+char* GUI::tool_type_list[] = { "Net", "Hoe", "Watering Can","Fertilizer", "Shovel", "Glue","Poison", "Super Oats", "Farmer's Ale"};
+char* GUI::tool_func_list[] = {
+	"steal veg in pot",
+	"sth",
+	"Water",
+	"Fertilizer",
+	"dig a hole",
+	"trap",
+	"kill a veg",
+	"Get infinite Stamina",
+	"get other player drunk"
+};
 /**
 * Render the UI compenents, should be called within the mainloop
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
@@ -315,13 +328,23 @@ bool GUI::renderUI() {
 		ImGui::Image((void*)(intptr_t)fish_image.my_image_texture, fish_size);
 
 		// add the rack layer
-		ImGui::SetCursorPos(ImVec2(window_width - rack_size.x + rack_image->fade_ratio * rack_size.x, window_height * 0.9 - rack_size.y));
+		ImGui::SetCursorPos(ImVec2(fish_size.x - rack_size.x + rack_image->fade_ratio * rack_size.x, fish_size.y * 0.9 - rack_size.y));
 		if (rack_image->fade_in) {
 			rack_image->fade_ratio = rack_image->fade_ratio <= 0.001 ? 0.001 : rack_image->fade_ratio * 0.8;
 		} else {
 			rack_image->fade_ratio = rack_image->fade_ratio < 1?  rack_image->fade_ratio*1.5 : 1;
 		}
 		ImGui::Image((void*)(intptr_t)rack_image->my_image_texture, rack_size);
+
+		//show talking box
+		if (sale_tools) {
+			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
+			ImGui::Text("%s! That will be %f dollar(s). \n It can be use to %s. Press [Enter] to buy!", \
+				tool_type_list[tool_image_idx - 1], 10, tool_func_list[tool_image_idx - 1]);
+		} else {
+			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
+			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
+		}
 
 		ImGui::End();
 	} 
@@ -650,18 +673,19 @@ void GUI::createMiniMap() {
 
 	//size of minimap 
 	ImVec2 image_size = ImVec2(width, height);
-	ImVec2 window_size = ImVec2(width + padding, height + padding); 
+	ImVec2 window_size = ImVec2(width, height); 
 
 	ImGui::SetNextWindowSize(window_size);
 	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Minimap background", &bptr, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, 0));
 	ImGui::Image((void*)(intptr_t)minimap_background.my_image_texture, image_size);
 	ImGui::End(); 
 
 	ImGui::SetNextWindowSize(window_size);
 	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	//ImVec2 center = ImVec2(padding + size.x / 2, window_height - padding - size.y / 2); // center of minimap
-	ImVec2 center = ImVec2(image_size.x / 2.0f, image_size.y /2.0f); // center of minimap
+	ImVec2 center = ImVec2(image_size.x * 0.5f, image_size.y  * 0.5f); // center of minimap
 
 	ImGui::Begin("MiniMap", &bptr, TRANS_WINDOW_FLAG);
 	//place all player's icon:
