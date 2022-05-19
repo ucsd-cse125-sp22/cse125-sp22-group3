@@ -120,7 +120,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 
 		// how much money player currently has
-		float curr_balance = 500;
+		float curr_balance = 50;
 
 		// particles
 		Particle* dust_particle = nullptr;
