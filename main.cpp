@@ -6,7 +6,8 @@
 #include "ConfigReader.h"
 #include <filesystem>
 #include "Model.h"
-#include <thread>         
+#include <thread>
+#include <atomic>
 #include <chrono>
 #include <map>
 
@@ -99,12 +100,35 @@ void load_models(GLFWwindow* window)
 	Model tmp; 
 	int size = PARTICLE_GLOW - CHAR_BUMBUS+4; 
 	float progress = 1; 
-	bool flip_image = true; // variable use to flip the image 
-	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
+	bool flip_image = true; // variable use to flip the image
+	std::atomic_bool spawned(false);
+	std::atomic_bool done(false);
+	
+	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW;) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
-		Model::load_scene(i);
-		tmp = Model(i);
-		progress++;
+
+		if (!spawned.load(std::memory_order_relaxed))
+		{
+			spawned.store(true, std::memory_order_relaxed);
+			std::thread worker([&]()
+			{
+				Model::load_scene(i);
+				done.store(true, std::memory_order_relaxed);
+			});
+			worker.detach();	
+		}
+
+		if (done.load(std::memory_order_relaxed))
+		{
+			tmp = Model(i);
+			progress++;
+		
+			i = ModelEnum(i + 1);
+			spawned.store(false, std::memory_order_relaxed);
+			done.store(false, std::memory_order_relaxed);
+		}
+
+		Sleep(150);
 	}
 	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 	GUI::initializeImage();
