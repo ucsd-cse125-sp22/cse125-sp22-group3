@@ -342,7 +342,13 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 		for each (Mesh mesh in meshes)
 		{
 			if (curr != PARTICLE_STOP) {
-				mesh.draw(view, projection, parent, curr_time, shader);
+				if (model == DEBUG_CIRCLE || model == DEBUG_SQUARE) {
+					mesh.debugDraw(view, projection, parent, shader);
+				}
+
+				else {
+					mesh.draw(view, projection, parent, curr_time, shader);
+				}
 			}
 		}
 	}
@@ -771,14 +777,6 @@ void Model::setAnimationMode(AniMode ani) {
 			}
 		}
 	}
-}
-
-void Model::leafPingPong() {
-	if (blend >= 0.45f || blend < 0.25f) {
-		blendOffset *= -1;
-	}
-
-	blend += blendOffset;
 }
 
 void Model::copyHelper(const Model& t) {

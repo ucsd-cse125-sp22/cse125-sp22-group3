@@ -322,6 +322,22 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     glActiveTexture(GL_TEXTURE0);
 }
 
+void Mesh::debugDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint shader) {
+    glUseProgram(shader);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, false, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(parent));
+
+    glBindVertexArray(VAO);
+
+    // glDrawElements(GL_LINES, indices.size() * 2, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_LINES, 0, vertices.size());
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+    glUseProgram(0);
+}
+
 void Mesh::draw(glm::mat4 parent, GLuint shader) {
     if (!isParticle) {
         glUseProgram(shader);
@@ -385,4 +401,5 @@ void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
     glBindVertexArray(0);
     glUseProgram(0);
     glActiveTexture(GL_TEXTURE0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

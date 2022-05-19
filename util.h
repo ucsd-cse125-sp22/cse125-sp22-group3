@@ -86,6 +86,9 @@ enum ModelEnum
 	INDICATOR_WATER,
 	INDICATOR_FERTILIZER,
 
+	DEBUG_CIRCLE,
+	DEBUG_SQUARE,
+
 	WORLD_MAP,
 	WORLD_WATER,
 	WORLD_LEAVES,
@@ -93,8 +96,6 @@ enum ModelEnum
 
 	PARTICLE_GLOW,
 	PARTICLE_DUST,
-
-	
 };
 
 enum AniMode {

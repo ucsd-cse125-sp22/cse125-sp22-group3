@@ -47,6 +47,7 @@ public:
 	static GLuint animationShaderProgram;
 	static GLuint blurShaderProgram;
 	static GLuint finalShaderProgram;
+	static GLuint debugShaderProgram;
 	static GLuint particleShaderProgram;
 
 

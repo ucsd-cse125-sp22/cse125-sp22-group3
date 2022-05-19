@@ -37,6 +37,7 @@ GLuint Window::worldShaderProgram;
 GLuint Window::leafShaderProgram; 
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
+GLuint Window::debugShaderProgram; 
 GLuint Window::shadowShaderProgram; 
 GLuint Window::blurShaderProgram;
 GLuint Window::finalShaderProgram;
@@ -56,6 +57,7 @@ bool Window::initializeProgram() {
 	blurShaderProgram = LoadShaders("shaders/blur.vert", "shaders/blur.frag");
 	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 	particleShaderProgram = LoadShaders("shaders/particles.vert", "shaders/particles.frag");
+	debugShaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
 
 	// Check the shader program.
 	if (!worldShaderProgram)
@@ -154,6 +156,9 @@ bool Window::initializeObjects()
 
 	{INDICATOR_WATER,animationShaderProgram},
 	{INDICATOR_FERTILIZER,animationShaderProgram},
+
+	{ DEBUG_CIRCLE, debugShaderProgram },
+	{ DEBUG_SQUARE, debugShaderProgram },
 
 	{ WORLD_MAP, worldShaderProgram },
 	{ WORLD_WATER, worldShaderProgram },
