@@ -22,6 +22,7 @@ inline int ServerMain()
 	NPC fish{ CHAR_NPC };
 	fish.SetWorldPosition({ 0,30, 0 });
 
+	// TODO: make this look better LUL
 	Plot plotRed{ WORLD_PLOT_RED };
 	Plot plotBlue{ WORLD_PLOT_BLUE };
 	Plot plotYellow{ WORLD_PLOT_YELLOW };
@@ -31,6 +32,38 @@ inline int ServerMain()
 	plotBlue.SetPosition({ -100,-4, -100 });
 	plotYellow.SetPosition({ -100,-4, 100 });
 	plotGreen.SetPosition({ 100,-4, -100 });
+
+	Plot plotRed1{ WORLD_PLOT_RED };
+	Plot plotBlue1{ WORLD_PLOT_BLUE };
+	Plot plotYellow1{ WORLD_PLOT_YELLOW };
+	Plot plotGreen1{ WORLD_PLOT_GREEN };
+
+	plotRed1.SetPosition({ 100,-4, 90 });
+	plotBlue1.SetPosition({ -100,-4, -90 });
+	plotYellow1.SetPosition({ -100,-4, 90 });
+	plotGreen1.SetPosition({ 100,-4, -90 });
+
+	Plot plotRed2{ WORLD_PLOT_RED };
+	Plot plotBlue2{ WORLD_PLOT_BLUE };
+	Plot plotYellow2{ WORLD_PLOT_YELLOW };
+	Plot plotGreen2{ WORLD_PLOT_GREEN };
+
+	plotRed2.SetPosition({ 90,-4, 100 });
+	plotBlue2.SetPosition({ -90,-4, -100 });
+	plotYellow2.SetPosition({ -90,-4, 100 });
+	plotGreen2.SetPosition({ 90,-4, -100 });
+
+	Plot plotRed3{ WORLD_PLOT_RED };
+	Plot plotBlue3{ WORLD_PLOT_BLUE };
+	Plot plotYellow3{ WORLD_PLOT_YELLOW };
+	Plot plotGreen3{ WORLD_PLOT_GREEN };
+
+	plotRed3.SetPosition({ 90,-4, 90 });
+	plotBlue3.SetPosition({ -90,-4, -90 });
+	plotYellow3.SetPosition({ -90,-4, 90 });
+	plotGreen3.SetPosition({ 90,-4, -90 });
+
+	game.AddEntities({ &plotRed1,&plotRed2, &plotRed3, &plotBlue1, &plotBlue2, &plotBlue3, &plotGreen1, &plotGreen2, &plotGreen3, &plotYellow1, &plotYellow2, &plotYellow3 });
 
 	/**
 	Seed seedCarrot{ VegetableType::CARROT, WORLD_SEED_CARROT };
@@ -51,47 +84,11 @@ inline int ServerMain()
 	World leaves{ WORLD_LEAVES };
 	World grass{ WORLD_GRASS };
 	
-	Particle glow{ PARTICLE_GLOW };
-	glow.modelAnim = PARTICLE_PLAY;
-	glow.SetPosition({ -30, glow.glowParticleHeight, 0 });
-	
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &glow, &grass });
-
-	Shovel shovel{};
-	shovel.SetPosition({ 10, -4, 10 });
-	game.AddEntities({ &shovel });
-
-	Hoe hoe{};
-	hoe.SetPosition({ 20, -4, 10 });
-	game.AddEntities({ &hoe });
-
-	Poison poisson{};
-	poisson.SetPosition({ 10, -4, 20 });
-	game.AddEntities({ &poisson });
-
-	VeggieNet net{};
-	net.SetPosition({ 20, -4, 20 });
-	game.AddEntities({ &net });
-
-	Glue glue{};
-	glue.SetPosition({ 30, -1, 20 });
-	game.AddEntities({ &glue });
-
-	Fertilizer fert{};
-	fert.SetPosition({ 10, -4, 30 });
-	game.AddEntities({ &fert });
+	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass });
 
 	WateringCan can{};
 	can.SetPosition({ 20, -2, 30 });
 	game.AddEntities({ &can });
-
-	Soju soju{};
-	soju.SetPosition({ 30, -4, 30 });
-	game.AddEntities({ &soju });
-
-	Oat oat{};
-	oat.SetPosition({ 40, -4, 30 });
-	game.AddEntities({ &oat });
 
 	world.SetPosition({ 0, 0, -4.0f });
 	water.SetPosition({ 0, 0, -4.0f });
@@ -105,6 +102,14 @@ inline int ServerMain()
 			if (cpacket.justMoved)
 			{
 				game.SetPlayerInput(cpacket.movement, cpacket.player_idx);
+				if (cpacket.lastCommand == BUY_POISON)
+					printf("buying poison\n");
+				else if (cpacket.lastCommand == BUY_GLUE)
+					printf("buying GLUE\n");
+				else if (cpacket.lastCommand == BUY_SOJU)
+					printf("buying SOJU\n");
+				else if (cpacket.lastCommand == BUY_HOE)
+					printf("buying HOE\n");
 				switch (cpacket.lastCommand) {
 				case InputCommands::USE:
 					game.SetPlayerUse(cpacket.player_idx);
@@ -141,6 +146,34 @@ inline int ServerMain()
 					break;
 				case InputCommands::CLOSE_UI:
 					game.SetClosePlayerUI(cpacket.player_idx);
+					break;
+				case InputCommands::BUY_NET:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::NET);
+					break;
+				case InputCommands::BUY_HOE:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::HOE);
+					break;
+				case InputCommands::BUY_WATER:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::WATERING_CAN);
+					break;
+				case InputCommands::BUY_FERTILIZER:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::FERTILIZER);
+					break;
+				case InputCommands::BUY_SHOVEL:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SHOVEL);
+					break;
+				case InputCommands::BUY_GLUE:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::GLUE);
+					break;
+				case InputCommands::BUY_POISON:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::POISON);
+					break;
+				case InputCommands::BUY_OATS:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::OATS);
+					break;
+				case InputCommands::BUY_SOJU:
+					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SOJU);
+					break;
 				default: break;
 				}
 			}

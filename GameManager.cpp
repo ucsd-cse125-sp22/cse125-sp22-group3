@@ -160,6 +160,19 @@ void GameManager::SetPlayerBuy(int player_index, VegetableType bought_vegetable)
 	players_[player_index]->Buy(bought_vegetable);
 }
 
+void GameManager::SetPlayerBuy(int player_index, ModelEnum tool)
+{
+	if(tool == POISON)
+		printf("buying poison\n");
+	else if (tool == GLUE)
+		printf("buying GLUE\n");
+	else if (tool == SOJU)
+		printf("buying SOJU\n");
+	else if (tool == HOE)
+		printf("buying HOE\n");
+	players_[player_index]->Buy(tool);
+}
+
 void GameManager::SetPlayerSell(int player_index)
 {
 	players_[player_index]->Sell();

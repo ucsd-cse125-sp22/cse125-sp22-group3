@@ -40,6 +40,7 @@ public:
     void SetPlayerSprint(int player_index, bool sprinting);
     void SetPlayerDance(int player_index);
     void SetPlayerBuy(int player_index, VegetableType bought_vegetable);
+    void SetPlayerBuy(int player_index, ModelEnum tool);
     void SetPlayerSell(int player_index);
     void SetClosePlayerUI(int player_index);
 
