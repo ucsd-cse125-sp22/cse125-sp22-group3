@@ -775,7 +775,7 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	ImGui::End();
 	ImGui::SetNextWindowPos(ImVec2(32.0f * display_ratio, window_height / 3 * 2));
 	ImGui::Begin("Loading Status", NULL, TRANS_WINDOW_FLAG);
-	ImGui::Text("%d of %d client joined...");
+	ImGui::Text("%d of %d client joined...", client_joined, max_client);
 	ImGui::End(); 
 
 	// Rendering
