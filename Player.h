@@ -98,6 +98,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		void Drop();
 		void Dance();
 		void Buy(VegetableType bought_vegetable);
+		void Buy(ModelEnum tool);
 		void Sell();
 		void CloseUI();
 		void OpenUI();
@@ -119,7 +120,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		void SetTriggeringEntity(GameEntity* entity); // Set the game object we're colliding with
 
 		// how much money player currently has
-		float curr_balance = 20;
+		float curr_balance = 500;
 
 		// particles
 		Particle* dust_particle = nullptr;

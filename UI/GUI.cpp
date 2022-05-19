@@ -209,6 +209,15 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 	{3, BUY_CORN},
 	{4, BUY_RADISH},
 	{5, BUY_TOMATO},
+	{6, BUY_NET},
+	{7, BUY_HOE},
+	{8, BUY_WATER},
+	{9, BUY_FERTILIZER},
+	{10, BUY_SHOVEL},
+	{11, BUY_GLUE},
+	{12, BUY_POISON},
+	{13, BUY_OATS},
+	{14, BUY_SOJU},
 };
 
 /**
@@ -249,19 +258,18 @@ bool GUI::renderUI() {
 	if(GUI_show_sale_ui) {
 		//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
 		// press up arrow key to return to the seed rack
-		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) {
+		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
 			if (sale_tools) {
 				curtain_img.fade_in = true; 
 				(&rack_images_list[rack_image_idx])->fade_in = true;
 			}
-			sale_tools = false;
-		}else if(ImGui::IsKeyPressed(ImGuiKey_DownArrow)){
-			if (!sale_tools) {
+			else if (!sale_tools) {
 				curtain_img.fade_in = false;
 				(&rack_images_list[rack_image_idx])->fade_in = false;
 			}
-			sale_tools = true; 
+			sale_tools = !sale_tools;
 		}
+			
 
 		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 			if (!sale_tools && rack_image_idx < NUM_RACK_IMG - 1){
@@ -277,7 +285,11 @@ bool GUI::renderUI() {
 			}
 		} else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
 			// TODO: send buy command for buying tools
-			InputManager::lastCmd = buy_command_map[rack_image_idx];
+			
+			if(sale_tools)
+				InputManager::lastCmd = buy_command_map[5+tool_image_idx];
+			else
+				InputManager::lastCmd = buy_command_map[rack_image_idx];
 		}
 
 

@@ -28,12 +28,23 @@ enum InputCommands {
 	SPRINT,
 	STOP_SPRINT,
 	DANCE_CMD,
-	// buying
+	// buying veggies
 	BUY_CARROT,
 	BUY_CABBAGE,
 	BUY_CORN,
 	BUY_RADISH,
 	BUY_TOMATO,
+	// buying tools
+	BUY_NET,
+	BUY_HOE ,
+	BUY_WATER ,
+	BUY_FERTILIZER ,
+	BUY_SHOVEL ,
+	BUY_GLUE ,
+	BUY_POISON ,
+	BUY_OATS ,
+	BUY_SOJU ,
+	
 	// selling
 	SELL_CMD,
 	CLOSE_UI
@@ -130,6 +141,11 @@ struct VeggieInfo {
 	bool requires_fertilizer = false;
 };
 
+struct ToolInfo {
+	ModelEnum tool_model;
+	float price;
+};
+
 // veggie model, // model flag, seed model , growth time, seed price, sell price, requires water? requires fertilizer?
 static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::TOMATO, VeggieInfo{VEG_TOMATO, WORLD_FLAG_TOMATO, WORLD_SEED_TOMATO, 5, 10, 50, true, true}},
@@ -138,6 +154,19 @@ static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::CARROT, VeggieInfo{VEG_CARROT, WORLD_FLAG_CARROT, WORLD_SEED_CARROT, 5, 1, 5, false, false}},
 	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}},
 	{VegetableType::GOLDEN_EGGPLANT, VeggieInfo{VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, 0, 0, 100, false, false}}
+};
+
+static std::unordered_map<ModelEnum, ToolInfo> tool_map = {
+	{ModelEnum::NET, ToolInfo{NET, 10}},
+	{ModelEnum::HOE, ToolInfo{HOE, 5}},
+	{ModelEnum::WATERING_CAN, ToolInfo{WATERING_CAN, 20}},
+	{ModelEnum::FERTILIZER, ToolInfo{FERTILIZER, 2}},
+	{ModelEnum::SHOVEL, ToolInfo{SHOVEL, 5}},
+	{ModelEnum::GLUE, ToolInfo{GLUE, 3}},
+	{ModelEnum::POISON, ToolInfo{POISON, 2}},
+	{ModelEnum::OATS, ToolInfo{OATS, 5}},
+	{ModelEnum::SOJU, ToolInfo{SOJU, 6}},
+	
 };
 
 static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {

@@ -3,6 +3,7 @@
 #include "./UI/GUI.h"
 #include "Network/NetworkPacket.h"
 #include "GameManager.h"
+#include "VeggieNet.h"
 
 Player::Player() {
 	translate = new glm::vec2(0.f,0.f);
@@ -292,12 +293,62 @@ void Player::Buy(VegetableType bought_vegetable) {
 		isHolding = true;
 
 		// Spawn the correct vegetable on the player
-		VeggieInfo veggie_info = veggie_map[bought_vegetable];
-		Seed* bought_seed = new Seed{ bought_vegetable, veggie_info.seed_model };
+		Seed* bought_seed = new Seed{ bought_vegetable, veggie.seed_model };
 		GameManager::AddEntities({ bought_seed });
 		SetHoldEntity(bought_seed);
 		bought_seed->holding_player = this;
 
+		sound_buy = true;
+	}
+	CloseUI();
+	//printf("BUYING VEGGIE %f\n", curr_balance);
+}
+
+void Player::Buy(ModelEnum tool) {
+
+	ToolInfo tool_ = tool_map[tool];
+	if (!isHolding && tool_.price <= curr_balance) {
+		curr_balance -= tool_.price;
+		isHolding = true;
+
+		// Spawn the correct tool
+		GameEntity* tempEntity = nullptr;
+		switch (tool) {
+			case ModelEnum::NET:
+				tempEntity = new VeggieNet();
+				break;
+			case ModelEnum::SHOVEL:
+				tempEntity = new Shovel();
+				break;
+			case ModelEnum::POISON:
+				tempEntity = new Poison();
+				break;
+			case ModelEnum::WATERING_CAN:
+				tempEntity = new WateringCan();
+				break;
+			case ModelEnum::FERTILIZER:
+				tempEntity = new Fertilizer();
+				break;
+			case ModelEnum::GLUE:
+				tempEntity = new Glue();
+				break;
+			case ModelEnum::SOJU:
+				tempEntity = new Soju();
+				break;
+			case ModelEnum::OATS:
+				tempEntity = new Oat();
+				break;
+			case ModelEnum::HOE:
+				tempEntity = new Hoe();
+				break;
+
+			default: break;
+
+		}
+		
+		GameManager::AddEntities({ tempEntity });
+		SetHoldEntity(tempEntity);
+		
 		sound_buy = true;
 	}
 	CloseUI();
