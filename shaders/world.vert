@@ -29,6 +29,7 @@ uniform mat4 finalBonesMatrices[MAX_BONES];
 out vec3 Normal;
 out vec3 FragPos;
 out vec2 TexCoords;
+out vec3 lightPos2;
 out mat4 viewMat;
 
 void main()
@@ -61,7 +62,8 @@ void main()
         TexCoords = uvs;
 
         viewMat = view;
-    
+        lightPos2 = vec3(model[3]) + vec3(0.0f, 3.0f, 0.0f);
+
         gl_Position = projection * view * model * totalPosition;
     }
 
@@ -70,6 +72,7 @@ void main()
        Normal = mat3(transpose(inverse(model))) * normals;  
        TexCoords = uvs;
 
+       lightPos2 = vec3(model[3]) + vec3(0.0f, 3.0f, 0.0f);
        viewMat = view;
     
        gl_Position = projection * view * vec4(FragPos, 1.0);

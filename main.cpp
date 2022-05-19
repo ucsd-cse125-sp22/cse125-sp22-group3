@@ -35,7 +35,8 @@ void setup_callbacks(GLFWwindow* window)
 	glfwSetKeyCallback(window, InputManager::keyCallback);
 
 	// Set cursor callback
-	glfwSetCursorPosCallback(window, Window::cursorCallback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, InputManager::CursorCallback);
 }
 
 void setup_opengl_settings()
@@ -162,24 +163,42 @@ int main(int argc, char* argv[])
 	
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
-	
+
+	glm::vec3 eye_offset = glm::vec3(0,30,30); //TODO no magic number :,(
 	// Loop while GLFW window should stay open and server han't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
 		// outgoing packet initialization
 		ClientPacket out_packet;
 
-		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
-		if (InputManager::getMoved()) { // TODO determine when to send packet and when to skip
-			out_packet.justMoved = InputManager::getMoved();
-			out_packet.movement = InputManager::getLastMovement();
-			out_packet.lastCommand = InputManager::getLastCommand();
+		const glm::vec2 mouse_delta = InputManager::GetCursorDelta();
+		glm::mat3 rot_x = util_RotateAroundAxis(-mouse_delta[0] * InputManager::camera_speed, glm::vec3{0,1,0});
+		auto rot_y = glm::mat3(1);
+		if (eye_offset[1] < 40.f || mouse_delta[1] <= 0) { //TODO no magic numbers :^(
+			const glm::vec3 right_axis = -glm::cross(glm::vec3{0,1,0},eye_offset);
+			rot_y = util_RotateAroundAxis(mouse_delta[1] * InputManager::camera_speed, glm::normalize(right_axis));
 		}
+		eye_offset = rot_x * rot_y * eye_offset;
+		if (eye_offset[1] < 20) eye_offset[1] = 20;
+		eye_offset = glm::normalize(eye_offset) * InputManager::camera_dist;
+
+		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+		//if (InputManager::getMoved() || mouse_delta != glm::vec2{0,0}) { // TODO determine when to send packet and when to skip
+			out_packet.justMoved = InputManager::getMoved();
+			
+			const glm::vec2 movement = InputManager::getLastMovement();
+			const float degrees = atan2f(eye_offset[0], eye_offset[2]);
+			const glm::mat2 trans = util_Rotate2D(degrees);
+			out_packet.movement = trans * movement;
+			
+			out_packet.lastCommand = InputManager::getLastCommand();
+		//}
 
 		InputManager::resetMoved();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		std::vector<glm::vec3> players;
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
 			ServerHeader* sheader;
 			ModelInfo* model_arr;
@@ -190,7 +209,7 @@ int main(int argc, char* argv[])
 			const glm::mat4 player_transform = sheader->player_transform;
 			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
 			
-			const glm::vec3 eye_pos = player_pos + glm::vec3(0,30,30);	// TODO implement angle.
+			const glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
 			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
@@ -233,10 +252,13 @@ int main(int argc, char* argv[])
 					GUI::player_pos[model_info.model] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
+					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
+
+					GUI::stamina_percent = sheader->stamina_bar;
 				}
 				
   				Model& curr_model = *model_map[model_info.model_id];
-
+				FBO::playerPos = players;
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 				if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
 					if (sheader->player_sprinting) {

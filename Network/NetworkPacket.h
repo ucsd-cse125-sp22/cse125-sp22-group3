@@ -61,6 +61,7 @@ struct ServerHeader {
 	float balance[4];
 	double time_remaining_seconds;
 	double time_max_seconds;
+	double stamina_bar;
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr, struct SoundInfo* sound_arr) {

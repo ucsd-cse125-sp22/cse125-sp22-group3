@@ -66,11 +66,9 @@ void NPC::OnInteract(Player* player)
 {
 	if (player->GetIsHolding()) {
 		// TODO: instead of calling sell directly, open sell GUI instead
-		printf("Selling to NPC\n");
 		player->Sell();
 	}
 	else {
-		printf("Buying from NPC\n");
 		// Enable Shop UI and disable movement
 		player->OpenUI();
 

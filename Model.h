@@ -132,6 +132,9 @@ private:
 		{INDICATOR_WATER, "models/indicators/waterIndicator.fbx"},
 		{INDICATOR_FERTILIZER, "models/indicators/fertilizerIndicator.fbx"},
 
+		{DEBUG_CIRCLE, "models/visualizer/box.fbx"},
+		{DEBUG_SQUARE, "models/visualizer/sphere.fbx"},
+
 		{WORLD_MAP, "models/world/world.fbx"},
 		{WORLD_WATER, "models/world/water.fbx"},
 		{WORLD_LEAVES, "models/world/leaves.fbx"},
@@ -213,7 +216,6 @@ public:
 	int GetRotationIndex(float time, AnimationNode animationNode);
 
 	// Set or get animation data
-	void leafPingPong();
 	std::map<std::string, BoneInfo> getBoneMap() { return boneInfoMap; }
 	int& getBoneCount() { return boneCounter; }
 	void setAnimationMode(AniMode ani);

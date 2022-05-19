@@ -41,7 +41,11 @@ void GameManager::FixedUpdate()
 	for (GameEntity* entity : GameManager::game_entities) {
 		entity->FixedUpdate();
 	}
-
+	if (!eggplantSpawned&&GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
+		
+		AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
+		eggplantSpawned = true;
+	}
 	// printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions
@@ -113,6 +117,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.ui_open = player->ui_open;
 		sheader.time_remaining_seconds = GameManager::GetRemainingSeconds();
 		sheader.time_max_seconds = GAME_TIME_MINS * 60.f;
+		sheader.stamina_bar = player->curr_stamina;
 		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
 		}

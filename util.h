@@ -86,6 +86,9 @@ enum ModelEnum
 	INDICATOR_WATER,
 	INDICATOR_FERTILIZER,
 
+	DEBUG_CIRCLE,
+	DEBUG_SQUARE,
+
 	WORLD_MAP,
 	WORLD_WATER,
 	WORLD_LEAVES,
@@ -93,8 +96,6 @@ enum ModelEnum
 
 	PARTICLE_GLOW,
 	PARTICLE_DUST,
-
-	
 };
 
 enum AniMode {
@@ -114,6 +115,7 @@ enum class VegetableType {
 	CORN,
 	CARROT,
 	RADISH,
+	GOLDEN_EGGPLANT,
 	NOVEGGIE
 };
 
@@ -134,7 +136,8 @@ static std::unordered_map<VegetableType, VeggieInfo> veggie_map = {
 	{VegetableType::CABBAGE, VeggieInfo{VEG_CABBAGE, WORLD_FLAG_CABBAGE, WORLD_SEED_CABBAGE, 5, 2, 6, true, false}},
 	{VegetableType::CORN, VeggieInfo{VEG_CORN, WORLD_FLAG_CORN, WORLD_SEED_CORN, 25, 2, 10, false, false}},
 	{VegetableType::CARROT, VeggieInfo{VEG_CARROT, WORLD_FLAG_CARROT, WORLD_SEED_CARROT, 5, 1, 5, false, false}},
-	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}}
+	{VegetableType::RADISH, VeggieInfo{VEG_RADISH, WORLD_FLAG_RADISH, WORLD_SEED_RADISH, 5, 5, 20, false, true}},
+	{VegetableType::GOLDEN_EGGPLANT, VeggieInfo{VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT, 0, 0, 100, false, false}}
 };
 
 static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
@@ -149,4 +152,19 @@ static std::unordered_map<ModelEnum, ModelEnum> plot_ownership = {
 };
 
 static float maxGlueTime = 10;
+
+static glm::mat3 util_RotateAroundAxis(const float degrees, const glm::vec3& axis)
+{
+	float deg = glm::radians(degrees);
+	glm::mat3 one = cosf(deg) * glm::mat3(1.0);
+	glm::mat3 two = (1 - cosf(deg)) * (glm::mat3(axis, glm::vec3(), glm::vec3()) * glm::mat3(axis[0], 0, 0, axis[1], 0, 0, axis[2], 0, 0));
+	glm::mat3 three = sinf(deg) * (glm::mat3(0, axis[2], -axis[1], -axis[2], 0, axis[0], axis[1], -axis[0], 0));
+	return one + two + three;
+}
+
+static glm::mat2 util_Rotate2D(const float degrees)
+{
+	return glm::mat2(cosf(degrees),sinf(degrees),-sinf(degrees),cosf(degrees));
+}
+
 #endif

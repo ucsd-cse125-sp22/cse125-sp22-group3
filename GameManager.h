@@ -72,6 +72,9 @@ private:
     static std::chrono::steady_clock::time_point curr_time_;
     std::chrono::steady_clock::time_point game_end_time_;
     bool isStarted = false;
+    float timeToSpawnEggplant = 540; // default spawn 6 minutes in
+    //float timeToSpawnEggplant = 800; //for testing
+    bool eggplantSpawned = false;
 };
 
 #endif

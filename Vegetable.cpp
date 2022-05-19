@@ -15,6 +15,17 @@ Vegetable::Vegetable(VegetableType vegetable, ModelEnum curr) {
 	collider_->collider_is_trigger = true;
 
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
+
+	// rand location for golden eggplant
+	if (vegetable == VegetableType::GOLDEN_EGGPLANT) {
+		float mapMin = -135;
+		float mapMax = 135;
+		float randX= mapMin + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (mapMax - mapMin)));
+		float randZ = mapMin + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (mapMax - mapMin)));
+		*translate = glm::vec2(randX, randZ);
+		*translate3D = glm::vec3(randX, 0.f, randZ);
+		printf("GOLDEN EGGPLANT HAS SPAWNED AT %f %f\n", randX, randZ);
+	}
 }
 
 Vegetable::~Vegetable() {

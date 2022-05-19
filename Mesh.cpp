@@ -154,6 +154,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float ti
 
         glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
         glUniform3fv(glGetUniformLocation(shaderProgram, "lightPos"), 1, glm::value_ptr(FBO::lightPos));
+        glUniform3fv(glGetUniformLocation(shaderProgram, "playerLight"), FBO::playerPos.size(), glm::value_ptr(FBO::playerPos[0]));
         // Bind the VAO
         glBindVertexArray(VAO);
 
@@ -258,6 +259,7 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "finalBonesMatrices"), transforms.size(), 
         GL_FALSE, glm::value_ptr(transforms[0]));
 
+    glUniform3fv(glGetUniformLocation(shaderProgram, "playerLight"), FBO::playerPos.size(), glm::value_ptr(FBO::playerPos[0]));
     // for shadows
     for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
     {
@@ -318,6 +320,22 @@ void Mesh::draw(std::vector<glm::mat4> transforms, glm::mat4 parent, GLuint shad
     glBindVertexArray(0);
     glUseProgram(0);
     glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::debugDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, GLuint shader) {
+    glUseProgram(shader);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, false, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, false, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(parent));
+
+    glBindVertexArray(VAO);
+
+    // glDrawElements(GL_LINES, indices.size() * 2, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_LINES, 0, vertices.size());
+
+    // Unbind the VAO and shader program
+    glBindVertexArray(0);
+    glUseProgram(0);
 }
 
 void Mesh::draw(glm::mat4 parent, GLuint shader) {
@@ -383,4 +401,5 @@ void Mesh::draw(glm::mat4 parent, float blend, GLuint shader) {
     glBindVertexArray(0);
     glUseProgram(0);
     glActiveTexture(GL_TEXTURE0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

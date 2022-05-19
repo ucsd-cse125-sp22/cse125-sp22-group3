@@ -49,7 +49,6 @@ void main()
         TexCoords = uvs;
 
         viewMat = view;
-
         gl_Position = projection * view * model * totalPosition;
     }
 
@@ -58,8 +57,7 @@ void main()
        Normal = mat3(transpose(inverse(model))) * normals;  
        TexCoords = uvs;
     
-        viewMat = view;
-
+       viewMat = view;
        gl_Position = projection * view * vec4(FragPos, 1.0);
     }
 }
