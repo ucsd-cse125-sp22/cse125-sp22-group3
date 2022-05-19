@@ -1,6 +1,6 @@
 #include "Model.h"
 std::map<ModelEnum, Model> Model::model_cache; //move to static so can be used in the constructor
-
+std::map<ModelEnum, aiScene*> Model::scene_cache;
 
 Model::Model() {}
 
@@ -20,6 +20,28 @@ Model::Model(const Model &other) {
 	copyHelper(other);
 }
 
+aiScene* Model::load_scene(ModelEnum model)
+{
+	if (scene_cache.count(model) == 0)
+	{
+		Assimp::Importer importer;
+		std::string filePath = modelFilePathMap[model];
+		importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+		aiScene* scene = importer.GetOrphanedScene();
+		
+		// Potential errors opening model
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			std::cout << "ASSIMP ERROR" << importer.GetErrorString() << std::endl;
+			return nullptr;
+		}
+
+		scene_cache[model] = scene;
+	}
+
+	return scene_cache[model];
+}
+
 void Model::constructorHelper(ModelEnum thisModel) {
 	model = thisModel;
 
@@ -35,16 +57,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 	}
 
 	// Load model at file path
-	Assimp::Importer importer;
-	std::string filePath = modelFilePathMap[model];
-	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
-	
-	// Potential errors opening model
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	{
-		std::cout << "ASSIMP ERROR" << importer.GetErrorString() << std::endl;
-		return;
-	}
+	aiScene* scene = Model::load_scene(model);
 
 	// Extract global transforms + inverse
 	gt = AssimpConvert::ConvertMatrixToGLMFormat(scene->mRootNode->mTransformation);
@@ -67,7 +80,8 @@ void Model::constructorHelper(ModelEnum thisModel) {
 		duration = scene->mAnimations[0]->mDuration;
 	}
 
-	// Get directory from filepah to get materials
+	// Get directory from filepath to get materials
+	std::string filePath = modelFilePathMap[model];
 	directory = filePath.substr(0, filePath.find_last_of('/'));
 	processNode(scene->mRootNode, scene);
 

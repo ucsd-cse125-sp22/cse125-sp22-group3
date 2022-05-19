@@ -87,6 +87,13 @@ void preload_texture_files() {
 	GUI::show_loading = false; 
 }
 
+void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std::string msg){
+	auto end_time = std::chrono::steady_clock::now();
+	long long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+	printf("%s: %f ms\n", msg.c_str(), elapsed_time/1000.f);
+	begin_time = end_time;
+}
+
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
@@ -95,6 +102,7 @@ void load_models(GLFWwindow* window)
 	bool flip_image = true; // variable use to flip the image 
 	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
+		Model::load_scene(i);
 		tmp = Model(i);
 		progress++;
 	}
