@@ -378,12 +378,12 @@ bool GUI::renderUI() {
 				InputManager::lastCmd = buy_command_map[rack_image_idx];
 			sale_tools = false;
 		}
-		printf("num rack: %d tool: %d selling tools? %d\n", rack_image_idx, tool_image_idx, sale_tools);
 
 
 		// etc.
 		bool open_ptr = true;
-		GUIImage* rack_image = &rack_images_list[rack_image_idx];
+		GUIImage* rack_image_actual = &rack_images_list[rack_image_idx];
+		GUIImage* rack_image = &rack_images_list[1]; 
 		GUIImage* tool_image = &tool_images_list[tool_image_idx]; 
 		GUIImage fish_image = fish_images_list[(rack_image_idx+tool_image_idx)%3];
 
@@ -421,7 +421,7 @@ bool GUI::renderUI() {
 		} else {
 			rack_image->fade_ratio = rack_image->fade_ratio < 1?  rack_image->fade_ratio*1.5 : 1;
 		}
-		ImGui::Image((void*)(intptr_t)rack_image->my_image_texture, rack_size);
+		ImGui::Image((void*)(intptr_t)rack_image_actual->my_image_texture, rack_size);
 
 		//show talking box
 		if (sale_tools) {
