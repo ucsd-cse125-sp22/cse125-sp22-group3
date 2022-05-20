@@ -371,11 +371,11 @@ bool GUI::renderUI() {
 	}
 	if (GUI_show_timer) {
 		float padding = 64.0f * display_ratio;
-		int width = 600;
-		int height = 600;
+		int width = 560;
+		int height = 560;
 		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
 		//float ratio = GUI_timer_percent;
 		float ratio = timer_percent;
@@ -384,16 +384,15 @@ bool GUI::renderUI() {
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, bg, 30);
+		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, col, 30);
 		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, col, 120);
+		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, bg, 120);
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(size);
 		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
-		float font_size = ImGui::GetFontSize();
-		float text_size = font_size * GUI_timer_string.size() / 2;
-		ImGui::SetCursorPos(ImVec2(size.x * 0.5f - text_size * 0.5f, size.y * 0.5f - font_size * 0.5f));
+		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
+		ImGui::SetCursorPos((size - text_size)*0.5f);
 		ImGui::Text(GUI_timer_string.c_str());
 		ImGui::End();
 	}
