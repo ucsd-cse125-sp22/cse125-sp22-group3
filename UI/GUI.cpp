@@ -802,10 +802,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	return true; 
 }
 
-void GUI::renderCharacterSelection(int char_options[], int my_char_index) {
-
-}
-
 bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
@@ -1000,12 +996,53 @@ void GUI::setTimer(float time) {
 	timer_percent = time; 
 }
 
-bool GUI::renderWinningScene() {
-
+int GUI::renderCharacterSelection(int char_options[], int my_char_index) {
+	int res = -1; 
+	glfwPollEvents();
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoBackground;
+	window_flags |= ImGuiWindowFlags_NoTitleBar;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoScrollbar;
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
+
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::Begin("Character Selection", NULL, TRANS_WINDOW_FLAG);
+	for (int i = 0; i < sizeof(char_options) / sizeof(int); i++) {
+		if (i == my_char_index) {
+			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+			ImGui::Text("my choice is %d", char_options[i]);
+			ImGui::PopStyleColor();
+		}
+		else {
+			ImGui::Text("other choice is %d", char_options[i]);
+		}
+	}
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+		res =  1;
+	}
+	if (ImGui::Button("click my to send packet")) {
+		res = 1; //HARDCODE for test, need to update. 
+	}
+
+	ImGui::End();
+
+	// Rendering
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	glfwSwapBuffers(my_window);
+	
+	return res; 
+}
+
+bool GUI::renderWinningScene() {
 	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 		winning_fade_ratio = 1; 
 	}
@@ -1061,6 +1098,7 @@ void GUI::createBuyConfirmation() {
 
 	ImGui::End();
 }
+
 
 
 

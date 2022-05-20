@@ -226,6 +226,7 @@ begin_loop_accept_client:
 			sc_packet.my_char_index = client_idx;
 			sc_packet.serializeTo(sc_packet_data);
 			int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
+
 			// TODO deal with send_status;
 		}
 		if (num_client_selected == num_clients) break; 
@@ -235,6 +236,7 @@ begin_loop_accept_client:
 		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
 			char cc_packet_data[sizeof(ClientCharacterPacket)];
 			int recvStatus = recv(ClientSocketVec[client_idx], cc_packet_data, sizeof(cc_packet_data), 0);
+
 			if (recvStatus == SOCKET_ERROR) {
 				if (WSAGetLastError() == WSAECONNRESET) {
 					std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
@@ -249,9 +251,12 @@ begin_loop_accept_client:
 				break; // break out of the recv do-while loop
 			}
 			cc_packet.deserializeFrom(cc_packet_data);
+
 			if (cc_packet.confirm_selection && char_selections[client_idx]<0 ) {
-				const bool avaliable = char_unavailable.find(cc_packet.character) != char_unavailable.end();
+				const bool avaliable = char_unavailable.find(cc_packet.character) == char_unavailable.end();
+				//printf("recv:%d %s \n", cc_packet.character, cc_packet.confirm_selection ? "true" : "false");
 				if (avaliable) {
+					//printf("Avaliable! value set! \n");
 					char_selections[client_idx] = cc_packet.character;
 					char_unavailable.insert(cc_packet.character);
 					sc_packet.char_options[client_idx] = cc_packet.character;
@@ -260,6 +265,8 @@ begin_loop_accept_client:
 			}
 		}
 	}
+	fprintf(stderr, "All clients Character Selected, starting game loop\n");
+
 
 main_loop_label:
 	while (true) {

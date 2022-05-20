@@ -105,8 +105,8 @@ Client::~Client(void)
 void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_packet)> callback) {
 	bool wait_for_clients = true;
 	do {
-		char recvbuf[DEFAULT_BUFLEN];
-		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+		char recvbuf[sizeof(ClientCharacterPacket)];
+		int recvStatus = recv(ConnectSocket, recvbuf, sizeof(ClientCharacterPacket), 0);
 		if (recvStatus == SOCKET_ERROR) {
 			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
 		}
@@ -114,17 +114,22 @@ void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_pa
 			fprintf(stderr, "Connection closed by server\n");
 		}
 
-		for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ClientWaitPacket)) {
+		ClientWaitPacket cw_packet;
+		cw_packet.deserializeFrom(recvbuf);
+		callback(cw_packet);
+		printf("Game Ready to Start recv: %d", cw_packet.client_joined);
+		wait_for_clients = cw_packet.client_joined < cw_packet.max_client;
+		/*for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ClientWaitPacket)) {
 			ClientWaitPacket cw_packet;
 			cw_packet.deserializeFrom(recvbuf + byte_idx);
 			callback(cw_packet);
-
+			printf("Game Ready to Start recv: %d", cw_packet.client_joined);
 			wait_for_clients = cw_packet.client_joined < cw_packet.max_client;
-		}
+		}*/
 	} while (wait_for_clients);
 }
 
-void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket recv_packet)> callback)
+void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket recv_packet, ClientCharacterPacket* out_package)> callback)
 {
 	boolean done = false; 
 	do {
@@ -140,8 +145,29 @@ void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket rec
 		for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ServerCharacterPacket)) {
 			ServerCharacterPacket sc_packet;
 			sc_packet.deserializeFrom(recvbuf + byte_idx);
-			done = sc_packet.ready; 
-			callback(sc_packet);
+			//printf("Character Selection recv:%d \n", sc_packet.my_char_index); 
+
+			done = sc_packet.ready;
+			if (done) break; 
+			ClientCharacterPacket out_packet; 
+			callback(sc_packet,&out_packet);
+			char out_data[sizeof(ClientCharacterPacket)];
+			out_packet.serializeTo(out_data);
+			int sendStatus = send(ConnectSocket, out_data, sizeof(ClientCharacterPacket), 0);
+			//printf("send:%d %s \n", out_packet.character, out_packet.confirm_selection ? "true" : "false");
+
+			if (sendStatus == SOCKET_ERROR) {
+				if (WSAGetLastError() == WSAECONNRESET) {
+					fprintf(stderr, "Connection with server dropped\n");
+				}
+				else {
+					fprintf(stderr, "send failed: %d\n", WSAGetLastError());
+				}
+				Client::~Client();
+			}
+			else {
+				//fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
+			}
 		}
 	} while (!done);
 }
