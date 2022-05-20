@@ -348,24 +348,37 @@ bool GUI::renderUI() {
 			if (sale_tools && tool_image_idx == 5) {
 				rack_image_idx = 1;
 				curtain_img.fade_in = true;
-				
+
 				(&rack_images_list[1])->fade_in = true;
 				sale_tools = false;
 			}
-			else if (!sale_tools && rack_image_idx == NUM_RACK_IMG-1) {
+			else if (!sale_tools && rack_image_idx == NUM_RACK_IMG - 1) {
 				tool_image_idx = 1;
 				curtain_img.fade_in = false;
 				(&rack_images_list[1])->fade_in = false;
 				sale_tools = true;
 			}
-			else if (!sale_tools && rack_image_idx < NUM_RACK_IMG -1){
+			else if (!sale_tools && rack_image_idx < NUM_RACK_IMG - 1) {
 				rack_image_idx++;
-			} else if (sale_tools && tool_image_idx < NUM_TOOL_IMG -1) {
-				tool_image_idx++; 
 			}
-		} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
+			else if (sale_tools && tool_image_idx < NUM_TOOL_IMG - 1) {
+				switch (tool_image_idx) {
+				case 7:
+					tool_image_idx = 5;
+					break;
+				case 9:
+					tool_image_idx = 5;
+					break;
+				default:
+					tool_image_idx++;
+					break;
+				}
+
+			}
+		}
+		else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
 			if (sale_tools && tool_image_idx == 1) {
-				rack_image_idx = NUM_RACK_IMG-1;
+				rack_image_idx = NUM_RACK_IMG - 1;
 				curtain_img.fade_in = true;
 				(&rack_images_list[1])->fade_in = true;
 				sale_tools = false;
@@ -378,10 +391,22 @@ bool GUI::renderUI() {
 			}
 			else if (!sale_tools && rack_image_idx > 1) {
 				rack_image_idx--;
-			} else if (sale_tools && tool_image_idx > 1) {
-				tool_image_idx--;
 			}
-		} else if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+			else if (sale_tools && tool_image_idx > 1) {
+				switch (tool_image_idx) {
+				case 6:
+					tool_image_idx = 2;
+					break;
+				case 8:
+					tool_image_idx = 2;
+					break;
+				default:
+					tool_image_idx--;
+					break;
+				}
+			}
+		}
+		else if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
 			// TODO: send buy command for buying tools
 			
 			if(sale_tools)
