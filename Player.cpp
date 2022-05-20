@@ -436,7 +436,7 @@ glm::mat4 Player::GetRotation() {
 }
 
 glm::mat4 Player::GetTranslation() {
-	return glm::translate(glm::vec3((* translate)[0], 0, -(*translate)[1]));
+	return glm::translate(glm::vec3((* translate)[0], playerHeight, -(*translate)[1]));
 }
 
 glm::mat4 Player::GetScale() {

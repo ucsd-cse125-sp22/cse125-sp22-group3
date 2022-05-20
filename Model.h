@@ -141,6 +141,7 @@ private:
 		{WORLD_WATER, "models/world/water.fbx"},
 		{WORLD_LEAVES, "models/world/leaves.fbx"},
 		{WORLD_GRASS, "models/world/grass.fbx"},
+		{WORLD_PODIUM, "models/podium/podium.fbx"},
 
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},

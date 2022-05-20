@@ -140,4 +140,6 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		// oats
 		float oatTimeRemaining = 0;
 		float maxOatTime = 10;
+
+		float playerHeight = 0;
 };

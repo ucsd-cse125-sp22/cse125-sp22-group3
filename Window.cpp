@@ -164,6 +164,7 @@ bool Window::initializeObjects()
 	{ WORLD_WATER, worldShaderProgram },
 	{ WORLD_LEAVES, leafShaderProgram },
 	{ WORLD_GRASS, leafShaderProgram },
+	{ WORLD_PODIUM, worldShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram }

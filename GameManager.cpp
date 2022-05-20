@@ -41,10 +41,44 @@ void GameManager::FixedUpdate()
 	for (GameEntity* entity : GameManager::game_entities) {
 		entity->FixedUpdate();
 	}
-	if (!eggplantSpawned&&GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
+	if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
 		
 		AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
 		eggplantSpawned = true;
+	}
+
+	else if (!podiumSpawned && GameManager::GetRemainingSeconds() <= timeToEndGame) {
+		printf("moving players to winning area\n");
+		// TODO: Check which player has the most money and break ties somehow
+		if(players_.size()>0){
+			players_[0]->playerHeight = goldPosition.y;
+			players_[0]->SetWorldPosition(goldPosition);
+			players_[0]->Dance();
+		}
+		if (players_.size() > 1) {
+			players_[1]->playerHeight = silverPosition.y;
+			players_[1]->SetWorldPosition(silverPosition);
+			players_[1]->Dance();
+		}
+		if (players_.size() > 2) {
+			players_[2]->playerHeight = bronzePosition.y;
+			players_[2]->SetWorldPosition(bronzePosition);
+			players_[2]->Dance();
+		}
+		if (players_.size() > 3) {
+			players_[3]->playerHeight = loserPosition.y;
+			players_[3]->SetWorldPosition(loserPosition);
+			players_[3]->Dance();
+		}
+
+
+		
+		// podium is now a vegetable 8D
+		Vegetable* tempPodium = new Vegetable(VegetableType::CARROT, ModelEnum::WORLD_PODIUM);
+		tempPodium->SetPosition(podiumPosition);
+		AddEntities({tempPodium});
+
+		podiumSpawned = true;
 	}
 	// printf("size: %d\n", physics.moving_collidables_.size());
 

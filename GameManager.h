@@ -64,7 +64,7 @@ public:
     double GameManager::GetRemainingSeconds();
 
 private:
-    std::vector<Player*> players_{}; //TODO what the heck
+    std::vector<Player*> players_{};
     std::vector<Vegetable*> vegetables_{};
     std::vector<Plot*> plots_{};
     std::vector<Seed*> seeds_{};
@@ -74,8 +74,16 @@ private:
     std::chrono::steady_clock::time_point game_end_time_;
     bool isStarted = false;
     float timeToSpawnEggplant = 540; // default spawn 6 minutes in
-    //float timeToSpawnEggplant = 800; //for testing
     bool eggplantSpawned = false;
+
+    // winning info
+    float timeToEndGame = 0; // TODO: set to end of game, set to 800 for debugging purposes
+    bool podiumSpawned = false;
+    glm::vec3 goldPosition = glm::vec3(0, 10, -20);
+    glm::vec3 silverPosition = glm::vec3(-5, 7, -20);
+    glm::vec3 bronzePosition = glm::vec3(5, 4, -20);
+    glm::vec3 loserPosition = glm::vec3(-10, 0, -15);
+    glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
 };
 
 #endif

@@ -104,9 +104,11 @@ enum ModelEnum
 	WORLD_WATER,
 	WORLD_LEAVES,
 	WORLD_GRASS,
+	WORLD_PODIUM,
 
 	PARTICLE_GLOW,
 	PARTICLE_DUST,
+
 };
 
 enum AniMode {
