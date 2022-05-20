@@ -395,6 +395,7 @@ void Player::CloseUI()
 {
 	ui_open = false;
 	moveable = true;
+	GUI::sale_tools = false;
 }
 
 void Player::OpenUI()

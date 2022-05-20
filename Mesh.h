@@ -1,6 +1,8 @@
 #ifndef _MESH_H_
 #define _MESH_H_
 
+#include "glm.h"
+
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
 #else
@@ -10,7 +12,6 @@
 #include <vector>
 #include <string>
 
-#include "glm.h"
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>

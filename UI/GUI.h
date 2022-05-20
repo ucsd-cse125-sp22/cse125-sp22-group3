@@ -63,6 +63,12 @@ public:
 	static float stamina_percent; //use this variable to set the stamina display
 
 	static std::string GUI_timer_string;
+	
+	static ImFont* font_Are_You_Serious;
+	static ImFont* font_Fredericka_the_Great;
+	static ImFont* font_Mystery_Quest;
+	static ImFont* font_Ranchers; 
+
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];

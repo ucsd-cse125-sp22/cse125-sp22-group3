@@ -35,6 +35,13 @@ int GUI::tool_image_idx;
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
+
+
+ImFont* GUI::font_Are_You_Serious;
+ImFont* GUI::font_Fredericka_the_Great;
+ImFont* GUI::font_Mystery_Quest;
+ImFont* GUI::font_Ranchers;
+
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -173,6 +180,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
+	font_Are_You_Serious = io.Fonts->AddFontFromFileTTF("./UI/fonts/Are_You_Serious/AreYouSerious-Regular.ttf", 36.0f);
+	font_Fredericka_the_Great = io.Fonts->AddFontFromFileTTF("./UI/fonts/Fredericka_the_Great/FrederickatheGreat-Regular.ttf", 36.0f);
+	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
+	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
+
 	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
 	GUI_show_buy_ui = false;
@@ -269,29 +281,102 @@ bool GUI::renderUI() {
 
 	/* build the sale page */
 	if(GUI_show_sale_ui) {
+		
 		//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
 		// press up arrow key to return to the seed rack
-		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow) || ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
-			if (sale_tools) {
-				curtain_img.fade_in = true; 
-				(&rack_images_list[rack_image_idx])->fade_in = true;
+		if (ImGui::IsKeyPressed(ImGuiKey_UpArrow)) {
+			if (!sale_tools && rack_image_idx-3>0) {
+				rack_image_idx -=3;
 			}
-			else if (!sale_tools) {
-				curtain_img.fade_in = false;
-				(&rack_images_list[rack_image_idx])->fade_in = false;
-			}
-			sale_tools = !sale_tools;
-		}
-			
+			else if (sale_tools) {
+				switch (tool_image_idx) {
+					case 1:
+						tool_image_idx = 8;
+						break;
+					case 2:
+						tool_image_idx = 8;
+						break;
+					case 3:
+						tool_image_idx = 6;
+						break;
+					case 4:
+						tool_image_idx = 7;
+						break;
+					case 5:
+						tool_image_idx = 9;
+						break;
+					case 6:
+						tool_image_idx = 8;
+						break;
+					case 7:
+						tool_image_idx = 9;
+						break;
+					default:
+						break;
 
-		if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-			if (!sale_tools && rack_image_idx < NUM_RACK_IMG - 1){
+				}
+			
+			}
+		
+		}
+		else if (ImGui::IsKeyPressed(ImGuiKey_DownArrow)) {
+			if (!sale_tools && rack_image_idx + 3 <NUM_RACK_IMG) {
+				rack_image_idx += 3;
+			}
+			else if (sale_tools) {
+				switch (tool_image_idx) {
+				case 6:
+					tool_image_idx = 3;
+					break;
+				case 7:
+					tool_image_idx = 4;
+					break;
+				case 8:
+					tool_image_idx = 6;
+					break;
+				case 9:
+					tool_image_idx = 7;
+					break;
+				default:
+					break;
+
+				}
+			}
+		}
+
+		else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+			if (sale_tools && tool_image_idx == 5) {
+				rack_image_idx = 1;
+				curtain_img.fade_in = true;
+				
+				(&rack_images_list[1])->fade_in = true;
+				sale_tools = false;
+			}
+			else if (!sale_tools && rack_image_idx == NUM_RACK_IMG-1) {
+				tool_image_idx = 1;
+				curtain_img.fade_in = false;
+				(&rack_images_list[1])->fade_in = false;
+				sale_tools = true;
+			}
+			else if (!sale_tools && rack_image_idx < NUM_RACK_IMG -1){
 				rack_image_idx++;
-			} else if (sale_tools && tool_image_idx < NUM_TOOL_IMG - 1) {
+			} else if (sale_tools && tool_image_idx < NUM_TOOL_IMG -1) {
 				tool_image_idx++; 
 			}
 		} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-			if (!sale_tools && rack_image_idx > 1) {
+			if (sale_tools && tool_image_idx == 1) {
+				rack_image_idx = NUM_RACK_IMG-1;
+				curtain_img.fade_in = true;
+				(&rack_images_list[1])->fade_in = true;
+				sale_tools = false;
+			}
+			else if (!sale_tools && rack_image_idx == 1) {
+				tool_image_idx = 5;
+				curtain_img.fade_in = false;
+				(&rack_images_list[1])->fade_in = false;
+				sale_tools = true;
+			}
+			else if (!sale_tools && rack_image_idx > 1) {
 				rack_image_idx--;
 			} else if (sale_tools && tool_image_idx > 1) {
 				tool_image_idx--;
@@ -303,12 +388,14 @@ bool GUI::renderUI() {
 				InputManager::lastCmd = buy_command_map[5+tool_image_idx];
 			else
 				InputManager::lastCmd = buy_command_map[rack_image_idx];
+			sale_tools = false;
 		}
 
 
 		// etc.
 		bool open_ptr = true;
-		GUIImage* rack_image = &rack_images_list[rack_image_idx];
+		GUIImage* rack_image_actual = &rack_images_list[rack_image_idx];
+		GUIImage* rack_image = &rack_images_list[1]; 
 		GUIImage* tool_image = &tool_images_list[tool_image_idx]; 
 		GUIImage fish_image = fish_images_list[(rack_image_idx+tool_image_idx)%3];
 
@@ -346,8 +433,9 @@ bool GUI::renderUI() {
 		} else {
 			rack_image->fade_ratio = rack_image->fade_ratio < 1?  rack_image->fade_ratio*1.5 : 1;
 		}
-		ImGui::Image((void*)(intptr_t)rack_image->my_image_texture, rack_size);
+		ImGui::Image((void*)(intptr_t)rack_image_actual->my_image_texture, rack_size);
 
+		ImGui::PushFont(font_Are_You_Serious);
 		//show talking box
 		if (sale_tools) {
 			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
@@ -357,7 +445,7 @@ bool GUI::renderUI() {
 			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
 			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
 		}
-
+		ImGui::PopFont(); 
 		ImGui::End();
 	} 
 
@@ -371,11 +459,11 @@ bool GUI::renderUI() {
 	}
 	if (GUI_show_timer) {
 		float padding = 64.0f * display_ratio;
-		int width = 600;
-		int height = 600;
+		int width = 560;
+		int height = 560;
 		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
 		//float ratio = GUI_timer_percent;
 		float ratio = timer_percent;
@@ -384,16 +472,15 @@ bool GUI::renderUI() {
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, bg, 30);
+		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, col, 30);
 		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, col, 120);
+		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, bg, 120);
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(size);
 		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
-		float font_size = ImGui::GetFontSize();
-		float text_size = font_size * GUI_timer_string.size() / 2;
-		ImGui::SetCursorPos(ImVec2(size.x * 0.5f - text_size * 0.5f, size.y * 0.5f - font_size * 0.5f));
+		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
+		ImGui::SetCursorPos((size - text_size)*0.5f);
 		ImGui::Text(GUI_timer_string.c_str());
 		ImGui::End();
 	}
@@ -643,7 +730,9 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, \
 						ImVec2(chase_images_list[idx].my_image_width * display_ratio,\
 							   chase_images_list[idx].my_image_height * display_ratio));
+	ImGui::PushFont(font_Ranchers);
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
+	ImGui::PopFont();
 	ImGui::BufferingBar("##buffer_bar", percent, size, bg, col);
 	ImGui::End();
 
@@ -665,7 +754,7 @@ bool GUI::ShowGUI(bool show)
 
 		curtain_img.fade_ratio = 0.001; 
 		curtain_img.fade_in = true;
-
+		sale_tools = false; 
 	}
 	GUI_show_sale_ui = show;
 	return show;

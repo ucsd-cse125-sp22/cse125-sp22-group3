@@ -2,7 +2,6 @@
 #include <cstring>
 #include "..\glm.h"
 #include "..\util.h"
-#include "..\SoundEngine.h"
 
 #define DEFAULT_PORT "2340"
 #define DEFAULT_BUFLEN 1024
