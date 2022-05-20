@@ -664,7 +664,7 @@ bool GUI::ShowGUI(bool show)
 
 		curtain_img.fade_ratio = 0.001; 
 		curtain_img.fade_in = true;
-
+		sale_tools = false; 
 	}
 	GUI_show_sale_ui = show;
 	return show;
