@@ -124,6 +124,28 @@ void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_pa
 	} while (wait_for_clients);
 }
 
+void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket recv_packet)> callback)
+{
+	boolean done = false; 
+	do {
+		char recvbuf[DEFAULT_BUFLEN];
+		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
+		if (recvStatus == SOCKET_ERROR) {
+			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+		}
+		else if (recvStatus == 0) {
+			fprintf(stderr, "Connection closed by server\n");
+		}
+
+		for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ServerCharacterPacket)) {
+			ServerCharacterPacket sc_packet;
+			sc_packet.deserializeFrom(recvbuf + byte_idx);
+			done = sc_packet.ready; 
+			callback(sc_packet);
+		}
+	} while (!done);
+}
+
 /*
  * Returns bytes received from server. If return value is 0, server has closed connection.
  * Delete the client object immediately.

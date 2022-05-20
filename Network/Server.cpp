@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <chrono>
 #include <string>
+#include <set>
 
 // Networking libraries
 #include <windows.h>
@@ -203,6 +204,62 @@ begin_loop_accept_client:
 		}
 	}
 	fprintf(stderr, "All clients connected, starting game loop\n");
+
+	// BEGIN character Selection
+	ServerCharacterPacket sc_packet = {};
+	sc_packet.char_options[0] = -1;
+	sc_packet.char_options[1] = -1;
+	sc_packet.char_options[2] = -1;
+	sc_packet.char_options[3] = -1;
+	sc_packet.ready = false; 
+
+	ClientCharacterPacket cc_packet = {};
+	std::set<int> char_unavailable; 
+	int char_selections[4] = { -1,-1,-1,-1 };	//TODO: hardcoded! need to change to dynamic allocation
+	int num_client_selected = 0; 
+
+	while (num_client_selected <= num_clients) {
+		//send all character option to clients
+		sc_packet.ready = num_client_selected == num_clients; 
+		char sc_packet_data[sizeof(ServerCharacterPacket)];
+		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
+			sc_packet.my_char_index = client_idx;
+			sc_packet.serializeTo(sc_packet_data);
+			int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
+			// TODO deal with send_status;
+		}
+		if (num_client_selected == num_clients) break; 
+
+		// recieve character selection result from clients
+		// TODO: this structure definitely gonna cause race condition.... need somelike of breaktie things
+		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
+			char cc_packet_data[sizeof(ClientCharacterPacket)];
+			int recvStatus = recv(ClientSocketVec[client_idx], cc_packet_data, sizeof(cc_packet_data), 0);
+			if (recvStatus == SOCKET_ERROR) {
+				if (WSAGetLastError() == WSAECONNRESET) {
+					std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
+					fprintf(stderr, "Connection with client #%d at %s dropped\n", client_idx, client_addr_str.c_str());
+
+					closesocket(ClientSocketVec[client_idx]);
+					ClientSocketVec[client_idx] = INVALID_SOCKET;
+				}
+				else {
+					fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+				}
+				break; // break out of the recv do-while loop
+			}
+			cc_packet.deserializeFrom(cc_packet_data);
+			if (cc_packet.confirm_selection && char_selections[client_idx]<0 ) {
+				const bool avaliable = char_unavailable.find(cc_packet.character) != char_unavailable.end();
+				if (avaliable) {
+					char_selections[client_idx] = cc_packet.character;
+					char_unavailable.insert(cc_packet.character);
+					sc_packet.char_options[client_idx] = cc_packet.character;
+					num_client_selected++;
+				}
+			}
+		}
+	}
 
 main_loop_label:
 	while (true) {

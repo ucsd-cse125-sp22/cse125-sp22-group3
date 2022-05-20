@@ -202,6 +202,14 @@ int main(int argc, char* argv[])
 	fprintf(stderr, "All players connected, starting game\n");
 
 	// butter butter magic
+	
+	//TODO character selection 
+	client->syncCharacterSelection([&](ServerCharacterPacket recv_packet) 
+		{
+			ClientCharacterPacket out_packet;
+		
+		});
+
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
 	

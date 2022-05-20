@@ -291,6 +291,7 @@ bool GUI::renderUI() {
 		ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 		ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
+		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)score_background.my_image_texture, ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(190 * display_ratio, 190 * display_ratio), 0, ImVec2(0, 0));
@@ -801,6 +802,9 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	return true; 
 }
 
+void GUI::renderCharacterSelection(int char_options[], int my_char_index) {
+
+}
 
 bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
