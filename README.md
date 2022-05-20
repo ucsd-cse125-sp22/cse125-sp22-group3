@@ -1,5 +1,5 @@
 # CSE125 Spring 2022: Group 3 - Farmers Market
-By: Cherellen Banaga, Cynthia Butarbutar, Jakob Getzel, Nicholas Limit, Aarushi Shah, Danica Xiong, Shujing Zhang
+By: Cherellen Banaga, Cynthia Butarbutar, Jakob Getzel, Nicholas Limit, Danica Xiong, Leon Yang, Shujing Zhang
 
 ## Project Description
 Have you ever wanted to trade stonks in an adorable farming game while sabotaging your friends? Well thats Farmers Market.
