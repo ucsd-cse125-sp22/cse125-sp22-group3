@@ -4,66 +4,70 @@
 inline int ServerMain()
 {
 	Server* server = new Server();
-	Player pogo{ CHAR_POGO };
-	Player bumbus{ CHAR_BUMBUS };
-	Player gilman{ CHAR_GILMAN };
-	Player swainky{ CHAR_SWAINKY };
+	Player pogo{CHAR_POGO};
+	Player bumbus{CHAR_BUMBUS};
+	Player gilman{CHAR_GILMAN};
+	Player swainky{CHAR_SWAINKY};
 
-	bumbus.SetWorldPosition({ -20, 30, 0 });
-	pogo.SetWorldPosition({ 20, 30, 0 });
-	swainky.SetWorldPosition({ 0, 30, -20 });
-	gilman.SetWorldPosition({ 0, 30, 20 });
-	std::vector<Player*> all_players = { &bumbus, &pogo, &swainky, &gilman };
-
-
+	bumbus.SetWorldPosition({-20, 30, 0});
+	pogo.SetWorldPosition({20, 30, 0});
+	swainky.SetWorldPosition({0, 30, -20});
+	gilman.SetWorldPosition({0, 30, 20});
+	std::vector<Player*> all_players = {&bumbus, &pogo, &swainky, &gilman};
+	
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);
 
-	NPC fish{ CHAR_NPC };
-	fish.SetWorldPosition({ 0,30, 0 });
+	NPC fish{CHAR_NPC};
+	fish.SetWorldPosition({0, 30, 0});
 
 	// TODO: make this look better LUL
-	Plot plotRed{ WORLD_PLOT_RED };
-	Plot plotBlue{ WORLD_PLOT_BLUE };
-	Plot plotYellow{ WORLD_PLOT_YELLOW };
-	Plot plotGreen{ WORLD_PLOT_GREEN };
+	Plot plotRed{WORLD_PLOT_RED};
+	Plot plotBlue{WORLD_PLOT_BLUE};
+	Plot plotYellow{WORLD_PLOT_YELLOW};
+	Plot plotGreen{WORLD_PLOT_GREEN};
 
-	plotRed.SetPosition({ 100,-4, 100 });
-	plotBlue.SetPosition({ -100,-4, -100 });
-	plotYellow.SetPosition({ -100,-4, 100 });
-	plotGreen.SetPosition({ 100,-4, -100 });
+	plotRed.SetPosition({100, -4, 100});
+	plotBlue.SetPosition({-100, -4, -100});
+	plotYellow.SetPosition({-100, -4, 100});
+	plotGreen.SetPosition({100, -4, -100});
 
-	Plot plotRed1{ WORLD_PLOT_RED };
-	Plot plotBlue1{ WORLD_PLOT_BLUE };
-	Plot plotYellow1{ WORLD_PLOT_YELLOW };
-	Plot plotGreen1{ WORLD_PLOT_GREEN };
+	Plot plotRed1{WORLD_PLOT_RED};
+	Plot plotBlue1{WORLD_PLOT_BLUE};
+	Plot plotYellow1{WORLD_PLOT_YELLOW};
+	Plot plotGreen1{WORLD_PLOT_GREEN};
 
-	plotRed1.SetPosition({ 100,-4, 90 });
-	plotBlue1.SetPosition({ -100,-4, -90 });
-	plotYellow1.SetPosition({ -100,-4, 90 });
-	plotGreen1.SetPosition({ 100,-4, -90 });
+	plotRed1.SetPosition({100, -4, 90});
+	plotBlue1.SetPosition({-100, -4, -90});
+	plotYellow1.SetPosition({-100, -4, 90});
+	plotGreen1.SetPosition({100, -4, -90});
 
-	Plot plotRed2{ WORLD_PLOT_RED };
-	Plot plotBlue2{ WORLD_PLOT_BLUE };
-	Plot plotYellow2{ WORLD_PLOT_YELLOW };
-	Plot plotGreen2{ WORLD_PLOT_GREEN };
+	Plot plotRed2{WORLD_PLOT_RED};
+	Plot plotBlue2{WORLD_PLOT_BLUE};
+	Plot plotYellow2{WORLD_PLOT_YELLOW};
+	Plot plotGreen2{WORLD_PLOT_GREEN};
 
-	plotRed2.SetPosition({ 90,-4, 100 });
-	plotBlue2.SetPosition({ -90,-4, -100 });
-	plotYellow2.SetPosition({ -90,-4, 100 });
-	plotGreen2.SetPosition({ 90,-4, -100 });
+	plotRed2.SetPosition({90, -4, 100});
+	plotBlue2.SetPosition({-90, -4, -100});
+	plotYellow2.SetPosition({-90, -4, 100});
+	plotGreen2.SetPosition({90, -4, -100});
 
-	Plot plotRed3{ WORLD_PLOT_RED };
-	Plot plotBlue3{ WORLD_PLOT_BLUE };
-	Plot plotYellow3{ WORLD_PLOT_YELLOW };
-	Plot plotGreen3{ WORLD_PLOT_GREEN };
+	Plot plotRed3{WORLD_PLOT_RED};
+	Plot plotBlue3{WORLD_PLOT_BLUE};
+	Plot plotYellow3{WORLD_PLOT_YELLOW};
+	Plot plotGreen3{WORLD_PLOT_GREEN};
 
-	plotRed3.SetPosition({ 90,-4, 90 });
-	plotBlue3.SetPosition({ -90,-4, -90 });
-	plotYellow3.SetPosition({ -90,-4, 90 });
-	plotGreen3.SetPosition({ 90,-4, -90 });
+	plotRed3.SetPosition({90, -4, 90});
+	plotBlue3.SetPosition({-90, -4, -90});
+	plotYellow3.SetPosition({-90, -4, 90});
+	plotGreen3.SetPosition({90, -4, -90});
 
-	game.AddEntities({ &plotRed1,&plotRed2, &plotRed3, &plotBlue1, &plotBlue2, &plotBlue3, &plotGreen1, &plotGreen2, &plotGreen3, &plotYellow1, &plotYellow2, &plotYellow3 });
+	game.AddEntities({
+		&plotRed1, &plotRed2, &plotRed3,
+		&plotBlue1, &plotBlue2, &plotBlue3,
+		&plotGreen1, &plotGreen2, &plotGreen3,
+		&plotYellow1, &plotYellow2, &plotYellow3
+	});
 
 	/**
 	Seed seedCarrot{ VegetableType::CARROT, WORLD_SEED_CARROT };
@@ -79,38 +83,33 @@ inline int ServerMain()
 	Seed flagRadish{ VegetableType::RADISH, WORLD_FLAG_RADISH };
 	*/
 
-	World world{ WORLD_MAP };
-	World water{ WORLD_WATER };
-	World leaves{ WORLD_LEAVES };
-	World grass{ WORLD_GRASS };
-	
-	game.AddEntities({ &plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass });
+	World world{WORLD_MAP};
+	World water{WORLD_WATER};
+	World leaves{WORLD_LEAVES};
+	World grass{WORLD_GRASS};
+
+	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass});
 
 	WateringCan can{};
-	can.SetPosition({ 20, -2, 30 });
-	game.AddEntities({ &can });
+	can.SetPosition({20, -2, 30});
+	game.AddEntities({&can});
 
-	world.SetPosition({ 0, 0, -4.0f });
-	water.SetPosition({ 0, 0, -4.0f });
-	leaves.SetPosition({ 0, 0, -4.0f });
-	grass.SetPosition({ 0, 0, -4.0f });
+	world.SetPosition({0, 0, -4.0f});
+	water.SetPosition({0, 0, -4.0f});
+	leaves.SetPosition({0, 0, -4.0f});
+	grass.SetPosition({0, 0, -4.0f});
 
-	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec) {
+	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec)
+	{
 		game.StartGameTime();
 
-		for (ClientPacket& cpacket : client_packet_vec) {
+		for (ClientPacket& cpacket : client_packet_vec)
+		{
 			if (cpacket.justMoved)
 			{
 				game.SetPlayerInput(cpacket.movement, cpacket.player_idx);
-				if (cpacket.lastCommand == BUY_POISON)
-					printf("buying poison\n");
-				else if (cpacket.lastCommand == BUY_GLUE)
-					printf("buying GLUE\n");
-				else if (cpacket.lastCommand == BUY_SOJU)
-					printf("buying SOJU\n");
-				else if (cpacket.lastCommand == BUY_HOE)
-					printf("buying HOE\n");
-				switch (cpacket.lastCommand) {
+				switch (cpacket.lastCommand)
+				{
 				case InputCommands::USE:
 					game.SetPlayerUse(cpacket.player_idx);
 					break;
@@ -130,7 +129,7 @@ inline int ServerMain()
 					game.SetPlayerSell(cpacket.player_idx);
 					break;
 				case InputCommands::BUY_CABBAGE:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE); // Is there a nicer way of doing this?
+					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE);
 					break;
 				case InputCommands::BUY_CARROT:
 					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CARROT);
@@ -182,8 +181,7 @@ inline int ServerMain()
 		game.FixedUpdate();
 
 		return game.GetServerBuf();
-		});
-	//delete server;
+	});
 
 	return 0;
 }
