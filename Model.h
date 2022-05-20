@@ -86,7 +86,7 @@ private:
 	};
 
 	// map to model file path
-	std::map<ModelEnum, std::string> modelFilePathMap = {
+	static inline std::map<ModelEnum, std::string> modelFilePathMap = {
 		{CHAR_BUMBUS, "models/bumbus/bumbus.fbx"},
 		{CHAR_POGO, "models/pogo/pogo.fbx"},
 		{CHAR_SWAINKY, "models/swainky/swainky.fbx"},
@@ -173,6 +173,9 @@ private:
 
 public:
 	static std::map<ModelEnum, Model> model_cache; //move to static so can be used in the constructor
+	static std::map<ModelEnum, aiScene*> scene_cache;
+
+	static aiScene* load_scene(ModelEnum model);
 
 	// Constructor + Deconstructor
 	Model();

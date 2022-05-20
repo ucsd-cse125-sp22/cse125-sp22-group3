@@ -5,7 +5,7 @@ Plot::Plot(ModelEnum curr) {
 	model = curr;
 
 	translate = new glm::vec2(0.f, 0.f);
-	translate3D = new glm::vec3(0.f, 0.f, 0.f);
+	translate3D = new glm::vec3(0.f, plotHeight, 0.f);
 	rotation = glm::mat4(1);
 	
 	// Change to AABB later
@@ -46,6 +46,7 @@ AniMode Plot::GetAniMode() { return modelAnim; }
 
 void Plot::SetPosition(glm::vec3 position)
 {
+	position[1] = plotHeight;
 	*translate = glm::vec2(position[0], -position[2]);
 	*translate3D = glm::vec3(position[0], position[1], -position[2]);
 }

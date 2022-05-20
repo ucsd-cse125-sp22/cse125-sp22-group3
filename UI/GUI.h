@@ -70,7 +70,13 @@ public:
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
 	static GUIImage curtain_img;
 	static int scoreboard_data[NUM_ICON];
+	static char* seed_type_list[];
+	static char* tool_type_list[];
+	static char* tool_func_list[];
+
 	static ImVec2 player_pos[4]; 
+
+
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI();
 	static void cleanUp();

@@ -58,4 +58,5 @@ class Plot : public Interactable, public Drawable, public PhysicsObject, public 
 		glm::mat4 GetTransformation();
 
 		float poisonFlagHeight = -4;
+		float plotHeight = -3.75;
 };

@@ -6,7 +6,8 @@
 #include "ConfigReader.h"
 #include <filesystem>
 #include "Model.h"
-#include <thread>         
+#include <thread>
+#include <atomic>
 #include <chrono>
 #include <map>
 
@@ -87,16 +88,47 @@ void preload_texture_files() {
 	GUI::show_loading = false; 
 }
 
+void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std::string msg){
+	auto end_time = std::chrono::steady_clock::now();
+	long long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
+	printf("%s: %f ms\n", msg.c_str(), elapsed_time/1000.f);
+	begin_time = end_time;
+}
+
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
 	int size = PARTICLE_GLOW - CHAR_BUMBUS+4; 
 	float progress = 1; 
-	bool flip_image = true; // variable use to flip the image 
-	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW; i = ModelEnum(i + 1)) {
+	bool flip_image = true; // variable use to flip the image
+	std::atomic_bool spawned(false);
+	std::atomic_bool done(false);
+	
+	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW;) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
-		tmp = Model(i);
-		progress++;
+
+		if (!spawned.load(std::memory_order_relaxed))
+		{
+			spawned.store(true, std::memory_order_relaxed);
+			std::thread worker([&]()
+			{
+				Model::load_scene(i);
+				done.store(true, std::memory_order_relaxed);
+			});
+			worker.detach();	
+		}
+
+		if (done.load(std::memory_order_relaxed))
+		{
+			tmp = Model(i);
+			progress++;
+		
+			i = ModelEnum(i + 1);
+			spawned.store(false, std::memory_order_relaxed);
+			done.store(false, std::memory_order_relaxed);
+		}
+
+		Sleep(150);
 	}
 	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 	GUI::initializeImage();
@@ -225,7 +257,7 @@ int main(int argc, char* argv[])
 
 			char strbuf[1024];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
-			sprintf(strbuf, "%d:%d", rem_s / 60, rem_s % 60);
+			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
 			GUI::GUI_timer_string = std::string(strbuf);
 
 			for (int i = 0; i < sheader->num_sounds; i++) {
