@@ -35,6 +35,13 @@ int GUI::tool_image_idx;
 std::string GUI::picture_dir;
 GLFWwindow* GUI::my_window;
 ImVec2 GUI::player_pos[4];
+
+
+ImFont* GUI::font_Are_You_Serious;
+ImFont* GUI::font_Fredericka_the_Great;
+ImFont* GUI::font_Mystery_Quest;
+ImFont* GUI::font_Ranchers;
+
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -173,6 +180,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
+	font_Are_You_Serious = io.Fonts->AddFontFromFileTTF("./UI/fonts/Are_You_Serious/AreYouSerious-Regular.ttf", 36.0f);
+	font_Fredericka_the_Great = io.Fonts->AddFontFromFileTTF("./UI/fonts/Fredericka_the_Great/FrederickatheGreat-Regular.ttf", 36.0f);
+	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
+	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
+
 	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
 	GUI_show_buy_ui = false;
@@ -423,6 +435,7 @@ bool GUI::renderUI() {
 		}
 		ImGui::Image((void*)(intptr_t)rack_image_actual->my_image_texture, rack_size);
 
+		ImGui::PushFont(font_Are_You_Serious);
 		//show talking box
 		if (sale_tools) {
 			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
@@ -432,7 +445,7 @@ bool GUI::renderUI() {
 			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
 			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
 		}
-
+		ImGui::PopFont(); 
 		ImGui::End();
 	} 
 
@@ -717,7 +730,9 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, \
 						ImVec2(chase_images_list[idx].my_image_width * display_ratio,\
 							   chase_images_list[idx].my_image_height * display_ratio));
+	ImGui::PushFont(font_Ranchers);
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
+	ImGui::PopFont();
 	ImGui::BufferingBar("##buffer_bar", percent, size, bg, col);
 	ImGui::End();
 
