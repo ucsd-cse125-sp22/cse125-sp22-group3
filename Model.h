@@ -145,6 +145,12 @@ private:
 
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},
+		{BALLOON_YELLOW, "models/balloons/yellowBalloon.fbx"},
+		{BALLOON_RED, "models/balloons/redBalloon.fbx"},
+		{BALLOON_BLUE, "models/balloons/blueBalloon.fbx"},
+		{BALLOON_PURPLE, "models/balloons/purpleBalloon.fbx"},
+		{BALLOON_PINK, "models/balloons/pinkBalloon.fbx"},
+		{BALLOON_GREEN, "models/balloons/greenBalloon.fbx"},
 	};
 
 	std::map<ModelEnum, std::string> particleTextures = {

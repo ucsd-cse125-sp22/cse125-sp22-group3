@@ -167,7 +167,13 @@ bool Window::initializeObjects()
 	{ WORLD_PODIUM, worldShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
-	{ PARTICLE_DUST, particleShaderProgram }
+	{ PARTICLE_DUST, particleShaderProgram },
+	{BALLOON_YELLOW, animationShaderProgram  },
+	{BALLOON_RED, animationShaderProgram  },
+	{BALLOON_BLUE, animationShaderProgram  },
+	{BALLOON_PURPLE, animationShaderProgram  },
+	{BALLOON_PINK, animationShaderProgram  },
+	{BALLOON_GREEN, animationShaderProgram  },
 	};
 			
 	return true;
