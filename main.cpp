@@ -98,13 +98,14 @@ void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std:
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
-	int size = PARTICLE_GLOW - CHAR_BUMBUS+4; 
+	int size = SENTINEL_END - SENTINEL_BEGIN; // implicit + 2 from (progress = 1) and excess (progress++)
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image
 	std::atomic_bool spawned(false);
 	std::atomic_bool done(false);
 	
-	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW;) {
+	for (ModelEnum i = static_cast<ModelEnum>(SENTINEL_BEGIN + 1); i < SENTINEL_END;) {
+		auto begin_time = std::chrono::steady_clock::now();
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 
 		if (!spawned.load(std::memory_order_relaxed))
@@ -123,12 +124,14 @@ void load_models(GLFWwindow* window)
 			tmp = Model(i);
 			progress++;
 		
-			i = ModelEnum(i + 1);
+			i = static_cast<ModelEnum>(i + 1);
 			spawned.store(false, std::memory_order_relaxed);
 			done.store(false, std::memory_order_relaxed);
 		}
 
-		Sleep(150);
+		auto end_time = std::chrono::steady_clock::now();
+		int elapsed_time = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count());
+		Sleep(std::max(130 - elapsed_time, 0));
 	}
 	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 	GUI::initializeImage();
@@ -180,7 +183,7 @@ int main(int argc, char* argv[])
 
 	//auto begin_time = std::chrono::steady_clock::now();
 	int status = 1;
-	std::map<uintptr_t, Model*> model_map; // TODO change into smart pointer
+	std::map<uintptr_t, Model*> model_map;
 	load_models(window); 
 	Window::show_GUI = false; 
 	GUI::renderWaitingClient(1, 1);
@@ -267,7 +270,7 @@ int main(int argc, char* argv[])
 				sound_engine.Play(sound_info.sound);
 			}
 
-			Window::postprocessing->draw(Window::width, Window::height, Window::view);
+			Window::postprocessing->draw(Window::width, Window::height, sheader->time_remaining_seconds, Window::view);
 			for (int i = 0; i < sheader->num_models; i++)
 			{
 				ModelInfo model_info = model_arr[i];
@@ -379,7 +382,11 @@ int main(int argc, char* argv[])
 		glfwPollEvents();
 
 		//IMGUI rendering
-		GUI::renderUI();
+		if (GUI::GUI_show_winning) {
+			GUI::renderWinningScene();
+		} else {
+			GUI::renderUI();
+		}
 
 		// Swap buffers.
 		glfwSwapBuffers(window);
