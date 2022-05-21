@@ -105,6 +105,7 @@ void load_models(GLFWwindow* window)
 	std::atomic_bool done(false);
 	
 	for (ModelEnum i = static_cast<ModelEnum>(SENTINEL_BEGIN + 1); i < SENTINEL_END;) {
+		auto begin_time = std::chrono::steady_clock::now();
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 
 		if (!spawned.load(std::memory_order_relaxed))
@@ -128,7 +129,9 @@ void load_models(GLFWwindow* window)
 			done.store(false, std::memory_order_relaxed);
 		}
 
-		Sleep(150);
+		auto end_time = std::chrono::steady_clock::now();
+		int elapsed_time = static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(end_time - begin_time).count());
+		Sleep(std::max(130 - elapsed_time, 0));
 	}
 	flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 	GUI::initializeImage();
