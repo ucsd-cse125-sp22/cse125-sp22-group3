@@ -23,6 +23,7 @@ class FBO {
 		unsigned int rbo;
 		unsigned int attachments[2];
 
+		const float totalTime = 15.0f;
 		float near_, far_;
 
 		glm::mat4 setLightSpaceMatrix(float np, float fp, glm::mat4 view, int width, int height);
@@ -36,6 +37,7 @@ class FBO {
 		// shadows
 		static unsigned int dm;
 		static unsigned int matricesUBO;
+		static float timePassed;
 
 		// projection * view
 		static std::vector<glm::mat4> lightSpaceMatrix;
@@ -59,7 +61,7 @@ class FBO {
 		FBO(float np, float fp);
 		FBO(int width, int height);
 		void resize(int width, int height);
-		void draw(int width, int height, glm::mat4 view);
+		void draw(int width, int height, float time, glm::mat4 view);
 		void draw(GLuint shader);
 };
 

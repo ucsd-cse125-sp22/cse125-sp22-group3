@@ -267,7 +267,7 @@ int main(int argc, char* argv[])
 				sound_engine.Play(sound_info.sound);
 			}
 
-			Window::postprocessing->draw(Window::width, Window::height, Window::view);
+			Window::postprocessing->draw(Window::width, Window::height, sheader->time_remaining_seconds, Window::view);
 			for (int i = 0; i < sheader->num_models; i++)
 			{
 				ModelInfo model_info = model_arr[i];

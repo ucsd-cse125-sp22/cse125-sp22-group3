@@ -339,17 +339,19 @@ unsigned int Model::TextureFromFile(const char* path, const std::string& directo
 
 void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader) {
 	//TODO so basically uhm uh what we're trying to do here is uhm uh uhm
-	curr_time = glfwGetTime();
-	float delta = curr_time - last_time;
-	fixed_time += (delta * anim_speed);
-
 	if (hasAni) {
+		curr_time = glfwGetTime();
+		float delta = curr_time - last_time;
+		fixed_time += (delta * anim_speed);
+
 		CalculateBoneTransform(fixed_time);
 
 		for each (Mesh mesh in meshes)
 		{
-			mesh.draw(view, projection, parent, finalBoneMatrices, curr_time, shader);
+			mesh.draw(view, projection, parent, finalBoneMatrices, FBO::timePassed, shader);
 		}
+
+		last_time += delta;
 	}
 
 	else {
@@ -361,13 +363,11 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 				}
 
 				else {
-					mesh.draw(view, projection, parent, curr_time, shader);
+					mesh.draw(view, projection, parent, FBO::timePassed, shader);
 				}
 			}
 		}
 	}
-
-	last_time += delta;
 }
 
 void Model::draw(glm::mat4 parent, GLuint shader) {
@@ -394,7 +394,7 @@ void Model::draw(glm::mat4 parent, GLuint shader) {
 			}
 
 			else {
-				mesh.draw(parent, curr_time, shader);
+				mesh.draw(parent, FBO::timePassed, shader);
 			}
 		}
 	}

@@ -112,8 +112,8 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
-    float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
-    // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
+    float secondsToMinutes = time;
+    float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec3 lightColor = day;
 
     if(convTime >= 4.0f && convTime < 4.75f) {
@@ -144,7 +144,6 @@ void main()
         lightColor = day;
     }
 
-    lightColor = day;
     vec3 ambient = lightColor * vec3(tex);
     vec3 diffuse = lightColor * diff * vec3(tex);
     vec3 specular = vec3(0.1f, 0.1f, 0.1f) * spec * vec3(tex);

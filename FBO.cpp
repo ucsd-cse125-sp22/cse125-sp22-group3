@@ -10,6 +10,7 @@ unsigned int FBO::colorBuffers[2];
 unsigned int FBO::pColorBuffers[2];
 unsigned int FBO::dm;
 unsigned int FBO::matricesUBO;
+float FBO::timePassed = 0.0f;
 glm::vec3 FBO::lightPos = glm::vec3(-2.0f, 2.0f, -1.0f);
 
 FBO::FBO() {}
@@ -200,13 +201,13 @@ void FBO::resize(int width, int height) {
     }
 }
 
-void FBO::draw(int width, int height, glm::mat4 cam) {
-    /*
-    float degrees = glm::clamp(float(glfwGetTime() - 26.0f) / 15.0f, 0.0f, 1.0f);
+void FBO::draw(int width, int height, float time, glm::mat4 cam) {
+    timePassed = totalTime - (time / 60.0f);
+    
+    float degrees = glm::clamp(timePassed / 15.0f, 0.0f, 1.0f);
     degrees = glm::mix(0.0f, 6.28f, degrees);
 
     lightPos = glm::vec3(glm::rotate(degrees, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(-2.0f, 2.0f, -1.0f, 1.0f));
-    */
 
     std::vector<glm::mat4> ret;
     for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i)

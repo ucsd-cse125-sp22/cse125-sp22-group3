@@ -174,7 +174,7 @@ void Mesh::particleDraw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, 
     // Apply parent transformation
     glm::mat4 m = parent * model;
 
-    int index = int(time * 15.0f) % textures.size();
+    int index = int(time * 600.0f) % textures.size();
 
     // Bind current texture to animate
     glActiveTexture(GL_TEXTURE0);

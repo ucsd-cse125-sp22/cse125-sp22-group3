@@ -138,11 +138,11 @@ void main()
 
 
     vec4 result = vec4(0.0f);
-    float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
+    float secondsToMinutes = time;
+    float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
     vec3 lightColor = day;
 
-    /*
     if(convTime >= 4.0f && convTime < 4.75f) {
         float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
         lightColor = mix(day, sunset, interpolate);
@@ -188,7 +188,6 @@ void main()
     else if(convTime >= 11.0f) {
         lightColor = day;
     }
-    */
 
     vec3 ambient = lightColor * vec3(tex);
     vec3 diffuse = lightColor * diff * vec3(tex);

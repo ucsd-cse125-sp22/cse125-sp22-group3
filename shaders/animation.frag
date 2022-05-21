@@ -145,14 +145,13 @@ void main()
     rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    float convTime = clamp(time - 26.0f, 0.0f, 15.0f);
-    // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
+    float secondsToMinutes = time;
+    float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec4 lightColor = day;
 
     vec4 base = vec4(vec3(tex * vec4(0.5f) * (tex + light + specular + rim)), 1.0f);
     vec4 result = vec4(0.0f);
 
-    /*
     if(convTime >= 4.0f && convTime < 4.75f) {
         float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
         lightColor = mix(day, sunset, interpolate);
@@ -195,7 +194,6 @@ void main()
     else if(convTime >= 11.0f) {
         lightColor = day;
     }
-    */
 
     result += vec4(vec3(tex * lightColor * (tex + light + specular + rim)), 1.0f);
 
