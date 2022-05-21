@@ -42,6 +42,11 @@ ImFont* GUI::font_Fredericka_the_Great;
 ImFont* GUI::font_Mystery_Quest;
 ImFont* GUI::font_Ranchers;
 
+float GUI::winning_fade_ratio = 1;
+bool GUI::GUI_show_winning;
+
+
+
 namespace ImGui {
 
 	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
@@ -149,6 +154,30 @@ namespace ImGui {
 		window->DrawList->PathStroke(color, false, thickness);
 		return centre;
 	}
+
+	bool BlackBanner(const char* label, int window_width, int window_height, float ratio, bool top = true) {
+		ImGuiWindow* window = ImGui::GetCurrentWindow();
+		ImVec2 size = ImVec2(window_width, window_height);
+		ImVec2 rect_size = ImVec2(window_width, window_height * 0.125 );
+		ImVec2 pos = window->DC.CursorPos;
+		const ImU32 black = IM_COL32(0, 0, 0, 255);
+
+		ImGuiContext& g = *GImGui;
+		const ImGuiStyle& style = g.Style;
+		const ImGuiID id = window->GetID(label);
+
+		const ImRect bb(pos, pos + rect_size);
+		ItemSize(bb, style.FramePadding.y);
+		if (!ItemAdd(bb, id))
+			return false;
+		if (top) {
+			window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, bb.Max.y * ratio), black);
+		} else {
+			window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + rect_size.y * (1-ratio)),bb.Max, black);
+
+		}
+		return true;
+	}
 }
 
 // Initialized IMGUI, check the version of glfw and initializes imgui accordingly, should be called before the main loop
@@ -193,6 +222,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_scoreboard = true; 
 	GUI_show_sale_ui = false; 
 	GUI_show_timer = true; 
+	GUI_show_winning = false; 
 	stamina_percent = 100; 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -837,13 +867,11 @@ void GUI::createStamina() {
 	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
 
 	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
 	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, size, bg, col);
 	ImGui::End();
-
 }
 
 void GUI::createTimer(float ratio) {
@@ -901,6 +929,37 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 
 void GUI::setTimer(float time) {
 	timer_percent = time; 
+}
+
+bool GUI::renderWinningScene() {
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
+		winning_fade_ratio = 1; 
+	}
+	winning_fade_ratio  = winning_fade_ratio < 0.0001? 0 : winning_fade_ratio* 0.8; 
+	float ratio = 1 - winning_fade_ratio;
+	ImVec2 size = ImVec2(window_width, window_height);
+	ImGui::SetNextWindowSize(size);
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+
+	ImGui::Begin("black banner", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true);
+	ImGui::SetCursorPos(ImVec2(0, window_height * (1-0.125f * ratio)));
+	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false);
+	ImGui::End();
+
+	ImGui::PopStyleVar(2);
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	return true; 
 }
 
 

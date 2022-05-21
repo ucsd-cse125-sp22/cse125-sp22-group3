@@ -62,6 +62,8 @@ public:
 	static float timer_percent; 
 	static float stamina_percent; //use this variable to set the stamina display
 
+	static float winning_fade_ratio; 
+	static bool GUI_show_winning; 
 	static std::string GUI_timer_string;
 	
 	static ImFont* font_Are_You_Serious;
@@ -98,6 +100,5 @@ public:
 	static void createStamina();
 	static void createTimer(float ratio); 
 	static void setTimer(float time);
+	static bool renderWinningScene();
 };
-
-

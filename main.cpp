@@ -379,7 +379,11 @@ int main(int argc, char* argv[])
 		glfwPollEvents();
 
 		//IMGUI rendering
-		GUI::renderUI();
+		if (GUI::GUI_show_winning) {
+			GUI::renderWinningScene();
+		} else {
+			GUI::renderUI();
+		}
 
 		// Swap buffers.
 		glfwSwapBuffers(window);
