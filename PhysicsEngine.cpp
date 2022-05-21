@@ -73,7 +73,7 @@ void PhysicsEngine::Compute()
 
 		for (int j = 0; j < static_collidables_.size(); j++)
 		{
-			PhysicsObject* object_1 = static_collidables_[i];
+			PhysicsObject* object_1 = moving_collidables_[i];
 			PhysicsObject* object_2 = static_collidables_[j];
 
 			for (Collider* collider_1 : object_1->GetColliders())
