@@ -134,8 +134,8 @@ private:
 		{INDICATOR_WATER, "models/indicators/waterIndicator.fbx"},
 		{INDICATOR_FERTILIZER, "models/indicators/fertilizerIndicator.fbx"},
 
-		{DEBUG_CIRCLE, "models/visualizer/box.fbx"},
-		{DEBUG_SQUARE, "models/visualizer/sphere.fbx"},
+		{DEBUG_CIRCLE, "models/visualizer/sphere.fbx"},
+		{DEBUG_SQUARE, "models/visualizer/box.fbx"},
 
 		{WORLD_MAP, "models/world/world.fbx"},
 		{WORLD_WATER, "models/world/water.fbx"},

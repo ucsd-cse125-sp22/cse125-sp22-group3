@@ -289,6 +289,7 @@ int main(int argc, char* argv[])
 					GUI::stamina_percent = sheader->stamina_bar;
 				}
 				
+
   				Model& curr_model = *model_map[model_info.model_id];
 				FBO::playerPos = players;
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?

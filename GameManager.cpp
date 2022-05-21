@@ -123,7 +123,23 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 				drawable->GetParentTransform(),
 				dynamic_cast<Player*>(entity) != nullptr
 			});
-			
+		}
+
+		auto collide = dynamic_cast<PhysicsObject*>(entity);
+		if (collide) {
+			Collider* collider = collide->GetColliders()[0];
+
+			if (collider->GetColliderShape() == Collider::Shape::CIRCLE) {
+				auto circle = dynamic_cast<ColliderCircle*>(collider);
+				model_infos.push_back(ModelInfo{
+					reinterpret_cast<uintptr_t>(entity),
+					DEBUG_CIRCLE,
+					drawable->GetAniMode(),
+					glm::translate(glm::vec3((circle->center.x), 0.0f, -(circle->center.y))) *
+					glm::scale(glm::vec3(circle->radius)),
+					false
+				});
+			}
 		}
 	}
 
