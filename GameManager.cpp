@@ -127,18 +127,33 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 
 		auto collide = dynamic_cast<PhysicsObject*>(entity);
 		if (collide) {
-			Collider* collider = collide->GetColliders()[0];
+			std::vector<Collider*> colliders = collide->GetColliders();
 
-			if (collider->GetColliderShape() == Collider::Shape::CIRCLE) {
-				auto circle = dynamic_cast<ColliderCircle*>(collider);
-				model_infos.push_back(ModelInfo{
-					reinterpret_cast<uintptr_t>(entity),
-					DEBUG_CIRCLE,
-					drawable->GetAniMode(),
-					glm::translate(glm::vec3((circle->center.x), 0.0f, -(circle->center.y))) *
-					glm::scale(glm::vec3(circle->radius)),
-					false
-				});
+			for each (Collider* collider in colliders)
+			{
+				if (collider->GetColliderShape() == Collider::Shape::CIRCLE) {
+					auto circle = dynamic_cast<ColliderCircle*>(collider);
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(entity),
+						DEBUG_CIRCLE,
+						drawable->GetAniMode(),
+						glm::translate(glm::vec3((circle->center.x), 0.0f, -(circle->center.y))) *
+						glm::scale(glm::vec3(circle->radius)),
+						false
+						});
+				}
+
+				else {
+					auto aabb = dynamic_cast<ColliderAABB*>(collider);
+					const glm::vec2 avg = (aabb->minimum + aabb->maximum) / 2.0f;
+					model_infos.push_back(ModelInfo{
+						reinterpret_cast<uintptr_t>(entity),
+						DEBUG_SQUARE,
+						drawable->GetAniMode(),
+						glm::translate(glm::vec3(avg.x, 0.0f, -(avg.y))),
+						false
+						});
+				}
 			}
 		}
 	}

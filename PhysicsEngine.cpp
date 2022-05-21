@@ -70,7 +70,29 @@ void PhysicsEngine::Compute()
 				}
 			}
 		}
+
+		for (int j = 0; j < static_collidables_.size(); j++)
+		{
+			PhysicsObject* object_1 = static_collidables_[i];
+			PhysicsObject* object_2 = static_collidables_[j];
+
+			for (Collider* collider_1 : object_1->GetColliders())
+			{
+				for (Collider* collider_2 : object_2->GetColliders())
+				{
+					if (collider_1->CollidesWith(collider_2))
+					{
+						if (!collider_1->GetColliderIsTrigger() &&
+							!collider_2->GetColliderIsTrigger())
+						{
+							ResolveCollision(object_1, object_2);
+						}
+					}
+				}
+			}
+		}
 	}
+
 }
 
 inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* aabb, glm::vec2* circle_pos, glm::vec2* aabb_pos) {
@@ -91,10 +113,20 @@ inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* a
 inline void ResolveCircleToCircleCollision(ColliderCircle* circle_1, ColliderCircle* circle_2, glm::vec2* pos_1, glm::vec2* pos_2) {
 	float dist = glm::length(circle_1->center - circle_2->center);
 	float dist_to_move = circle_1->radius + circle_2->radius - dist;
-	glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move / 2.f;
 
-	*pos_1 += dir_to_move;
-	*pos_2 -= dir_to_move;
+	if (circle_1->collider_is_static) {
+		glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move;
+		*pos_2 -= dir_to_move;
+	} 
+	else if (circle_2->collider_is_static) {
+		glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move;
+		*pos_1 += dir_to_move;
+	}
+	else {
+		glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move / 2.f;
+		*pos_1 += dir_to_move;
+		*pos_2 -= dir_to_move;
+	}
 }
 
 //TODO I'm not sure if we're even going to need this, but if we add a moving AABB object we potentially would.

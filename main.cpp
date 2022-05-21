@@ -98,13 +98,13 @@ void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std:
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
-	int size = PARTICLE_GLOW - CHAR_BUMBUS+4; 
+	int size = BALLOON_GREEN - CHAR_BUMBUS+4; 
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image
 	std::atomic_bool spawned(false);
 	std::atomic_bool done(false);
 	
-	for (ModelEnum i = CHAR_BUMBUS; i <= PARTICLE_GLOW;) {
+	for (ModelEnum i = CHAR_BUMBUS; i <= BALLOON_GREEN;) {
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 
 		if (!spawned.load(std::memory_order_relaxed))
