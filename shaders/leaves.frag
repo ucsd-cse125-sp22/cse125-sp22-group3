@@ -112,7 +112,7 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);
 
-    float secondsToMinutes = time;
+    float secondsToMinutes = time / 60.0f;
     float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec3 lightColor = day;
 

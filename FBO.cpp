@@ -202,9 +202,9 @@ void FBO::resize(int width, int height) {
 }
 
 void FBO::draw(int width, int height, float time, glm::mat4 cam) {
-    timePassed = totalTime - (time / 60.0f);
+    timePassed = 900 - (time);
     
-    float degrees = glm::clamp(timePassed / 15.0f, 0.0f, 1.0f);
+    float degrees = glm::clamp(timePassed / 900.0f, 0.0f, 1.0f);
     degrees = glm::mix(0.0f, 6.28f, degrees);
 
     lightPos = glm::vec3(glm::rotate(degrees, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(-2.0f, 2.0f, -1.0f, 1.0f));

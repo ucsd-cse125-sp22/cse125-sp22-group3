@@ -145,7 +145,7 @@ void main()
     rimIntensity = smoothstep(0.716 - 0.01, 0.716 + 0.01, rimIntensity);
     vec4 rim = rimIntensity * vec4(1.0);
 
-    float secondsToMinutes = time;
+    float secondsToMinutes =  time / 60.0f;
     float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec4 lightColor = day;
 
