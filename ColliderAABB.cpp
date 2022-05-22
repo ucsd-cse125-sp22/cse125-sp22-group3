@@ -6,7 +6,7 @@
 
 ColliderAABB::ColliderAABB() = default;
 
-ColliderAABB::ColliderAABB(const glm::vec2& min, const glm::vec2& max, const bool is_static)
+ColliderAABB::ColliderAABB(const glm::vec2 min, const glm::vec2 max, const bool is_static)
 {
     minimum = min;
     maximum = max;

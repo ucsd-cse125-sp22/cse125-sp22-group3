@@ -23,7 +23,7 @@ class Particle : public GameEntity, public Drawable {
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::mat4 rotation);
 		glm::mat4 GetRotation() const;
-		float glowParticleHeight = -1;
+		float glowParticleHeight = -1.5;
 		float dustParticleHeight = -3;
 		float dustParticleZOffset = -3.f;
 

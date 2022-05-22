@@ -4,6 +4,7 @@
 #include "GameEntity.h"
 #include "PhysicsObject.h"
 #include "ColliderCircle.h"
+#include "ColliderAABB.h"
 
 class World : public GameEntity, public Drawable, public PhysicsObject {
 	private:
@@ -12,6 +13,9 @@ class World : public GameEntity, public Drawable, public PhysicsObject {
 
 		// Transformations
 		glm::vec2* translate = nullptr;
+
+		// Colliders :) it is hard coded i am so sorry mr micholas
+		std::vector<Collider*> colliders_;
 
 	public:
 		AniMode modelAnim = NO_ANI;

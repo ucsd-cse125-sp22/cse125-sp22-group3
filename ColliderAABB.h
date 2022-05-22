@@ -2,11 +2,11 @@
 #include "glm.h"
 #include "Collider.h"
 
-class ColliderAABB final : public Collider
+class ColliderAABB : public Collider
 {
 public:
     ColliderAABB();
-    ColliderAABB(const glm::vec2& min, const glm::vec2& max, bool is_static = true);
+    ColliderAABB(glm::vec2 min, glm::vec2 max, bool is_static = true);
     ~ColliderAABB() = default;
 
     glm::vec2 minimum{};
