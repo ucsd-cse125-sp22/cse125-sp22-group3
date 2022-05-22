@@ -1,17 +1,44 @@
 #include "WinningDecoration.h"
 
-WinningDecoration::WinningDecoration(ModelEnum curr) {
-	model = curr;
-	modelAnim = NO_ANI;
+WinningDecoration::WinningDecoration(DecorationType type, glm::vec3 podiumPosition, std::default_random_engine* gen) {
+	decType = type;
+	podiumPos = podiumPosition;
+	generator = gen;
 
 	translate = new glm::vec2(0.f, 0.f);
 	translate3D = new glm::vec3(0.f, 0.f, 0.f);
 	rotation = glm::mat4(1);
+
+	if (decType == PODIUM)
+	{
+		model = WORLD_PODIUM;
+		SetPosition(podiumPosition);
+	}
+	else
+	{
+		RegenBalloonProperties();
+	} 
 }
 
 WinningDecoration::~WinningDecoration() {
 	delete translate;
 	delete translate3D;
+}
+
+void WinningDecoration::RegenBalloonProperties()
+{
+	std::uniform_int_distribution<int> color_dist{ ModelEnum::BALLOON_YELLOW, ModelEnum::BALLOON_GREEN};
+	std::uniform_real_distribution<float> velocity_dist{0.05f, 0.5f};
+	std::uniform_real_distribution<float> pos_x_dist{-50.f + podiumPos[0], 50.f + podiumPos[0] };
+	std::uniform_real_distribution<float> pos_y_dist{-2, 20};
+	std::uniform_real_distribution<float> pos_z_dist{-50.f + podiumPos[2], 50.f + podiumPos[2] };
+
+	this->model = static_cast<ModelEnum>(color_dist(*generator));
+	this->upVelocity = velocity_dist(*generator);
+	float x = pos_x_dist(*generator);
+	float y = pos_y_dist(*generator);
+	float z = pos_z_dist(*generator);
+	this->SetPosition(glm::vec3(x, y, z));
 }
 
 ModelEnum WinningDecoration::GetModelEnum() { return model; }
@@ -28,7 +55,8 @@ void WinningDecoration::FixedUpdate()
 	currHeight += upVelocity;
 
 	if (currHeight > maxHeight) {
-		currHeight = 0;
+		currHeight = -4;
+		RegenBalloonProperties();
 	}
 }
 

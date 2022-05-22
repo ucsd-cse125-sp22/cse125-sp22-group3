@@ -1,12 +1,20 @@
 #pragma once
+#include <random>
+
 #include "Drawable.h"
 #include "GameEntity.h"
+
+enum DecorationType {
+	PODIUM,
+	BALLOON,
+};
 
 class WinningDecoration : public Drawable, public GameEntity
 {
 public:
-	WinningDecoration(ModelEnum curr);
+	WinningDecoration(DecorationType type, glm::vec3 podiumPosition, std::default_random_engine* generator);
 	~WinningDecoration();
+	void RegenBalloonProperties();
 
 	// Drawable
 	ModelEnum GetModelEnum() override;
@@ -25,7 +33,7 @@ public:
 	float GetHeight();
 	float upVelocity = 0;
 	float currHeight = 0;
-	float maxHeight = 25;
+	float maxHeight = 30;
 
 private:
 	// Transformations
@@ -37,6 +45,7 @@ private:
 	// Current model to display
 	ModelEnum model;
 	AniMode modelAnim;
+	DecorationType decType;
 
 	// Get matrix transformation
 	glm::mat4 GetTransformation();
@@ -44,5 +53,8 @@ private:
 
 	float pickupHeight = -1;
 	float dropHeight = -3;
+
+	glm::vec3 podiumPos;
+	std::default_random_engine* generator;
 };
 

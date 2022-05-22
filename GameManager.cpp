@@ -1,7 +1,6 @@
 #include "GameManager.h"
 
 #include "Network/NetworkPacket.h"
-#include <random> 
 
 std::chrono::steady_clock::time_point GameManager::curr_time_ = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::steady_clock::now();
@@ -14,8 +13,12 @@ std::vector<PhysicsObject*> GameManager::physics_objects = {};
 GameManager::GameManager()
 {
 	physics = PhysicsEngine();
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	generator = new std::default_random_engine(seed);
 }
+
 GameManager::GameManager(std::vector<Player*> players)
+	: GameManager()
 {
 	// Initialize Players
 	players_ = players;
@@ -34,25 +37,7 @@ GameManager::GameManager(std::vector<Player*> players)
 		physics_objects.push_back(player);
 	}
 	physics = PhysicsEngine(physics_objects);
-}
 
-inline void GameManager::BalloonGenerator(int num_balloon) {
-	std::default_random_engine generator;
-	std::uniform_int_distribution<int> color_dist{ ModelEnum::BALLOON_YELLOW, ModelEnum::BALLOON_GREEN};
-	std::uniform_real_distribution<float> velocity_dist{0.05f, 0.5f};
-	std::uniform_real_distribution<float> pos_x_dist{-50.f + podiumPosition[0], 50.f + podiumPosition[0] };
-	std::uniform_real_distribution<float> pos_y_dist{-2, 20};
-	std::uniform_real_distribution<float> pos_z_dist{-50.f + podiumPosition[2], 50.f + podiumPosition[2] };
-
-	for (int _ = 0; _ < num_balloon; _++) {
-		WinningDecoration* balon = new WinningDecoration(static_cast<ModelEnum>(color_dist(generator)));
-		balon->upVelocity = velocity_dist(generator);
-		float x = pos_x_dist(generator);
-		float y = pos_y_dist(generator);
-		float z = pos_z_dist(generator);
-		balon->SetPosition(glm::vec3(x, y, z));
-		AddEntities({ balon });
-	}
 }
 
 inline void GameManager::WinningFixedUpdate()
@@ -81,12 +66,13 @@ inline void GameManager::WinningFixedUpdate()
 			players_[3]->modelAnim = DANCE;
 		}
 
-		// podium is now a vegetable 8D
-		WinningDecoration* tempPodium = new WinningDecoration(ModelEnum::WORLD_PODIUM);
-		tempPodium->SetPosition(podiumPosition);
-		AddEntities({ tempPodium });
+		WinningDecoration* podium = new WinningDecoration(DecorationType::PODIUM, podiumPosition, generator);
+		AddEntities({ podium });
 
-		BalloonGenerator(50);
+		for (int _ = 0; _ < 50; _++) {
+			WinningDecoration* balon = new WinningDecoration(DecorationType::BALLOON, podiumPosition, generator);
+			AddEntities({ balon });
+		}
 
 		podiumSpawned = true;
 	}
@@ -279,4 +265,9 @@ double GameManager::GetRemainingSeconds() {
 	auto curr_time = std::chrono::steady_clock::now();
 	const std::chrono::duration<double> elapsed_seconds = game_end_time_ - curr_time;
 	return elapsed_seconds.count();
+}
+
+std::default_random_engine* GameManager::GetRandomGenerator()
+{
+	return generator;
 }

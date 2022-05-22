@@ -21,6 +21,8 @@
 #include "Soju.h"
 #include "Oat.h"
 #include <chrono>
+#include <random>
+
 #include "WinningDecoration.h"
 
 class GameManager : GameEntity
@@ -65,8 +67,9 @@ public:
     void GameManager::StartGameTime();
     double GameManager::GetRemainingSeconds();
 
+    std::default_random_engine* GetRandomGenerator();
+
 private:
-    void GameManager::BalloonGenerator(int num_balloon);
     std::vector<Player*> players_{};
     std::vector<Vegetable*> vegetables_{};
     std::vector<Plot*> plots_{};
@@ -78,6 +81,8 @@ private:
     bool isStarted = false;
     float timeToSpawnEggplant = 540; // default spawn 6 minutes in
     bool eggplantSpawned = false;
+
+    std::default_random_engine* generator; // all <random> distributions should use this generator
 
     // winning info
     float timeToEndGame = 880; // TODO: set to end of game, set to 800 for debugging purposes
