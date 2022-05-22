@@ -88,8 +88,8 @@ private:
     float timeToEndGame = 880; // TODO: set to end of game, set to 800 for debugging purposes
     bool podiumSpawned = false;
     glm::vec3 goldPosition = glm::vec3(0, 10, -20);
-    glm::vec3 silverPosition = glm::vec3(-5, 7, -20);
-    glm::vec3 bronzePosition = glm::vec3(5, 4, -20);
+    glm::vec3 silverPosition = glm::vec3(4, 7, -20);
+    glm::vec3 bronzePosition = glm::vec3(-4, 4, -20);
     glm::vec3 loserPosition = glm::vec3(-10, 0, -15);
     glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
 };

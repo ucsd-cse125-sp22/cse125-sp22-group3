@@ -1,4 +1,5 @@
 #include "Indicator.h"
+#include "Window.h"
 
 Indicator::Indicator(VegetableType veggie) {
 	type = veggie;
@@ -21,6 +22,11 @@ Indicator::Indicator(VegetableType veggie) {
 Indicator::~Indicator() {}
 
 void Indicator::FixedUpdate() {
+	
+	//TODO: get camera pos to set rotation
+	//rotation = glm::lookAt(glm::normalize(glm::vec3((*translate3D)[0],currHeight, -(*translate3D)[2])), Window::eyePos, glm::vec3(0, 1, 0));
+	//printf("hii eye: %f %f %f curr: %f f %f\n", Window::eyePos.x, Window::eyePos.y, Window::eyePos.z, (*translate3D)[0], currHeight, -(*translate3D)[2]);
+
 	if (currHeight >= maxHeight) 
 		goingUp = false;
 	else if (currHeight <= minHeight)
