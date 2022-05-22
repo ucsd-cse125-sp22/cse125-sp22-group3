@@ -232,6 +232,7 @@
     <ClCompile Include="VeggieNet.cpp" />
     <ClCompile Include="WateringCan.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WinningDecoration.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +297,7 @@
     <ClInclude Include="VeggieNet.h" />
     <ClInclude Include="WateringCan.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WinningDecoration.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
