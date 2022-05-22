@@ -98,7 +98,9 @@ void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std:
 void load_models(GLFWwindow* window) 
 {
 	Model tmp; 
+
 	int size = SENTINEL_END - SENTINEL_BEGIN; // implicit + 2 from (progress = 1) and excess (progress++)
+
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image
 	std::atomic_bool spawned(false);
@@ -106,6 +108,7 @@ void load_models(GLFWwindow* window)
 	
 	for (ModelEnum i = static_cast<ModelEnum>(SENTINEL_BEGIN + 1); i < SENTINEL_END;) {
 		auto begin_time = std::chrono::steady_clock::now();
+
 		flip_image = GUI::renderProgressBar(progress / size, window, flip_image);
 
 		if (!spawned.load(std::memory_order_relaxed))
@@ -298,6 +301,7 @@ int main(int argc, char* argv[])
 					GUI::stamina_percent = sheader->stamina_bar;
 				}
 				
+
   				Model& curr_model = *model_map[model_info.model_id];
 				FBO::playerPos = players;https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwjwt6a6_fP3AhV5K0QIHWDTBTYQPQgJ
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?

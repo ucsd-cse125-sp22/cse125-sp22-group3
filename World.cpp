@@ -4,9 +4,49 @@ World::World(ModelEnum curr) {
 	model = curr;
 	modelAnim = NO_ANI;
 
-	// collider should probably be aabb instead of circle erm
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 5, true);
-	collider_->collider_is_trigger = true;
+	// nicholas if u see this. i am soooo sorry for hardcoding sooo sorrie exclamation mark!
+	colliders_.push_back(new ColliderCircle(glm::vec2(60.047, 64.737), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(47.914, 102.282), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(89.794, -72.309), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(73.056, 115.183), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(104.370, 90.524), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(93.236, 47.506), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(126.123, -14.300), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-60.702, 17.828), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-93.140, 10.614), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(73.125, -124.418), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-31.585, -57.759), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(39.382, -83.986), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-41.721, 76.790), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-129.842, 67.710), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-127.934, -27.875), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-9.432, -23.107), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(70.547, -40.986), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-128.331, 45.151), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-113.925, 20.222), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(52.618, -29.027), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(116.341, 27.281), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(123.284, 51.372), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(115.927, -27.333), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-17.764, -42.188), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(126.895, -131.359), 5, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(115.120, -90.907), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(105.972, -100.859), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(23.812, 125.393), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(45.301, 132.372), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-14.141, 126.720), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-58.899, 123.030), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-60.256, 101.020), 4, true));
+
+	colliders_.push_back(new ColliderCircle(glm::vec2(-121.937, -114.008), 12, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(92.839, -123.126), 12, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(114.126, 123.026), 12, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-128.408, 123.026), 12, true));
+
+	colliders_.push_back(new ColliderAABB(glm::vec2(-140, -135), glm::vec2(-135, 135), true));
+	colliders_.push_back(new ColliderAABB(glm::vec2(135, -135), glm::vec2(140, 135), true));
+	colliders_.push_back(new ColliderAABB(glm::vec2(-135, -140), glm::vec2(135, -135), true));
+	colliders_.push_back(new ColliderAABB(glm::vec2(-135, 135), glm::vec2(135, 140), true));
 
 	translate = new glm::vec2(0.f, 0.f);
 }
@@ -31,7 +71,7 @@ void World::SetModel(ModelEnum newModel, glm::vec2 pos)
 
 std::vector<Collider*> World::GetColliders()
 {
-	return { collider_ };
+	return colliders_;
 }
 
 glm::vec2* World::GetWorldPosition()
