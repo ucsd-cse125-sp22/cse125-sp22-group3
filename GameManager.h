@@ -85,10 +85,6 @@ private:
     std::default_random_engine* generator; // all <random> distributions should use this generator
 
     // winning info
-<<<<<<< HEAD
-    float timeToEndGame = 0; // TODO: set to end of game, set to 800 for debugging purposes
-=======
->>>>>>> 22212bf055e05bc7d5d099710a6d60a307a2a35d
     bool podiumSpawned = false;
     glm::vec3 goldPosition = glm::vec3(0, 10, -20);
     glm::vec3 silverPosition = glm::vec3(4, 7, -20);
