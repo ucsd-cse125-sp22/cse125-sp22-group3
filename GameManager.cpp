@@ -1,6 +1,7 @@
 #include "GameManager.h"
 
 #include "Network/NetworkPacket.h"
+#include <random> 
 
 std::chrono::steady_clock::time_point GameManager::curr_time_ = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::steady_clock::now();
@@ -35,51 +36,88 @@ GameManager::GameManager(std::vector<Player*> players)
 	physics = PhysicsEngine(physics_objects);
 }
 
-void GameManager::FixedUpdate()
-{
-	GameManager::UpdateFixedDeltaTime();
-	for (GameEntity* entity : GameManager::game_entities) {
-		entity->FixedUpdate();
-	}
-	if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
-		
-		AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
-		eggplantSpawned = true;
-	}
+inline void GameManager::BalloonGenerator() {
+	std::default_random_engine generator;
+	std::uniform_int_distribution<int> color_dist{ ModelEnum::BALLOON_YELLOW, ModelEnum::BALLOON_GREEN};
+	std::uniform_real_distribution<float> velocity_dist{0.05f, 0.5f};
+	std::uniform_real_distribution<float> pos_x_dist{-30.f + podiumPosition[0], 30.f + podiumPosition[0] };
+	std::uniform_real_distribution<float> pos_y_dist{-2, 4};
+	std::uniform_real_distribution<float> pos_z_dist{-30.f + podiumPosition[2], 30.f + podiumPosition[2] };
 
-	else if (!podiumSpawned && GameManager::GetRemainingSeconds() <= timeToEndGame) {
+	for (int _ = 0; _ < 20; _++) {
+		WinningDecoration* balon = new WinningDecoration(static_cast<ModelEnum>(color_dist(generator)));
+		balon->upVelocity = velocity_dist(generator);
+		float x = pos_x_dist(generator);
+		float y = pos_y_dist(generator);
+		float z = pos_z_dist(generator);
+		balon->SetPosition(glm::vec3(x, y, z));
+		AddEntities({ balon });
+	}
+}
+
+inline void GameManager::WinningFixedUpdate()
+{
+	if (!podiumSpawned) {
 		printf("moving players to winning area\n");
 		// TODO: Check which player has the most money and break ties somehow
-		if(players_.size()>0){
+		if (players_.size() > 0) {
 			players_[0]->playerHeight = goldPosition.y;
 			players_[0]->SetWorldPosition(goldPosition);
-			players_[0]->Dance();
+			players_[0]->modelAnim = DANCE;
 		}
 		if (players_.size() > 1) {
 			players_[1]->playerHeight = silverPosition.y;
 			players_[1]->SetWorldPosition(silverPosition);
-			players_[1]->Dance();
+			players_[1]->modelAnim = DANCE;
 		}
 		if (players_.size() > 2) {
 			players_[2]->playerHeight = bronzePosition.y;
 			players_[2]->SetWorldPosition(bronzePosition);
-			players_[2]->Dance();
+			players_[2]->modelAnim = DANCE;
 		}
 		if (players_.size() > 3) {
 			players_[3]->playerHeight = loserPosition.y;
 			players_[3]->SetWorldPosition(loserPosition);
-			players_[3]->Dance();
+			players_[3]->modelAnim = DANCE;
 		}
 
-
-		
 		// podium is now a vegetable 8D
-		Vegetable* tempPodium = new Vegetable(VegetableType::CARROT, ModelEnum::WORLD_PODIUM);
+		WinningDecoration* tempPodium = new WinningDecoration(ModelEnum::WORLD_PODIUM);
 		tempPodium->SetPosition(podiumPosition);
-		AddEntities({tempPodium});
+		AddEntities({ tempPodium });
+
+		BalloonGenerator();
 
 		podiumSpawned = true;
 	}
+
+	for (GameEntity* entity : GameManager::game_entities) {
+		if (auto winning_entity = dynamic_cast<WinningDecoration*>(entity)) {
+			winning_entity->FixedUpdate();
+		}
+	}
+}
+
+void GameManager::FixedUpdate()
+{
+	GameManager::UpdateFixedDeltaTime();
+
+	bool victory_condition_met = GameManager::GetRemainingSeconds() <= timeToEndGame;
+	if (victory_condition_met)
+	{
+		WinningFixedUpdate();
+	}
+	else {
+		if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
+			AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
+			eggplantSpawned = true;
+		}
+
+		for (GameEntity* entity : GameManager::game_entities) {
+			entity->FixedUpdate();
+		}
+	}
+
 	// printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions

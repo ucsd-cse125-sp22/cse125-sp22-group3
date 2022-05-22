@@ -21,6 +21,7 @@
 #include "Soju.h"
 #include "Oat.h"
 #include <chrono>
+#include "WinningDecoration.h"
 
 class GameManager : GameEntity
 {
@@ -30,6 +31,7 @@ public:
 
     // Call Updates on GameState
     void FixedUpdate() override;
+    inline void WinningFixedUpdate();
     static void AddEntities(std::vector<GameEntity*> entities);
     static void RemoveEntities(std::vector<GameEntity*> entities);
 
@@ -64,6 +66,7 @@ public:
     double GameManager::GetRemainingSeconds();
 
 private:
+    void GameManager::BalloonGenerator();
     std::vector<Player*> players_{};
     std::vector<Vegetable*> vegetables_{};
     std::vector<Plot*> plots_{};
@@ -77,7 +80,7 @@ private:
     bool eggplantSpawned = false;
 
     // winning info
-    float timeToEndGame = 0; // TODO: set to end of game, set to 800 for debugging purposes
+    float timeToEndGame = 880; // TODO: set to end of game, set to 800 for debugging purposes
     bool podiumSpawned = false;
     glm::vec3 goldPosition = glm::vec3(0, 10, -20);
     glm::vec3 silverPosition = glm::vec3(-5, 7, -20);
