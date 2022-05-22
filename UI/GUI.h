@@ -77,6 +77,7 @@ public:
 	static GUIImage fish_images_list[NUM_FISH_IMG];
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
 	static GUIImage curtain_img;
+	static GUIImage stamina_image; 
 	static int scoreboard_data[NUM_ICON];
 	static char* seed_type_list[];
 	static char* tool_type_list[];

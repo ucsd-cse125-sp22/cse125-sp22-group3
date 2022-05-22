@@ -20,6 +20,7 @@ int GUI::scoreboard_data[NUM_ICON];
 GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::curtain_img;
+GUIImage GUI::stamina_image; 
 
 float GUI::display_ratio;
 int GUI::window_height;
@@ -104,20 +105,14 @@ namespace ImGui {
 
 		ImVec2 pos = window->DC.CursorPos;
 		ImVec2 size = size_arg;
-		size.x -= style.FramePadding.x * 2;
 
 		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
 		ItemSize(bb, style.FramePadding.y);
 		if (!ItemAdd(bb, id))
 			return false;
 
-		// Render
-		const float circleStart = size.y;
-		const float circleEnd = size.y;
-		const float circleWidth = circleEnd - circleStart;
-
-		window->DrawList->AddRectFilled(bb.Min, ImVec2(bb.Max.x, pos.y + circleStart), bg_col, ImDrawFlags_RoundCornersAll);
-		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + circleStart * (1 - value)), ImVec2(bb.Max.x, pos.y + circleStart), fg_col, ImDrawFlags_RoundCornersAll);
+		//window->DrawList->AddRectFilled(bb.Min, bb.Max, bg_col, size.x * 0.4f, ImDrawFlags_RoundCornersTop);
+		window->DrawList->AddRectFilled(ImVec2(bb.Min.x, bb.Min.y + size.y * (1 - value)), bb.Max, fg_col, size.x * 0.4f, ImDrawFlags_RoundCornersTop);
 		return true;
 	}
 	ImVec2 Spinner(const char* label, float radius, int thickness, float ratio, const ImU32& color, int num_segments) {
@@ -676,6 +671,9 @@ void GUI::initializeImage() {
 
 	LoadTextureFromFile((picture_dir + std::string("/curtain-shed-side.png")).c_str(), &(curtain_img.my_image_texture),
 		&(curtain_img.my_image_width), &(curtain_img.my_image_height));
+
+	LoadTextureFromFile((picture_dir + std::string("/stamina.png")).c_str(), &(stamina_image.my_image_texture),
+		&(stamina_image.my_image_width), &(stamina_image.my_image_height));
 }
 
 void GUI::initializeLoadingImage() {
@@ -864,18 +862,23 @@ void GUI::createMiniMap() {
 
 void GUI::createStamina() {
 	bool bptr;
-	int width = 160;
-	int height = 1600; 
-	float padding = 64.0f * display_ratio;
-	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 80);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 250);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 200); //ImGui::GetColorU32(ImGuiCol_Button);
+	ImVec2 border_size = ImVec2(stamina_image.my_image_width * display_ratio, stamina_image.my_image_height * display_ratio);
 
-	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-	ImGui::SetNextWindowSize(size);
-	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	float top_padding = border_size.y * 0.1f ;
+	float side_padding = border_size.x / 6.0f; 
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::SetNextWindowSize(border_size);
+	ImGui::SetNextWindowPos(ImVec2(window_width- border_size.x, window_height), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
-	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, size, bg, col);
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	ImGui::Image((void*)(intptr_t)stamina_image.my_image_texture, border_size);
+	ImGui::SetCursorPos(ImVec2(side_padding, top_padding-side_padding));
+	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, ImVec2(border_size.x-side_padding*2, border_size.y - top_padding), bg, col);
 	ImGui::End();
+	ImGui::PopStyleVar(2);
 }
 
 void GUI::createTimer(float ratio) {
