@@ -48,25 +48,25 @@ inline void GameManager::WinningFixedUpdate()
 		if (players_.size() > 0) {
 			players_[0]->playerHeight = goldPosition.y;
 			players_[0]->SetWorldPosition(goldPosition);
-			players_[0]->SetRotation(glm::vec3(0, 3.1415, 0));
+			players_[0]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
 			players_[0]->modelAnim = DANCE;
 		}
 		if (players_.size() > 1) {
 			players_[1]->playerHeight = silverPosition.y;
 			players_[1]->SetWorldPosition(silverPosition);
-			players_[1]->SetRotation(glm::vec3(0, 1, 0));
+			players_[1]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
 			players_[1]->modelAnim = DANCE;
 		}
 		if (players_.size() > 2) {
 			players_[2]->playerHeight = bronzePosition.y;
 			players_[2]->SetWorldPosition(bronzePosition);
-			players_[2]->SetRotation(glm::vec3(0, 1, 0));
+			players_[2]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
 			players_[2]->modelAnim = DANCE;
 		}
 		if (players_.size() > 3) {
 			players_[3]->playerHeight = loserPosition.y;
 			players_[3]->SetWorldPosition(loserPosition);
-			players_[3]->SetRotation(glm::vec3(0, 1, 0));
+			players_[3]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
 			players_[3]->modelAnim = DANCE;
 		}
 
