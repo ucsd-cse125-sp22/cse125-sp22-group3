@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
 		eye_offset = rot_x * rot_y * eye_offset;
 		if (eye_offset[1] < 20) eye_offset[1] = 20;
 		eye_offset = glm::normalize(eye_offset) * InputManager::camera_dist;
-
+		
 		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
 		//if (InputManager::getMoved() || mouse_delta != glm::vec2{0,0}) { // TODO determine when to send packet and when to skip
 			out_packet.justMoved = InputManager::getMoved();
@@ -248,6 +248,7 @@ int main(int argc, char* argv[])
 			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+			//printf("hii eye: %f %f %f\n", Window::eyePos.x, Window::eyePos.y, Window::eyePos.z);
 			//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
 			GUI::ShowGUI(sheader->ui_open);
 		
@@ -278,7 +279,7 @@ int main(int argc, char* argv[])
 			Window::postprocessing->draw(Window::width, Window::height, sheader->time_remaining_seconds, Window::view);
 			for (int i = 0; i < sheader->num_models; i++)
 			{
-				ModelInfo model_info = model_arr[i];
+				ModelInfo& model_info = model_arr[i];
 				
 				if (model_map.count(model_info.model_id) == 0) {
 					model_map[model_info.model_id] = new Model(model_info.model);
@@ -298,7 +299,7 @@ int main(int argc, char* argv[])
 				}
 				
   				Model& curr_model = *model_map[model_info.model_id];
-				FBO::playerPos = players;
+				FBO::playerPos = players;https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwjwt6a6_fP3AhV5K0QIHWDTBTYQPQgJ
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 				if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
 					if (sheader->player_sprinting) {
@@ -313,6 +314,30 @@ int main(int argc, char* argv[])
 				}
 				
 				curr_model.setAnimationMode(model_info.modelAnim);
+				if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER
+					|| model_info.model == PARTICLE_GLOW) {
+
+
+					glm::mat4 tempTransform = model_info.parent_transform;
+					glm::vec3 plot_pos = glm::vec3(tempTransform[3][0], tempTransform[3][1], tempTransform[3][2]);
+					glm::mat4 rotation;
+					if (model_info.model == PARTICLE_GLOW)
+					{
+						rotation = glm::mat4(1);
+					}
+					else 
+					{
+						rotation = glm::lookAt(glm::vec3(plot_pos.x, 0, -plot_pos.z), glm::vec3(eye_pos.x, 0, -eye_pos.z), glm::vec3(0, 1, 0));
+					}
+
+					//CONCAT CODE
+					rotation[3][0] = tempTransform[3][0];
+					rotation[3][1] = tempTransform[3][1];
+					rotation[3][2] = tempTransform[3][2];
+
+					model_info.parent_transform = rotation;
+				}
+
 				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 			}
 		
@@ -338,7 +363,6 @@ int main(int argc, char* argv[])
 				}
 
 				model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
-
 				model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::modelShader[model_info.model]);
 			}
 			
