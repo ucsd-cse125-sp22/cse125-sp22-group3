@@ -168,6 +168,7 @@ bool Window::initializeObjects()
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram },
+	{ PARTICLE_FIREFLIES, particleShaderProgram },
 	{BALLOON_YELLOW, animationShaderProgram  },
 	{BALLOON_RED, animationShaderProgram  },
 	{BALLOON_BLUE, animationShaderProgram  },
