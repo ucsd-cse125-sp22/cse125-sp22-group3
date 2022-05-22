@@ -258,6 +258,11 @@ int main(int argc, char* argv[])
 			//GUI_timer_percent = 1 - (sheader->time_remaining_seconds / sheader->time_max_seconds);
 			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
 
+			if (sheader->time_remaining_seconds <= 0)
+			{
+				GUI::GUI_show_winning = true;
+			}
+
 			char strbuf[1024];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
