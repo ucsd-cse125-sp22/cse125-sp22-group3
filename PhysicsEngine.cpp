@@ -64,7 +64,7 @@ void PhysicsEngine::Compute()
 						else if (!collider_1->GetColliderIsTrigger() &&
 							!collider_2->GetColliderIsTrigger())
 						{
-							ResolveCollision(object_1, object_2);
+							ResolveCollision(collider_1, object_1, collider_2, object_2);
 						}
 					}
 				}
@@ -85,7 +85,7 @@ void PhysicsEngine::Compute()
 						if (!collider_1->GetColliderIsTrigger() &&
 							!collider_2->GetColliderIsTrigger())
 						{
-							ResolveCollision(object_1, object_2);
+							ResolveCollision(collider_1, object_1, collider_2, object_2);
 						}
 					}
 				}
@@ -156,16 +156,13 @@ void PhysicsEngine::ResolveTriggerCollision(PhysicsObject* first, PhysicsObject*
 }
 
 //TODO take in Colliders instead of Physics Objects
-void PhysicsEngine::ResolveCollision(PhysicsObject* first, PhysicsObject* second)
+void PhysicsEngine::ResolveCollision(Collider* first, PhysicsObject* first_phys, Collider* second, PhysicsObject* second_phys)
 {
-	first->OnCollide(second);
-	second->OnCollide(first);
+	Collider* col_1 = first;
+	Collider* col_2 = second;
 
-	Collider* col_1 = first->GetColliders()[0];
-	Collider* col_2 = second->GetColliders()[0];
-	
-	glm::vec2* pos_1 = first->GetWorldPosition();
-	glm::vec2* pos_2 = second->GetWorldPosition();
+	glm::vec2* pos_1 = first_phys->GetWorldPosition();
+	glm::vec2* pos_2 = second_phys->GetWorldPosition();
 
 	if (col_1->GetColliderShape() == Collider::CIRCLE)
 	{
