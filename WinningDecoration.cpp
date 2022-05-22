@@ -35,9 +35,22 @@ void WinningDecoration::RegenBalloonProperties()
 
 	this->model = static_cast<ModelEnum>(color_dist(*generator));
 	this->upVelocity = velocity_dist(*generator);
+	
+gen_x_pos:
 	float x = pos_x_dist(*generator);
+	if (x >= podiumPos[0] - 8 && x <= podiumPos[0] + 8)
+	{
+		goto gen_x_pos;
+	}
+	
 	float y = pos_y_dist(*generator);
+
+gen_z_pos:
 	float z = pos_z_dist(*generator);
+	if (z >= podiumPos[2] - 8 && z <= podiumPos[2] + 8)
+	{
+		goto gen_x_pos;
+	}
 	this->SetPosition(glm::vec3(x, y, z));
 }
 
