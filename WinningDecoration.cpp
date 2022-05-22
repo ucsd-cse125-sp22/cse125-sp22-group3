@@ -27,8 +27,9 @@ void WinningDecoration::FixedUpdate()
 {
 	currHeight += upVelocity;
 
-	
-
+	if (currHeight > maxHeight) {
+		currHeight = 0;
+	}
 }
 
 glm::vec3 WinningDecoration::GetPosition() const

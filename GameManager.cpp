@@ -36,15 +36,15 @@ GameManager::GameManager(std::vector<Player*> players)
 	physics = PhysicsEngine(physics_objects);
 }
 
-inline void GameManager::BalloonGenerator() {
+inline void GameManager::BalloonGenerator(int num_balloon) {
 	std::default_random_engine generator;
 	std::uniform_int_distribution<int> color_dist{ ModelEnum::BALLOON_YELLOW, ModelEnum::BALLOON_GREEN};
 	std::uniform_real_distribution<float> velocity_dist{0.05f, 0.5f};
-	std::uniform_real_distribution<float> pos_x_dist{-30.f + podiumPosition[0], 30.f + podiumPosition[0] };
-	std::uniform_real_distribution<float> pos_y_dist{-2, 4};
-	std::uniform_real_distribution<float> pos_z_dist{-30.f + podiumPosition[2], 30.f + podiumPosition[2] };
+	std::uniform_real_distribution<float> pos_x_dist{-50.f + podiumPosition[0], 50.f + podiumPosition[0] };
+	std::uniform_real_distribution<float> pos_y_dist{-2, 20};
+	std::uniform_real_distribution<float> pos_z_dist{-50.f + podiumPosition[2], 50.f + podiumPosition[2] };
 
-	for (int _ = 0; _ < 20; _++) {
+	for (int _ = 0; _ < num_balloon; _++) {
 		WinningDecoration* balon = new WinningDecoration(static_cast<ModelEnum>(color_dist(generator)));
 		balon->upVelocity = velocity_dist(generator);
 		float x = pos_x_dist(generator);
@@ -86,7 +86,7 @@ inline void GameManager::WinningFixedUpdate()
 		tempPodium->SetPosition(podiumPosition);
 		AddEntities({ tempPodium });
 
-		BalloonGenerator();
+		BalloonGenerator(50);
 
 		podiumSpawned = true;
 	}

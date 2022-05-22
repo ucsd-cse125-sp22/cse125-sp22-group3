@@ -25,6 +25,7 @@ public:
 	float GetHeight();
 	float upVelocity = 0;
 	float currHeight = 0;
+	float maxHeight = 25;
 
 private:
 	// Transformations

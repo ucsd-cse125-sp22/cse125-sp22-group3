@@ -66,7 +66,7 @@ public:
     double GameManager::GetRemainingSeconds();
 
 private:
-    void GameManager::BalloonGenerator();
+    void GameManager::BalloonGenerator(int num_balloon);
     std::vector<Player*> players_{};
     std::vector<Vegetable*> vegetables_{};
     std::vector<Plot*> plots_{};
