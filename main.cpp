@@ -284,7 +284,7 @@ int main(int argc, char* argv[])
 				}
 
 				if (model_info.is_player) {
-					GUI::player_pos[model_info.model] = ImVec2(
+					GUI::player_pos[model_info.model-6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
 					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
