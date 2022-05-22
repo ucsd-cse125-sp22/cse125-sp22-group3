@@ -92,7 +92,7 @@ void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
 
-	bool victory_condition_met = GameManager::GetRemainingSeconds() <= timeToEndGame;
+	bool victory_condition_met = GameManager::GetRemainingSeconds() <= 0;
 	if (victory_condition_met)
 	{
 		WinningFixedUpdate();
@@ -260,7 +260,7 @@ void GameManager::UpdateFixedDeltaTime()
 
 void GameManager::StartGameTime() {
 	if (!isStarted) {
-		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(15);
+		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(GAME_TIME_MINS);
 		isStarted = true;
 	}
 }

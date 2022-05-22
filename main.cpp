@@ -259,6 +259,11 @@ int main(int argc, char* argv[])
 			//GUI_timer_percent = 1 - (sheader->time_remaining_seconds / sheader->time_max_seconds);
 			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
 
+			if (sheader->time_remaining_seconds <= 0)
+			{
+				GUI::GUI_show_winning = true;
+			}
+
 			char strbuf[1024];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
@@ -285,7 +290,7 @@ int main(int argc, char* argv[])
 				}
 
 				if (model_info.is_player) {
-					GUI::player_pos[model_info.model] = ImVec2(
+					GUI::player_pos[model_info.model-6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
 					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));

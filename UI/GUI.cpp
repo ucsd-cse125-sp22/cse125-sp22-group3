@@ -491,6 +491,8 @@ bool GUI::renderUI() {
 		ImGui::Image((void*)(intptr_t)rack_image_actual->my_image_texture, rack_size);
 
 		ImGui::PushFont(font_Are_You_Serious);
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+
 		//show talking box
 		if (sale_tools) {
 			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
@@ -501,6 +503,8 @@ bool GUI::renderUI() {
 			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
 		}
 		ImGui::PopFont(); 
+		ImGui::PopStyleColor();
+
 		ImGui::End();
 	} 
 
