@@ -79,7 +79,7 @@ public:
 	 * Where we take user input from the mouse
 	 */
 	static void cursorCallback(GLFWwindow* window, double xpos, double ypos);
-
+	static glm::vec3 GetEyePos();
 };
 
 #endif

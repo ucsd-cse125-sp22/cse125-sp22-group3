@@ -306,6 +306,11 @@ void Window::cursorCallback(GLFWwindow* window, double xpos, double ypos)
 	}
 }
 
+glm::vec3 Window::GetEyePos()
+{
+	return eyePos;
+}
+
 void Window::renderDepthMap() {
 	// glUseProgram(modelShaderProgram);
 
