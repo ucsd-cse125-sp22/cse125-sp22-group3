@@ -13,8 +13,12 @@ std::vector<PhysicsObject*> GameManager::physics_objects = {};
 GameManager::GameManager()
 {
 	physics = PhysicsEngine();
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	generator = new std::default_random_engine(seed);
 }
+
 GameManager::GameManager(std::vector<Player*> players)
+	: GameManager()
 {
 	// Initialize Players
 	players_ = players;
@@ -33,53 +37,77 @@ GameManager::GameManager(std::vector<Player*> players)
 		physics_objects.push_back(player);
 	}
 	physics = PhysicsEngine(physics_objects);
+
+}
+
+inline void GameManager::WinningFixedUpdate()
+{
+	if (!podiumSpawned) {
+		printf("moving players to winning area\n");
+		// TODO: Check which player has the most money and break ties somehow
+		if (players_.size() > 0) {
+			players_[0]->playerHeight = goldPosition.y;
+			players_[0]->SetWorldPosition(goldPosition);
+			players_[0]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
+			players_[0]->modelAnim = DANCE;
+		}
+		if (players_.size() > 1) {
+			players_[1]->playerHeight = silverPosition.y;
+			players_[1]->SetWorldPosition(silverPosition);
+			players_[1]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
+			players_[1]->modelAnim = DANCE;
+		}
+		if (players_.size() > 2) {
+			players_[2]->playerHeight = bronzePosition.y;
+			players_[2]->SetWorldPosition(bronzePosition);
+			players_[2]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
+			players_[2]->modelAnim = DANCE;
+		}
+		if (players_.size() > 3) {
+			players_[3]->playerHeight = loserPosition.y;
+			players_[3]->SetWorldPosition(loserPosition);
+			players_[3]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
+			players_[3]->modelAnim = DANCE;
+		}
+
+		WinningDecoration* podium = new WinningDecoration(DecorationType::PODIUM, podiumPosition, generator);
+		AddEntities({ podium });
+
+		for (int _ = 0; _ < 50; _++) {
+			WinningDecoration* balon = new WinningDecoration(DecorationType::BALLOON, podiumPosition, generator);
+			AddEntities({ balon });
+		}
+
+		podiumSpawned = true;
+	}
+
+	for (GameEntity* entity : GameManager::game_entities) {
+		if (auto winning_entity = dynamic_cast<WinningDecoration*>(entity)) {
+			winning_entity->FixedUpdate();
+		}
+	}
 }
 
 void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
-	for (GameEntity* entity : GameManager::game_entities) {
-		entity->FixedUpdate();
+
+	bool victory_condition_met = GameManager::GetRemainingSeconds() <= 0;
+	if (victory_condition_met)
+	{
+		WinningFixedUpdate();
 	}
-	if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
-		
-		AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
-		eggplantSpawned = true;
+	else {
+		if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
+			AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
+			eggplantSpawned = true;
+		}
+
+		for (GameEntity* entity : GameManager::game_entities) {
+			entity->FixedUpdate();
+		}
 	}
 
-	else if (!podiumSpawned && GameManager::GetRemainingSeconds() <= timeToEndGame) {
-		printf("moving players to winning area\n");
-		// TODO: Check which player has the most money and break ties somehow
-		if(players_.size()>0){
-			players_[0]->playerHeight = goldPosition.y;
-			players_[0]->SetWorldPosition(goldPosition);
-			players_[0]->Dance();
-		}
-		if (players_.size() > 1) {
-			players_[1]->playerHeight = silverPosition.y;
-			players_[1]->SetWorldPosition(silverPosition);
-			players_[1]->Dance();
-		}
-		if (players_.size() > 2) {
-			players_[2]->playerHeight = bronzePosition.y;
-			players_[2]->SetWorldPosition(bronzePosition);
-			players_[2]->Dance();
-		}
-		if (players_.size() > 3) {
-			players_[3]->playerHeight = loserPosition.y;
-			players_[3]->SetWorldPosition(loserPosition);
-			players_[3]->Dance();
-		}
-
-
-		
-		// podium is now a vegetable 8D
-		Vegetable* tempPodium = new Vegetable(VegetableType::CARROT, ModelEnum::WORLD_PODIUM);
-		tempPodium->SetPosition(podiumPosition);
-		AddEntities({tempPodium});
-
-		podiumSpawned = true;
-	}
 	// printf("size: %d\n", physics.moving_collidables_.size());
 
 	// Check collisions
@@ -232,7 +260,7 @@ void GameManager::UpdateFixedDeltaTime()
 
 void GameManager::StartGameTime() {
 	if (!isStarted) {
-		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(15);
+		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(GAME_TIME_MINS);
 		isStarted = true;
 	}
 }
@@ -241,4 +269,9 @@ double GameManager::GetRemainingSeconds() {
 	auto curr_time = std::chrono::steady_clock::now();
 	const std::chrono::duration<double> elapsed_seconds = game_end_time_ - curr_time;
 	return elapsed_seconds.count();
+}
+
+std::default_random_engine* GameManager::GetRandomGenerator()
+{
+	return generator;
 }

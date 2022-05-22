@@ -21,6 +21,9 @@
 #include "Soju.h"
 #include "Oat.h"
 #include <chrono>
+#include <random>
+
+#include "WinningDecoration.h"
 
 class GameManager : GameEntity
 {
@@ -30,6 +33,7 @@ public:
 
     // Call Updates on GameState
     void FixedUpdate() override;
+    inline void WinningFixedUpdate();
     static void AddEntities(std::vector<GameEntity*> entities);
     static void RemoveEntities(std::vector<GameEntity*> entities);
 
@@ -63,6 +67,8 @@ public:
     void GameManager::StartGameTime();
     double GameManager::GetRemainingSeconds();
 
+    std::default_random_engine* GetRandomGenerator();
+
 private:
     std::vector<Player*> players_{};
     std::vector<Vegetable*> vegetables_{};
@@ -76,12 +82,13 @@ private:
     float timeToSpawnEggplant = 540; // default spawn 6 minutes in
     bool eggplantSpawned = false;
 
+    std::default_random_engine* generator; // all <random> distributions should use this generator
+
     // winning info
-    float timeToEndGame = 0; // TODO: set to end of game, set to 800 for debugging purposes
     bool podiumSpawned = false;
     glm::vec3 goldPosition = glm::vec3(0, 10, -20);
-    glm::vec3 silverPosition = glm::vec3(-5, 7, -20);
-    glm::vec3 bronzePosition = glm::vec3(5, 4, -20);
+    glm::vec3 silverPosition = glm::vec3(4, 7, -20);
+    glm::vec3 bronzePosition = glm::vec3(-4, 4, -20);
     glm::vec3 loserPosition = glm::vec3(-10, 0, -15);
     glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
 };

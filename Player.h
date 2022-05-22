@@ -113,6 +113,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		bool GetIsHolding() const { return isHolding; }
 		GameEntity* GetTriggeringEntity();
 		GameEntity* GetHoldEntity();
+		void SetRotation(glm::vec3 newRot);
 
 		void SetHoldEntity(GameEntity* entity);
 		bool isHolding = false;
