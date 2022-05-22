@@ -102,20 +102,21 @@ inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* a
 	const glm::vec2 closest_aabb_point{ x,y };
 	const glm::vec2 center_aabb = (aabb->maximum + aabb->minimum) / 2.f;
 	// Get distance to move from closest point on AABB to sphere.
-	const float dist_to_move = circle->radius + glm::length(closest_aabb_point - center_aabb) - glm::length(circle->center - center_aabb);
-	const glm::vec2 dir_to_move = glm::normalize(circle->center - center_aabb) * dist_to_move;
+	float dist = glm::length(circle->center - closest_aabb_point);
+	const float dist_to_move = circle->radius - dist;
+	const glm::vec2 dir_to_move = glm::normalize(circle->center) * dist_to_move / 2.f;
 
 	if (aabb->collider_is_static) {
-		*circle_pos += dir_to_move;
+		*circle_pos -= dir_to_move;
 	}
 	// This will probably never happen but just in case...
 	else if (circle->collider_is_static) {
-		*aabb_pos -= dir_to_move;
+		*aabb_pos += dir_to_move;
 	}
 	else {
 		const glm::vec2 dir_to_move = glm::normalize(circle->center - center_aabb) * dist_to_move / 2.f;
-		*circle_pos += dir_to_move;
-		*aabb_pos -= dir_to_move;
+		*circle_pos -= dir_to_move;
+		*aabb_pos += dir_to_move;
 	}
 
 }
@@ -123,7 +124,7 @@ inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* a
 inline void ResolveCircleToCircleCollision(ColliderCircle* circle_1, ColliderCircle* circle_2, glm::vec2* pos_1, glm::vec2* pos_2) {
 	float dist = glm::length(circle_1->center - circle_2->center);
 	float dist_to_move = circle_1->radius + circle_2->radius - dist;
-	glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move;
+	glm::vec2 dir_to_move = glm::normalize(circle_1->center - circle_2->center) * dist_to_move / 2.f;
 
 	if (circle_1->collider_is_static) {
 		*pos_2 -= dir_to_move;
@@ -132,7 +133,6 @@ inline void ResolveCircleToCircleCollision(ColliderCircle* circle_1, ColliderCir
 		*pos_1 += dir_to_move;
 	}
 	else {
-		dir_to_move /= 2.f;
 		*pos_1 += dir_to_move;
 		*pos_2 -= dir_to_move;
 	}
