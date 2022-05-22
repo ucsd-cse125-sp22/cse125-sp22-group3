@@ -22,7 +22,7 @@ public:
     void ConstructBVH();
     void Compute();
     static void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second);
-    static void ResolveCollision(PhysicsObject* first, PhysicsObject* second);
+    static void ResolveCollision(Collider* first, PhysicsObject* first_phys, Collider* second, PhysicsObject* second_phys);
 
     std::vector<PhysicsObject*> static_collidables_;
     std::vector<PhysicsObject*> moving_collidables_;
