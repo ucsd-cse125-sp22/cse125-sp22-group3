@@ -1,4 +1,5 @@
 #include "Indicator.h"
+#include "main.h"
 
 Indicator::Indicator(VegetableType veggie) {
 	type = veggie;
@@ -21,6 +22,9 @@ Indicator::Indicator(VegetableType veggie) {
 Indicator::~Indicator() {}
 
 void Indicator::FixedUpdate() {
+	
+	//TODO: get camera pos to set rotation
+
 	if (currHeight >= maxHeight) 
 		goingUp = false;
 	else if (currHeight <= minHeight)

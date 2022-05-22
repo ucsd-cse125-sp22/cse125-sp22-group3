@@ -3,6 +3,7 @@
 #include "GameEntity.h"
 #include "Drawable.h"
 
+
 class Indicator : public GameEntity, public Drawable {
 public:
 	AniMode modelAnim = NO_ANI;

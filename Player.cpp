@@ -26,6 +26,12 @@ GameEntity* Player::GetHoldEntity()
 	return entityHeld;
 }
 
+void Player::SetRotation(glm::vec3 newRot)
+{
+
+	rotate = newRot;
+}
+
 Player::Player(ModelEnum curr) : Player() {
 	// Set initial values
 	model = curr;

@@ -45,6 +45,7 @@
     <ClCompile Include="Indicator.cpp" />
     <ClCompile Include="Oat.cpp" />
     <ClCompile Include="Soju.cpp" />
+    <ClCompile Include="WinningDecoration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network\Client.h" />
@@ -109,6 +110,7 @@
     <ClInclude Include="Indicator.h" />
     <ClInclude Include="Oat.h" />
     <ClInclude Include="Soju.h" />
+    <ClInclude Include="WinningDecoration.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -125,6 +127,8 @@
     <None Include="shaders\world.vert" />
     <None Include="shaders\leaves.vert" />
     <None Include="shaders\leaves.frag" />
+    <None Include="shaders\water.frag" />
+    <None Include="shaders\water.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="UI\Pictures\p1.jpg" />
