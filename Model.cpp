@@ -202,8 +202,6 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 			if (model == WORLD_LEAVES || model == WORLD_GRASS) {
 				isLeaf = model == WORLD_LEAVES ? 1 : 2;
-
-				srand(static_cast <unsigned> (time(0)));
 				std::string randNoise = std::to_string(rand() % 3);
 
 				std::string filepath = "noise/" + randNoise + ".png";
@@ -213,6 +211,17 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 				Texture texture;
 				texture.id = result;
 				texture.type = "texture_height";
+				texture.path = filepath;
+				textures.push_back(texture);
+			}
+
+			else if (model == WORLD_WATER) {
+				std::string filepath = "water/normal.jpg";
+				unsigned int result = TextureFromFile(filepath.c_str(), directory);
+
+				Texture texture;
+				texture.id = result;
+				texture.type = "texture_normal";
 				texture.path = filepath;
 				textures.push_back(texture);
 			}
@@ -277,7 +286,6 @@ std::vector<Texture> Model::loadParticleTextures(std::string filename) {
 
 	std::string file = filename + "/" + filename + std::to_string(i) + fileType;
 	unsigned int result = TextureFromFile(file.c_str(), directory);
-	printf("HII %i\n", result);
 	while (result != -1) {
 		// load texture
 		Texture texture;

@@ -127,6 +127,8 @@
     <None Include="shaders\world.vert" />
     <None Include="shaders\leaves.vert" />
     <None Include="shaders\leaves.frag" />
+    <None Include="shaders\water.frag" />
+    <None Include="shaders\water.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="UI\Pictures\p1.jpg" />

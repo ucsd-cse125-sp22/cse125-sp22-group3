@@ -34,6 +34,7 @@ glm::mat4 Window::view = glm::lookAt(Window::eyePos, Window::lookAtPoint, Window
 
 // Shader Program ID
 GLuint Window::worldShaderProgram; 
+GLuint Window::waterShaderProgram; 
 GLuint Window::leafShaderProgram; 
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
@@ -50,6 +51,7 @@ bool Window::show_GUI = true;
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");
+	waterShaderProgram = LoadShaders("shaders/water.vert", "shaders/water.frag");
 	leafShaderProgram = LoadShaders("shaders/leaves.vert", "shaders/leaves.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
@@ -161,13 +163,14 @@ bool Window::initializeObjects()
 	{ DEBUG_SQUARE, debugShaderProgram },
 
 	{ WORLD_MAP, worldShaderProgram },
-	{ WORLD_WATER, worldShaderProgram },
+	{ WORLD_WATER, waterShaderProgram },
 	{ WORLD_LEAVES, leafShaderProgram },
 	{ WORLD_GRASS, leafShaderProgram },
 	{ WORLD_PODIUM, worldShaderProgram },
 
 	{ PARTICLE_GLOW, particleShaderProgram },
 	{ PARTICLE_DUST, particleShaderProgram },
+	{ PARTICLE_FIREFLIES, particleShaderProgram },
 	{BALLOON_YELLOW, animationShaderProgram  },
 	{BALLOON_RED, animationShaderProgram  },
 	{BALLOON_BLUE, animationShaderProgram  },

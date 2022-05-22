@@ -145,6 +145,7 @@ private:
 
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES, "models/particles/plane.fbx"},
 		{BALLOON_YELLOW, "models/balloons/yellowBalloon.fbx"},
 		{BALLOON_RED, "models/balloons/redBalloon.fbx"},
 		{BALLOON_BLUE, "models/balloons/blueBalloon.fbx"},
@@ -155,7 +156,8 @@ private:
 
 	std::map<ModelEnum, std::string> particleTextures = {
 		{PARTICLE_DUST, "dust"},
-		{PARTICLE_GLOW, "glow"}
+		{PARTICLE_GLOW, "glow"},
+		{PARTICLE_FIREFLIES, "firefly"}
 	};
 
 	// Get previous and current blending
