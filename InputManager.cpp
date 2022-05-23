@@ -1,7 +1,6 @@
 #include "InputManager.h"
 
 InputCommands InputManager::lastCmd = NONE;
-bool InputManager::justMoved = false;
 glm::vec2 InputManager::lastMovement = glm::vec2(0, 0);
 
 InputManager::InputManager() {}
@@ -16,12 +15,7 @@ glm::vec2 InputManager::getLastMovement() {
 	return lastMovement;
 }
 
-bool InputManager::getMoved() {
-	return justMoved;
-}
-
-void InputManager::resetMoved() {
-	justMoved = true;
+void InputManager::reset() {
 	lastCmd = NONE;
 }
 
@@ -45,8 +39,6 @@ glm::vec2 InputManager::GetCursorDelta()
 }
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	justMoved = true;
-	
 	if (action == GLFW_RELEASE)
 	{
 		switch (key)

@@ -14,7 +14,7 @@ inline int ServerMain()
 	swainky.SetWorldPosition({0, 30, -20});
 	gilman.SetWorldPosition({0, 30, 20});
 	std::vector<Player*> all_players = {&bumbus, &pogo, &swainky, &gilman};
-	
+
 	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
 	GameManager game(players);
 
@@ -105,76 +105,73 @@ inline int ServerMain()
 
 		for (ClientPacket& cpacket : client_packet_vec)
 		{
-			if (cpacket.justMoved)
+			game.SetPlayerInput(cpacket.movement, cpacket.player_idx);
+			switch (cpacket.lastCommand)
 			{
-				game.SetPlayerInput(cpacket.movement, cpacket.player_idx);
-				switch (cpacket.lastCommand)
-				{
-				case InputCommands::USE:
-					game.SetPlayerUse(cpacket.player_idx);
-					break;
-				case InputCommands::DROP:
-					game.SetPlayerDrop(cpacket.player_idx);
-					break;
-				case InputCommands::SPRINT:
-					game.SetPlayerSprint(cpacket.player_idx, true);
-					break;
-				case InputCommands::STOP_SPRINT:
-					game.SetPlayerSprint(cpacket.player_idx, false);
-					break;
-				case InputCommands::DANCE_CMD:
-					game.SetPlayerDance(cpacket.player_idx);
-					break;
-				case InputCommands::SELL_CMD:
-					game.SetPlayerSell(cpacket.player_idx);
-					break;
-				case InputCommands::BUY_CABBAGE:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE);
-					break;
-				case InputCommands::BUY_CARROT:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CARROT);
-					break;
-				case InputCommands::BUY_CORN:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::CORN);
-					break;
-				case InputCommands::BUY_TOMATO:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::TOMATO);
-					break;
-				case InputCommands::BUY_RADISH:
-					game.SetPlayerBuy(cpacket.player_idx, VegetableType::RADISH);
-					break;
-				case InputCommands::CLOSE_UI:
-					game.SetClosePlayerUI(cpacket.player_idx);
-					break;
-				case InputCommands::BUY_NET:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::NET);
-					break;
-				case InputCommands::BUY_HOE:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::HOE);
-					break;
-				case InputCommands::BUY_WATER:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::WATERING_CAN);
-					break;
-				case InputCommands::BUY_FERTILIZER:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::FERTILIZER);
-					break;
-				case InputCommands::BUY_SHOVEL:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SHOVEL);
-					break;
-				case InputCommands::BUY_GLUE:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::GLUE);
-					break;
-				case InputCommands::BUY_POISON:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::POISON);
-					break;
-				case InputCommands::BUY_OATS:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::OATS);
-					break;
-				case InputCommands::BUY_SOJU:
-					game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SOJU);
-					break;
-				default: break;
-				}
+			case InputCommands::USE:
+				game.SetPlayerUse(cpacket.player_idx);
+				break;
+			case InputCommands::DROP:
+				game.SetPlayerDrop(cpacket.player_idx);
+				break;
+			case InputCommands::SPRINT:
+				game.SetPlayerSprint(cpacket.player_idx, true);
+				break;
+			case InputCommands::STOP_SPRINT:
+				game.SetPlayerSprint(cpacket.player_idx, false);
+				break;
+			case InputCommands::DANCE_CMD:
+				game.SetPlayerDance(cpacket.player_idx);
+				break;
+			case InputCommands::SELL_CMD:
+				game.SetPlayerSell(cpacket.player_idx);
+				break;
+			case InputCommands::BUY_CABBAGE:
+				game.SetPlayerBuy(cpacket.player_idx, VegetableType::CABBAGE);
+				break;
+			case InputCommands::BUY_CARROT:
+				game.SetPlayerBuy(cpacket.player_idx, VegetableType::CARROT);
+				break;
+			case InputCommands::BUY_CORN:
+				game.SetPlayerBuy(cpacket.player_idx, VegetableType::CORN);
+				break;
+			case InputCommands::BUY_TOMATO:
+				game.SetPlayerBuy(cpacket.player_idx, VegetableType::TOMATO);
+				break;
+			case InputCommands::BUY_RADISH:
+				game.SetPlayerBuy(cpacket.player_idx, VegetableType::RADISH);
+				break;
+			case InputCommands::CLOSE_UI:
+				game.SetClosePlayerUI(cpacket.player_idx);
+				break;
+			case InputCommands::BUY_NET:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::NET);
+				break;
+			case InputCommands::BUY_HOE:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::HOE);
+				break;
+			case InputCommands::BUY_WATER:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::WATERING_CAN);
+				break;
+			case InputCommands::BUY_FERTILIZER:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::FERTILIZER);
+				break;
+			case InputCommands::BUY_SHOVEL:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SHOVEL);
+				break;
+			case InputCommands::BUY_GLUE:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::GLUE);
+				break;
+			case InputCommands::BUY_POISON:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::POISON);
+				break;
+			case InputCommands::BUY_OATS:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::OATS);
+				break;
+			case InputCommands::BUY_SOJU:
+				game.SetPlayerBuy(cpacket.player_idx, ModelEnum::SOJU);
+				break;
+			default: break;
 			}
 		}
 

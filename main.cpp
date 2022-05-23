@@ -227,18 +227,14 @@ int main(int argc, char* argv[])
 		
 		// after moving camera, move the player
 		ClientPacket out_packet;
-		//if (InputManager::getMoved() || mouse_delta != glm::vec2{0,0}) { // TODO determine when to send packet and when to skip
-			out_packet.justMoved = InputManager::getMoved();
-			
-			const glm::vec2 movement = InputManager::getLastMovement();
-			const float degrees = atan2f(eye_offset[0], eye_offset[2]);
-			const glm::mat2 trans = util_Rotate2D(degrees);
-			out_packet.movement = trans * movement;
-			
-			out_packet.lastCommand = InputManager::getLastCommand();
-		//}
+		const glm::vec2 movement = InputManager::getLastMovement();
+		const float degrees = atan2f(eye_offset[0], eye_offset[2]);
+		const glm::mat2 trans = util_Rotate2D(degrees);
+		out_packet.movement = trans * movement;
+		
+		out_packet.lastCommand = InputManager::getLastCommand();
 
-		InputManager::resetMoved();
+		InputManager::reset();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

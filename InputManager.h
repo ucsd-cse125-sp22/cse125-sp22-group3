@@ -5,19 +5,17 @@
 
 class InputManager {
 	public:
-        static InputCommands lastCmd;
         InputManager();
         ~InputManager();
         static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static InputCommands getLastCommand();
         static glm::vec2 getLastMovement();
-
-        static bool getMoved();
-        static void resetMoved();
+	
+        static void reset();
         static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
 		static glm::vec2 GetCursorDelta();
 
-        static bool justMoved;
+		static InputCommands lastCmd;
         static glm::vec2 lastMovement;
 		inline static glm::vec2 last_cursor = glm::vec2{0.f,0.f};
 		inline static glm::vec2 current_cursor = glm::vec2{0.f,0.f};
