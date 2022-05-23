@@ -47,7 +47,6 @@ GLuint Window::particleShaderProgram;
 // Shader to Program
 std::map<ModelEnum, GLuint> Window::modelShader;
 
-bool Window::show_GUI = true; 
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");

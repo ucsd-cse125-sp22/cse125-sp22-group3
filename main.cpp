@@ -89,13 +89,14 @@ void preload_texture_files() {
 }
 
 void timing(std::chrono::time_point<std::chrono::steady_clock> &begin_time, std::string msg){
+	//auto begin_time = std::chrono::steady_clock::now();
 	auto end_time = std::chrono::steady_clock::now();
 	long long elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
 	printf("%s: %f ms\n", msg.c_str(), elapsed_time/1000.f);
 	begin_time = end_time;
 }
 
-void load_models(GLFWwindow* window) 
+void preload_assets(GLFWwindow* window) 
 {
 	Model tmp; 
 
@@ -148,9 +149,6 @@ int main(int argc, char* argv[])
 		ServerMain();
 		return 0;
 	}
-
-	SoundEngine sound_engine{};
-	sound_engine.Init();
 	
 	// Create the GLFW window.
 	GLFWwindow* window = Window::createWindow(640, 480);
@@ -174,8 +172,9 @@ int main(int argc, char* argv[])
 	if (!Window::initializeObjects())
 		exit(EXIT_FAILURE);
 
-
+	// display loading bar
 	GUI::show_loading = true;
+	
 	// initialize IMGUI 
 	GUI::initializeGUI(window);
 	GUI::initializeLoadingImage();
@@ -184,11 +183,14 @@ int main(int argc, char* argv[])
 	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("client.cfg");
 	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
-	//auto begin_time = std::chrono::steady_clock::now();
-	int status = 1;
-	std::map<uintptr_t, Model*> model_map;
-	load_models(window); 
-	Window::show_GUI = false; 
+	// Initialize sound engine
+	SoundEngine sound_engine{};
+	sound_engine.Init();
+
+	// preload models and other assets
+	preload_assets(window);
+
+	// client-side wait until all clients are connected
 	GUI::renderWaitingClient(1, 1);
 	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
@@ -198,17 +200,20 @@ int main(int argc, char* argv[])
 			GUI::renderWaitingClient(cw_packet.client_joined, cw_packet.max_client); 
 		});
 	fprintf(stderr, "All players connected, starting game\n");
-	
+
+	// butter butter magic
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
-
+	
+	// "globals" for the duration of the client main loop
+	int status = 1;
+	std::map<uintptr_t, Model*> model_map;
 	glm::vec3 eye_offset = glm::vec3(0,30,30); //TODO no magic number :,(
-	// Loop while GLFW window should stay open and server han't closed connection
+		
+	// Loop while GLFW window should stay open and server hasn't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
-		// outgoing packet initialization
-		ClientPacket out_packet;
-
+		// adjust camera direction (player's forward direction depends on camera)
 		const glm::vec2 mouse_delta = InputManager::GetCursorDelta();
 		glm::mat3 rot_x = util_RotateAroundAxis(-mouse_delta[0] * InputManager::camera_speed, glm::vec3{0,1,0});
 		auto rot_y = glm::mat3(1);
@@ -220,7 +225,8 @@ int main(int argc, char* argv[])
 		if (eye_offset[1] < 20) eye_offset[1] = 20;
 		eye_offset = glm::normalize(eye_offset) * InputManager::camera_dist;
 		
-		// check if keycallback was called, if it was, update player (bandaid fix to make movement feel better)
+		// after moving camera, move the player
+		ClientPacket out_packet;
 		//if (InputManager::getMoved() || mouse_delta != glm::vec2{0,0}) { // TODO determine when to send packet and when to skip
 			out_packet.justMoved = InputManager::getMoved();
 			
@@ -236,8 +242,9 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		std::vector<glm::vec3> players;
+		std::vector<glm::vec3> players; // TODO ask cynthia
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
+			// deserialize incoming packet into structs
 			ServerHeader* sheader;
 			ModelInfo* model_arr;
 			SoundInfo* sound_arr;
@@ -246,32 +253,35 @@ int main(int argc, char* argv[])
 			//Rendering Code
 			const glm::mat4 player_transform = sheader->player_transform;
 			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
-			
 			const glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
 			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-			//printf("hii eye: %f %f %f\n", Window::eyePos.x, Window::eyePos.y, Window::eyePos.z);
-			//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
-			GUI::ShowGUI(sheader->ui_open);
-		
-			for (int i = 0; i < num_clients; i++) {
-				GUI::scoreboard_data[i]=sheader->balance[i];
-			}
-
-			//GUI_timer_percent = 1 - (sheader->time_remaining_seconds / sheader->time_max_seconds);
-			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
-
+			// check if need to trigger client-side winning sequence
 			if (sheader->time_remaining_seconds <= 0)
 			{
 				GUI::GUI_show_winning = true;
 			}
+			
+			// update scoreboard
+			for (int i = 0; i < num_clients; i++) {
+				GUI::scoreboard_data[i]=sheader->balance[i];
+			}
 
-			char strbuf[1024];
+			// update stamina
+			GUI::stamina_percent = sheader->stamina_bar;
+
+			// update timer
+			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
+			char strbuf[16];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
 			GUI::GUI_timer_string = std::string(strbuf);
 
+			// show NPC UI page
+			GUI::ShowGUI(sheader->ui_open);
+
+			// play sounds
 			for (int i = 0; i < sheader->num_sounds; i++) {
 				const SoundInfo sound_info = sound_arr[i];
 
@@ -283,7 +293,8 @@ int main(int argc, char* argv[])
 			for (int i = 0; i < sheader->num_models; i++)
 			{
 				ModelInfo& model_info = model_arr[i];
-				
+
+				// insert new model into map
 				if (model_map.count(model_info.model_id) == 0) {
 					model_map[model_info.model_id] = new Model(model_info.model);
 				}
@@ -291,19 +302,18 @@ int main(int argc, char* argv[])
 					delete model_map[model_info.model_id];
 					model_map[model_info.model_id] = new Model(model_info.model);
 				}
+				Model& curr_model = *model_map[model_info.model_id];
 
+				// FBO and minimap needs player data
 				if (model_info.is_player) {
 					GUI::player_pos[model_info.model-6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
 					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
-
-					GUI::stamina_percent = sheader->stamina_bar;
 				}
-				
-
-  				Model& curr_model = *model_map[model_info.model_id];
 				FBO::playerPos = players;
+
+				// set player animation speed
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
 				if (curr_model.hasAni) {
 					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
@@ -319,15 +329,14 @@ int main(int argc, char* argv[])
 						curr_model.anim_speed = 1.0f;
 					}
 				}
-				
 				curr_model.setAnimationMode(model_info.modelAnim);
-				if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER
-					|| model_info.model == PARTICLE_GLOW) {
 
-
+				// rotating particles towards players
+				if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER || model_info.model == PARTICLE_GLOW) {
 					glm::mat4 tempTransform = model_info.parent_transform;
 					glm::vec3 plot_pos = glm::vec3(tempTransform[3][0], tempTransform[3][1], tempTransform[3][2]);
 					glm::mat4 rotation;
+					
 					if (model_info.model == PARTICLE_GLOW)
 					{
 						rotation = glm::mat4(1);
@@ -355,9 +364,8 @@ int main(int argc, char* argv[])
 			glBindFramebuffer(GL_FRAMEBUFFER, Window::bloom->sceneFBO);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			// Window::renderDepthMap();
 			glCullFace(GL_BACK);
-			for (int i = 0; i < sheader->num_models; i++)
+			for (int i = 0; i < sheader->num_models; i++) // TODO ask Danica planting bandaid nani
 			{
 				ModelInfo model_info = model_arr[i];
 
@@ -406,12 +414,10 @@ int main(int argc, char* argv[])
 			glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
 			Window::renderDepthMap();
 			glUseProgram(0);
-			
 
 			free(sheader);
 			free(model_arr);
-
-			// TODO render minimap here using minimap_pos vectors
+			free(sound_arr);
 		});
 
 		// Gets events, including input such as keyboard and mouse or window resizing
@@ -426,11 +432,6 @@ int main(int argc, char* argv[])
 
 		// Swap buffers.
 		glfwSwapBuffers(window);
-
-		//auto end_time = std::chrono::steady_clock::now();
-		//long long elapsed_time_ms = std::chrono::duration_cast<std::chrono::microseconds>(end_time - begin_time).count();
-		//printf("Client time between ticks: %lld us\n", elapsed_time_ms);
-		//begin_time = end_time;
 	}
 
 	sound_engine.DeInit();

@@ -51,9 +51,6 @@ public:
 	static GLuint debugShaderProgram;
 	static GLuint particleShaderProgram;
 
-
-	static bool show_GUI;
-
 	// Constructors and Destructors
 	static bool initializeProgram();
 	static bool initializeObjects();
