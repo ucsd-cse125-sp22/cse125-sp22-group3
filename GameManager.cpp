@@ -44,30 +44,35 @@ inline void GameManager::WinningFixedUpdate()
 {
 	if (!podiumSpawned) {
 		printf("moving players to winning area\n");
-		// TODO: Check which player has the most money and break ties somehow
+		// Checks which player has the most money and break ties somehow
+		std::vector<std::pair<float, Player*>> tieBreaker;
+		for (int i = 0; i < players_.size(); i++) {
+			tieBreaker.push_back(std::make_pair(players_[i]->curr_balance, players_[i]));
+		}
+		sort(tieBreaker.begin(), tieBreaker.end());
 		if (players_.size() > 0) {
-			players_[0]->playerHeight = goldPosition.y;
-			players_[0]->SetWorldPosition(goldPosition);
-			players_[0]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
-			players_[0]->modelAnim = DANCE;
+			tieBreaker[tieBreaker.size()-1].second->playerHeight = goldPosition.y;
+			tieBreaker[tieBreaker.size() - 1].second->SetWorldPosition(goldPosition);
+			tieBreaker[tieBreaker.size() - 1].second->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
+			tieBreaker[tieBreaker.size() - 1].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 1) {
-			players_[1]->playerHeight = silverPosition.y;
-			players_[1]->SetWorldPosition(silverPosition);
-			players_[1]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
-			players_[1]->modelAnim = DANCE;
+			tieBreaker[tieBreaker.size() - 2].second->playerHeight = silverPosition.y;
+			tieBreaker[tieBreaker.size() - 2].second->SetWorldPosition(silverPosition);
+			tieBreaker[tieBreaker.size() - 2].second->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
+			tieBreaker[tieBreaker.size() - 2].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 2) {
-			players_[2]->playerHeight = bronzePosition.y;
-			players_[2]->SetWorldPosition(bronzePosition);
-			players_[2]->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
-			players_[2]->modelAnim = DANCE;
+			tieBreaker[tieBreaker.size() - 3].second->playerHeight = bronzePosition.y;
+			tieBreaker[tieBreaker.size() - 3].second->SetWorldPosition(bronzePosition);
+			tieBreaker[tieBreaker.size() - 3].second->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
+			tieBreaker[tieBreaker.size() - 3].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 3) {
-			players_[3]->playerHeight = loserPosition.y;
-			players_[3]->SetWorldPosition(loserPosition);
-			players_[3]->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
-			players_[3]->modelAnim = DANCE;
+			tieBreaker[tieBreaker.size() - 4].second->playerHeight = loserPosition.y;
+			tieBreaker[tieBreaker.size() - 4].second->SetWorldPosition(loserPosition);
+			tieBreaker[tieBreaker.size() - 4].second->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
+			tieBreaker[tieBreaker.size() - 4].second->modelAnim = DANCE;
 		}
 
 		WinningDecoration* podium = new WinningDecoration(DecorationType::PODIUM, podiumPosition, generator);
@@ -88,6 +93,65 @@ inline void GameManager::WinningFixedUpdate()
 	}
 }
 
+inline void GameManager::FirefliesFixedUpdate(){
+	if (numTimesMakingFireflies>0) {
+		for (int i = 0; i < numFireFlies; i++) {
+			//std::uniform_int_distribution<int> color_dist{ ModelEnum::BALLOON_YELLOW, ModelEnum::BALLOON_GREEN };
+			std::uniform_real_distribution<float> velocity_dist{ 0.05f, 0.5f };
+			std::uniform_real_distribution<float> pos_x_dist{ -135.f,135.f };
+			std::uniform_real_distribution<float> pos_y_dist{ -1.f,10.f };
+			std::uniform_real_distribution<float> pos_z_dist{ -135.f,135.f };
+			std::uniform_real_distribution<float> x_rotation{ 0.f,360.f };
+			std::uniform_real_distribution<float> y_rotation{ 0.f,360.f };
+			std::uniform_real_distribution<float> z_rotation{ 0.f,360.f };
+			std::uniform_int_distribution<int> particle_num{ 0,1 };
+
+			//this->model = static_cast<ModelEnum>(color_dist(*generator));
+			//this->upVelocity = velocity_dist(*generator);
+
+
+			float x = pos_x_dist(*generator);
+			float y = pos_y_dist(*generator);
+			float z = pos_z_dist(*generator);
+			float xRot = x_rotation(*generator);
+			float yRot = y_rotation(*generator);
+			float zRot = z_rotation(*generator);
+			int particleNum = particle_num(*generator);
+
+			//You can write this in a better way but its 3am and I dont feel like doing math
+			// not gonna lie, i dont really like the white, pink, red and orange fireflies :( if you're reading this, uncomment the code to try it out
+			ModelEnum tempEnum = PARTICLE_FIREFLIES;
+			/**
+			if (x < 0 && z > 0) tempEnum = particleNum?PARTICLE_FIREFLIES_ORANGE:PARTICLE_FIREFLIES_PINK; 
+			else if(x<0 && z<0) tempEnum = particleNum ? PARTICLE_FIREFLIES_BLUE : PARTICLE_FIREFLIES_WHITE;
+			else if (x > 0 && z<0) tempEnum = particleNum ? PARTICLE_FIREFLIES_GREEN : PARTICLE_FIREFLIES;
+			else tempEnum = particleNum ? PARTICLE_FIREFLIES_RED : PARTICLE_FIREFLIES_PURPLE;
+			*/
+
+			if (x < 0 && z > 0) tempEnum = PARTICLE_FIREFLIES;
+			else if (x < 0 && z < 0) tempEnum = PARTICLE_FIREFLIES_BLUE;
+			else if (x > 0 && z < 0) tempEnum = PARTICLE_FIREFLIES_GREEN;
+			else tempEnum = tempEnum = PARTICLE_FIREFLIES_PURPLE;
+
+			// TODO: ask cynthia if we can check if particle is on last frame so we can move it to a random spot
+			Particle* tempParticle = new Particle(tempEnum);
+			tempParticle->SetPosition(glm::vec3(x,y,z));
+			glm::mat4 randomRotation = glm::rotate(xRot, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::rotate(yRot, glm::vec3(0.f, 1.f, 0.0f))* glm::rotate(zRot, glm::vec3(0.0f, 1.f, 0.0f));
+			tempParticle->SetRotation(randomRotation);
+			tempParticle->modelAnim = PARTICLE_PLAY;
+			AddEntities({ tempParticle });
+			fireflies.push_back(tempParticle);
+			
+		}
+		numTimesMakingFireflies--;
+	}
+	else {
+
+		firefliesSpawned = true;
+	}
+
+}
+
 void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
@@ -101,6 +165,17 @@ void GameManager::FixedUpdate()
 		if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
 			AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
 			eggplantSpawned = true;
+		}
+		// TODO: change 840 to timeToSpawnFireflies
+		if (!firefliesSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnFireflies && GameManager::GetRemainingSeconds() > timeToDespawnFireflies) {
+			FirefliesFixedUpdate();
+			
+		}
+		else if (firefliesSpawned && GameManager::GetRemainingSeconds() <= timeToDespawnFireflies) {
+			for (Particle* p : fireflies) {
+				RemoveEntities({ p });
+			}
+			firefliesSpawned = false;
 		}
 
 		for (GameEntity* entity : GameManager::game_entities) {

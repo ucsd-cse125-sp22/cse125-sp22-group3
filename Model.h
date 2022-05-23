@@ -69,8 +69,7 @@ private:
 	// Animation data
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
-	float blendOffset = 0.01f;
-	bool hasAni = false;
+	float blendOffset = 0.0f;
 	float last_time = 0;
 	float curr_time = 0;
 	float fixed_time = 0;
@@ -146,6 +145,13 @@ private:
 		{PARTICLE_DUST, "models/particles/plane.fbx"}, // TODO ask danica for plane model for particles
 		{PARTICLE_GLOW, "models/particles/plane.fbx"},
 		{PARTICLE_FIREFLIES, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_PURPLE, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_ORANGE, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_BLUE, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_RED, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_PINK, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_GREEN, "models/particles/plane.fbx"},
+		{PARTICLE_FIREFLIES_WHITE, "models/particles/plane.fbx"},
 		{BALLOON_YELLOW, "models/balloons/yellowBalloon.fbx"},
 		{BALLOON_RED, "models/balloons/redBalloon.fbx"},
 		{BALLOON_BLUE, "models/balloons/blueBalloon.fbx"},
@@ -157,7 +163,14 @@ private:
 	std::map<ModelEnum, std::string> particleTextures = {
 		{PARTICLE_DUST, "dust"},
 		{PARTICLE_GLOW, "glow"},
-		{PARTICLE_FIREFLIES, "fireflies"}
+		{PARTICLE_FIREFLIES, "firefly"},
+		{PARTICLE_FIREFLIES_PURPLE, "fireflyPurple"},
+		{PARTICLE_FIREFLIES_ORANGE, "fireflyOrange"},
+		{PARTICLE_FIREFLIES_BLUE, "fireflyBlue"},
+		{PARTICLE_FIREFLIES_RED, "fireflyRed"},
+		{PARTICLE_FIREFLIES_PINK, "fireflyPink"},
+		{PARTICLE_FIREFLIES_GREEN, "fireflyGreen"},
+		{PARTICLE_FIREFLIES_WHITE, "fireflyWhite"}
 	};
 
 	// Get previous and current blending
@@ -179,7 +192,8 @@ private:
 	float ticks;
 
 	void Model::constructorHelper(ModelEnum thisModel);
-
+	void randBlendOffset();
+	void randAnimSpeed();
 	
 
 public:
@@ -198,6 +212,7 @@ public:
 
 	// Animation Speed
 	float anim_speed = 1;
+	bool hasAni = false;
 
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
@@ -239,8 +254,6 @@ public:
 	// Operators
 	Model& operator=(const Model& t);
 	void copyHelper(const Model& t);
-
-
 };
 
 #endif

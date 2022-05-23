@@ -303,18 +303,21 @@ int main(int argc, char* argv[])
 				
 
   				Model& curr_model = *model_map[model_info.model_id];
-				FBO::playerPos = players;https://www.google.com/webhp?hl=en&ictx=2&sa=X&ved=0ahUKEwjwt6a6_fP3AhV5K0QIHWDTBTYQPQgJ
+				FBO::playerPos = players;
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
-				if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
-					if (sheader->player_sprinting) {
-						curr_model.anim_speed = 3.0f;
+				if (curr_model.hasAni) {
+					if (model_info.modelAnim == WALK || model_info.modelAnim == IDLE_WALK) {
+						if (sheader->player_sprinting) {
+							curr_model.anim_speed = 3.0f;
+						}
+						else {
+							curr_model.anim_speed = 1.5f;
+						}
 					}
+
 					else {
-						curr_model.anim_speed = 1.5f;
+						curr_model.anim_speed = 1.0f;
 					}
-				}
-				else {
-					curr_model.anim_speed = 1;
 				}
 				
 				curr_model.setAnimationMode(model_info.modelAnim);
