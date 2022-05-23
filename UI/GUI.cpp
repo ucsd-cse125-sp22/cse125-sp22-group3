@@ -20,7 +20,9 @@ int GUI::scoreboard_data[NUM_ICON];
 GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::curtain_img;
-GUIImage GUI::stamina_image; 
+GUIImage GUI::stamina_image;
+GUIImage GUI::timer_background;
+
 
 float GUI::display_ratio;
 int GUI::window_height;
@@ -518,10 +520,20 @@ bool GUI::renderUI() {
 		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
 		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
-
+		float ratio = timer_percent; 
 		//float ratio = GUI_timer_percent;
-		float ratio = timer_percent;
 		//std::cout << "the timer percent is " << ratio << std::endl;
+		ImVec2 bg_size = ImVec2(timer_background.my_image_width * display_ratio, timer_background.my_image_height * display_ratio);
+		ImGui::SetNextWindowPos(ImVec2(window_width - bg_size.x, bg_size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+		ImGui::SetNextWindowSize(bg_size);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+		ImGui::Begin("Timer_bg", NULL, TRANS_WINDOW_FLAG);
+		ImGui::SetCursorPos(ImVec2(0, 0));
+		ImGui::Image((void*)(intptr_t)timer_background.my_image_texture, bg_size);
+		ImGui::End();
+		ImGui::PopStyleVar(2);
+
 		ImGui::SetNextWindowSize(size);
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
@@ -529,12 +541,12 @@ bool GUI::renderUI() {
 		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, col, 30);
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, bg, 120);
-		ImGui::End();
+		/*ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(size);
-		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
+		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);*/
 		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
-		ImGui::SetCursorPos((size - text_size)*0.5f);
+		ImGui::SetCursorPos((size - text_size) * 0.5f);
 		ImGui::Text(GUI_timer_string.c_str());
 		ImGui::End();
 	}
@@ -674,6 +686,10 @@ void GUI::initializeImage() {
 
 	LoadTextureFromFile((picture_dir + std::string("/stamina.png")).c_str(), &(stamina_image.my_image_texture),
 		&(stamina_image.my_image_width), &(stamina_image.my_image_height));
+	LoadTextureFromFile((picture_dir + std::string("/time-border.png")).c_str(), &(timer_background.my_image_texture),
+		&(timer_background.my_image_width), &(timer_background.my_image_height));
+	timer_background.my_image_width *= 0.7f; 
+	timer_background.my_image_height *= 0.7f;
 }
 
 void GUI::initializeLoadingImage() {
@@ -883,24 +899,41 @@ void GUI::createStamina() {
 
 void GUI::createTimer(float ratio) {
 	float padding = 64.0f * display_ratio;
-	int width = 600;
-	int height = 600;
+	int width = 560;
+	int height = 560;
 	ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 200);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
+
 	//float ratio = GUI_timer_percent;
+	//std::cout << "the timer percent is " << ratio << std::endl;
+	ImVec2 bg_size = ImVec2(timer_background.my_image_width * display_ratio, timer_background.my_image_height * display_ratio);
+	ImGui::SetNextWindowPos(ImVec2(window_width - size.x,  size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::SetNextWindowSize(bg_size);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	ImGui::Image((void*)(intptr_t)timer_background.my_image_texture, bg_size);
+	ImGui::End();
+
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
-	ImGui::Begin("Timer", NULL,TRANS_WINDOW_FLAG);
-	ImVec2 center = ImGui::Spinner("##spinner", 200*display_ratio, 80*display_ratio, ratio, col, 120);
-	ImGui::End(); 
+	ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, col, 30);
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, bg, 120);
+	ImGui::End();
 	ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::SetNextWindowSize(size);
 	ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);
-	float font_size = ImGui::GetFontSize();
-	float text_size = font_size * GUI_timer_string.size() / 2; 
-	ImGui::SetCursorPos(ImVec2(size.x*0.5f - text_size * 0.5f, size.y*0.5f - font_size * 0.5f));
-	ImGui::Text(GUI_timer_string.c_str()); 
+	auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
+	ImGui::SetCursorPos((size - text_size) * 0.5f);
+	ImGui::Text(GUI_timer_string.c_str());
 	ImGui::End();
+	ImGui::PopStyleVar(2);
+
 }
 
 void GUI::renderWaitingClient(int client_joined, int max_client) {

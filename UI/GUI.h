@@ -78,6 +78,7 @@ public:
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
 	static GUIImage curtain_img;
 	static GUIImage stamina_image; 
+	static GUIImage timer_background; 
 	static int scoreboard_data[NUM_ICON];
 	static char* seed_type_list[];
 	static char* tool_type_list[];
