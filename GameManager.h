@@ -98,7 +98,7 @@ private:
     float timeToDespawnFireflies = 228;
     bool firefliesSpawned = false;
     std::vector<Particle*> fireflies;
-    int numFireFlies = 10;
+    int numFireFlies = 5;
     int numTimesMakingFireflies = 12;
 };
 
