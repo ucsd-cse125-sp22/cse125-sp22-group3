@@ -514,16 +514,20 @@ bool GUI::renderUI() {
 		createStamina();
 	}
 	if (GUI_show_timer) {
-		float padding = 64.0f * display_ratio;
-		int width = 560;
-		int height = 560;
-		ImVec2 size = ImVec2(width * display_ratio, height * display_ratio);
-		const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
-		const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
+
+		int radius = 150 * display_ratio;
+		int thickness = 60 * display_ratio;
+		ImVec2 spinner_size = ImVec2((radius + thickness)*2, (radius + thickness)*2); 
+		//const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
+		//const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
+		const ImU32 bg = IM_COL32(219, 195, 182, 255); //ImGui::GetColorU32(ImGuiCol_Button);
+		const ImU32 col = IM_COL32(148, 102, 77, 255);
 		float ratio = timer_percent; 
 		//float ratio = GUI_timer_percent;
 		//std::cout << "the timer percent is " << ratio << std::endl;
 		ImVec2 bg_size = ImVec2(timer_background.my_image_width * display_ratio, timer_background.my_image_height * display_ratio);
+
+		ImVec2 padding = ImVec2(bg_size.x * 0.5f, bg_size.y * 0.25f);
 		ImGui::SetNextWindowPos(ImVec2(window_width - bg_size.x, bg_size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(bg_size);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -531,24 +535,19 @@ bool GUI::renderUI() {
 		ImGui::Begin("Timer_bg", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)timer_background.my_image_texture, bg_size);
+
+		ImGui::SetCursorPos(padding);
+		ImGui::Spinner("##spinner", radius, thickness, 1, col, 30);
+		ImGui::SetCursorPos(padding);
+		ImGui::Spinner("##spinner", radius, thickness, ratio, bg, 120);
+		
+		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
+		ImGui::SetCursorPos((spinner_size - text_size) * 0.5f + padding);
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+		ImGui::Text(GUI_timer_string.c_str());
+		ImGui::PopStyleColor();
 		ImGui::End();
 		ImGui::PopStyleVar(2);
-
-		ImGui::SetNextWindowSize(size);
-		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
-		ImGui::Begin("Timer", NULL, TRANS_WINDOW_FLAG);
-		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, 1, col, 30);
-		ImGui::SetCursorPos(ImVec2(0, 0));
-		ImVec2 center = ImGui::Spinner("##spinner", 200 * display_ratio, 80 * display_ratio, ratio, bg, 120);
-		/*ImGui::End();
-		ImGui::SetNextWindowPos(ImVec2(window_width - padding - size.x, padding + size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
-		ImGui::SetNextWindowSize(size);
-		ImGui::Begin("Timer text", NULL, TRANS_WINDOW_FLAG);*/
-		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
-		ImGui::SetCursorPos((size - text_size) * 0.5f);
-		ImGui::Text(GUI_timer_string.c_str());
-		ImGui::End();
 	}
 
 	//test fading out
