@@ -34,6 +34,7 @@ public:
     // Call Updates on GameState
     void FixedUpdate() override;
     inline void WinningFixedUpdate();
+    inline void FirefliesFixedUpdate();
     static void AddEntities(std::vector<GameEntity*> entities);
     static void RemoveEntities(std::vector<GameEntity*> entities);
 
@@ -87,10 +88,18 @@ private:
     // winning info
     bool podiumSpawned = false;
     glm::vec3 goldPosition = glm::vec3(0, 10, -20);
-    glm::vec3 silverPosition = glm::vec3(4, 7, -20);
-    glm::vec3 bronzePosition = glm::vec3(-4, 4, -20);
-    glm::vec3 loserPosition = glm::vec3(-10, 0, -15);
+    glm::vec3 silverPosition = glm::vec3(4.7, 7, -20);
+    glm::vec3 bronzePosition = glm::vec3(-4.7, 4, -20);
+    glm::vec3 loserPosition = glm::vec3(10, 0, -15);
     glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
+
+    // firefly info
+    float timeToSpawnFireflies = 588;
+    float timeToDespawnFireflies = 228;
+    bool firefliesSpawned = false;
+    std::vector<Particle*> fireflies;
+    int numFireFlies = 10;
+    int numTimesMakingFireflies = 12;
 };
 
 #endif

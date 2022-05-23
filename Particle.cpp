@@ -22,7 +22,7 @@ AniMode Particle::GetAniMode() { return modelAnim; }
 
 glm::vec3 Particle::GetPosition() const
 {
-	return glm::vec3((*translate)[0], 0, -(*translate)[1]);
+	return glm::vec3((*translate)[0], (*translate3D)[1], -(*translate)[1]);
 }
 
 glm::mat4 Particle::GetTranslation() {
