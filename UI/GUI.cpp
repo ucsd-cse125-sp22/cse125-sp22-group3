@@ -19,10 +19,12 @@ GUIImage GUI::chase_images_list[NUM_CHASE_IMG];
 int GUI::scoreboard_data[NUM_ICON];
 GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
+GUIImage GUI::veg_images_list[NUM_VEG_IMG];
+
 GUIImage GUI::curtain_img;
 GUIImage GUI::stamina_image;
 GUIImage GUI::timer_background;
-
+GUIImage GUI::sale_background;
 
 float GUI::display_ratio;
 int GUI::window_height;
@@ -217,7 +219,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_minimap = true;
 	GUI_show_stamina = true; 
 	GUI_show_scoreboard = true; 
-	GUI_show_sale_ui = false; 
+	GUI_show_buy_ui= false; 
 	GUI_show_timer = true; 
 	GUI_show_winning = false; 
 	stamina_percent = 100; 
@@ -272,6 +274,7 @@ char* GUI::tool_func_list[] = {
 	"Get infinite Stamina",
 	"get other player drunk"
 };
+float GUI::veg_price_list[] = { 1, 2, 3,4,5 }; 
 /**
 * Render the UI compenents, should be called within the mainloop
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
@@ -307,7 +310,7 @@ bool GUI::renderUI() {
 	/* end of scoreboard */
 
 	/* build the sale page */
-	if(GUI_show_sale_ui) {
+	if(GUI_show_buy_ui) {
 		
 		//TODO: now it can only trigger the sale page, need to use another boolean if want to trigger sale and buy page seperately
 		// press up arrow key to return to the seed rack
@@ -458,7 +461,7 @@ bool GUI::renderUI() {
 
 		ImGui::SetNextWindowSize(ImVec2(window_width,window_height));
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::Begin("Sale GUI", &open_ptr, TRANS_WINDOW_FLAG);
+		ImGui::Begin("Buy Store GUI", &open_ptr, TRANS_WINDOW_FLAG);
 		ImGui::SetScrollX(0); //prevent scroll cause the context is actually larger than the window 
 		ImGui::SetScrollY(0); 
 		// add tool shed layer
@@ -550,6 +553,14 @@ bool GUI::renderUI() {
 		ImGui::PopStyleVar(2);
 	}
 
+	//TODO: for testing purpose, remove after connect to server
+	if (ImGui::IsKeyPressed(ImGuiKey_B)) {
+		GUI_show_sale = !GUI_show_sale; 
+	}
+	if (GUI_show_sale) {
+		createBuyConfirmation();
+	}
+
 	//test fading out
 	/*float padding = 64.0f;
 	int test_width = 2000; 
@@ -577,7 +588,7 @@ bool GUI::renderUI() {
 	
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	return GUI_show_sale_ui;
+	return GUI_show_buy_ui;
 }
 
 // Cleanup IMGUI, should be called after the mainloop
@@ -689,6 +700,21 @@ void GUI::initializeImage() {
 		&(timer_background.my_image_width), &(timer_background.my_image_height));
 	timer_background.my_image_width *= 0.7f; 
 	timer_background.my_image_height *= 0.7f;
+
+	i = 0;
+	const char* veg_dir = (picture_dir + std::string("/Vegetable")).c_str();
+	for (auto& entry : fs::directory_iterator(veg_dir)) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(veg_images_list[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_height *= 10; 
+		image->my_image_width *= 10;
+		i++;
+	}
+	LoadTextureFromFile((picture_dir + std::string("/sale_background.png")).c_str(), &(sale_background.my_image_texture),
+		&(sale_background.my_image_width), &(sale_background.my_image_height));
 }
 
 void GUI::initializeLoadingImage() {
@@ -818,7 +844,7 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 
 bool GUI::ShowGUI(bool show)
 {
-	if (GUI_show_sale_ui!=show) {
+	if (GUI_show_buy_ui!=show) {
 		rack_image_idx = 1;
 		tool_image_idx = 1; 
 		(&rack_images_list[1])->fade_ratio = 1;
@@ -828,7 +854,7 @@ bool GUI::ShowGUI(bool show)
 		curtain_img.fade_in = true;
 		sale_tools = false; 
 	}
-	GUI_show_sale_ui = show;
+	GUI_show_buy_ui = show;
 	return show;
 }
 /**
@@ -999,6 +1025,37 @@ bool GUI::renderWinningScene() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return true; 
+}
+
+void GUI::createBuyConfirmation() {
+	bool open_ptr = true;
+	GUIImage veg_image = veg_images_list[0];
+
+	ImVec2 fish_size = ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
+	ImVec2 veg_size = ImVec2(veg_image.my_image_width * display_ratio, veg_image.my_image_height * display_ratio);
+
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::Begin("Sale UI confirmation", &open_ptr, TRANS_WINDOW_FLAG);
+	ImGui::SetScrollX(0); //prevent scroll cause the context is actually larger than the window 
+	ImGui::SetScrollY(0);
+	// add the fish layer
+	ImGui::SetCursorPos(ImVec2(0, 0));
+	ImGui::Image((void*)(intptr_t)sale_background.my_image_texture, fish_size);
+
+	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.75 - veg_size.x *0.5, (fish_size.y - veg_size.y) * 0.5f));
+	ImGui::Image((void*)(intptr_t)veg_image.my_image_texture, veg_size);
+
+	ImGui::PushFont(font_Are_You_Serious);
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+
+	//show talking box
+	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
+	ImGui::Text("%s! That will be %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_price_list[0]);
+	ImGui::PopFont();
+	ImGui::PopStyleColor();
+
+	ImGui::End();
 }
 
 

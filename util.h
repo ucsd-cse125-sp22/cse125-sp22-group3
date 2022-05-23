@@ -4,12 +4,12 @@
 
 #include <unordered_map>
 
-static bool GUI_show_sale_ui; //use this to tigger the sale UI display 
+static bool GUI_show_buy_ui; //use this to tigger the sale UI display 
 static bool GUI_show_scoreboard; 
 static bool GUI_show_minimap; 
 static bool GUI_show_stamina;
 static bool GUI_show_timer; 
-static bool GUI_show_buy_ui; 
+static bool GUI_show_sale; 
 
 #define GAME_TIME_MINS 15
 
