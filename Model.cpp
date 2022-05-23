@@ -57,6 +57,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 	}
 
 	// Load model at file path
+	blendOffset = 0.0f; anim_speed = 1.0f;
 	aiScene* scene = Model::load_scene(model);
 
 	// Extract global transforms + inverse
@@ -85,8 +86,7 @@ void Model::constructorHelper(ModelEnum thisModel) {
 	directory = filePath.substr(0, filePath.find_last_of('/'));
 	processNode(scene->mRootNode, scene);
 
-	if (hasAni) { LoadAnimationData(scene); }
-
+	if (hasAni) { LoadAnimationData(scene); blendOffset = 0.01f; anim_speed = 1.0f; }
 	/*
 	std::cout << "scene->HasAnimations() 1: " << scene->HasAnimations() << std::endl;
 	std::cout << "scene->mNumMeshes 1: " << scene->mNumMeshes << std::endl;
@@ -234,6 +234,9 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 			last = PARTICLE_STOP;
 			std::vector<Texture> particles = loadParticleTextures(particleTextures[model]);
 			textures = particles;
+
+			randAnimSpeed();
+			randBlendOffset();
 		}
 	}
 	
@@ -371,7 +374,7 @@ void Model::draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 p
 				}
 
 				else {
-					mesh.draw(view, projection, parent, FBO::timePassed, shader);
+					mesh.draw(view, projection, parent, anim_speed * (FBO::timePassed + blendOffset), shader);
 				}
 			}
 		}
@@ -801,6 +804,26 @@ void Model::setAnimationMode(AniMode ani) {
 	}
 }
 
+void Model::randBlendOffset() {
+	if (model == PARTICLE_DUST || model == PARTICLE_GLOW) {
+		blendOffset = 0.0f;
+	}
+
+	else if (particleTextures.find(model) != particleTextures.end()) {
+		blendOffset = rand() % textures_loaded.size();
+	}
+}
+
+void Model::randAnimSpeed() {
+	if (model == PARTICLE_DUST || model == PARTICLE_GLOW) {
+		anim_speed = 15.0f;
+	}
+
+	else if (particleTextures.find(model) != particleTextures.end()) {
+		anim_speed = 10 + (rand() % 20);
+	}
+}
+
 void Model::copyHelper(const Model& t) {
 	// Copy all values
 	curr = t.curr;
@@ -826,6 +849,9 @@ void Model::copyHelper(const Model& t) {
 
 	finalBoneMatrices = t.finalBoneMatrices;
 	ticks = t.ticks;
+
+	randBlendOffset();
+	randAnimSpeed();
 }
 
 ModelEnum Model::getModelEnum()

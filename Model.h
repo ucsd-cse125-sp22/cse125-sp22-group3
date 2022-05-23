@@ -69,8 +69,7 @@ private:
 	// Animation data
 	std::map<std::string, BoneInfo> boneInfoMap;
 	int boneCounter = 0;
-	float blendOffset = 0.01f;
-	bool hasAni = false;
+	float blendOffset = 0.0f;
 	float last_time = 0;
 	float curr_time = 0;
 	float fixed_time = 0;
@@ -193,7 +192,8 @@ private:
 	float ticks;
 
 	void Model::constructorHelper(ModelEnum thisModel);
-
+	void randBlendOffset();
+	void randAnimSpeed();
 	
 
 public:
@@ -212,6 +212,7 @@ public:
 
 	// Animation Speed
 	float anim_speed = 1;
+	bool hasAni = false;
 
 	// Rendering functions
 	void draw(const glm::mat4& view, const glm::mat4& projection, glm::mat4 parent, GLuint shader);
@@ -253,8 +254,6 @@ public:
 	// Operators
 	Model& operator=(const Model& t);
 	void copyHelper(const Model& t);
-
-
 };
 
 #endif
