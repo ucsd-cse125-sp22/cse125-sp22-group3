@@ -89,11 +89,9 @@ void Plot::OnInteract(Player* player) {
 			if (seed->glow_particle != nullptr) {
 				GameManager::RemoveEntities({ seed->glow_particle });
 			}
-
-			GameManager::RemoveEntities({ seed });
-			SetPlantedVegetable(nullptr);
-
 			
+			SetPlantedVegetable(nullptr);
+			GameManager::RemoveEntities({ seed });			
 		}
 
 		GameManager::RemoveEntities({ this, shovel });
@@ -128,11 +126,12 @@ void Plot::OnInteract(Player* player) {
 			VeggieInfo veggie_info = veggie_map[seed->GetType()];
 			veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
 			GameManager::AddEntities({ veggie });
-			GameManager::RemoveEntities({ seed });
-			SetPlantedVegetable(nullptr);
 
 			player->SetHoldEntity(veggie);
 			player->SetTriggeringEntity(nullptr);
+
+			SetPlantedVegetable(nullptr);
+			GameManager::RemoveEntities({ seed });
 		}
 	}
 
@@ -140,12 +139,13 @@ void Plot::OnInteract(Player* player) {
 	else if (player->GetModelEnum() == plot_ownership[this->GetModelEnum()]) {
 		if (plantedVegetable && plantedVegetable->isPoisoned) {
 			Seed* poisoned_seed = plantedVegetable;
-			GameManager::RemoveEntities({ poisoned_seed });
-			SetPlantedVegetable(nullptr);
 			if (poisoned_seed->glow_particle != nullptr) {
 				GameManager::RemoveEntities({ poisoned_seed->glow_particle });
 			}
 
+			SetPlantedVegetable(nullptr);
+			GameManager::RemoveEntities({ poisoned_seed });
+			
 			player->SetTriggeringEntity(nullptr);
 		}
 		else if (player->isHolding) {
@@ -172,9 +172,9 @@ void Plot::OnInteract(Player* player) {
 				//if(plantedVegetable->)
 				if (isPlanted && plantedVegetable->requiresFertilizer) {
 					plantedVegetable->fertilizeSeed();
-					GameManager::RemoveEntities({ fertilizer });
 					player->Drop();
 					player->SetTriggeringEntity(nullptr);
+					GameManager::RemoveEntities({ fertilizer });
 				}
 			}
 		}
@@ -190,8 +190,8 @@ void Plot::OnInteract(Player* player) {
 				}
 
 				if (seed_ != nullptr) {
-					GameManager::RemoveEntities({ seed_ });
 					SetPlantedVegetable(nullptr);
+					GameManager::RemoveEntities({ seed_ });
 				}
 			}
 			else if (seed != nullptr && plantedVegetable->isHarvestable) {
@@ -209,13 +209,15 @@ void Plot::OnInteract(Player* player) {
 				VeggieInfo veggie_info = veggie_map[seed->GetType()];
 				veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
 				GameManager::AddEntities({ veggie });
-				if (seed_ != nullptr) {
-					GameManager::RemoveEntities({ seed_ });
-					SetPlantedVegetable(nullptr);
-				}
+
 				player->SetHoldEntity(veggie);
 				player->SetTriggeringEntity(nullptr);
 				veggie->holding_player = player;
+
+				if (seed_ != nullptr) {
+					SetPlantedVegetable(nullptr);
+					GameManager::RemoveEntities({ seed_ });
+				}
 			}
 		}
 	}

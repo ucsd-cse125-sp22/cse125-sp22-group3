@@ -201,15 +201,19 @@ void GameManager::AddEntities(std::vector<GameEntity*> entities)
 
 void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 	for (GameEntity* entity : entities) {
-		//delete entity; TODO :/
-		auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
-		GameManager::game_entities.erase(iter);
+		if (entity != nullptr) {
+			auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
+			if (*iter != nullptr) {
+				GameManager::game_entities.erase(iter);
 
-		if(auto phys_object = dynamic_cast<PhysicsObject*>(entity)) {
-			physics.RemovePhysObject(phys_object);
+				if (auto phys_object = dynamic_cast<PhysicsObject*>(entity)) {
+					physics.RemovePhysObject(phys_object);
+				}
+
+				fprintf(stderr, "Deleting an entity\n");
+				delete entity;
+			}
 		}
-
-		delete entity;
 	}
 }
 
