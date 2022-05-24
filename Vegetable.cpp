@@ -87,6 +87,7 @@ void Vegetable::OnInteract(Player* player)
 {
 	if (holding_player != nullptr) {
 		holding_player->Drop();
+		player->sound_steal = true;
 	}
 	SetHeight(pickupHeight);
 	player->SetHoldEntity(this);
