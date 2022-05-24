@@ -49,6 +49,7 @@ Client::Client(const char* server_addr, const char* server_port)
 		// connect to the current address
 		int connectStatus = connect(ConnectSocket, addr->ai_addr, (int)addr->ai_addrlen);
 		if (connectStatus == SOCKET_ERROR) {
+			fprintf(stderr, "connect failed with error: %ld\n", WSAGetLastError());
 			closesocket(ConnectSocket);
 			ConnectSocket = INVALID_SOCKET;
 		}

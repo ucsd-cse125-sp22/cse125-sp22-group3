@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 	GUI::initializeLoadingImage();
 
 	// Initialize network client interface
-	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("server.cfg");
+	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("client.cfg");
 	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
 	//auto begin_time = std::chrono::steady_clock::now();
