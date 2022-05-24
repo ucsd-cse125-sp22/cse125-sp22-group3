@@ -22,6 +22,7 @@ Seed::~Seed() {
 	delete collider_;
 	delete translate;
 	delete translate3D;
+	delete indicate_product;
 }
 
 void Seed::waterSeed()
