@@ -66,7 +66,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		/* Curr should be idle */
 		Player(ModelEnum curr);
 
-		~Player();
+		~Player() override;
 
 		// GameEntity
 		void FixedUpdate() override;
@@ -87,8 +87,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		glm::vec2* GetWorldPosition() override;
 
 		// Interactable
-		bool CanInteract(Player* other_player);
-		void OnInteract(Player* other_player);
+		bool CanInteract(Player* other_player) override;
+		void OnInteract(Player* other_player) override;
 		
 		// Input
 		glm::vec2 move_input{0,0};
