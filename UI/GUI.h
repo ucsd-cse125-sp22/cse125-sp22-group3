@@ -24,6 +24,7 @@
 #define NUM_CHASE_IMG 2 
 #define NUM_FISH_IMG 3
 #define NUM_TOOL_IMG 10
+#define NUM_VEG_IMG 1
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
 						  ImGuiWindowFlags_NoInputs 
@@ -76,6 +77,8 @@ public:
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
 	static GUIImage fish_images_list[NUM_FISH_IMG];
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
+	static GUIImage veg_images_list[NUM_VEG_IMG];
+	static GUIImage sale_background; 
 	static GUIImage curtain_img;
 	static GUIImage stamina_image; 
 	static GUIImage timer_background; 
@@ -83,6 +86,8 @@ public:
 	static char* seed_type_list[];
 	static char* tool_type_list[];
 	static char* tool_func_list[];
+	static float veg_price_list[];
+
 
 	static ImVec2 player_pos[4]; 
 
@@ -103,4 +108,5 @@ public:
 	static void createTimer(float ratio); 
 	static void setTimer(float time);
 	static bool renderWinningScene();
+	static void createBuyConfirmation();
 };
