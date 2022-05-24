@@ -66,6 +66,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		/* Curr should be idle */
 		Player(ModelEnum curr);
 
+		~Player();
+
 		// GameEntity
 		void FixedUpdate() override;
 

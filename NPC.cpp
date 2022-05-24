@@ -12,7 +12,11 @@ NPC::NPC(ModelEnum curr)
 	collider_->collider_is_trigger = true;
 }
 
-NPC::~NPC() {}
+NPC::~NPC()
+{
+	delete translate;
+	delete collider_;
+}
 
 void NPC::FixedUpdate()
 {

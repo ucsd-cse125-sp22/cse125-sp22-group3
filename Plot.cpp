@@ -13,7 +13,12 @@ Plot::Plot(ModelEnum curr) {
 	collider_->collider_is_trigger = true;
 }
 
-Plot::~Plot() {}
+Plot::~Plot()
+{
+	delete translate;
+	delete translate3D;
+	delete collider_;
+}
 
 void Plot::FixedUpdate() {
 	

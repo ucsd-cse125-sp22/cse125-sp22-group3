@@ -19,7 +19,11 @@ Indicator::Indicator(VegetableType veggie) {
 	rotation = glm::mat4(1);
 }
 
-Indicator::~Indicator() {}
+Indicator::~Indicator()
+{
+	delete translate;
+	delete translate3D;
+}
 
 void Indicator::FixedUpdate() {
 	
