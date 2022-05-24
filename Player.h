@@ -49,6 +49,15 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		bool sound_buy = false;
 		bool sound_sell = false;
 		bool sound_plot_placement = false;
+		bool sound_poison = false;
+		bool sound_plant = false;
+		bool sound_harvest = false;
+		bool sound_eggplant_pickup = false;
+		bool sound_steal = false;
+		bool sound_shovel = false;
+		bool sound_watering = false;
+		bool sound_no = false;
+		bool sound_fertilize = false;
 	
 		// Get matrix transformationa
 		glm::mat4 GetRotation();

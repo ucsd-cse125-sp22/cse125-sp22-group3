@@ -210,6 +210,8 @@ int main(int argc, char* argv[])
 	std::map<uintptr_t, Model*> model_map;
 	glm::vec3 eye_offset = glm::vec3(0,30,30); //TODO no magic number :,(
 		
+	sound_engine.Play(SFX_AMBIENCE);
+
 	// Loop while GLFW window should stay open and server hasn't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
