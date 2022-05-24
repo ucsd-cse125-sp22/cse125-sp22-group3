@@ -152,42 +152,45 @@ void main()
     vec4 base = vec4(vec3(tex * vec4(0.5f) * (tex + light + specular + rim)), 1.0f);
     vec4 result = vec4(0.0f);
 
-    if(convTime >= 4.0f && convTime < 4.75f) {
-        float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
+    if(convTime >= 2.5f && convTime < 3.0f) {
+        float interpolate = clamp((convTime - 2.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(day, sunset, interpolate);
     }
 
-    else if(convTime >= 4.75f && convTime < 5.5f) {
-        float interpolate = clamp((convTime - 4.75f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 3.0f && convTime < 3.5f) {
+        float interpolate = clamp((convTime - 3.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunset, night, interpolate);
 
-         for(int i = 0; i < 4; i++) {
-            if(playerLight[i].y == 0.0f) { break; }
-            result += vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(base)), 0.0f) * interpolate;
+        for(int i = 0; i < 4; i++) {
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                (vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * interpolate);
         }
     }
 
-    else if(convTime >= 5.5f && convTime < 9.5f) {
+    else if(convTime >= 3.5f && convTime < 8.5f) {
         lightColor = night;
 
         for(int i = 0; i < 4; i++) {
-            if(playerLight[i].y == 0.0f) { break; }
-            result += vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(base)), 0.0f);
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f);
         }
     }
 
-    else if(convTime >= 9.5f && convTime < 10.25f) {
-        float interpolate = clamp((convTime - 9.5f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 8.5f && convTime < 9.0f) {
+        float interpolate = clamp((convTime - 8.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(night, sunrise, interpolate);
 
         for(int i = 0; i < 4; i++) {
-            if(playerLight[i].y == 0.0f) { break; }
-            result += vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(base)), 0.0f) * (1.0f - interpolate);
+        if(playerLight[i].y == 0.0f) { break; }
+            result += 
+                vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * (1.0f - interpolate);
         }
     }
 
-    else if(convTime >= 10.25f && convTime < 11.0f) {
-        float interpolate = clamp((convTime - 10.25f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 9.0f && convTime < 9.5f) {
+        float interpolate = clamp((convTime - 9.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunrise, day, interpolate);
     }
 

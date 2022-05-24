@@ -202,13 +202,12 @@ void FBO::resize(int width, int height) {
 }
 
 void FBO::draw(int width, int height, float time, glm::mat4 cam) {
-    timePassed = 900 - (time);
+    timePassed = totalTime - (time);
     
-    float degrees = glm::clamp(timePassed / 900.0f, 0.0f, 1.0f);
+    float degrees = glm::clamp(timePassed / totalTime, 0.0f, 1.0f);
     degrees = glm::mix(0.0f, 6.28f, degrees);
 
     lightPos = glm::vec3(glm::rotate(degrees, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(-2.0f, 2.0f, -1.0f, 1.0f));
-
     std::vector<glm::mat4> ret;
     for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i)
     {

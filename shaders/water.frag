@@ -68,44 +68,6 @@ void main()
         layer = 4;
     }
 
-    // shadows
-    vec4 FragPosLightSpace = lightSpaceMatrices[layer] * vec4(FragPos, 1.0);
-    vec3 projCoords = FragPosLightSpace.xyz / FragPosLightSpace.w;
-    projCoords = projCoords * 0.5 + 0.5;  
-    float currentDepth = projCoords.z;  
-    float shadow = 0.0f;
-
-    if(currentDepth > 1.0) {
-        shadow = 0.0;
-    }
-
-    else {
-        float bias =  max(0.05 * (1.0 - dot(norm, lightDir)), 0.005);  
-        const float biasModifier = 0.5f;
-
-        if (layer == 4)
-        {
-            bias *= 1 / (1000.0f * biasModifier);
-        }
-
-        else
-        {
-            bias *= 1 / (cascadePlaneDistances[layer] * biasModifier);
-        }
-        vec2 texelSize = 1.0 / vec2(textureSize(shadowMap, 0));
-        int halfkernelWidth = 1;
-        for(int x = -halfkernelWidth; x <= halfkernelWidth; ++x)
-        {
-	        for(int y = -halfkernelWidth; y <= halfkernelWidth; ++y)
-	        {
-		        float pcfDepth = texture(shadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
-		        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-	        }
-        }
-
-        shadow /= ((halfkernelWidth*2+1)*(halfkernelWidth*2+1));
-    }
-    
     // diffuse shading
     float diff = max(dot(norm, lightDir), 0.0);
 
@@ -117,31 +79,31 @@ void main()
     float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec3 lightColor = day;
 
-    if(convTime >= 4.0f && convTime < 4.75f) {
-        float interpolate = clamp((convTime - 4.0f) / 0.75f, 0.0f, 1.0f);
+    if(convTime >= 2.5f && convTime < 3.0f) {
+        float interpolate = clamp((convTime - 2.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(day, sunset, interpolate);
     }
 
-    else if(convTime >= 4.75f && convTime < 5.5f) {
-        float interpolate = clamp((convTime - 4.75f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 3.0f && convTime < 3.5f) {
+        float interpolate = clamp((convTime - 3.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunset, night, interpolate);
     }
 
-    else if(convTime >= 5.5f && convTime < 9.5f) {
+    else if(convTime >= 3.5f && convTime < 8.5f) {
         lightColor = night;
     }
 
-    else if(convTime >= 9.5f && convTime < 10.25f) {
-        float interpolate = clamp((convTime - 9.5f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 8.5f && convTime < 9.0f) {
+        float interpolate = clamp((convTime - 8.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(night, sunrise, interpolate);
     }
 
-    else if(convTime >= 10.25f && convTime < 11.0f) {
-        float interpolate = clamp((convTime - 10.25f) / 0.75f, 0.0f, 1.0f);
+    else if(convTime >= 9.0f && convTime < 9.5f) {
+        float interpolate = clamp((convTime - 9.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunrise, day, interpolate);
     }
 
-    else if(convTime >= 11.0f) {
+    else if(convTime >= 9.5f) {
         lightColor = day;
     }
 
