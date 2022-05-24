@@ -208,6 +208,8 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 		if(auto phys_object = dynamic_cast<PhysicsObject*>(entity)) {
 			physics.RemovePhysObject(phys_object);
 		}
+
+		delete entity;
 	}
 }
 
