@@ -248,5 +248,76 @@ void FBO::draw(GLuint shader) {
 
     glUseProgram(shader);
     glUniform1i(glGetUniformLocation(shader, "bloom"), 0);
+}
 
+void FBO::bloomBlur(GLuint shader) {
+    glUseProgram(shader);
+    unsigned int amount = 2;
+    bool horizontal = true, first_iteration = true;
+    for (unsigned int i = 0; i < amount; i++)
+    {
+        glUniform1i(glGetUniformLocation(shader, "image"), 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO::pingpongFBO[horizontal]);
+        glUniform1i(glGetUniformLocation(shader, "horizontal"), horizontal);
+        glBindTexture(GL_TEXTURE_2D, first_iteration ? FBO::colorBuffers[1] : FBO::pColorBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+        renderQuad();
+        horizontal = !horizontal;
+        if (first_iteration)
+            first_iteration = false;
+    }
+
+    glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void FBO::finalDraw(GLuint shader) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(shader);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[1]);
+
+    glUniform1i(glGetUniformLocation(shader, "scene"), 0);
+    glUniform1i(glGetUniformLocation(shader, "bloomBlur"), 1);
+    glUniform1i(glGetUniformLocation(shader, "bloom"), 1);
+    glUniform1f(glGetUniformLocation(shader, "exposure"), 1.0f);
+    renderQuad();
+    glUseProgram(0);
+}
+
+void FBO::renderQuad() {
+    // glUseProgram(modelShaderProgram);
+
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D_ARRAY, FBO::dm);
+    // glUniform1i(glGetUniformLocation(modelShaderProgram, "map"), 0);
+    unsigned int quadVAO = 0;
+    unsigned int quadVBO;
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindVertexArray(0);
+    // glUseProgram(0);
 }

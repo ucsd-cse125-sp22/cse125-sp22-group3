@@ -63,6 +63,9 @@ class FBO {
 		void resize(int width, int height);
 		void draw(int width, int height, float time, glm::mat4 view);
 		void draw(GLuint shader);
+		static void renderQuad();
+		static void bloomBlur(GLuint shader);
+		static void finalDraw(GLuint shader);
 };
 
 #endif

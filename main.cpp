@@ -381,38 +381,9 @@ int main(int argc, char* argv[])
 			}
 			
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glUseProgram(Window::blurShaderProgram);
-			unsigned int amount = 2;
-			bool horizontal = true, first_iteration = true;
-			for (unsigned int i = 0; i < amount; i++)
-			{
-				glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "image"), 0);
-				glBindFramebuffer(GL_FRAMEBUFFER, FBO::pingpongFBO[horizontal]);
-				glUniform1i(glGetUniformLocation(Window::blurShaderProgram, "horizontal"), horizontal);
-				glBindTexture(GL_TEXTURE_2D, first_iteration ? FBO::colorBuffers[1] : FBO::pColorBuffers[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
-				Window::renderDepthMap();
-				horizontal = !horizontal;
-				if (first_iteration)
-					first_iteration = false;
-			}
-			
-			glUseProgram(0);
-			glActiveTexture(GL_TEXTURE0);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glUseProgram(Window::finalShaderProgram);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[!horizontal]);
 
-			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "scene"), 0);
-			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloomBlur"), 1);
-			glUniform1i(glGetUniformLocation(Window::finalShaderProgram, "bloom"), 1);
-			glUniform1f(glGetUniformLocation(Window::finalShaderProgram, "exposure"), 1.0f);
-			Window::renderDepthMap();
-			glUseProgram(0);
+			FBO::bloomBlur(Window::blurShaderProgram);
+			FBO::finalDraw(Window::finalShaderProgram);
 
 			for (int i = 0; i < sheader->num_pending_delete; i++) {
 				const uintptr_t pending_delete_id = pending_arr[i].model_id;
