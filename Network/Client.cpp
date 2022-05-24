@@ -28,6 +28,7 @@ Client::Client(const char* server_addr, const char* server_port)
 	hints.ai_protocol = IPPROTO_TCP;
 
 	// resolve server address and port info
+	fprintf(stderr, "Connecting to server at %s:%s\n", server_addr, server_port);
 	struct addrinfo* result = NULL;
 	int getaddrStatus = getaddrinfo(server_addr, server_port, &hints, &result);
 	if (getaddrStatus != 0) { // can't resolve server hostname / IP address
