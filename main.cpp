@@ -244,7 +244,8 @@ int main(int argc, char* argv[])
 			ServerHeader* sheader;
 			ModelInfo* model_arr;
 			SoundInfo* sound_arr;
-			serverDeserialize(recv_buf, &sheader, &model_arr, &sound_arr);
+			PendingDeleteInfo* pending_arr;
+			serverDeserialize(recv_buf, &sheader, &model_arr, &sound_arr, &pending_arr);
 
 			//Rendering Code
 			const glm::mat4 player_transform = sheader->player_transform;
@@ -411,9 +412,19 @@ int main(int argc, char* argv[])
 			Window::renderDepthMap();
 			glUseProgram(0);
 
+			for (int i = 0; i < sheader->num_pending_delete; i++) {
+				const uintptr_t pending_delete_id = pending_arr[i].model_id;
+				fprintf(stderr, "Client: deleting model with ID %lld\n", pending_delete_id);
+
+				Model* model_to_delete = model_map[pending_delete_id];
+				model_map.erase(pending_delete_id);
+				delete model_to_delete;
+			}
+
 			free(sheader);
 			free(model_arr);
 			free(sound_arr);
+			free(pending_arr);
 		});
 
 		// Gets events, including input such as keyboard and mouse or window resizing

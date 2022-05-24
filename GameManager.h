@@ -57,8 +57,8 @@ public:
 
     // Game entities in the world
     static std::vector<GameEntity*> game_entities;
-
     static std::vector<PhysicsObject*> physics_objects;
+    static std::vector<uintptr_t> entities_pending_client_delete;
 
     // FixedDeltaTime is the time between logic updates on the server
     // Typically 30ms, but you never know

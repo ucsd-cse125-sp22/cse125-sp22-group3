@@ -8,7 +8,7 @@ std::chrono::steady_clock::time_point GameManager::last_time_ = std::chrono::ste
 std::vector<GameEntity*> GameManager::game_entities = {};
 PhysicsEngine GameManager::physics = PhysicsEngine();
 std::vector<PhysicsObject*> GameManager::physics_objects = {};
-
+std::vector<uintptr_t> GameManager::entities_pending_client_delete = {};
 
 GameManager::GameManager()
 {
@@ -210,9 +210,10 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 					physics.RemovePhysObject(phys_object);
 				}
 
-				fprintf(stderr, "Deleting an entity\n");
+				fprintf(stderr, "Server: deleting physics object with ID %lld\n", reinterpret_cast<uintptr_t>(entity));
 				delete entity;
 			}
+			entities_pending_client_delete.push_back(reinterpret_cast<uintptr_t>(entity));
 		}
 	}
 }
@@ -268,6 +269,12 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		//}
 	}
 
+	std::vector<PendingDeleteInfo> pending_delete_infos;
+	for (uintptr_t model_id : entities_pending_client_delete) {
+		pending_delete_infos.push_back(PendingDeleteInfo{ model_id });
+	}
+	entities_pending_client_delete = {};
+
 	int i = 0;
 	std::vector<std::pair<char*, int>> out_vec;
 	for (auto & player : players_) {
@@ -287,6 +294,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		ServerHeader sheader{};
 		sheader.num_models = model_infos.size();
 		sheader.num_sounds = sound_infos.size();
+		sheader.num_pending_delete = pending_delete_infos.size();
 		sheader.player_transform = player->GetParentTransform();
 		sheader.player_sprinting = player->sprint;
 		sheader.ui_open = player->ui_open;
@@ -299,7 +307,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		
 
 		auto server_buf = static_cast<char*>(malloc(GetBufSize(&sheader)));
-		serverSerialize(server_buf, &sheader, model_infos.data(), sound_infos.data());
+		serverSerialize(server_buf, &sheader, model_infos.data(), sound_infos.data(), pending_delete_infos.data());
 		out_vec.push_back(std::make_pair(server_buf, static_cast<int>(GetBufSize(&sheader))));
 
 		player->ResetSoundBools();
