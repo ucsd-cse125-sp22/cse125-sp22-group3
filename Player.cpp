@@ -162,6 +162,16 @@ std::vector<SoundInfo> Player::GetSounds()
 	if (sound_buy) output.push_back(SoundInfo{SFX_BUY, GetPosition()});
 	if (sound_sell) output.push_back(SoundInfo{SFX_SELL, GetPosition()});
 	if (sound_plot_placement) output.push_back(SoundInfo{SFX_PLOT_PLACE, GetPosition()});
+	if (sound_poison) output.push_back(SoundInfo{ SFX_POISON, GetPosition() });
+	if (sound_plant) output.push_back(SoundInfo{ SFX_PLANT, GetPosition() });
+	if (sound_harvest) output.push_back(SoundInfo{ SFX_BUY, GetPosition() });
+	if (sound_eggplant_pickup) output.push_back(SoundInfo{ SFX_EGGPLANT_PICKUP, GetPosition() });
+	if (sound_steal) output.push_back(SoundInfo{ SFX_STEAL, GetPosition() });
+	if (sound_shovel) output.push_back(SoundInfo{ SFX_SHOVEL, GetPosition() });
+	if (sound_watering) output.push_back(SoundInfo{ SFX_WATERING, GetPosition() });
+	if (sound_no) output.push_back(SoundInfo{ SFX_NO, GetPosition() });
+	if (sound_fertilize) output.push_back(SoundInfo{ SFX_FERTILIZE, GetPosition() });
+
 
 	return output;
 }
@@ -441,6 +451,15 @@ void Player::ResetSoundBools()
 	sound_buy = false;
 	sound_sell = false;
 	sound_plot_placement = false;
+	sound_poison = false;
+	sound_plant = false;
+	sound_harvest = false;
+	sound_eggplant_pickup = false;
+	sound_steal = false;
+	sound_shovel = false;
+	sound_watering = false;
+	sound_no = false;
+	sound_fertilize = false;
 }
 
 glm::mat4 Player::GetRotation() {
