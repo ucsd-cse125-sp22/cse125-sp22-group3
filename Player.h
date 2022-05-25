@@ -154,4 +154,5 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		bool sound_watering = false;
 		bool sound_no = false;
 		bool sound_fertilize = false;
+		bool sound_net = false;
 };
