@@ -429,6 +429,7 @@ int main(int argc, char* argv[])
 			GUI::renderUI();
 		}
 
+
 		// Swap buffers.
 		glfwSwapBuffers(window);
 	}

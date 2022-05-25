@@ -157,10 +157,10 @@ namespace ImGui {
 		return centre;
 	}
 
-	bool BlackBanner(const char* label, int window_width, int window_height, float ratio, bool top = true) {
+	bool BlackBanner(const char* label, int window_width, int window_height, float ratio, bool top = true, float width_ratio = 0.125f) {
 		ImGuiWindow* window = ImGui::GetCurrentWindow();
 		ImVec2 size = ImVec2(window_width, window_height);
-		ImVec2 rect_size = ImVec2(window_width, window_height * 0.125 );
+		ImVec2 rect_size = ImVec2(window_width, window_height * width_ratio );
 		ImVec2 pos = window->DC.CursorPos;
 		const ImU32 black = IM_COL32(0, 0, 0, 255);
 
@@ -1070,10 +1070,15 @@ int GUI::renderCharacterSelection(int char_options[], int my_char_index) {
 }
 
 bool GUI::renderWinningScene() {
+	glfwPollEvents();
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 		winning_fade_ratio = 1; 
 	}
-	winning_fade_ratio  = winning_fade_ratio < 0.0001? 0 : winning_fade_ratio* 0.8; 
+	winning_fade_ratio  = winning_fade_ratio < 0.0001? 0 : winning_fade_ratio* 0.9;
+	float banner_width_ratio = 0.2f; 
 	float ratio = 1 - winning_fade_ratio;
 	ImVec2 size = ImVec2(window_width, window_height);
 	ImGui::SetNextWindowSize(size);
@@ -1083,9 +1088,9 @@ bool GUI::renderWinningScene() {
 
 	ImGui::Begin("black banner", NULL, TRANS_WINDOW_FLAG);
 	ImGui::SetCursorPos(ImVec2(0, 0));
-	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true);
-	ImGui::SetCursorPos(ImVec2(0, window_height * (1-0.125f * ratio)));
-	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false);
+	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true, banner_width_ratio);
+	ImGui::SetCursorPos(ImVec2(0, window_height * (1-banner_width_ratio * ratio)));
+	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false, banner_width_ratio);
 	ImGui::End();
 
 	ImGui::PopStyleVar(2);
