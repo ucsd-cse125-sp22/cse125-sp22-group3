@@ -91,7 +91,11 @@ public:
 	static char* seed_type_list[];
 	static char* tool_type_list[];
 	static char* tool_func_list[];
+	static float tool_sell_list[];
+	static char* seed_prop_list[];
 	static float veg_price_list[];
+	static float veg_sell_list[];
+	static float veg_time_list[];
 
 
 	static ImVec2 player_pos[4];

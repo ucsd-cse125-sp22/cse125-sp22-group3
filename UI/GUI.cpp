@@ -266,17 +266,52 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 char* GUI::seed_type_list[] = { "Carrot", "Cabbage", "Corn","Radish", "Tomato"};
 char* GUI::tool_type_list[] = { "Net", "Hoe", "Watering Can","Fertilizer", "Shovel", "Glue","Poison", "Super Oats", "Farmer's Ale"};
 char* GUI::tool_func_list[] = {
-	"steal veg in pot",
-	"sth",
-	"Water",
-	"Fertilizer",
-	"dig a hole",
-	"trap",
-	"kill a veg",
-	"Get infinite Stamina",
+	"steal a veggie that is planted",
+	"create a new plot for yourself",
+	"water certain veggies",
+	"fertilize certain veggies",
+	"uproot someone's plot",
+	"slow people down",
+	"poison someone's vegetable",
+	"give you a stamina boost",
 	"get other player drunk"
 };
-float GUI::veg_price_list[] = { 1, 2, 3,4,5 }; 
+float GUI::tool_sell_list[] = { tool_map[ModelEnum::NET].price,
+tool_map[ModelEnum::HOE].price,
+tool_map[ModelEnum::WATERING_CAN].price,
+tool_map[ModelEnum::FERTILIZER].price,
+tool_map[ModelEnum::SHOVEL].price,
+tool_map[ModelEnum::GLUE].price,
+tool_map[ModelEnum::POISON].price,
+tool_map[ModelEnum::OATS].price,
+tool_map[ModelEnum::SOJU].price,
+};
+
+char* GUI::seed_prop_list[] = {
+	"won't require much care",
+	"will require some water",
+	"won't require much care",
+	"will require some fertilizer",
+	"will require water and fertilizer"
+};
+float GUI::veg_price_list[] = { veggie_map[VegetableType::CARROT].seed_price,
+veggie_map[VegetableType::CABBAGE].seed_price,
+veggie_map[VegetableType::CORN].seed_price,
+veggie_map[VegetableType::RADISH].seed_price,
+veggie_map[VegetableType::TOMATO].seed_price};
+
+float GUI::veg_sell_list[] = { veggie_map[VegetableType::CARROT].sell_price,
+veggie_map[VegetableType::CABBAGE].sell_price,
+veggie_map[VegetableType::CORN].sell_price,
+veggie_map[VegetableType::RADISH].sell_price,
+veggie_map[VegetableType::TOMATO].sell_price };
+
+float GUI::veg_time_list[] = { veggie_map[VegetableType::CARROT].growth_time,
+veggie_map[VegetableType::CABBAGE].growth_time,
+veggie_map[VegetableType::CORN].growth_time,
+veggie_map[VegetableType::RADISH].growth_time,
+veggie_map[VegetableType::TOMATO].growth_time };
+
 /**
 * Render the UI compenents, should be called within the mainloop
 * RenderUI need to be called after clear Opengl buffer and before swapbuffer
@@ -507,12 +542,15 @@ bool GUI::renderUI() {
 
 		//show talking box
 		if (sale_tools) {
+			int currIdx = tool_image_idx - 1;
 			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
-			ImGui::Text("%s! That will be %f dollar(s). \n It can be use to %s. Press [Enter] to buy!", \
-				tool_type_list[tool_image_idx - 1], 10, tool_func_list[tool_image_idx - 1]);
+			ImGui::Text("Oh my! The %s!\n It can be used to %s.\nThat will be %.0f dollar(s).\nPress [Enter] to buy!", \
+				tool_type_list[currIdx], tool_func_list[currIdx],tool_sell_list[currIdx]);
 		} else {
+			int currIdx = rack_image_idx - 1;
 			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
+			ImGui::Text("Why yes! A %s seed!\nThe %s requires %.0f seconds to grow\n    and %s.\nAfter harvest, it will sell for %.0f dollars(s).\nThat will be %.0f dollar(s).\nPress [Enter] to buy!",
+				seed_type_list[currIdx], seed_type_list[currIdx], veg_time_list[currIdx], seed_prop_list[currIdx],veg_sell_list[currIdx],veg_price_list[currIdx]);
 		}
 		ImGui::PopFont(); 
 		ImGui::PopStyleColor(2);
