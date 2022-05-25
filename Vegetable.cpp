@@ -87,6 +87,11 @@ void Vegetable::OnInteract(Player* player)
 {
 	if (holding_player != nullptr) {
 		holding_player->Drop();
+		player->sound_steal = true;
+		holding_player->sound_steal = true;
+	}
+	else if (type == VegetableType::GOLDEN_EGGPLANT) {
+		player->sound_eggplant_pickup = true;
 	}
 	SetHeight(pickupHeight);
 	player->SetHoldEntity(this);

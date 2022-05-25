@@ -81,7 +81,7 @@ void Plot::OnInteract(Player* player) {
 	if (auto shovel = dynamic_cast<Shovel*>(player->GetHoldEntity())) {
 		player->Drop();
 		player->SetTriggeringEntity(nullptr);
-
+		player->sound_shovel = true;
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
 
@@ -101,6 +101,7 @@ void Plot::OnInteract(Player* player) {
 
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
+			player->sound_poison = true;
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
 			GameManager::RemoveEntities({ bouteille_poisson });
@@ -115,6 +116,7 @@ void Plot::OnInteract(Player* player) {
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr && seed->isHarvestable)
 		{
+			player->sound_net = true;
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
 			GameManager::RemoveEntities({net});
@@ -152,6 +154,7 @@ void Plot::OnInteract(Player* player) {
 			if (auto seed = dynamic_cast<Seed*>(player->GetHoldEntity())) {
 				if (!isPlanted)
 				{
+					player->sound_plant = true;
 					SetPlantedVegetable(seed);
 
 					VeggieInfo veggie = veggie_map[seed->GetType()];
@@ -164,6 +167,7 @@ void Plot::OnInteract(Player* player) {
 			else if (auto wateringCan = dynamic_cast<WateringCan*>(player->GetHoldEntity()))
 			{
 				if(isPlanted)
+					player->sound_watering = true;
 					plantedVegetable->waterSeed();
 			}
 			else if (auto fertilizer = dynamic_cast<Fertilizer*>(player->GetHoldEntity()))
@@ -171,6 +175,7 @@ void Plot::OnInteract(Player* player) {
 				//TODO:Check if needs fertilizer then delete
 				//if(plantedVegetable->)
 				if (isPlanted && plantedVegetable->requiresFertilizer) {
+					player->sound_fertilize = true;
 					plantedVegetable->fertilizeSeed();
 					player->Drop();
 					player->SetTriggeringEntity(nullptr);
@@ -209,6 +214,7 @@ void Plot::OnInteract(Player* player) {
 				VeggieInfo veggie_info = veggie_map[seed->GetType()];
 				veggie = new Vegetable{ seed->GetType(), veggie_info.veggie_model };
 				GameManager::AddEntities({ veggie });
+				player->sound_harvest = true;
 
 				player->SetHoldEntity(veggie);
 				player->SetTriggeringEntity(nullptr);
@@ -220,6 +226,9 @@ void Plot::OnInteract(Player* player) {
 				}
 			}
 		}
+	}
+	else {
+		player->sound_no = true;
 	}
 }
 
