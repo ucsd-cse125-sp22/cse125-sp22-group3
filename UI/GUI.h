@@ -64,6 +64,7 @@ public:
 	static int tool_image_idx;
 	static int my_char_idx;
 	static float timer_percent;
+	static int remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
 
 	static float winning_fade_ratio;
@@ -111,7 +112,7 @@ public:
 	static bool ShowGUI(bool show);
 	static void createStamina();
 	static void createTimer(float ratio);
-	static void setTimer(float time);
+	static void setTimer(float time, int remaining_sec);
 	static bool renderWinningScene();
 	static void createBuyConfirmation();
 };

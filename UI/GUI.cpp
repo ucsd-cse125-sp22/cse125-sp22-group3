@@ -22,6 +22,7 @@ GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::veg_images_list[NUM_VEG_IMG];
 GUIImage GUI::char_images_list[NUM_ICON];
 int GUI::my_char_idx;
+int GUI::remaining_sec;
 
 
 GUIImage GUI::curtain_img;
@@ -52,8 +53,6 @@ ImFont* GUI::font_Ranchers;
 
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
-
-
 
 namespace ImGui {
 
@@ -521,20 +520,19 @@ bool GUI::renderUI() {
 		createStamina();
 	}
 	if (GUI_show_timer) {
-
 		int radius = 150 * display_ratio;
 		int thickness = 60 * display_ratio;
 		ImVec2 spinner_size = ImVec2((radius + thickness)*2, (radius + thickness)*2); 
 		//const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 		//const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
-		const ImU32 bg = IM_COL32(219, 195, 182, 255); //ImGui::GetColorU32(ImGuiCol_Button);
-		const ImU32 col = IM_COL32(148, 102, 77, 255);
+		
 		float ratio = timer_percent; 
 		//float ratio = GUI_timer_percent;
 		//std::cout << "the timer percent is " << ratio << std::endl;
 		ImVec2 bg_size = ImVec2(timer_background.my_image_width * display_ratio, timer_background.my_image_height * display_ratio);
 
 		ImVec2 padding = ImVec2(bg_size.x * 0.5f, bg_size.y * 0.25f);
+		
 		ImGui::SetNextWindowPos(ImVec2(window_width - bg_size.x, bg_size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(bg_size);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -542,17 +540,23 @@ bool GUI::renderUI() {
 		ImGui::Begin("Timer_bg", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)timer_background.my_image_texture, bg_size);
+		const ImU32 bg = IM_COL32(219, 195, 182, 255); //ImGui::GetColorU32(ImGuiCol_Button);
+		ImU32 col = IM_COL32(148, 102, 77, 255);
+		if (remaining_sec <= 120) {
+			col = IM_COL32(255, 71, 61, 255);
+		}
 
 		ImGui::SetCursorPos(padding);
 		ImGui::Spinner("##spinner", radius, thickness, 1, col, 30);
 		ImGui::SetCursorPos(padding);
 		ImGui::Spinner("##spinner", radius, thickness, ratio, bg, 120);
-		
-		auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
-		ImGui::SetCursorPos((spinner_size - text_size) * 0.5f + padding);
-		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
-		ImGui::Text(GUI_timer_string.c_str());
-		ImGui::PopStyleColor();
+		if (remaining_sec > 120 || remaining_sec % 2 == 0) {
+			auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
+			ImGui::SetCursorPos((spinner_size - text_size) * 0.5f + padding);
+			ImGui::PushStyleColor(ImGuiCol_Text, col);
+			ImGui::Text(GUI_timer_string.c_str());
+			ImGui::PopStyleColor();
+		}
 		ImGui::End();
 		ImGui::PopStyleVar(2);
 	}
@@ -641,13 +645,11 @@ bool GUI::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* ou
 }
 
 void GUI::initializeImage() {
-	const char* rack_dir = (picture_dir + std::string("/rack")).c_str(); 
 	int i = 0;
-	for (auto& entry : fs::directory_iterator(rack_dir)) {
+	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/rack")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(rack_images_list[i]);
-		const char* epath = entry.path().string().c_str(); 
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		image->my_image_width *= 0.9f;
 		image->my_image_height *= 0.9f;
@@ -655,42 +657,35 @@ void GUI::initializeImage() {
 	}
 	rack_image_idx = 1;
 	i = 0; 
-	const char* icon_dir = (picture_dir + std::string("/icon")).c_str();
-	for (auto& entry : fs::directory_iterator(icon_dir)) {
+	for (auto& entry : fs::directory_iterator((picture_dir + std::string("/icon")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(icon_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		image->my_image_width *= 2.0f;
 		image->my_image_height *= 2.0f;
 		i++;
 	}
 
-	const char* score_bg_path = (picture_dir + std::string("/score_background.png")).c_str();
-	LoadTextureFromFile(score_bg_path, &(score_background.my_image_texture),
+	LoadTextureFromFile(std::string(picture_dir + std::string("/score_background.png")).c_str(), &(score_background.my_image_texture),
 		&(score_background.my_image_width), &(score_background.my_image_height));
 
 	LoadTextureFromFile((picture_dir + std::string("/minimap_background.png")).c_str(), &(minimap_background.my_image_texture),
 		&(minimap_background.my_image_width), &(minimap_background.my_image_height));
 	i = 0; 
-	const char* fish_dir = (picture_dir + std::string("/fishy")).c_str();
-	for (auto& entry : fs::directory_iterator(fish_dir)) {
+	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/fishy")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(fish_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		i++;
 	}
 
 	i = 0;
-	const char* tool_dir = (picture_dir + std::string("/tools")).c_str();
-	for (auto& entry : fs::directory_iterator(tool_dir)) {
+	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/tools")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(tool_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		i++;
 	}
@@ -706,12 +701,10 @@ void GUI::initializeImage() {
 	timer_background.my_image_height *= 0.7f;
 
 	i = 0;
-	const char* veg_dir = (picture_dir + std::string("/Vegetable")).c_str();
-	for (auto& entry : fs::directory_iterator(veg_dir)) {
+	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/Vegetable")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(veg_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		image->my_image_height *= 10; 
 		image->my_image_width *= 10;
@@ -721,12 +714,10 @@ void GUI::initializeImage() {
 		&(sale_background.my_image_width), &(sale_background.my_image_height));
 
 	i = 0;
-	const char* char_dir = (picture_dir + std::string("/characters")).c_str();
-	for (auto& entry : fs::directory_iterator(char_dir)) {
+	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/characters")).c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(char_images_list[i]);
-		const char* epath = entry.path().string().c_str();
-		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
 		
 		i++;
@@ -1007,8 +998,9 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	glfwSwapBuffers(my_window);
 }
 
-void GUI::setTimer(float time) {
+void GUI::setTimer(float time, int r_sec) {
 	timer_percent = time; 
+	remaining_sec = r_sec; 
 }
 
 int GUI::renderCharacterSelection(int char_options[], int my_char_index) {

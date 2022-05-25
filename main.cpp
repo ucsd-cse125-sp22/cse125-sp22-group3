@@ -283,7 +283,7 @@ int main(int argc, char* argv[])
 			GUI::stamina_percent = sheader->stamina_bar;
 
 			// update timer
-			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)));
+			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)), sheader->time_remaining_seconds);
 			char strbuf[16];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
