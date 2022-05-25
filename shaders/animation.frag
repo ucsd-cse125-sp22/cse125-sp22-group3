@@ -46,8 +46,8 @@ vec3 CalcPointLight(vec3 lightPos, vec3 viewDir, vec3 norm, vec3 lightColor, vec
   			     0.032f * (distance * distance));    
     // combine results
     vec3 ambient2  = lightColor  * vec3(tex);
-    vec3 diffuse2  = vec3(0.1f) * diff * vec3(tex);
-    vec3 specular2 = vec3(0.5f) * spec * vec3(tex);
+    vec3 diffuse2  = vec3(0.5f) * diff * vec3(tex);
+    vec3 specular2 = vec3(0.1f) * spec * vec3(tex);
 
     ambient2  *= attenuation;
     diffuse2  *= attenuation;
@@ -161,7 +161,7 @@ void main()
         float interpolate = clamp((convTime - 3.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunset, night, interpolate);
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 6; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 (vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * interpolate);
@@ -171,7 +171,7 @@ void main()
     else if(convTime >= 3.5f && convTime < 8.5f) {
         lightColor = night;
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 6; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f);
@@ -182,7 +182,7 @@ void main()
         float interpolate = clamp((convTime - 8.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(night, sunrise, interpolate);
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 6; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * (1.0f - interpolate);

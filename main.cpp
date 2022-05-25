@@ -240,7 +240,6 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		std::vector<glm::vec3> players; // TODO ask cynthia
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
 			// deserialize incoming packet into structs
 			ServerHeader* sheader;
@@ -255,6 +254,8 @@ int main(int argc, char* argv[])
 			const glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
 			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
+
+			std::vector<glm::vec3> point_light_pos; // TODO ask cynthia <--- used to get players positions for point lights in night phase -cynthia
 
 			// check if need to trigger client-side winning sequence
 			if (sheader->time_remaining_seconds <= 0)
@@ -308,9 +309,8 @@ int main(int argc, char* argv[])
 					GUI::player_pos[model_info.model-6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
-					players.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
+					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 5.0f, 0.0f));
 				}
-				FBO::playerPos = players;
 
 				// set player animation speed
 				//TODO Get rid of this lol, maybe make AnimSpeeds sent back from server?
@@ -330,8 +330,13 @@ int main(int argc, char* argv[])
 				}
 				curr_model.setAnimationMode(model_info.modelAnim);
 
+				// get light for NPC and golden eggplant
+				if (model_info.model == CHAR_NPC || model_info.model == VEG_GOLDEN_EGGPLANT) {
+					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 5.0f, 0.0f));
+				}
+
 				// rotating particles towards players
-				if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER || model_info.model == PARTICLE_GLOW) {
+				else if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER || model_info.model == PARTICLE_GLOW) {
 					glm::mat4 tempTransform = model_info.parent_transform;
 					glm::vec3 plot_pos = glm::vec3(tempTransform[3][0], tempTransform[3][1], tempTransform[3][2]);
 					glm::mat4 rotation;
@@ -356,6 +361,9 @@ int main(int argc, char* argv[])
 				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
 			}
 		
+			// for point lights in night phase
+			FBO::playerPos = point_light_pos;
+
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glViewport(0, 0, Window::width, Window::height);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
