@@ -51,7 +51,7 @@ std::map<ModelEnum, GLuint> Window::modelShader;
 bool Window::initializeProgram() {
 	// Create a shader program with a vertex shader and a fragment shader.
 	worldShaderProgram = LoadShaders("shaders/world.vert", "shaders/world.frag");
-	waterShaderProgram = LoadShaders("shaders/water.vert", "shaders/world.frag");
+	waterShaderProgram = LoadShaders("shaders/water.vert", "shaders/water.frag");
 	leafShaderProgram = LoadShaders("shaders/leaves.vert", "shaders/world.frag");
 	modelShaderProgram = LoadShaders("shaders/model.vert", "shaders/model.frag");
 	animationShaderProgram = LoadShaders("shaders/animation.vert", "shaders/animation.frag");
@@ -60,7 +60,7 @@ bool Window::initializeProgram() {
 	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 	particleShaderProgram = LoadShaders("shaders/particles.vert", "shaders/particles.frag");
 	debugShaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
-	domeShaderProgram = LoadShaders("shaders/particles.vert", "shaders/dome.frag");
+	domeShaderProgram = LoadShaders("shaders/dome.vert", "shaders/dome.frag");
 
 	// Check the shader program.
 	if (!worldShaderProgram)

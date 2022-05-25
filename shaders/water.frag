@@ -18,7 +18,6 @@ in float t;
 
 uniform vec3 viewPos;
 uniform sampler2D texture_diffuse1;
-uniform sampler2DArray shadowMap;
 
 const vec3 day = vec3(0.6, 0.5, 0.4);
 const vec3 night = vec3(0, 0.027, 0.121);
@@ -49,24 +48,6 @@ void main()
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 halfVector = normalize(lightPos + viewDir);
-
-    // select cascade layer
-    vec4 fragPosViewSpace = viewMat * vec4(FragPos, 1.0);
-    float depthValue = abs(fragPosViewSpace.z);
-
-    int layer = -1;
-    for (int i = 0; i < 4; ++i)
-    {
-        if (depthValue < cascadePlaneDistances[i])
-        {
-            layer = i;
-            break;
-        }
-    }
-    if (layer == -1)
-    {
-        layer = 4;
-    }
 
     // diffuse shading
     float diff = max(dot(norm, lightDir), 0.0);
