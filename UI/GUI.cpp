@@ -20,6 +20,9 @@ int GUI::scoreboard_data[NUM_ICON];
 GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::veg_images_list[NUM_VEG_IMG];
+GUIImage GUI::char_images_list[NUM_ICON];
+int GUI::my_char_idx;
+
 
 GUIImage GUI::curtain_img;
 GUIImage GUI::stamina_image;
@@ -291,6 +294,7 @@ bool GUI::renderUI() {
 		ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
 		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 		ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
+		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)score_background.my_image_texture, ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
 		ImGui::End();
 		ImGui::SetNextWindowPos(ImVec2(190 * display_ratio, 190 * display_ratio), 0, ImVec2(0, 0));
@@ -715,6 +719,18 @@ void GUI::initializeImage() {
 	}
 	LoadTextureFromFile((picture_dir + std::string("/sale_background.png")).c_str(), &(sale_background.my_image_texture),
 		&(sale_background.my_image_width), &(sale_background.my_image_height));
+
+	i = 0;
+	const char* char_dir = (picture_dir + std::string("/characters")).c_str();
+	for (auto& entry : fs::directory_iterator(char_dir)) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(char_images_list[i]);
+		const char* epath = entry.path().string().c_str();
+		bool ret = LoadTextureFromFile(epath, &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		
+		i++;
+	}
 }
 
 void GUI::initializeLoadingImage() {
@@ -800,7 +816,6 @@ bool GUI::renderLoadScene(GLFWwindow* window) {
 	glClearColor(212.f / 255, 242.f / 255, 148.f / 255, 1.0);
 	return true; 
 }
-
 
 bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
@@ -996,12 +1011,65 @@ void GUI::setTimer(float time) {
 	timer_percent = time; 
 }
 
-bool GUI::renderWinningScene() {
-
+int GUI::renderCharacterSelection(int char_options[], int my_char_index) {
+	int res = -1; 
+	glfwPollEvents();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
+	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+		res = my_char_idx;
+	} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
+		if(my_char_idx > 0)
+			my_char_idx--; 
+	} else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
+		if (my_char_idx < NUM_ICON - 1) {
+			my_char_idx++; 
+		}
+	}
+	std::set<int> selected_char; 
+	for (int i = 0; i < sizeof(char_options) / sizeof(int); i++) {
+		if (char_options[i] != -1) {
+			selected_char.insert(char_options[i]);
+		}
+	}
+	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::Begin("Character Selection", NULL, TRANS_WINDOW_FLAG);
+	ImVec2 cursor = ImVec2(10, 10);
+	for (int i = 0; i < NUM_ICON; i++) {
+		ImGui::SetCursorPos(cursor);
+		GUIImage image = char_images_list[i];
+		ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+		ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
+		if (selected_char.find(i) != selected_char.end()) {
+			auto text_size = ImGui::CalcTextSize("SELECTED");
+			ImGui::SetCursorPos(cursor + (image_size - text_size) * 0.5f);
+			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+			ImGui::Text("SELECTED");
+			ImGui::PopStyleColor();
+		}
+		if (i == my_char_idx) {
+			ImGui::SetCursorPos(cursor);
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 250);
+			draw_list->AddRect(cursor, image_size + cursor, col, 0.0f, ImDrawFlags_None, 5.0f);
+		}
+		cursor.x += image_size.x + 10; 
+	}
+	ImGui::End();
+
+	// Rendering
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	glfwSwapBuffers(my_window);
+	
+	return res; 
+}
+
+bool GUI::renderWinningScene() {
 	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
 		winning_fade_ratio = 1; 
 	}
@@ -1057,6 +1125,7 @@ void GUI::createBuyConfirmation() {
 
 	ImGui::End();
 }
+
 
 
 

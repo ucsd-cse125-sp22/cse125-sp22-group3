@@ -199,9 +199,20 @@ int main(int argc, char* argv[])
 			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
 			GUI::renderWaitingClient(cw_packet.client_joined, cw_packet.max_client); 
 		});
-	fprintf(stderr, "All players connected, starting game\n");
+
 
 	// butter butter magic
+	fprintf(stderr, "All players connected, starting character selection\n");
+	
+	//TODO character selection 
+	client->syncCharacterSelection([&](ServerCharacterPacket recv_packet, ClientCharacterPacket* out_packet) 
+		{
+			int res = GUI::renderCharacterSelection(recv_packet.char_options, recv_packet.my_char_index);
+			out_packet->character = ModelEnum(res); 
+			out_packet->confirm_selection = res != -1;
+		});
+	fprintf(stderr, "all players selected character, starting game\n");
+
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
 	
