@@ -254,9 +254,9 @@ begin_loop_accept_client:
 
 			if (cc_packet.confirm_selection && char_selections[client_idx]<0 ) {
 				const bool avaliable = char_unavailable.find(cc_packet.character) == char_unavailable.end();
-				//printf("recv:%d %s \n", cc_packet.character, cc_packet.confirm_selection ? "true" : "false");
 				if (avaliable) {
-					//printf("Avaliable! value set! \n");
+					printf("recv:%d %s \n", cc_packet.character, cc_packet.confirm_selection ? "true" : "false");
+					printf("Avaliable! value set! \n");
 					char_selections[client_idx] = cc_packet.character;
 					char_unavailable.insert(cc_packet.character);
 					sc_packet.char_options[client_idx] = cc_packet.character;
