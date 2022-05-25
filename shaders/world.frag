@@ -48,7 +48,7 @@ vec3 CalcPointLight(vec3 lightPos, vec3 viewDir, vec3 norm, vec3 lightColor, vec
     // combine results
     vec3 ambient2  = lightColor  * vec3(tex);
     vec3 diffuse2  = lightColor * diff * vec3(tex);
-    vec3 specular2 = vec3(1.0f) * spec * vec3(tex);
+    vec3 specular2 = vec3(0.5f) * spec * vec3(tex);
 
     ambient2  *= attenuation;
     diffuse2  *= attenuation;
