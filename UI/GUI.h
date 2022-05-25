@@ -30,7 +30,7 @@
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
 						  ImGuiWindowFlags_NoInputs 
 
-#define MINI_MAP_FLAG ImGuiWindowFlags_NoTitleBar| \
+#define DRAK_WINDOW_FLAG ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar
 
 

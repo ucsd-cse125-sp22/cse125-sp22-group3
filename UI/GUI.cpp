@@ -287,7 +287,8 @@ bool GUI::renderUI() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	/* build scoreboard */
 	if (GUI_show_scoreboard) {
 		ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
@@ -457,14 +458,22 @@ bool GUI::renderUI() {
 		GUIImage* tool_image = &tool_images_list[tool_image_idx]; 
 		GUIImage fish_image = fish_images_list[(rack_image_idx+tool_image_idx)%3];
 
-		ImVec2 rack_size = ImVec2(rack_image->my_image_width * display_ratio, rack_image->my_image_height * display_ratio);
-		ImVec2 fish_size = ImVec2(window_width, window_width * fish_image.my_image_height / fish_image.my_image_width);
+		ImVec2 fish_size = window_width / window_height > fish_image.my_image_width / fish_image.my_image_height ?
+						   ImVec2(window_height * fish_image.my_image_width / fish_image.my_image_height, window_height):
+						   ImVec2(window_width, window_width * fish_image.my_image_height / fish_image.my_image_width);
+		ImVec2 rack_size = ImVec2(rack_image->my_image_width * (fish_size.y * 0.5f)/ rack_image->my_image_height  , fish_size.y * 0.5f);
+
 		ImVec2 tool_size = fish_size;
 		ImVec2 curtain_size = ImVec2(fish_size.y/curtain_img.my_image_height * curtain_img.my_image_width, fish_size.y);
-
-		ImGui::SetNextWindowSize(ImVec2(window_width,window_height));
+		ImVec2 window_size = ImVec2(window_width, window_height);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 255));
+		ImGui::SetNextWindowSize(window_size);
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::Begin("Buy Store GUI", &open_ptr, TRANS_WINDOW_FLAG);
+		ImGui::Begin("Buy_UI_bg",&open_ptr, DRAK_WINDOW_FLAG);
+		ImGui::End(); 
+		ImGui::SetNextWindowSize(fish_size);
+		ImGui::SetNextWindowPos((window_size-fish_size)*0.5f);
+		ImGui::Begin("Buy Store GUI", &open_ptr, DRAK_WINDOW_FLAG);
 		ImGui::SetScrollX(0); //prevent scroll cause the context is actually larger than the window 
 		ImGui::SetScrollY(0); 
 		// add tool shed layer
@@ -506,7 +515,7 @@ bool GUI::renderUI() {
 			ImGui::Text("%s seed! It will be %f dollar(s). \nPress [Enter] to buy!", seed_type_list[rack_image_idx - 1], 1);
 		}
 		ImGui::PopFont(); 
-		ImGui::PopStyleColor();
+		ImGui::PopStyleColor(2);
 
 		ImGui::End();
 	} 
@@ -535,8 +544,8 @@ bool GUI::renderUI() {
 		
 		ImGui::SetNextWindowPos(ImVec2(window_width - bg_size.x, bg_size.y), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 		ImGui::SetNextWindowSize(bg_size);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 		ImGui::Begin("Timer_bg", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)timer_background.my_image_texture, bg_size);
@@ -558,7 +567,7 @@ bool GUI::renderUI() {
 			ImGui::PopStyleColor();
 		}
 		ImGui::End();
-		ImGui::PopStyleVar(2);
+		//ImGui::PopStyleVar(2);
 	}
 
 	//TODO: for testing purpose, remove after connect to server
@@ -593,7 +602,7 @@ bool GUI::renderUI() {
 		image->fade_in = !image->fade_in; 
 	}*/
 	//end of fading out test
-	
+	ImGui::PopStyleVar(2);
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	return GUI_show_buy_ui;
@@ -915,8 +924,8 @@ void GUI::createStamina() {
 
 	float top_padding = border_size.y * 0.1f ;
 	float side_padding = border_size.x / 6.0f; 
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::SetNextWindowSize(border_size);
 	ImGui::SetNextWindowPos(ImVec2(window_width- border_size.x, window_height), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
@@ -925,7 +934,7 @@ void GUI::createStamina() {
 	ImGui::SetCursorPos(ImVec2(side_padding, top_padding-side_padding));
 	ImGui::ReverseBufferingBar("##Stamina_bar", stamina_percent / 100, ImVec2(border_size.x-side_padding*2, border_size.y - top_padding), bg, col);
 	ImGui::End();
-	ImGui::PopStyleVar(2);
+	//ImGui::PopStyleVar(2);
 }
 
 void GUI::createTimer(float ratio) {
@@ -1100,12 +1109,25 @@ void GUI::createBuyConfirmation() {
 	bool open_ptr = true;
 	GUIImage veg_image = veg_images_list[0];
 
-	ImVec2 fish_size = ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
-	ImVec2 veg_size = ImVec2(veg_image.my_image_width * display_ratio, veg_image.my_image_height * display_ratio);
+	//ImVec2 fish_size = ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
+	ImVec2 fish_size = window_width / window_height > sale_background.my_image_width / sale_background.my_image_height ?
+		ImVec2(window_height * sale_background.my_image_width / sale_background.my_image_height, window_height) :
+		ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
 
-	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+	ImVec2 veg_size = ImVec2(veg_image.my_image_width * (fish_size.y * 0.5f) / veg_image.my_image_height, fish_size.y * 0.5f);
+	//ImVec2 veg_size = ImVec2(veg_image.my_image_width * display_ratio, veg_image.my_image_height * display_ratio);
+
+	ImVec2 window_size = ImVec2(window_width, window_height);
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 255));
+	ImGui::SetNextWindowSize(window_size);
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::Begin("Sale UI confirmation", &open_ptr, TRANS_WINDOW_FLAG);
+	ImGui::Begin("sale_UI_bg", &open_ptr, DRAK_WINDOW_FLAG);
+	ImGui::End();
+
+	ImGui::SetNextWindowSize(fish_size);
+	ImGui::SetNextWindowPos((window_size - fish_size) * 0.5f);
+	ImGui::Begin("Sale UI confirmation", &open_ptr, DRAK_WINDOW_FLAG);
 	ImGui::SetScrollX(0); //prevent scroll cause the context is actually larger than the window 
 	ImGui::SetScrollY(0);
 	// add the fish layer
@@ -1122,7 +1144,8 @@ void GUI::createBuyConfirmation() {
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
 	ImGui::Text("%s! That will be %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_price_list[0]);
 	ImGui::PopFont();
-	ImGui::PopStyleColor();
+	ImGui::PopStyleColor(2);
+
 
 	ImGui::End();
 }
