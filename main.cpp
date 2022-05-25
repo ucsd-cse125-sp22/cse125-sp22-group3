@@ -36,7 +36,6 @@ void setup_callbacks(GLFWwindow* window)
 	glfwSetKeyCallback(window, InputManager::keyCallback);
 
 	// Set cursor callback
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, InputManager::CursorCallback);
 }
 
@@ -200,9 +199,6 @@ int main(int argc, char* argv[])
 			fprintf(stderr, "%d of %d players joined\n", cw_packet.client_joined, cw_packet.max_client);
 			GUI::renderWaitingClient(cw_packet.client_joined, cw_packet.max_client); 
 		});
-
-
-	// butter butter magic
 	fprintf(stderr, "All players connected, starting character selection\n");
 	
 	//TODO character selection
@@ -214,8 +210,10 @@ int main(int argc, char* argv[])
 		});
 	fprintf(stderr, "all players selected character, starting game\n");
 
+	// butter butter magic
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
 	Window::bloom = new FBO(Window::width, Window::height);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
 	// "globals" for the duration of the client main loop
 	int status = 1;
