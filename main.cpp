@@ -179,16 +179,16 @@ int main(int argc, char* argv[])
 	GUI::initializeGUI(window);
 	GUI::initializeLoadingImage();
 
-	// Initialize network client interface
-	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("client.cfg");
-	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
-
 	// Initialize sound engine
 	SoundEngine sound_engine{};
 	sound_engine.Init();
 
 	// preload models and other assets
 	preload_assets(window);
+	
+	// Initialize network client interface
+	static std::unordered_map<std::string, std::string> client_config = ConfigReader::readConfigFile("client.cfg");
+	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
 	// client-side wait until all clients are connected
 	GUI::renderWaitingClient(1, 1);

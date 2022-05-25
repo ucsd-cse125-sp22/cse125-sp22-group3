@@ -988,8 +988,12 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	ImGui::End();
 	ImGui::SetNextWindowPos(ImVec2(32.0f * display_ratio, window_height / 3 * 2));
 	ImGui::Begin("Loading Status", NULL, TRANS_WINDOW_FLAG);
+	ImGui::PushFont(font_Ranchers);
+	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 	ImGui::Text("%d of %d client joined...", client_joined, max_client);
-	ImGui::End(); 
+	ImGui::PopFont();
+	ImGui::PopStyleColor();
+	ImGui::End();
 
 	// Rendering
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
