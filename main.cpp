@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len){
+		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len) {
 			// deserialize incoming packet into structs
 			ServerHeader* sheader;
 			ModelInfo* model_arr;
@@ -261,7 +261,7 @@ int main(int argc, char* argv[])
 
 			//Rendering Code
 			const glm::mat4 player_transform = sheader->player_transform;
-			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2])/player_transform[3][3];
+			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2]) / player_transform[3][3];
 			const glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
 			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
@@ -273,10 +273,10 @@ int main(int argc, char* argv[])
 			{
 				GUI::GUI_show_winning = true;
 			}
-			
+
 			// update scoreboard
 			for (int i = 0; i < num_clients; i++) {
-				GUI::scoreboard_data[i]=sheader->balance[i];
+				GUI::scoreboard_data[i] = sheader->balance[i];
 			}
 
 			// update stamina
@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
 
 				// FBO and minimap needs player data
 				if (model_info.is_player) {
-					GUI::player_pos[model_info.model-6] = ImVec2(
+					GUI::player_pos[model_info.model - 6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
 					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
@@ -343,7 +343,11 @@ int main(int argc, char* argv[])
 
 				// get light for NPC and golden eggplant
 				if (model_info.model == CHAR_NPC || model_info.model == VEG_GOLDEN_EGGPLANT) {
-					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
+					glm::vec3 pos = glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f);
+
+					// if eggplant is dropped, point light wont show. set minimum to 1.
+					if (pos.y == 0.0f) { pos.y = 1.0f; }
+					point_light_pos.push_back(pos);
 				}
 
 				// rotating particles towards players
