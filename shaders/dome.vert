@@ -9,13 +9,10 @@ uniform mat4 view;
 uniform mat4 model;
 uniform float time;
 
-out float t;
 out vec2 texCoords;
 
 void main()
 {
     texCoords = uvs;
     gl_Position = projection * view * model * vec4(position, 1.0);
-
-    t = time;
 }
