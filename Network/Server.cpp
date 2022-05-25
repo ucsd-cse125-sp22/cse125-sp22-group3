@@ -230,7 +230,7 @@ begin_loop_accept_client:
 	}
 
 	// loop while unselected character remaining
-	while (std::find(char_sel.begin(), char_sel.end(), SENTINEL_END) != char_sel.end()) {
+	while (true) {
 		//send current character selection to all clients
 		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
 			ServerCharacterPacket sc_packet = {};
@@ -245,6 +245,11 @@ begin_loop_accept_client:
 			sc_packet.serializeTo(sc_packet_data);
 			int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
 			// TODO deal with send_status;
+		}
+		
+		if (std::find(char_sel.begin(), char_sel.end(), SENTINEL_END) == char_sel.end())
+		{
+			break; // break here so server updates client one last time
 		}
 
 		// recieve character selection result from clients
@@ -282,41 +287,6 @@ begin_loop_accept_client:
 	for (int i = 0; i < num_clients; i++)
 	{
 		fprintf(stderr, "\t Client %d: %s\n", i, getCharacterFriendlyName(char_sel[i]).c_str());
-	}
-
-	//TODO very very temporary
-	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
-		ServerCharacterPacket sc_packet = {};
-		sc_packet.client_idx = client_idx;
-		ModelEnum temp[4] = { SENTINEL_END, SENTINEL_END, SENTINEL_END, SENTINEL_END }; // TODO stopgap for now
-		memcpy(temp, char_sel.data(), num_clients * sizeof(ModelEnum));
-		for (int x = 0; x < 4; x++) {
-			sc_packet.current_char_selections[x] = temp[x];
-		}
-
-		char sc_packet_data[sizeof(ServerCharacterPacket)];
-		sc_packet.serializeTo(sc_packet_data);
-
-		int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
-		// TODO deal with send_status;
-	}
-	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
-		char network_data[DEFAULT_BUFLEN];
-		int recvStatus = recv(ClientSocketVec[client_idx], network_data, DEFAULT_BUFLEN, 0);
-
-		if (recvStatus == SOCKET_ERROR) {
-			if (WSAGetLastError() == WSAECONNRESET) {
-				std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
-				fprintf(stderr, "Connection with client #%d at %s dropped\n", client_idx, client_addr_str.c_str());
-
-				closesocket(ClientSocketVec[client_idx]);
-				ClientSocketVec[client_idx] = INVALID_SOCKET;
-			}
-			else {
-				fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
-			}
-			break; // break out of the recv do-while loop
-		}
 	}
 	
 main_loop_label:

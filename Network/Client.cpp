@@ -123,8 +123,7 @@ void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_pa
 
 void Client::syncCharacterSelection(int num_clients, std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback)
 {
-	bool done = false;
-	do {
+	while (true) {
 		char recvbuf[DEFAULT_BUFLEN];
 		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
 		if (recvStatus == SOCKET_ERROR) {
@@ -138,23 +137,25 @@ void Client::syncCharacterSelection(int num_clients, std::function<ClientCharact
 			ServerCharacterPacket sc_packet = {};
 			sc_packet.deserializeFrom(recvbuf + byte_idx);
 
-			done = true;
+			bool done = true;
 			for (int client = 0; client < num_clients; client++)
 			{
-				fprintf(stderr, "%d ", sc_packet.current_char_selections[client]);
 				if (sc_packet.current_char_selections[client] == SENTINEL_END)
 				{
 					done = false;
 				}
 			}
-			fprintf(stderr, " is such\n");
+
+			if (done)
+			{
+				return; // check one last time from server whether all player has selected
+			}
 			
 			ClientCharacterPacket out_packet = callback(sc_packet);
 			
 			char out_data[sizeof(ClientCharacterPacket)];
 			out_packet.serializeTo(out_data);
 			int sendStatus = send(ConnectSocket, out_data, sizeof(ClientCharacterPacket), 0);
-			//printf("send:%d %s \n", out_packet.character, out_packet.confirm_selection ? "true" : "false");
 
 			if (sendStatus == SOCKET_ERROR) {
 				if (WSAGetLastError() == WSAECONNRESET) {
@@ -169,7 +170,7 @@ void Client::syncCharacterSelection(int num_clients, std::function<ClientCharact
 				//fprintf(stderr, "Client bytes sent: %ld\n", sendStatus);
 			}
 		}
-	} while (!done);
+	}
 }
 
 /*

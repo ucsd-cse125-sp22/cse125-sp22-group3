@@ -32,7 +32,6 @@ void setup_callbacks(GLFWwindow* window)
 	glfwSetWindowSizeCallback(window, Window::resizeCallback);
 
 	// Set the key callback.
-	//glfwSetKeyCallback(window, Window::keyCallback);
 	glfwSetKeyCallback(window, InputManager::keyCallback);
 
 	// Set cursor callback
@@ -211,7 +210,7 @@ int main(int argc, char* argv[])
 		out_packet.character = res;
 		return out_packet;
 	});
-	fprintf(stderr, "all players selected character, starting game\n");
+	fprintf(stderr, "All players selected character, starting game\n");
 
 	// butter butter magic
 	Window::postprocessing = new FBO(-200.0f, 7500.0f);
@@ -241,7 +240,6 @@ int main(int argc, char* argv[])
 		eye_offset = glm::normalize(eye_offset) * InputManager::camera_dist;
 		if (eye_offset[1] < 15) eye_offset[1] = 15;
 		eye_offset = eye_offset * (eye_offset[1]/30.f);
-
 		
 		// after moving camera, move the player
 		ClientPacket out_packet;
