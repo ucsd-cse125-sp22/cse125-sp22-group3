@@ -373,7 +373,10 @@ int main(int argc, char* argv[])
 					model_info.parent_transform = rotation;
 				}
 
-				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+				// Do not draw shadow for the big sky dome
+				if (model_info.model != WORLD_DOME) {
+					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+				}
 			}
 		
 			// for point lights in night phase
@@ -399,6 +402,9 @@ int main(int argc, char* argv[])
 						model_map[model_info.model_id] = new Model(model_info.model);
 				}
 
+				if (model_info.model == WORLD_DOME) {
+					std::cout << "Here" << std::endl;
+				}
 				model_map[model_info.model_id]->setAnimationMode(model_info.modelAnim);
 				model_map[model_info.model_id]->draw(view, Window::projection, model_info.parent_transform, Window::modelShader[model_info.model]);
 			}

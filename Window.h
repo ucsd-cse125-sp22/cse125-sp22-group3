@@ -49,6 +49,7 @@ public:
 	static GLuint blurShaderProgram;
 	static GLuint finalShaderProgram;
 	static GLuint debugShaderProgram;
+	static GLuint domeShaderProgram;
 	static GLuint particleShaderProgram;
 
 	// Constructors and Destructors
