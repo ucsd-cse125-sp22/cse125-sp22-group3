@@ -164,7 +164,7 @@ std::vector<SoundInfo> Player::GetSounds()
 	if (sound_plot_placement) output.push_back(SoundInfo{SFX_PLOT_PLACE, GetPosition()});
 	if (sound_poison) output.push_back(SoundInfo{ SFX_POISON, GetPosition() });
 	if (sound_plant) output.push_back(SoundInfo{ SFX_PLANT, GetPosition() });
-	if (sound_harvest) output.push_back(SoundInfo{ SFX_PLANT, GetPosition() });
+	if (sound_harvest) output.push_back(SoundInfo{ SFX_HARVEST, GetPosition() });
 	if (sound_eggplant_pickup) output.push_back(SoundInfo{ SFX_EGGPLANT_PICKUP, GetPosition() });
 	if (sound_steal) output.push_back(SoundInfo{ SFX_STEAL, GetPosition() });
 	if (sound_shovel) output.push_back(SoundInfo{ SFX_SHOVEL, GetPosition() });

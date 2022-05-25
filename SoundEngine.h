@@ -19,7 +19,11 @@ enum SoundEnum
     SFX_SHOVEL,
     SFX_WATERING,
     SFX_NO,
-    SFX_FERTILIZE
+    SFX_FERTILIZE,
+    SFX_HARVEST,
+
+    MUSIC_MENU,
+    MUSIC_DAY_1
 };
 
 struct SoundEngine
@@ -40,6 +44,9 @@ struct SoundEngine
     SoLoud::Wav wav_sfx_watering;
     SoLoud::Wav wav_sfx_no;
     SoLoud::Wav wav_sfx_fertilize;
+    SoLoud::Wav wav_sfx_harvest;
+
+    SoLoud::Wav music;
 
     std::unordered_map<SoundEnum, SoLoud::Wav> sound_wav_map = {
         {SFX_AMBIENCE, wav_sfx_ambience},
@@ -55,6 +62,7 @@ struct SoundEngine
         {SFX_WATERING, wav_sfx_watering},
         {SFX_NO, wav_sfx_no},
         {SFX_FERTILIZE, wav_sfx_fertilize},
+        {SFX_HARVEST, wav_sfx_harvest},
     };
 
     std::unordered_map<SoundEnum, const char*> sound_file_map = {
@@ -71,6 +79,9 @@ struct SoundEngine
         {SFX_WATERING, "sound/sfx/watering.wav"},
         {SFX_NO, "sound/sfx/no.wav"},
         {SFX_FERTILIZE, "sound/sfx/plant.wav"},
+        {SFX_HARVEST, "sound/sfx/harvest.wav"},
+        {MUSIC_MENU, "sound/music/menu.wav"},
+        {MUSIC_DAY_1, "sound/music/day-1.wav"},
     };
     
     void Init()
@@ -84,6 +95,19 @@ struct SoundEngine
     void DeInit() { engine.deinit(); }
 
     void Play(const SoundEnum sound) { engine.play(sound_wav_map[sound]); }
+    void Stop(const SoundEnum sound) { sound_wav_map[sound].stop(); }
+
+    void PlayMusic(const SoundEnum sound,const bool looping = true)
+    {
+        music.load(sound_file_map[sound]);
+        music.setLooping(looping);
+        engine.play(music);
+    }
+
+    void StopMusic()
+    {
+        music.stop();
+    }
 
 
 };

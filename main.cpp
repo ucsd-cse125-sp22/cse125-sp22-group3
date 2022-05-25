@@ -191,6 +191,7 @@ int main(int argc, char* argv[])
 	Client* client = new Client(client_config["server_address"].c_str(), DEFAULT_PORT);
 
 	// client-side wait until all clients are connected
+	sound_engine.PlayMusic(MUSIC_MENU);
 	GUI::renderWaitingClient(1, 1);
 	int num_clients = 4;
 	client->syncGameReadyToStart([&](ClientWaitPacket cw_packet)
@@ -204,7 +205,7 @@ int main(int argc, char* argv[])
 	// butter butter magic
 	fprintf(stderr, "All players connected, starting character selection\n");
 	
-	//TODO character selection 
+	//TODO character selection
 	client->syncCharacterSelection([&](ServerCharacterPacket recv_packet, ClientCharacterPacket* out_packet) 
 		{
 			int res = GUI::renderCharacterSelection(recv_packet.char_options, recv_packet.my_char_index);
@@ -220,8 +221,9 @@ int main(int argc, char* argv[])
 	int status = 1;
 	std::map<uintptr_t, Model*> model_map;
 	glm::vec3 eye_offset = glm::vec3(0,30,30); //TODO no magic number :,(
-		
+
 	sound_engine.Play(SFX_AMBIENCE);
+	sound_engine.PlayMusic(MUSIC_DAY_1, false);
 
 	// Loop while GLFW window should stay open and server hasn't closed connection
 	while (!glfwWindowShouldClose(window) && status > 0)
