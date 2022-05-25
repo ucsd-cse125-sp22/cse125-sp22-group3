@@ -12,7 +12,7 @@ in vec3 Normal;
 in vec3 FragPos;
 in mat4 viewMat;
 
-uniform vec3 playerLight[4];
+uniform vec3 playerLight[6];
 uniform vec3 viewPos;
 uniform vec3 lightPos;
 uniform sampler2D texture_diffuse1;
