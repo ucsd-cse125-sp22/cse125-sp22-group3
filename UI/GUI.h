@@ -17,7 +17,7 @@
 #include "imgui/imgui_internal.h"
 #include <thread>         
 #include <chrono>
-#include <set>
+#include <unordered_set>
 
 #define NUM_ICON 4 // should be consistent with the number of character, will be used in multiple place
 #define NUM_RACK_IMG 6
@@ -62,7 +62,7 @@ public:
 	static bool show_loading;
 	static int rack_image_idx;
 	static int tool_image_idx;
-	static int my_char_idx;
+	static int char_selection_idx;
 	static float timer_percent;
 	static int remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
@@ -110,7 +110,7 @@ public:
 	static void initializeLoadingImage();
 	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
 	static void renderWaitingClient(int client_joined, int max_client);
-	static int renderCharacterSelection(int char_options[], int my_char_index);
+	static ModelEnum renderCharacterSelection(std::unordered_set<ModelEnum> selected_char, int client_idx);
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);

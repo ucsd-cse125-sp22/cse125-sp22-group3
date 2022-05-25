@@ -105,33 +105,25 @@ Client::~Client(void)
 void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_packet)> callback) {
 	bool wait_for_clients = true;
 	do {
-		char recvbuf[sizeof(ClientCharacterPacket)];
-		int recvStatus = recv(ConnectSocket, recvbuf, sizeof(ClientCharacterPacket), 0);
+		char recvbuf[sizeof(ClientWaitPacket)];
+		int recvStatus = recv(ConnectSocket, recvbuf, sizeof(ClientWaitPacket), 0);
 		if (recvStatus == SOCKET_ERROR) {
 			fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
 		}
 		else if (recvStatus == 0) {
 			fprintf(stderr, "Connection closed by server\n");
 		}
-
+		
 		ClientWaitPacket cw_packet;
 		cw_packet.deserializeFrom(recvbuf);
 		callback(cw_packet);
-		printf("Game Ready to Start recv: %d", cw_packet.client_joined);
 		wait_for_clients = cw_packet.client_joined < cw_packet.max_client;
-		/*for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ClientWaitPacket)) {
-			ClientWaitPacket cw_packet;
-			cw_packet.deserializeFrom(recvbuf + byte_idx);
-			callback(cw_packet);
-			printf("Game Ready to Start recv: %d", cw_packet.client_joined);
-			wait_for_clients = cw_packet.client_joined < cw_packet.max_client;
-		}*/
 	} while (wait_for_clients);
 }
 
-void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket recv_packet, ClientCharacterPacket* out_package)> callback)
+void Client::syncCharacterSelection(int num_clients, std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback)
 {
-	boolean done = false; 
+	bool done = false;
 	do {
 		char recvbuf[DEFAULT_BUFLEN];
 		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
@@ -143,14 +135,22 @@ void Client::syncCharacterSelection(std::function<void(ServerCharacterPacket rec
 		}
 
 		for (int byte_idx = 0; byte_idx < recvStatus; byte_idx += sizeof(ServerCharacterPacket)) {
-			ServerCharacterPacket sc_packet;
+			ServerCharacterPacket sc_packet = {};
 			sc_packet.deserializeFrom(recvbuf + byte_idx);
-			//printf("Character Selection recv:%d \n", sc_packet.my_char_index); 
 
-			done = sc_packet.ready;
-			if (done) break; 
-			ClientCharacterPacket out_packet; 
-			callback(sc_packet,&out_packet);
+			done = true;
+			for (int client = 0; client < num_clients; client++)
+			{
+				fprintf(stderr, "%d ", sc_packet.current_char_selections[client]);
+				if (sc_packet.current_char_selections[client] == SENTINEL_END)
+				{
+					done = false;
+				}
+			}
+			fprintf(stderr, " is such\n");
+			
+			ClientCharacterPacket out_packet = callback(sc_packet);
+			
 			char out_data[sizeof(ClientCharacterPacket)];
 			out_packet.serializeTo(out_data);
 			int sendStatus = send(ConnectSocket, out_data, sizeof(ClientCharacterPacket), 0);

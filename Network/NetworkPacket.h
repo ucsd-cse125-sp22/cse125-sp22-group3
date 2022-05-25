@@ -20,10 +20,8 @@ struct ClientWaitPacket {
 	}
 };
 
-// packet struct that sent by client to server include the character selection info
 struct ClientCharacterPacket {
-	ModelEnum character; 
-	bool confirm_selection; // should only update the character of client when it is confirm
+	ModelEnum character;
 	
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ClientCharacterPacket));
@@ -34,19 +32,18 @@ struct ClientCharacterPacket {
 	}
 };
 
-struct ServerCharacterPacket { 
-	int char_options[4]; // TODO:hardcode to 4, should be the number of client, char_options[client_idx] = [ModelEnum index] 
-						 // indicate the ownership of each char to client by client_idx
-	int my_char_index;   // set to the client_idx of client this packet sent to so client-side can determine its own selection
-	bool ready;			 // set to true when all client selected the characters 
+struct ServerCharacterPacket {
+	int client_idx;
+	ModelEnum current_char_selections[4];
+
 	void serializeTo(void* data) {
 		memcpy(data, this, sizeof(ServerCharacterPacket));
 	}
+
 	void deserializeFrom(const void* data) {
 		memcpy(this, data, sizeof(ServerCharacterPacket));
 	}
 };
-
 
 // the Packet struct that sent by client to server
 struct ClientPacket {

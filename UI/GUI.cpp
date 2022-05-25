@@ -21,7 +21,7 @@ GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::veg_images_list[NUM_VEG_IMG];
 GUIImage GUI::char_images_list[NUM_ICON];
-int GUI::my_char_idx;
+int GUI::char_selection_idx;
 int GUI::remaining_sec;
 
 
@@ -1054,29 +1054,24 @@ void GUI::setTimer(float time, int r_sec) {
 	remaining_sec = r_sec; 
 }
 
-int GUI::renderCharacterSelection(int char_options[], int my_char_index) {
-	int res = -1; 
+ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_char, int client_idx) {
+	ModelEnum res = SENTINEL_END; 
 	glfwPollEvents();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
-		res = my_char_idx;
+		res = static_cast<ModelEnum>(CHAR_BUMBUS + char_selection_idx);
 	} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-		if(my_char_idx > 0)
-			my_char_idx--; 
+		if (char_selection_idx > 0)
+			char_selection_idx--; 
 	} else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-		if (my_char_idx < NUM_ICON - 1) {
-			my_char_idx++; 
+		if (char_selection_idx < NUM_ICON - 1) {
+			char_selection_idx++; 
 		}
 	}
-	std::set<int> selected_char; 
-	for (int i = 0; i < sizeof(char_options) / sizeof(int); i++) {
-		if (char_options[i] != -1) {
-			selected_char.insert(char_options[i]);
-		}
-	}
+	
 	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Character Selection", NULL, TRANS_WINDOW_FLAG);
@@ -1086,14 +1081,14 @@ int GUI::renderCharacterSelection(int char_options[], int my_char_index) {
 		GUIImage image = char_images_list[i];
 		ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
-		if (selected_char.find(i) != selected_char.end()) {
+		if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + i)) != 0) {
 			auto text_size = ImGui::CalcTextSize("SELECTED");
 			ImGui::SetCursorPos(cursor + (image_size - text_size) * 0.5f);
 			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 			ImGui::Text("SELECTED");
 			ImGui::PopStyleColor();
 		}
-		if (i == my_char_idx) {
+		if (i == char_selection_idx) {
 			ImGui::SetCursorPos(cursor);
 			ImDrawList* draw_list = ImGui::GetWindowDrawList();
 			const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 250);

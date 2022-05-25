@@ -220,39 +220,38 @@ begin_loop_accept_client:
 			// TODO deal with send_status;
 		}
 	}
-	fprintf(stderr, "All clients connected, starting game loop\n");
+	fprintf(stderr, "All clients connected, starting character selection\n");
 
 	// BEGIN character Selection
-	ServerCharacterPacket sc_packet = {};
-	sc_packet.char_options[0] = -1;
-	sc_packet.char_options[1] = -1;
-	sc_packet.char_options[2] = -1;
-	sc_packet.char_options[3] = -1;
-	sc_packet.ready = false; 
+	std::vector<ModelEnum> char_sel;
+	for (int _ = 0; _ < num_clients; _++)
+	{
+		char_sel.push_back(SENTINEL_END); // use SENTINEL_END as placeholder for no selection
+	}
 
-	ClientCharacterPacket cc_packet = {};
-	std::set<int> char_unavailable; 
-	int char_selections[4] = { -1,-1,-1,-1 };	//TODO: hardcoded! need to change to dynamic allocation
-	int num_client_selected = 0; 
-
-	while (num_client_selected <= num_clients) {
-		//send all character option to clients
-		sc_packet.ready = num_client_selected == num_clients; 
-		char sc_packet_data[sizeof(ServerCharacterPacket)];
+	// loop while unselected character remaining
+	while (std::find(char_sel.begin(), char_sel.end(), SENTINEL_END) != char_sel.end()) {
+		//send current character selection to all clients
 		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
-			sc_packet.my_char_index = client_idx;
+			ServerCharacterPacket sc_packet = {};
+			sc_packet.client_idx = client_idx;
+			ModelEnum temp[4] = {SENTINEL_END, SENTINEL_END, SENTINEL_END, SENTINEL_END}; // TODO stopgap for now
+			memcpy(temp, char_sel.data(), num_clients * sizeof(ModelEnum));
+			for (int x = 0; x < 4; x++) {
+				sc_packet.current_char_selections[x] = temp[x];
+			}
+			
+			char sc_packet_data[sizeof(ServerCharacterPacket)];
 			sc_packet.serializeTo(sc_packet_data);
 			int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
-
 			// TODO deal with send_status;
 		}
-		if (num_client_selected == num_clients) break; 
 
 		// recieve character selection result from clients
 		// TODO: this structure definitely gonna cause race condition.... need somelike of breaktie things
 		for (int client_idx = 0; client_idx < num_clients; client_idx++) {
-			char cc_packet_data[sizeof(ClientCharacterPacket)];
-			int recvStatus = recv(ClientSocketVec[client_idx], cc_packet_data, sizeof(cc_packet_data), 0);
+			char network_data[DEFAULT_BUFLEN];
+			int recvStatus = recv(ClientSocketVec[client_idx], network_data, DEFAULT_BUFLEN, 0);
 
 			if (recvStatus == SOCKET_ERROR) {
 				if (WSAGetLastError() == WSAECONNRESET) {
@@ -267,25 +266,61 @@ begin_loop_accept_client:
 				}
 				break; // break out of the recv do-while loop
 			}
-			cc_packet.deserializeFrom(cc_packet_data);
-
-			if (cc_packet.confirm_selection && char_selections[client_idx]<0 ) {
-				const bool avaliable = char_unavailable.find(cc_packet.character) == char_unavailable.end();
-				if (avaliable) {
-					printf("recv:%d %s \n", cc_packet.character, cc_packet.confirm_selection ? "true" : "false");
-					printf("Avaliable! value set! \n");
-					char_selections[client_idx] = cc_packet.character;
-					char_unavailable.insert(cc_packet.character);
-					sc_packet.char_options[client_idx] = cc_packet.character;
-					num_client_selected++;
+			
+			ClientCharacterPacket cc_packet = {};
+			cc_packet.deserializeFrom(network_data);
+			
+			if (cc_packet.character != SENTINEL_END) {
+				const bool char_avail = std::find(char_sel.begin(), char_sel.end(), cc_packet.character) == char_sel.end();
+				if (char_avail) {
+					char_sel[client_idx] = cc_packet.character;
 				}
 			}
 		}
 	}
-	fprintf(stderr, "All clients Character Selected, starting game loop\n");
+	fprintf(stderr, "All clients selected character, with selections as follows:\n");
+	for (int i = 0; i < num_clients; i++)
+	{
+		fprintf(stderr, "\t Client %d: %s\n", i, getCharacterFriendlyName(char_sel[i]).c_str());
+	}
 
+	//TODO very very temporary
+	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
+		ServerCharacterPacket sc_packet = {};
+		sc_packet.client_idx = client_idx;
+		ModelEnum temp[4] = { SENTINEL_END, SENTINEL_END, SENTINEL_END, SENTINEL_END }; // TODO stopgap for now
+		memcpy(temp, char_sel.data(), num_clients * sizeof(ModelEnum));
+		for (int x = 0; x < 4; x++) {
+			sc_packet.current_char_selections[x] = temp[x];
+		}
 
+		char sc_packet_data[sizeof(ServerCharacterPacket)];
+		sc_packet.serializeTo(sc_packet_data);
+
+		int sendStatus = send(ClientSocketVec[client_idx], sc_packet_data, sizeof(ServerCharacterPacket), 0);
+		// TODO deal with send_status;
+	}
+	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
+		char network_data[DEFAULT_BUFLEN];
+		int recvStatus = recv(ClientSocketVec[client_idx], network_data, DEFAULT_BUFLEN, 0);
+
+		if (recvStatus == SOCKET_ERROR) {
+			if (WSAGetLastError() == WSAECONNRESET) {
+				std::string client_addr_str = getRemoteAddressString(ClientSocketVec[client_idx]);
+				fprintf(stderr, "Connection with client #%d at %s dropped\n", client_idx, client_addr_str.c_str());
+
+				closesocket(ClientSocketVec[client_idx]);
+				ClientSocketVec[client_idx] = INVALID_SOCKET;
+			}
+			else {
+				fprintf(stderr, "recv failed: %d\n", WSAGetLastError());
+			}
+			break; // break out of the recv do-while loop
+		}
+	}
+	
 main_loop_label:
+	fprintf(stderr, "Starting server main loop\n");
 	while (true) {
 		// receive data from clients
 		std::vector<ClientPacket> client_packet_vec;

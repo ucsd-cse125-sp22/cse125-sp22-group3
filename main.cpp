@@ -201,13 +201,16 @@ int main(int argc, char* argv[])
 		});
 	fprintf(stderr, "All players connected, starting character selection\n");
 	
-	//TODO character selection
-	client->syncCharacterSelection([&](ServerCharacterPacket recv_packet, ClientCharacterPacket* out_packet) 
-		{
-			int res = GUI::renderCharacterSelection(recv_packet.char_options, recv_packet.my_char_index);
-			out_packet->character = ModelEnum(res); 
-			out_packet->confirm_selection = res != -1;
-		});
+	// character selection 
+	client->syncCharacterSelection(num_clients,[&](ServerCharacterPacket recv_packet) 
+	{
+		std::unordered_set<ModelEnum> char_selections{recv_packet.current_char_selections, recv_packet.current_char_selections + 4};
+		ModelEnum res = GUI::renderCharacterSelection(char_selections, recv_packet.client_idx);
+		
+		ClientCharacterPacket out_packet;
+		out_packet.character = res;
+		return out_packet;
+	});
 	fprintf(stderr, "all players selected character, starting game\n");
 
 	// butter butter magic
@@ -322,7 +325,7 @@ int main(int argc, char* argv[])
 					GUI::player_pos[model_info.model - 6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
-					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 6.0f, 0.0f));
+					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
 				}
 
 				// set player animation speed
