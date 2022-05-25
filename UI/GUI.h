@@ -17,8 +17,9 @@
 #include "imgui/imgui_internal.h"
 #include <thread>         
 #include <chrono>
+#include <set>
 
-#define NUM_ICON 4
+#define NUM_ICON 4 // should be consistent with the number of character, will be used in multiple place
 #define NUM_RACK_IMG 6
 #define NUM_LOAD_IMG 8
 #define NUM_CHASE_IMG 2 
@@ -44,44 +45,47 @@ public:
 	bool fade_in = true; // true for fade in, false for fade out; 
 
 };
+
 class GUI {
 public:
-	static float display_ratio; 
+	static float display_ratio;
 	static int window_height;
-	static int window_width; 
+	static int window_width;
 	static std::string picture_dir;
 	static GLFWwindow* my_window;
 	static GUIImage score_background;
-	static GUIImage loading_background; 
-	static GUIImage minimap_background; 
-	static GUIImage loading_bg[NUM_LOAD_IMG]; 
+	static GUIImage loading_background;
+	static GUIImage minimap_background;
+	static GUIImage loading_bg[NUM_LOAD_IMG];
 
 	static bool sale_tools; // default to false ( saleing seed), true if show tool shed
 	static bool show_loading;
 	static int rack_image_idx;
-	static int tool_image_idx; 
-	static float timer_percent; 
+	static int tool_image_idx;
+	static int my_char_idx;
+	static float timer_percent;
 	static float stamina_percent; //use this variable to set the stamina display
 
-	static float winning_fade_ratio; 
-	static bool GUI_show_winning; 
+	static float winning_fade_ratio;
+	static bool GUI_show_winning;
 	static std::string GUI_timer_string;
-	
+
 	static ImFont* font_Are_You_Serious;
 	static ImFont* font_Fredericka_the_Great;
 	static ImFont* font_Mystery_Quest;
-	static ImFont* font_Ranchers; 
+	static ImFont* font_Ranchers;
 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static GUIImage icon_images_list[NUM_ICON];
+	static GUIImage char_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
 	static GUIImage fish_images_list[NUM_FISH_IMG];
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
 	static GUIImage veg_images_list[NUM_VEG_IMG];
-	static GUIImage sale_background; 
+	static GUIImage sale_background;
 	static GUIImage curtain_img;
-	static GUIImage stamina_image; 
-	static GUIImage timer_background; 
+	static GUIImage stamina_image;
+	static GUIImage timer_background;
 	static int scoreboard_data[NUM_ICON];
 	static char* seed_type_list[];
 	static char* tool_type_list[];
@@ -89,7 +93,7 @@ public:
 	static float veg_price_list[];
 
 
-	static ImVec2 player_pos[4]; 
+	static ImVec2 player_pos[4];
 
 
 	static void initializeGUI(GLFWwindow* window);
@@ -98,14 +102,15 @@ public:
 	static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 	static void initializeImage();
 	static bool renderLoadScene(GLFWwindow* window);
-	static void initializeLoadingImage(); 
+	static void initializeLoadingImage();
 	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
-	static void renderWaitingClient(int client_joined, int max_client); 
+	static void renderWaitingClient(int client_joined, int max_client);
+	static int renderCharacterSelection(int char_options[], int my_char_index);
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
 	static void createStamina();
-	static void createTimer(float ratio); 
+	static void createTimer(float ratio);
 	static void setTimer(float time);
 	static bool renderWinningScene();
 	static void createBuyConfirmation();
