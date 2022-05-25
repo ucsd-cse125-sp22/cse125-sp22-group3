@@ -39,6 +39,7 @@ GLuint Window::leafShaderProgram;
 GLuint Window::modelShaderProgram; 
 GLuint Window::animationShaderProgram; 
 GLuint Window::debugShaderProgram; 
+GLuint Window::domeShaderProgram; 
 GLuint Window::shadowShaderProgram; 
 GLuint Window::blurShaderProgram;
 GLuint Window::finalShaderProgram;
@@ -59,6 +60,7 @@ bool Window::initializeProgram() {
 	finalShaderProgram = LoadShaders("shaders/final.vert", "shaders/final.frag");
 	particleShaderProgram = LoadShaders("shaders/particles.vert", "shaders/particles.frag");
 	debugShaderProgram = LoadShaders("shaders/shader.vert", "shaders/shader.frag");
+	domeShaderProgram = LoadShaders("shaders/particles.vert", "shaders/dome.frag");
 
 	// Check the shader program.
 	if (!worldShaderProgram)
@@ -162,6 +164,7 @@ bool Window::initializeObjects()
 	{ DEBUG_SQUARE, debugShaderProgram },
 
 	{ WORLD_MAP, worldShaderProgram },
+	{ WORLD_DOME, domeShaderProgram },
 	{ WORLD_WATER, waterShaderProgram },
 	{ WORLD_LEAVES, leafShaderProgram },
 	{ WORLD_GRASS, leafShaderProgram },

@@ -55,6 +55,7 @@ enum ModelEnum
 	SENTINEL_BEGIN, // ALWAYS has to be the FIRST enum
 
 	WORLD_MAP,
+	WORLD_DOME,
 	WORLD_WATER,
 	WORLD_LEAVES,
 	WORLD_GRASS,

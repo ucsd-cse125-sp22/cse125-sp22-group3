@@ -87,8 +87,9 @@ inline int ServerMain()
 	World water{WORLD_WATER};
 	World leaves{WORLD_LEAVES};
 	World grass{WORLD_GRASS};
+	World dome{WORLD_DOME};
 
-	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass});
+	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass, &dome});
 
 	WateringCan can{};
 	can.SetPosition({20, -2, 30});
@@ -98,6 +99,7 @@ inline int ServerMain()
 	water.SetPosition({0, 0, -4.0f});
 	leaves.SetPosition({0, 0, -4.0f});
 	grass.SetPosition({0, 0, -4.0f});
+	dome.SetPosition({0, 0, -4.0f});
 
 	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec)
 	{

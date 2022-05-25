@@ -377,7 +377,10 @@ int main(int argc, char* argv[])
 					model_info.parent_transform = rotation;
 				}
 
-				curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+				// Do not draw shadow for the big sky dome
+				if (model_info.model != WORLD_DOME) {
+					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
+				}
 			}
 		
 			// for point lights in night phase
