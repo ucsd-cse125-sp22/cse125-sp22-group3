@@ -15,6 +15,7 @@ private:
 	
 	void printActiveAdapterAddresses(void);
 	std::string getRemoteAddressString(SOCKET remote_socket);
+	std::string getCharacterFriendlyName(ModelEnum model);
 
 public:
 	Server(void);

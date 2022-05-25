@@ -161,6 +161,23 @@ std::string Server::getRemoteAddressString(SOCKET remote_socket) {
 	return std::string(peer_addr_buf).append(":").append(std::to_string(peer_addr.sin_port));
 }
 
+std::string Server::getCharacterFriendlyName(ModelEnum model)
+{
+	switch (model)
+	{
+	case CHAR_BUMBUS:
+		return "Bumbus";
+	case CHAR_POGO:
+		return "Pogo";
+	case CHAR_SWAINKY:
+		return "Swainky";
+	case CHAR_GILMAN:
+		return "Gilman";
+	default:
+		return "Not a character";
+	}
+}
+
 //auto begin_time = std::chrono::steady_clock::now();
 void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
 {
