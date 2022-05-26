@@ -258,6 +258,7 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		bool two_minute_started = false;
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len) {
 			// deserialize incoming packet into structs
 			ServerHeader* sheader;
@@ -292,6 +293,11 @@ int main(int argc, char* argv[])
 			if (sheader->time_remaining_seconds <= 0)
 			{
 				GUI::GUI_show_winning = true;
+			}
+
+			if (!two_minute_started && sheader->time_remaining_seconds <= 120) {
+				sound_engine.PlayMusic(MUSIC_TWO_MINUTES, false);
+				two_minute_started = false;
 			}
 
 			// update scoreboard

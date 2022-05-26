@@ -23,7 +23,8 @@ enum SoundEnum
     SFX_HARVEST,
 
     MUSIC_MENU,
-    MUSIC_DAY_1
+    MUSIC_DAY_1,
+    MUSIC_TWO_MINUTES
 };
 
 struct SoundEngine
@@ -82,6 +83,7 @@ struct SoundEngine
         {SFX_HARVEST, "sound/sfx/harvest.wav"},
         {MUSIC_MENU, "sound/music/menu.wav"},
         {MUSIC_DAY_1, "sound/music/day-1.wav"},
+        {MUSIC_TWO_MINUTES, "sound/music/two-minutes.wav"},
     };
     
     void Init()
@@ -108,6 +110,5 @@ struct SoundEngine
     {
         music.stop();
     }
-
 
 };
