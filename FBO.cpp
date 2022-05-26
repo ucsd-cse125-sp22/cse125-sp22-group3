@@ -202,6 +202,8 @@ void FBO::resize(int width, int height) {
 }
 
 void FBO::draw(int width, int height, float time, glm::mat4 cam) {
+    if (width <= 0 || height <= 0) return;
+
     timePassed = totalTime - (time);
     
     float degrees = glm::clamp(timePassed / totalTime, 0.0f, 1.0f);

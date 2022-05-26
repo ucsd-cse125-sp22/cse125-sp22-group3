@@ -229,7 +229,14 @@ GLFWwindow* Window::createWindow(int width, int height)
 #endif
 
 	// Create the GLFW window.
-	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, glfwGetPrimaryMonitor(), NULL);
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+	glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+
+	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, monitor, NULL);
 
 	// Check if the window could not be created.
 	if (!window)
