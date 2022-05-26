@@ -324,7 +324,7 @@ int main(int argc, char* argv[])
 					GUI::player_pos[model_info.model - 6] = ImVec2(
 						model_info.parent_transform[3][0],
 						model_info.parent_transform[3][2]);
-					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f));
+					point_light_pos.push_back(glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 6.0f, 0.0f));
 				}
 
 				// set player animation speed
@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
 
 				// get light for NPC and golden eggplant
 				if (model_info.model == CHAR_NPC || model_info.model == VEG_GOLDEN_EGGPLANT) {
-					glm::vec3 pos = glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 3.0f, 0.0f);
+					glm::vec3 pos = glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 6.0f, 0.0f);
 
 					// if eggplant is dropped, point light wont show. set minimum to 1.
 					if (pos.y == 0.0f) { pos.y = 1.0f; }

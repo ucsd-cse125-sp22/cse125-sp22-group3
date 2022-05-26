@@ -40,20 +40,52 @@ vec3 CalcPointLight(vec3 lightPos, vec3 viewDir, vec3 norm, vec3 lightColor, vec
     // specular shading
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 5.0f);
+
+    // lemme try a spotlight hehehehe
+    float outerCutOff = cos(radians(90.0f));
+    float cutOff = cos(radians(60.0f));
+    float theta = dot(lightDir, normalize(-(vec3(0.0f, -1.0f, 0.0f)))); 
+    float epsilon = (cutOff - outerCutOff);
+    float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0);
+
     // attenuation
     float distance = length(lightPos - FragPos);
     float attenuation = 1.0 / (1.0f + 0.09f * distance + 
-  			     0.032f * (distance * distance));    
+  			     0.1f * (distance * distance));    
+
     // combine results
     vec3 ambient2  = lightColor  * vec3(tex);
-    vec3 diffuse2  = vec3(0.1f) * diff * vec3(tex);
+    vec3 diffuse2  = lightColor * diff * vec3(tex);
     vec3 specular2 = vec3(0.5f) * spec * vec3(tex);
 
+    diffuse2 *= intensity;
+    specular2 *= intensity;
     ambient2  *= attenuation;
     diffuse2  *= attenuation;
     specular2 *= attenuation;
 
-    return vec3(ambient2 + diffuse2 + specular2);
+    return vec3(ambient2 + diffuse2 + specular2) * 2.0f;
+
+    /*
+    // combine results
+    if(theta > cutOff) {
+        vec3 ambient2  = lightColor  * vec3(tex);
+        vec3 diffuse2  = lightColor * diff * vec3(tex);
+        vec3 specular2 = vec3(0.5f) * spec * vec3(tex);
+
+        diffuse2 *= intensity;
+        specular2 *= intensity;
+        ambient2  *= attenuation;
+        diffuse2  *= attenuation;
+        specular2 *= attenuation;
+
+        return vec3(ambient2 + diffuse2 + specular2);
+    }
+
+    else {
+        return vec3(0.0f);
+    }
+    */
 }
 
 void main()
