@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
 	}
 	
 	// Create the GLFW window.
-	GLFWwindow* window = Window::createWindow(640, 480);
+	GLFWwindow* window = Window::createWindow(1920, 1080);
 	if (!window)
 		exit(EXIT_FAILURE);
 

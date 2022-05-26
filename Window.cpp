@@ -229,7 +229,7 @@ GLFWwindow* Window::createWindow(int width, int height)
 #endif
 
 	// Create the GLFW window.
-	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, glfwGetPrimaryMonitor(), NULL);
 
 	// Check if the window could not be created.
 	if (!window)
