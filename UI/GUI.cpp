@@ -334,24 +334,26 @@ bool GUI::renderUI() {
 	ImGui::NewFrame();
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+	
 	/* build scoreboard */
 	if (GUI_show_scoreboard) {
-		ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-		ImGui::Begin("ScoreBoard_bg", NULL, TRANS_WINDOW_FLAG);
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImVec2 score_size = ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio); 
+		ImGui::SetNextWindowSize(score_size);
+		ImGui::Begin("ScoreBoard", NULL, TRANS_WINDOW_FLAG);
 		ImGui::SetCursorPos(ImVec2(0, 0));
 		ImGui::Image((void*)(intptr_t)score_background.my_image_texture, ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-		ImGui::End();
-		ImGui::SetNextWindowPos(ImVec2(190 * display_ratio, 190 * display_ratio), 0, ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(score_background.my_image_width * display_ratio, score_background.my_image_height * display_ratio));
-		ImGui::Begin("ScoreBoard_content", NULL, TRANS_WINDOW_FLAG);
 		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
-
+		ImVec2 cursor = ImVec2(score_size.x / 4, score_size.y / 5);
+		float icon_padding = 20.0f * display_ratio;
 		for (int i = 0; i < char_selections.size(); i++) {
+			ImGui::SetCursorPos(cursor);
 			GUIImage image = icon_images_map[char_selections[i]];
-			ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
+			ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
+			ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
 			ImGui::SameLine();
 			ImGui::Text("%d", scoreboard_data[i]);
+			cursor.y += image_size.y + icon_padding;
 		}
 		ImGui::PopStyleColor();
 		ImGui::End();
