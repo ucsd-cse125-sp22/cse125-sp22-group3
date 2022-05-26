@@ -441,6 +441,7 @@ void Player::OpenSaleUI()
 			moveable = false;
 		}
 	}
+
 }
 
 void Player::CloseSaleUI() {
