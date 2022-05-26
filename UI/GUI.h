@@ -99,6 +99,7 @@ public:
 	static float veg_price_list[];
 	static float veg_sell_list[];
 	static float veg_time_list[];
+	static char* veg_type_list[];
 
 
 	static ImVec2 player_pos[4];

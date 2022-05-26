@@ -271,6 +271,8 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 };
 
 char* GUI::seed_type_list[] = { "Carrot", "Cabbage", "Corn","Radish", "Tomato"};
+char* GUI::veg_type_list[] = {  "Carrot", "Cabbage", "Corn","Radish", "Tomato" };
+
 char* GUI::tool_type_list[] = { "Net", "Hoe", "Watering Can","Fertilizer", "Shovel", "Glue","Poison", "Super Oats", "Farmer's Ale"};
 char* GUI::tool_func_list[] = {
 	"steal a veggie that is planted",
@@ -1243,7 +1245,7 @@ void GUI::createSaleConfirmation() {
 
 	//show talking box
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-	ImGui::Text("%s! That is worth %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_sell_list[0]);
+	ImGui::Text("%s! That is worth %.0f dollar(s)\n. Press [Enter] to sell!", veg_type_list[veggie_sale_idx], veg_sell_list[veggie_sale_idx]);
 	ImGui::PopFont();
 	ImGui::PopStyleColor(2);
 	ImGui::End();
