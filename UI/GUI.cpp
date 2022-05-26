@@ -52,6 +52,7 @@ ImFont* GUI::font_Are_You_Serious;
 ImFont* GUI::font_Fredericka_the_Great;
 ImFont* GUI::font_Mystery_Quest;
 ImFont* GUI::font_Ranchers;
+ImFont* GUI::font_Ranchers_large;
 
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
@@ -216,6 +217,8 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	font_Fredericka_the_Great = io.Fonts->AddFontFromFileTTF("./UI/fonts/Fredericka_the_Great/FrederickatheGreat-Regular.ttf", 36.0f);
 	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
 	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
+	font_Ranchers_large = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 64.0f);
+
 
 	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
@@ -315,6 +318,9 @@ veggie_map[VegetableType::CABBAGE].growth_time,
 veggie_map[VegetableType::CORN].growth_time,
 veggie_map[VegetableType::RADISH].growth_time,
 veggie_map[VegetableType::TOMATO].growth_time };
+
+
+std::string GUI::characters_name_list [] = {"Bumbus", "Pogo" , "Swainky", "Gilman"};
 
 /**
 * Render the UI compenents, should be called within the mainloop
@@ -1045,31 +1051,26 @@ void GUI::createTimer(float ratio) {
 void GUI::renderWaitingClient(int client_joined, int max_client) {
 	glClearColor(255.f / 255, 222.f / 255, 194.f / 255, 1.0);
 	glfwPollEvents();
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoBackground;
-	window_flags |= ImGuiWindowFlags_NoTitleBar;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_NoMove;
-	window_flags |= ImGuiWindowFlags_NoScrollbar;
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-
-	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::Begin("Loading Background", NULL, TRANS_WINDOW_FLAG);
-	ImGui::Image((void*)(intptr_t)loading_background.my_image_texture, \
-		ImVec2(window_width, window_width * loading_background.my_image_height / loading_background.my_image_width ));
-	ImGui::End();
-	ImGui::SetNextWindowPos(ImVec2(32.0f * display_ratio, window_height / 3 * 2));
-	ImGui::Begin("Loading Status", NULL, TRANS_WINDOW_FLAG);
-	ImGui::PushFont(font_Ranchers);
+	//ImVec2 fish_size = ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
+	ImVec2 image_size = (1.0f * window_width) / window_height > (1.0f * loading_background.my_image_width) / loading_background.my_image_height ?
+		ImVec2(window_height * loading_background.my_image_width / loading_background.my_image_height, window_height) :
+		ImVec2(window_width, window_width * loading_background.my_image_height / loading_background.my_image_width);
+	ImVec2 window_size = ImVec2(window_width, window_height);
+	ImGui::SetNextWindowSize(window_size);
+	ImGui::SetNextWindowPos((window_size-image_size)*0.5f);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 255));
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
+	ImGui::Begin("Loading Background", NULL, TRANS_WINDOW_FLAG);
+	ImGui::Image((void*)(intptr_t)loading_background.my_image_texture, image_size);
+	ImGui::SetCursorPos(ImVec2((window_size.x-image_size.x)*0.5f + 64.0f * display_ratio, (window_size.y - image_size.y) * 0.5f + image_size.y * 2 / 3));
+	ImGui::PushFont(font_Ranchers);
 	ImGui::Text("%d of %d client joined...", client_joined, max_client);
 	ImGui::PopFont();
-	ImGui::PopStyleColor();
 	ImGui::End();
-
+	ImGui::PopStyleColor(2);
 	// Rendering
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	ImGui::Render();
@@ -1110,31 +1111,55 @@ ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_c
 			}
 		}
 	}
-	
 	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::Begin("Character Selection", NULL, TRANS_WINDOW_FLAG);
-	ImVec2 cursor = ImVec2(10, 10);
+	float frame_padding = 50*display_ratio;
+	float internal_padding = 20 * display_ratio; 
+	float image_width = (window_width - frame_padding * 2 - (NUM_ICON - 1) * internal_padding) / NUM_ICON; 
+	ImVec2 image_size = ImVec2(image_width, char_images_list[0].my_image_height * image_width / char_images_list[0].my_image_width);
+	ImVec2 cursor = ImVec2(frame_padding, frame_padding);
+	
 	for (int i = 0; i < NUM_ICON; i++) {
 		ImGui::SetCursorPos(cursor);
 		GUIImage image = char_images_list[i];
-		ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
-		ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
+		//ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 		if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + i)) != 0) {
+			ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0.5, 0.5, 1));
 			auto text_size = ImGui::CalcTextSize("SELECTED");
 			ImGui::SetCursorPos(cursor + (image_size - text_size) * 0.5f);
 			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 			ImGui::Text("SELECTED");
 			ImGui::PopStyleColor();
+		} else {
+			ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
 		}
 		if (i == char_selection_idx) {
 			ImGui::SetCursorPos(cursor);
 			ImDrawList* draw_list = ImGui::GetWindowDrawList();
 			const ImU32 col = IM_COL32(245.f, 61.f, 119.f, 250);
-			draw_list->AddRect(cursor, image_size + cursor, col, 0.0f, ImDrawFlags_None, 5.0f);
+			draw_list->AddRect(cursor, image_size + cursor, col, 8.0f*display_ratio, ImDrawFlags_RoundCornersAll, 20.0f*display_ratio);
 		}
-		cursor.x += image_size.x + 10; 
+		cursor.x += image_size.x + internal_padding; 
 	}
+	//render the character names
+	ImVec2 text_cursor = ImVec2(frame_padding, frame_padding+image_size.y);
+	ImGui::PushFont(font_Ranchers_large);
+	for (int i = 0; i < NUM_ICON; i++) {
+		auto text_size = ImGui::CalcTextSize(characters_name_list[i].c_str());
+		
+		ImGui::SetCursorPos(ImVec2(text_cursor.x + (image_size.x - text_size.x) * 0.5f, text_cursor.y));
+		if (i == char_selection_idx) {
+			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(245.f, 61.f, 119.f, 250));
+			ImGui::Text(characters_name_list[i].c_str());
+			ImGui::PopStyleColor();
+		} else {
+			ImGui::Text(characters_name_list[i].c_str());
+
+		}
+		text_cursor.x += image_size.x + internal_padding;
+	}
+	ImGui::PopFont();
 	ImGui::End();
 
 	// Rendering

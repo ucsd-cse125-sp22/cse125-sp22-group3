@@ -76,6 +76,7 @@ public:
 	static ImFont* font_Fredericka_the_Great;
 	static ImFont* font_Mystery_Quest;
 	static ImFont* font_Ranchers;
+	static ImFont* font_Ranchers_large; 
 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static std::unordered_map<ModelEnum, GUIImage> icon_images_map;
@@ -89,6 +90,7 @@ public:
 	static GUIImage stamina_image;
 	static GUIImage timer_background;
 	static int scoreboard_data[NUM_ICON];
+	static std::string characters_name_list[];
 	static char* seed_type_list[];
 	static char* tool_type_list[];
 	static char* tool_func_list[];
