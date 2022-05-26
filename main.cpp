@@ -203,7 +203,11 @@ int main(int argc, char* argv[])
 	// character selection 
 	GUI::char_selections = client->syncCharacterSelection(num_clients,[&](ServerCharacterPacket recv_packet) 
 	{
-		std::unordered_set<ModelEnum> char_selections{recv_packet.current_char_selections, recv_packet.current_char_selections + num_clients};
+		std::unordered_map<ModelEnum, int> char_selections;
+		for (int i = 0; i < num_clients; i++) {
+			char_selections[recv_packet.current_char_selections[i]] = i;
+		}
+		
 		ModelEnum res = GUI::renderCharacterSelection(char_selections, recv_packet.client_idx);
 		
 		ClientCharacterPacket out_packet;

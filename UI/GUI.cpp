@@ -1082,8 +1082,8 @@ void GUI::setTimer(float time, int r_sec) {
 	remaining_sec = r_sec; 
 }
 
-ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_char, int client_idx) {
-	ModelEnum res = SENTINEL_END; 
+ModelEnum GUI::renderCharacterSelection(std::unordered_map<ModelEnum, int>& selected_chars, int client_idx) {
+	ModelEnum res = SENTINEL_END;
 	glfwPollEvents();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -1094,7 +1094,7 @@ ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_c
 	} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
 		for (int avail_idx = char_selection_idx - 1; avail_idx >= 0; avail_idx--)
 		{
-			if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
+			if (selected_chars.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
 			{
 				char_selection_idx = avail_idx;
 				break;
@@ -1103,7 +1103,7 @@ ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_c
 	} else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
 		for (int avail_idx = char_selection_idx + 1; avail_idx < NUM_ICON; avail_idx++)
 		{
-			if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
+			if (selected_chars.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
 			{
 				char_selection_idx = avail_idx;
 				break;
@@ -1116,15 +1116,17 @@ ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_c
 	ImGui::Begin("Character Selection", NULL, TRANS_WINDOW_FLAG);
 	ImVec2 cursor = ImVec2(10, 10);
 	for (int i = 0; i < NUM_ICON; i++) {
+		ModelEnum curr_icon_model = static_cast<ModelEnum>(CHAR_BUMBUS + i);
 		ImGui::SetCursorPos(cursor);
 		GUIImage image = char_images_list[i];
 		ImVec2 image_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 		ImGui::Image((void*)(intptr_t)image.my_image_texture, image_size);
-		if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + i)) != 0) {
-			auto text_size = ImGui::CalcTextSize("SELECTED");
+		if (selected_chars.count(curr_icon_model) != 0) {
+			std::string selected_text = "PLAYER " + std::to_string(selected_chars[curr_icon_model] + 1);
+			auto text_size = ImGui::CalcTextSize(selected_text.c_str());
 			ImGui::SetCursorPos(cursor + (image_size - text_size) * 0.5f);
 			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
-			ImGui::Text("SELECTED");
+			ImGui::Text(selected_text.c_str());
 			ImGui::PopStyleColor();
 		}
 		if (i == char_selection_idx) {

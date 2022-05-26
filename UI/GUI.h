@@ -111,7 +111,7 @@ public:
 	static void initializeLoadingImage();
 	static bool renderProgressBar(float percent, GLFWwindow* window, bool flip_image);
 	static void renderWaitingClient(int client_joined, int max_client);
-	static ModelEnum renderCharacterSelection(std::unordered_set<ModelEnum> selected_char, int client_idx);
+	static ModelEnum renderCharacterSelection(std::unordered_map<ModelEnum, int>& selected_chars, int client_idx);
 	static void createMiniMap();
 	static void updateDisplayRatio(int width, int height);
 	static bool ShowGUI(bool show);
