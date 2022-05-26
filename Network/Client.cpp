@@ -121,8 +121,8 @@ void Client::syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_pa
 	} while (wait_for_clients);
 }
 
-void Client::syncCharacterSelection(int num_clients, std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback)
-{
+std::vector<ModelEnum> Client::syncCharacterSelection(int num_clients,
+	std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback){
 	while (true) {
 		char recvbuf[DEFAULT_BUFLEN];
 		int recvStatus = recv(ConnectSocket, recvbuf, DEFAULT_BUFLEN, 0);
@@ -146,9 +146,10 @@ void Client::syncCharacterSelection(int num_clients, std::function<ClientCharact
 				}
 			}
 
+			// return here because need to check one last time from server whether all player has selected
 			if (done)
 			{
-				return; // check one last time from server whether all player has selected
+				return std::vector<ModelEnum>(sc_packet.current_char_selections, sc_packet.current_char_selections + 4); 
 			}
 			
 			ClientCharacterPacket out_packet = callback(sc_packet);

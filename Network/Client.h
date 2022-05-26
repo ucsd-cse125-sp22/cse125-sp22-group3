@@ -15,6 +15,7 @@ public:
 	int syncWithServer(const void* send_buf, size_t send_len,
 		std::function<void(char* recv_buf, size_t recv_len)> callback);
 	void syncGameReadyToStart(std::function<void(ClientWaitPacket in_wait_packet)> callback);
-	void syncCharacterSelection(int num_clients, std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback);
+	std::vector<ModelEnum> syncCharacterSelection(int num_clients,
+		std::function<ClientCharacterPacket(ServerCharacterPacket recv_packet)> callback);
 };
 

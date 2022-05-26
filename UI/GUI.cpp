@@ -8,7 +8,8 @@
 namespace fs = std::filesystem;
 
 GUIImage GUI::rack_images_list[NUM_RACK_IMG];
-GUIImage GUI::icon_images_list[NUM_ICON];
+std::unordered_map<ModelEnum, GUIImage> GUI::icon_images_map;
+std::vector<ModelEnum> GUI::char_selections;
 GUIImage GUI::score_background; 
 GUIImage GUI::loading_background;
 GUIImage GUI::minimap_background;
@@ -337,8 +338,8 @@ bool GUI::renderUI() {
 		ImGui::Begin("ScoreBoard_content", NULL, TRANS_WINDOW_FLAG);
 		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 
-		for (int i = 0; i < NUM_ICON; i++) {
-			GUIImage image = icon_images_list[i];
+		for (int i = 0; i < char_selections.size(); i++) {
+			GUIImage image = icon_images_map[char_selections[i]];
 			ImGui::Image((void*)(intptr_t)image.my_image_texture, ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio));
 			ImGui::SameLine();
 			ImGui::Text("%d", scoreboard_data[i]);
@@ -704,7 +705,9 @@ void GUI::initializeImage() {
 		i++;
 	}
 	rack_image_idx = 1;
+	
 	i = 0;
+	GUIImage icon_images_list[NUM_ICON];
 	const std::string icon_path = picture_dir + std::string("/icon");
 	for (auto& entry : fs::directory_iterator(icon_path.c_str())) {
 		GUIImage* image = &(icon_images_list[i]);
@@ -714,6 +717,12 @@ void GUI::initializeImage() {
 		image->my_image_height *= 2.0f;
 		i++;
 	}
+	icon_images_map = {
+		{CHAR_BUMBUS, icon_images_list[0]},
+		{CHAR_POGO, icon_images_list[1]},
+		{CHAR_SWAINKY, icon_images_list[2]},
+		{CHAR_GILMAN, icon_images_list[3]},
+	};
 
 	const std::string score_background_path = picture_dir + std::string("/score_background.png");
 	LoadTextureFromFile(score_background_path.c_str(), &(score_background.my_image_texture),
@@ -957,7 +966,7 @@ void GUI::createMiniMap() {
 	ImGui::Begin("MiniMap", &bptr, TRANS_WINDOW_FLAG);
 	//place all player's icon:
 	for (int i = 0; i < 4; i++) {
-		GUIImage image = icon_images_list[i];
+		GUIImage image = icon_images_map[static_cast<ModelEnum>(i + CHAR_BUMBUS)];
 		//TODO convert the pos into relative pos in minimap
 		ImVec2 icon_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 

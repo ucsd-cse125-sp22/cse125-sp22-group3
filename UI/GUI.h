@@ -77,7 +77,7 @@ public:
 	static ImFont* font_Ranchers;
 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
-	static GUIImage icon_images_list[NUM_ICON];
+	static std::unordered_map<ModelEnum, GUIImage> icon_images_map;
 	static GUIImage char_images_list[NUM_ICON];
 	static GUIImage chase_images_list[NUM_CHASE_IMG];
 	static GUIImage fish_images_list[NUM_FISH_IMG];
@@ -99,7 +99,7 @@ public:
 
 
 	static ImVec2 player_pos[4];
-
+	static std::vector<ModelEnum> char_selections;
 
 	static void initializeGUI(GLFWwindow* window);
 	static bool renderUI();
