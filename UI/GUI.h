@@ -121,5 +121,8 @@ public:
 	static void createTimer(float ratio);
 	static void setTimer(float time, int remaining_sec);
 	static bool renderWinningScene();
-	static void createBuyConfirmation();
+	static void createSaleConfirmation();
+	static void setHoldingModel(ModelEnum model);
+	static void setShowSaleUI(bool show);
+
 };

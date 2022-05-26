@@ -405,6 +405,7 @@ void Player::Sell(){
 		sound_sell = true;
 	}
 	//printf("SELLING VEGGIE %f\n", curr_balance);
+	CloseSaleUI();
 }
 
 void Player::SetSprint(bool sprinting) {
@@ -429,6 +430,17 @@ void Player::OpenUI()
 {
 	ui_open = true;
 	moveable = false;
+}
+
+void Player::OpenSaleUI()
+{
+	sale_confirm_ui_open = true;
+	moveable = false;
+}
+
+void Player::CloseSaleUI() {
+	sale_confirm_ui_open = false;
+	moveable = true;
 }
 
 void Player::EnableMovement()

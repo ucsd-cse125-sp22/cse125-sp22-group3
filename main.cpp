@@ -317,6 +317,11 @@ int main(int argc, char* argv[])
 
 			// show NPC UI page
 			GUI::ShowGUI(sheader->ui_open);
+			GUI::setHoldingModel(sheader->holding_veggie);
+			GUI::setShowSaleUI(sheader->sale_confirm_ui_open);
+			//if (sheader->holding_veggie != -1 && sheader->sale_confirm_ui_open) {
+				//fprintf(stderr, "player is holding vegetable: %d", sheader->holding_veggie);
+			//}
 
 			// play sounds
 			for (int i = 0; i < sheader->num_sounds; i++) {

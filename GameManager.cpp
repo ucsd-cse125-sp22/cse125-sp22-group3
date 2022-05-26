@@ -298,6 +298,15 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.player_transform = player->GetParentTransform();
 		sheader.player_sprinting = player->sprint;
 		sheader.ui_open = player->ui_open;
+		sheader.sale_confirm_ui_open = player->sale_confirm_ui_open; 
+		sheader.holding_veggie = ModelEnum(0); 
+		if (player->GetIsHolding()){
+			if(auto vegetable = dynamic_cast<Vegetable*>(player->GetHoldEntity())) {
+				if (vegetable != nullptr) {
+					sheader.holding_veggie = vegetable->GetModelEnum(); 
+				}
+			}
+		}
 		sheader.time_remaining_seconds = GameManager::GetRemainingSeconds();
 		sheader.time_max_seconds = GAME_TIME_MINS * 60.f;
 		sheader.stamina_bar = player->curr_stamina;

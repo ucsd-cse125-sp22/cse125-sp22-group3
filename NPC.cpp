@@ -70,7 +70,8 @@ void NPC::OnInteract(Player* player)
 {
 	if (player->GetIsHolding()) {
 		// TODO: instead of calling sell directly, open sell GUI instead
-		player->Sell();
+		player->OpenSaleUI(); 
+		//player->Sell();
 	}
 	else {
 		// Enable Shop UI and disable movement

@@ -625,7 +625,7 @@ bool GUI::renderUI() {
 		GUI_show_sale = !GUI_show_sale; 
 	}
 	if (GUI_show_sale) {
-		createBuyConfirmation();
+		createSaleConfirmation();
 	}
 
 	//test fading out
@@ -1206,7 +1206,7 @@ bool GUI::renderWinningScene() {
 	return true; 
 }
 
-void GUI::createBuyConfirmation() {
+void GUI::createSaleConfirmation() {
 	bool open_ptr = true;
 	GUIImage veg_image = veg_images_list[veggie_sale_idx];
 
@@ -1246,9 +1246,19 @@ void GUI::createBuyConfirmation() {
 	ImGui::Text("%s! That is worth %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_sell_list[0]);
 	ImGui::PopFont();
 	ImGui::PopStyleColor(2);
-
-
 	ImGui::End();
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+		InputManager::lastCmd = SELL_CMD; 
+	}
+}
+
+void GUI::setHoldingModel(ModelEnum model) {
+	veggie_sale_idx = model - VEG_CARROT; 
+}
+
+void GUI::setShowSaleUI(bool show) {
+	GUI_show_sale = show; 
 }
 
 
