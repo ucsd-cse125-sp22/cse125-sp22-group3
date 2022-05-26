@@ -528,7 +528,7 @@ bool GUI::renderUI() {
 		ImGui::Image((void*)(intptr_t)tool_image->my_image_texture, tool_size); 
 		
 		// add the curtain layer 
-		ImGui::SetCursorPos(ImVec2(window_width - curtain_size.x + curtain_img.fade_ratio * curtain_size.x, 0));
+		ImGui::SetCursorPos(ImVec2(fish_size.x - curtain_size.x + curtain_img.fade_ratio * curtain_size.x, 0));
 		if (curtain_img.fade_in) {
 			curtain_img.fade_ratio = curtain_img.fade_ratio < 0.001 ? 0.001 : curtain_img.fade_ratio * 0.8;
 		} else {

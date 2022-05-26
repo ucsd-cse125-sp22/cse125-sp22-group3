@@ -67,8 +67,8 @@ enum ModelEnum
 	CHAR_GILMAN,
 	CHAR_NPC, // i dont think we named her question mark
 
-	VEG_CABBAGE,
 	VEG_CARROT,
+	VEG_CABBAGE,
 	VEG_CORN,
 	VEG_RADISH,
 	VEG_TOMATO, // do i name it veggie if a tomato is not a veggie hrmmmm thimking

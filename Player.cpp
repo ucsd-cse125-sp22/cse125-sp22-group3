@@ -434,8 +434,13 @@ void Player::OpenUI()
 
 void Player::OpenSaleUI()
 {
-	sale_confirm_ui_open = true;
-	moveable = false;
+	if (auto vegetable = dynamic_cast<Vegetable*>(entityHeld)) {
+		//SetTriggeringEntity(nullptr);
+		if (vegetable != nullptr) {
+			sale_confirm_ui_open = true;
+			moveable = false;
+		}
+	}
 }
 
 void Player::CloseSaleUI() {
