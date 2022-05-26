@@ -271,6 +271,8 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 };
 
 char* GUI::seed_type_list[] = { "Carrot", "Cabbage", "Corn","Radish", "Tomato"};
+char* GUI::veg_type_list[] = {  "Carrot", "Cabbage", "Corn","Radish", "Tomato" };
+
 char* GUI::tool_type_list[] = { "Net", "Hoe", "Watering Can","Fertilizer", "Shovel", "Glue","Poison", "Super Oats", "Farmer's Ale"};
 char* GUI::tool_func_list[] = {
 	"steal a veggie that is planted",
@@ -528,7 +530,7 @@ bool GUI::renderUI() {
 		ImGui::Image((void*)(intptr_t)tool_image->my_image_texture, tool_size); 
 		
 		// add the curtain layer 
-		ImGui::SetCursorPos(ImVec2(window_width - curtain_size.x + curtain_img.fade_ratio * curtain_size.x, 0));
+		ImGui::SetCursorPos(ImVec2(fish_size.x - curtain_size.x + curtain_img.fade_ratio * curtain_size.x, 0));
 		if (curtain_img.fade_in) {
 			curtain_img.fade_ratio = curtain_img.fade_ratio < 0.001 ? 0.001 : curtain_img.fade_ratio * 0.8;
 		} else {
@@ -625,7 +627,7 @@ bool GUI::renderUI() {
 		GUI_show_sale = !GUI_show_sale; 
 	}
 	if (GUI_show_sale) {
-		createBuyConfirmation();
+		createSaleConfirmation();
 	}
 
 	//test fading out
@@ -1206,7 +1208,7 @@ bool GUI::renderWinningScene() {
 	return true; 
 }
 
-void GUI::createBuyConfirmation() {
+void GUI::createSaleConfirmation() {
 	bool open_ptr = true;
 	GUIImage veg_image = veg_images_list[veggie_sale_idx];
 
@@ -1243,12 +1245,22 @@ void GUI::createBuyConfirmation() {
 
 	//show talking box
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-	ImGui::Text("%s! That is worth %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_sell_list[0]);
+	ImGui::Text("%s! That is worth %.0f dollar(s)\n. Press [Enter] to sell!", veg_type_list[veggie_sale_idx], veg_sell_list[veggie_sale_idx]);
 	ImGui::PopFont();
 	ImGui::PopStyleColor(2);
-
-
 	ImGui::End();
+
+	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+		InputManager::lastCmd = SELL_CMD; 
+	}
+}
+
+void GUI::setHoldingModel(ModelEnum model) {
+	veggie_sale_idx = model - VEG_CARROT; 
+}
+
+void GUI::setShowSaleUI(bool show) {
+	GUI_show_sale = show; 
 }
 
 

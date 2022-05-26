@@ -91,6 +91,8 @@ struct ServerHeader {
 	double stamina_bar;
 	bool player_sprinting;
 	bool ui_open;
+	ModelEnum holding_veggie; 
+	bool sale_confirm_ui_open; 
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr, struct SoundInfo* sound_arr, struct PendingDeleteInfo* pending_arr) {

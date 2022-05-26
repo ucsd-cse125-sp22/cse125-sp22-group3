@@ -90,6 +90,7 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		bool sprint = false;
 		bool isDancing = false;
 		bool ui_open = false;
+		bool sale_confirm_ui_open = false; 
 		void Use();
 		void Drop();
 		void Dance();
@@ -98,6 +99,8 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		void Sell();
 		void CloseUI();
 		void OpenUI();
+		void OpenSaleUI();
+		void CloseSaleUI();
 		void EnableMovement();
 		void DisableMovement();
 		bool GetMoveable();

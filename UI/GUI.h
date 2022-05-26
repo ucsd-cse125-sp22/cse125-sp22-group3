@@ -99,6 +99,7 @@ public:
 	static float veg_price_list[];
 	static float veg_sell_list[];
 	static float veg_time_list[];
+	static char* veg_type_list[];
 
 
 	static ImVec2 player_pos[4];
@@ -121,5 +122,8 @@ public:
 	static void createTimer(float ratio);
 	static void setTimer(float time, int remaining_sec);
 	static bool renderWinningScene();
-	static void createBuyConfirmation();
+	static void createSaleConfirmation();
+	static void setHoldingModel(ModelEnum model);
+	static void setShowSaleUI(bool show);
+
 };
