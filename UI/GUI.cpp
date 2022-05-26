@@ -24,6 +24,7 @@ GUIImage GUI::veg_images_list[NUM_VEG_IMG];
 GUIImage GUI::char_images_list[NUM_ICON];
 int GUI::char_selection_idx;
 int GUI::remaining_sec;
+int GUI::veggie_sale_idx; 
 
 
 GUIImage GUI::curtain_img;
@@ -242,9 +243,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 }
 
 void GUI::updateDisplayRatio(int width, int height) {
-	display_ratio = 0.2f * width / 1280;
-	window_width = width;
-	window_height = height; 
+	if (width > 0 && height > 0) {
+		display_ratio = 0.2f * width / 1280;
+		window_width = width;
+		window_height = height;
+	}
 }
 
 static std::unordered_map<int, InputCommands> buy_command_map = {
@@ -494,7 +497,7 @@ bool GUI::renderUI() {
 		GUIImage* tool_image = &tool_images_list[tool_image_idx]; 
 		GUIImage fish_image = fish_images_list[(rack_image_idx+tool_image_idx)%3];
 
-		ImVec2 fish_size = window_width / window_height > fish_image.my_image_width / fish_image.my_image_height ?
+		ImVec2 fish_size = (1.0f *window_width) / window_height > (1.0f *fish_image.my_image_width) / fish_image.my_image_height ?
 						   ImVec2(window_height * fish_image.my_image_width / fish_image.my_image_height, window_height):
 						   ImVec2(window_width, window_width * fish_image.my_image_height / fish_image.my_image_width);
 		ImVec2 rack_size = ImVec2(rack_image->my_image_width * (fish_size.y * 0.5f)/ rack_image->my_image_height  , fish_size.y * 0.5f);
@@ -1176,10 +1179,10 @@ bool GUI::renderWinningScene() {
 
 void GUI::createBuyConfirmation() {
 	bool open_ptr = true;
-	GUIImage veg_image = veg_images_list[0];
+	GUIImage veg_image = veg_images_list[veggie_sale_idx];
 
 	//ImVec2 fish_size = ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
-	ImVec2 fish_size = window_width / window_height > sale_background.my_image_width / sale_background.my_image_height ?
+	ImVec2 fish_size = (1.0f* window_width) / window_height > (1.0f*sale_background.my_image_width) / sale_background.my_image_height ?
 		ImVec2(window_height * sale_background.my_image_width / sale_background.my_image_height, window_height) :
 		ImVec2(window_width, window_width * sale_background.my_image_height / sale_background.my_image_width);
 
@@ -1211,7 +1214,7 @@ void GUI::createBuyConfirmation() {
 
 	//show talking box
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-	ImGui::Text("%s! That will be %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_price_list[0]);
+	ImGui::Text("%s! That is worth %f dollar(s)\n. Press [Enter] to sell!", seed_type_list[0], veg_sell_list[0]);
 	ImGui::PopFont();
 	ImGui::PopStyleColor(2);
 

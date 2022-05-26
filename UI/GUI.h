@@ -25,7 +25,7 @@
 #define NUM_CHASE_IMG 2 
 #define NUM_FISH_IMG 3
 #define NUM_TOOL_IMG 10
-#define NUM_VEG_IMG 1
+#define NUM_VEG_IMG 5
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
 						  ImGuiWindowFlags_NoInputs 
@@ -63,6 +63,7 @@ public:
 	static int rack_image_idx;
 	static int tool_image_idx;
 	static int char_selection_idx;
+	static int veggie_sale_idx; 
 	static float timer_percent;
 	static int remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
