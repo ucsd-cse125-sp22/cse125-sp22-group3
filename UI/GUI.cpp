@@ -693,7 +693,8 @@ bool GUI::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* ou
 
 void GUI::initializeImage() {
 	int i = 0;
-	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/rack")).c_str())) {
+	const std::string rack_path = picture_dir + std::string("/rack");
+	for (auto& entry : fs::directory_iterator(rack_path.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(rack_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
@@ -703,9 +704,9 @@ void GUI::initializeImage() {
 		i++;
 	}
 	rack_image_idx = 1;
-	i = 0; 
-	for (auto& entry : fs::directory_iterator((picture_dir + std::string("/icon")).c_str())) {
-		//std::cout << entry.path() << std::endl;
+	i = 0;
+	const std::string icon_path = picture_dir + std::string("/icon");
+	for (auto& entry : fs::directory_iterator(icon_path.c_str())) {
 		GUIImage* image = &(icon_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
 			&(image->my_image_width), &(image->my_image_height));
@@ -714,13 +715,17 @@ void GUI::initializeImage() {
 		i++;
 	}
 
-	LoadTextureFromFile(std::string(picture_dir + std::string("/score_background.png")).c_str(), &(score_background.my_image_texture),
-		&(score_background.my_image_width), &(score_background.my_image_height));
+	const std::string score_background_path = picture_dir + std::string("/score_background.png");
+	LoadTextureFromFile(score_background_path.c_str(), &(score_background.my_image_texture),
+	                    &(score_background.my_image_width), &(score_background.my_image_height));
 
-	LoadTextureFromFile((picture_dir + std::string("/minimap_background.png")).c_str(), &(minimap_background.my_image_texture),
+	const std::string minimap_background_path = picture_dir + std::string("/minimap_background.png");
+	LoadTextureFromFile(minimap_background_path.c_str(), &(minimap_background.my_image_texture),
 		&(minimap_background.my_image_width), &(minimap_background.my_image_height));
-	i = 0; 
-	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/fishy")).c_str())) {
+	
+	i = 0;
+	const std::string fishy_path = picture_dir + std::string("/fishy");
+	for (auto& entry : fs::directory_iterator(fishy_path.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(fish_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
@@ -729,7 +734,8 @@ void GUI::initializeImage() {
 	}
 
 	i = 0;
-	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/tools")).c_str())) {
+	const std::string tools_path = picture_dir + std::string("/tools");
+	for (auto& entry : fs::directory_iterator(tools_path.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(tool_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
@@ -737,18 +743,24 @@ void GUI::initializeImage() {
 		i++;
 	}
 
-	LoadTextureFromFile((picture_dir + std::string("/curtain-shed-side.png")).c_str(), &(curtain_img.my_image_texture),
-		&(curtain_img.my_image_width), &(curtain_img.my_image_height));
+	const std::string curtain_path = picture_dir + std::string("/curtain-shed-side.png");
+	LoadTextureFromFile(curtain_path.c_str(), &(curtain_img.my_image_texture),
+	                    &(curtain_img.my_image_width), &(curtain_img.my_image_height));
 
-	LoadTextureFromFile((picture_dir + std::string("/stamina.png")).c_str(), &(stamina_image.my_image_texture),
-		&(stamina_image.my_image_width), &(stamina_image.my_image_height));
-	LoadTextureFromFile((picture_dir + std::string("/time-border.png")).c_str(), &(timer_background.my_image_texture),
-		&(timer_background.my_image_width), &(timer_background.my_image_height));
+	const std::string stamina_path = picture_dir + std::string("/stamina.png");
+	LoadTextureFromFile(stamina_path.c_str(), &(stamina_image.my_image_texture),
+	                    &(stamina_image.my_image_width), &(stamina_image.my_image_height));
+
+	const std::string time_border_path = picture_dir + std::string("/time-border.png");
+	LoadTextureFromFile(time_border_path.c_str(), &(timer_background.my_image_texture),
+	                    &(timer_background.my_image_width), &(timer_background.my_image_height));
+	
 	timer_background.my_image_width *= 0.7f; 
 	timer_background.my_image_height *= 0.7f;
 
 	i = 0;
-	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/Vegetable")).c_str())) {
+	std::string vegetable_path = picture_dir + std::string("/Vegetable");
+	for (auto& entry : fs::directory_iterator(vegetable_path.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(veg_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
@@ -757,11 +769,14 @@ void GUI::initializeImage() {
 		image->my_image_width *= 10;
 		i++;
 	}
-	LoadTextureFromFile((picture_dir + std::string("/sale_background.png")).c_str(), &(sale_background.my_image_texture),
-		&(sale_background.my_image_width), &(sale_background.my_image_height));
+	
+	std::string sale_background_path = picture_dir + std::string("/sale_background.png");
+	LoadTextureFromFile(sale_background_path.c_str(), &(sale_background.my_image_texture),
+	                    &(sale_background.my_image_width), &(sale_background.my_image_height));
 
 	i = 0;
-	for (auto& entry : fs::directory_iterator(std::string(picture_dir + std::string("/characters")).c_str())) {
+	std::string characters_path = picture_dir + std::string("/characters");
+	for (auto& entry : fs::directory_iterator(characters_path.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(char_images_list[i]);
 		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
@@ -772,14 +787,14 @@ void GUI::initializeImage() {
 }
 
 void GUI::initializeLoadingImage() {
-	const char* loading_bg_path = (picture_dir + std::string("/loading_background.png")).c_str();
-	LoadTextureFromFile(loading_bg_path, &(loading_background.my_image_texture),
+	const std::string loading_bg_path = picture_dir + std::string("/loading_background.png");
+	LoadTextureFromFile(loading_bg_path.c_str(), &(loading_background.my_image_texture),
 		&(loading_background.my_image_width), &(loading_background.my_image_height));
 
 
 	int i = 0;
-	const char* chase_dir = (picture_dir + std::string("/chasing")).c_str();
-	for (auto& entry : fs::directory_iterator(chase_dir)) {
+	const std::string chase_dir = picture_dir + std::string("/chasing");
+	for (auto& entry : fs::directory_iterator(chase_dir.c_str())) {
 		//std::cout << entry.path() << std::endl;
 		GUIImage* image = &(chase_images_list[i]);
 		const char* epath = entry.path().string().c_str();
