@@ -211,7 +211,7 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 				}
 
 				fprintf(stderr, "Server: deleting physics object with ID %lld\n", reinterpret_cast<uintptr_t>(entity));
-				delete entity;
+				// delete entity;
 			}
 			entities_pending_client_delete.push_back(reinterpret_cast<uintptr_t>(entity));
 		}
