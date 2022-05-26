@@ -1064,11 +1064,22 @@ ModelEnum GUI::renderCharacterSelection(std::unordered_set<ModelEnum> selected_c
 	if (ImGui::IsKeyPressed(ImGuiKey_Enter)) {
 		res = static_cast<ModelEnum>(CHAR_BUMBUS + char_selection_idx);
 	} else if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow)) {
-		if (char_selection_idx > 0)
-			char_selection_idx--; 
+		for (int avail_idx = char_selection_idx - 1; avail_idx >= 0; avail_idx--)
+		{
+			if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
+			{
+				char_selection_idx = avail_idx;
+				break;
+			}
+		}
 	} else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow)) {
-		if (char_selection_idx < NUM_ICON - 1) {
-			char_selection_idx++; 
+		for (int avail_idx = char_selection_idx + 1; avail_idx < NUM_ICON; avail_idx++)
+		{
+			if (selected_char.count(static_cast<ModelEnum>(CHAR_BUMBUS + avail_idx)) == 0)
+			{
+				char_selection_idx = avail_idx;
+				break;
+			}
 		}
 	}
 	
