@@ -266,6 +266,19 @@ int main(int argc, char* argv[])
 			PendingDeleteInfo* pending_arr;
 			serverDeserialize(recv_buf, &sheader, &model_arr, &sound_arr, &pending_arr);
 
+			// reorder particle (to be rendered last)
+			std::vector<ModelInfo> model_vec;
+			std::vector<ModelInfo> particles;
+			for (int i = 0; i < sheader->num_models; i++) {
+				ModelInfo& model_info = model_arr[i];
+				if (model_info.model >= PARTICLE_GLOW && model_info.model <= PARTICLE_FIREFLIES_WHITE) {
+					particles.push_back(model_info);
+				} else {
+					model_vec.push_back(model_info);
+				}
+			}
+			model_vec.insert(model_vec.end(), particles.begin(), particles.end());
+
 			//Rendering Code
 			const glm::mat4 player_transform = sheader->player_transform;
 			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2]) / player_transform[3][3];
@@ -310,7 +323,7 @@ int main(int argc, char* argv[])
 			Window::postprocessing->draw(Window::width, Window::height, sheader->time_remaining_seconds, Window::view);
 			for (int i = 0; i < sheader->num_models; i++)
 			{
-				ModelInfo& model_info = model_arr[i];
+				ModelInfo& model_info = model_vec[i];
 
 				// insert new model into map
 				if (model_map.count(model_info.model_id) == 0) {
@@ -399,7 +412,7 @@ int main(int argc, char* argv[])
 			glCullFace(GL_BACK);
 			for (int i = 0; i < sheader->num_models; i++) // TODO ask Danica planting bandaid nani
 			{
-				ModelInfo model_info = model_arr[i];
+				ModelInfo model_info = model_vec[i];
 
 				if (model_map.count(model_info.model_id) == 0) {
 					model_map[model_info.model_id] = new Model(model_info.model);
