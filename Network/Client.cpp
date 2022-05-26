@@ -146,13 +146,13 @@ std::vector<ModelEnum> Client::syncCharacterSelection(int num_clients,
 				}
 			}
 
-			// return here because need to check one last time from server whether all player has selected
+			ClientCharacterPacket out_packet = callback(sc_packet);
+
+			// return here because need to check one last time from server whether all player has selected (and repaint)
 			if (done)
 			{
 				return std::vector<ModelEnum>(sc_packet.current_char_selections, sc_packet.current_char_selections + num_clients); 
 			}
-			
-			ClientCharacterPacket out_packet = callback(sc_packet);
 			
 			char out_data[sizeof(ClientCharacterPacket)];
 			out_packet.serializeTo(out_data);
