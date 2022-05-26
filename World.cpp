@@ -37,6 +37,7 @@ World::World(ModelEnum curr) {
 	colliders_.push_back(new ColliderCircle(glm::vec2(-14.141, 126.720), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-58.899, 123.030), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-60.256, 101.020), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-1.013875, 44.297501), 1.2, true));
 
 	colliders_.push_back(new ColliderCircle(glm::vec2(-121.937, -114.008), 12, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(92.839, -123.126), 12, true));
