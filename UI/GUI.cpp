@@ -965,11 +965,12 @@ void GUI::createMiniMap() {
 
 	ImGui::Begin("MiniMap", &bptr, TRANS_WINDOW_FLAG);
 	//place all player's icon:
-	for (int i = 0; i < 4; i++) {
-		GUIImage image = icon_images_map[static_cast<ModelEnum>(i + CHAR_BUMBUS)];
+	for (ModelEnum char_model: char_selections) {
+		GUIImage image = icon_images_map[char_model];
 		//TODO convert the pos into relative pos in minimap
 		ImVec2 icon_size = ImVec2(image.my_image_width * display_ratio, image.my_image_height * display_ratio);
 
+		const int i = char_model - CHAR_BUMBUS;
 		ImVec2 relative_pos = ImVec2(player_pos[i].x / world_dim * image_size.x- icon_size.x * 0.5f, player_pos[i].y / world_dim * image_size.y - icon_size.y * 0.5f); 
 		//size of icon 
 		ImGui::SetCursorPos(relative_pos + center);
