@@ -80,7 +80,7 @@ private:
     static std::chrono::steady_clock::time_point curr_time_;
     std::chrono::steady_clock::time_point game_end_time_;
     bool isStarted = false;
-    float timeToSpawnEggplant = 540; // default spawn 6 minutes in
+    float timeToSpawnEggplant = 510; // default spawn 6 minutes in
     bool eggplantSpawned = false;
 
     std::default_random_engine* generator; // all <random> distributions should use this generator
@@ -94,8 +94,8 @@ private:
     glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
 
     // firefly info
-    float timeToSpawnFireflies = 588;
-    float timeToDespawnFireflies = 228;
+    float timeToSpawnFireflies = 540;
+    float timeToDespawnFireflies = 360;
     bool firefliesSpawned = false;
     std::vector<Particle*> fireflies;
     int numFireFlies = 5;
