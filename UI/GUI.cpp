@@ -431,7 +431,7 @@ bool GUI::renderUI() {
 			else if (!sale_tools && rack_image_idx < NUM_RACK_IMG - 1) {
 				rack_image_idx++;
 			}
-			else if (sale_tools && tool_image_idx < NUM_TOOL_IMG - 1) {
+			else if (sale_tools) {// && tool_image_idx < NUM_TOOL_IMG - 1) { -> incrementing highest index (9) should go to idx 5
 				switch (tool_image_idx) {
 				case 7:
 					tool_image_idx = 5;
