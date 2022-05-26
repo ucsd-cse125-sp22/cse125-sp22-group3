@@ -4,22 +4,37 @@
 inline int ServerMain()
 {
 	Server* server = new Server();
-	Player pogo{CHAR_POGO};
+
+	server->WaitForClients();
+	std::vector<ModelEnum> character_selection = server->CharacterSelection();
+
 	Player bumbus{CHAR_BUMBUS};
-	Player gilman{CHAR_GILMAN};
+	Player pogo{CHAR_POGO};
 	Player swainky{CHAR_SWAINKY};
+	Player gilman{CHAR_GILMAN};
 
 	bumbus.SetWorldPosition({-20, 30, 0});
 	pogo.SetWorldPosition({20, 30, 0});
 	swainky.SetWorldPosition({0, 30, -20});
 	gilman.SetWorldPosition({0, 30, 20});
-	std::vector<Player*> all_players = {&bumbus, &pogo, &swainky, &gilman};
 
-	std::vector<Player*> players(all_players.begin(), all_players.begin() + server->num_clients);
+	std::unordered_map<ModelEnum, Player*> char_map = {
+		{CHAR_BUMBUS, &bumbus},
+		{CHAR_POGO, &pogo},
+		{CHAR_SWAINKY, &swainky},
+		{CHAR_GILMAN, &gilman},
+	};
+
+	std::vector<Player*> players;
+	for (ModelEnum char_models : character_selection)
+	{
+		players.push_back(char_map[char_models]);
+	}
+	
 	GameManager game(players);
 
-	NPC fish{CHAR_NPC};
-	fish.SetWorldPosition({0, 30, 0});
+	NPC nanaue{CHAR_NPC};
+	nanaue.SetWorldPosition({0, 30, 0});
 
 	// TODO: make this look better LUL
 	Plot plotRed{WORLD_PLOT_RED};
@@ -89,10 +104,10 @@ inline int ServerMain()
 	World grass{WORLD_GRASS};
 	World dome{WORLD_DOME};
 
-	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &fish, &grass, &dome});
+	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &nanaue, &grass, &dome});
 
 	WateringCan can{};
-	can.SetPosition({20, -2, 30});
+	can.SetPosition({0, -4, 10});
 	game.AddEntities({&can});
 
 	world.SetPosition({0, 0, -4.0f});
@@ -101,7 +116,7 @@ inline int ServerMain()
 	grass.SetPosition({0, 0, -4.0f});
 	dome.SetPosition({0, 0, -4.0f});
 
-	server->mainLoop([&game](std::vector<ClientPacket> client_packet_vec)
+	server->mainLoop([&game](std::vector<ClientPacket> &client_packet_vec)
 	{
 		game.StartGameTime();
 

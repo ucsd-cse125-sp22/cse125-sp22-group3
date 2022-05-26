@@ -178,8 +178,7 @@ std::string Server::getCharacterFriendlyName(ModelEnum model)
 	}
 }
 
-//auto begin_time = std::chrono::steady_clock::now();
-void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
+void Server::WaitForClients()
 {
 	fprintf(stderr, "Expecting %d clients\n", num_clients);
 	for (int client_idx = 0; client_idx < num_clients; client_idx++) {
@@ -220,9 +219,12 @@ begin_loop_accept_client:
 			// TODO deal with send_status;
 		}
 	}
-	fprintf(stderr, "All clients connected, starting character selection\n");
+	fprintf(stderr, "All clients connected\n");
+}
 
-	// BEGIN character Selection
+std::vector<ModelEnum> Server::CharacterSelection()
+{
+	fprintf(stderr, "Starting character selection");
 	std::vector<ModelEnum> char_sel;
 	for (int _ = 0; _ < num_clients; _++)
 	{
@@ -283,12 +285,18 @@ begin_loop_accept_client:
 			}
 		}
 	}
+	
 	fprintf(stderr, "All clients selected character, with selections as follows:\n");
 	for (int i = 0; i < num_clients; i++)
 	{
 		fprintf(stderr, "\t Client %d: %s\n", i, getCharacterFriendlyName(char_sel[i]).c_str());
 	}
-	
+	return char_sel;
+}
+
+//auto begin_time = std::chrono::steady_clock::now();
+void Server::mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code)
+{
 main_loop_label:
 	fprintf(stderr, "Starting server main loop\n");
 	while (true) {

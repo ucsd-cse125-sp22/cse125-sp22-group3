@@ -20,6 +20,9 @@ private:
 public:
 	Server(void);
 	~Server(void);
+
+	void WaitForClients();
+	std::vector<ModelEnum> CharacterSelection();
 	void mainLoop(std::function<std::vector<std::pair<char*, int>>(std::vector<ClientPacket> client_packet_vec)> main_code);
 
 	int num_clients = DEFAULT_NUM_CLIENTS;
