@@ -966,17 +966,11 @@ void GUI::createMiniMap() {
 
 	ImGui::SetNextWindowSize(window_size);
 	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
-	ImGui::Begin("Minimap background", &bptr, TRANS_WINDOW_FLAG);
+	ImGui::Begin("Minimap", &bptr, TRANS_WINDOW_FLAG);
 	ImGui::SetCursorPos(ImVec2(0, 0));
 	ImGui::Image((void*)(intptr_t)minimap_background.my_image_texture, image_size);
-	ImGui::End(); 
-
-	ImGui::SetNextWindowSize(window_size);
-	ImGui::SetNextWindowPos(ImVec2(padding, window_height - padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	//ImVec2 center = ImVec2(padding + size.x / 2, window_height - padding - size.y / 2); // center of minimap
 	ImVec2 center = ImVec2(image_size.x * 0.5f, image_size.y  * 0.5f); // center of minimap
-
-	ImGui::Begin("MiniMap", &bptr, TRANS_WINDOW_FLAG);
 	//place all player's icon:
 	for (ModelEnum char_model: char_selections) {
 		GUIImage image = icon_images_map[char_model];
