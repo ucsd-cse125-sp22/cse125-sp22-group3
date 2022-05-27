@@ -89,7 +89,9 @@ void Plot::OnInteract(Player* player) {
 			if (seed->glow_particle != nullptr) {
 				GameManager::RemoveEntities({ seed->glow_particle });
 			}
-			
+			if (seed->indicate_product != nullptr) {
+				GameManager::RemoveEntities({ seed->indicate_product });
+			}
 			SetPlantedVegetable(nullptr);
 			GameManager::RemoveEntities({ seed });			
 		}
@@ -100,12 +102,18 @@ void Plot::OnInteract(Player* player) {
 	else if (auto bouteille_poisson = dynamic_cast<Poison*>(player->GetHoldEntity())) {
 
 		Seed* seed = plantedVegetable;
-		if (seed != nullptr) {
+		if (seed != nullptr && !seed->isPoisoned) {
 			player->sound_poison = true;
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
 			GameManager::RemoveEntities({ bouteille_poisson });
 
+			if (seed->glow_particle != nullptr) {
+				GameManager::RemoveEntities({ seed->glow_particle });
+			}
+			if (seed->indicate_product != nullptr) {
+				GameManager::RemoveEntities({ seed->indicate_product });
+			}
 			seed->isPoisoned = true;
 			glm::vec3 trans = GetTranslate();
 			seed->SetModel(WORLD_FLAG_POISON, glm::vec3(trans[0],poisonFlagHeight, trans[2]));
@@ -120,6 +128,13 @@ void Plot::OnInteract(Player* player) {
 			player->Drop();
 			player->SetTriggeringEntity(nullptr);
 			GameManager::RemoveEntities({net});
+
+			if (seed->glow_particle != nullptr) {
+				GameManager::RemoveEntities({ seed->glow_particle });
+			}
+			if (seed->indicate_product != nullptr) {
+				GameManager::RemoveEntities({ seed->indicate_product });
+			}
 
 			auto seed_ = dynamic_cast<GameEntity*>(seed);
 			Vegetable* veggie = nullptr;
