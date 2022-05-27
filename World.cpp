@@ -38,16 +38,24 @@ World::World(ModelEnum curr) {
 	colliders_.push_back(new ColliderCircle(glm::vec2(-58.899, 123.030), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-60.256, 101.020), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-1.013875, 44.297501), 1.2, true));
-
+	
+	// had to remove houses
+	/**
 	colliders_.push_back(new ColliderCircle(glm::vec2(-121.937, -114.008), 12, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(92.839, -123.126), 12, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(114.126, 123.026), 12, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-128.408, 123.026), 12, true));
-
+	*/
 	colliders_.push_back(new ColliderAABB(glm::vec2(-140, -135), glm::vec2(-135, 135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(135, -135), glm::vec2(140, 135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, -140), glm::vec2(135, -135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, 135), glm::vec2(135, 140), true));
+
+	// bandaid corner fix
+	colliders_.push_back(new ColliderCircle(glm::vec2(-130, -130), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(130, -130), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(130, 130), 4, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-130, 130), 4, true));
 	
 	// NPC Stand
 	colliders_.push_back(new ColliderAABB(glm::vec2(-5.628884, 3.699146), glm::vec2(4.809305, 8.521981), true));
