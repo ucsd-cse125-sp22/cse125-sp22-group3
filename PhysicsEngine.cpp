@@ -103,11 +103,12 @@ inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* a
 	const glm::vec2 center_aabb = (aabb->maximum + aabb->minimum) / 2.f;
 	// Get distance to move from closest point on AABB to sphere.
 	float dist = glm::length(circle->center - closest_aabb_point);
-	const float dist_to_move = circle->radius - dist;
-	const glm::vec2 dir_to_move = glm::normalize(circle->center) * dist_to_move / 2.f;
+	glm::vec2 dir = circle->center - closest_aabb_point;
+	glm::vec2 dist_to_move = closest_aabb_point + (circle->radius*normalize(dir));
+	const glm::vec2 dir_to_move = normalize(dist_to_move);
 
 	if (aabb->collider_is_static) {
-		*circle_pos -= dir_to_move;
+		*circle_pos = dist_to_move;
 	}
 	// This will probably never happen but just in case...
 	else if (circle->collider_is_static) {
