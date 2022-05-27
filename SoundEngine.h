@@ -86,28 +86,43 @@ struct SoundEngine
         {MUSIC_TWO_MINUTES, "sound/music/two-minutes.wav"},
     };
     
-    void Init()
+    bool audio = false;
+    void Init(bool audio_)
     {
+        audio = audio_;
+        if (!audio_) return;
         engine.init();
         for (auto & [soundEnum, wav] : sound_wav_map) {
             wav.load(sound_file_map[soundEnum]);
             if (soundEnum == SFX_AMBIENCE || soundEnum == SFX_EGGPLANT_AMBIENCE) wav.setLooping(true);
         }
     }
-    void DeInit() { engine.deinit(); }
+    void DeInit() { 
+        if (!audio) return;
+        engine.deinit(); }
 
-    void Play(const SoundEnum sound) { engine.play(sound_wav_map[sound]); }
-    void Stop(const SoundEnum sound) { sound_wav_map[sound].stop(); }
+    void Play(const SoundEnum sound) { 
+        if (!audio) return;
+        engine.play(sound_wav_map[sound]);
+    }
+    void Stop(const SoundEnum sound) { 
+        if (!audio) return;
+        sound_wav_map[sound].stop();
+    }
 
     void PlayMusic(const SoundEnum sound,const bool looping = true)
     {
-        music.load(sound_file_map[sound]);
+        if (!audio) return;
+        music.stop();
+        const char* sound_path = sound_file_map[sound];
+        music.load(sound_path);
         music.setLooping(looping);
         engine.play(music);
     }
 
     void StopMusic()
     {
+        if (!audio) return;
         music.stop();
     }
 
