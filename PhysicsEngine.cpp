@@ -111,14 +111,14 @@ inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* a
 		*circle_pos = dist_to_move;
 	}
 	// This will probably never happen but just in case...
-	else if (circle->collider_is_static) {
-		*aabb_pos += dir_to_move;
-	}
-	else {
-		const glm::vec2 dir_to_move = glm::normalize(circle->center - center_aabb) * dist_to_move / 2.f;
-		*circle_pos -= dir_to_move;
-		*aabb_pos += dir_to_move;
-	}
+	//else if (circle->collider_is_static) {
+	//	*aabb_pos += dir_to_move;
+	//}
+	//else {
+	//	const glm::vec2 dir_to_move = glm::normalize(circle->center - center_aabb) * dist_to_move / 2.f;
+	//	*circle_pos -= dir_to_move;
+	//	*aabb_pos += dir_to_move;
+	//}
 
 }
 

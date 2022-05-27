@@ -8,7 +8,7 @@ NPC::NPC(ModelEnum curr)
 	rotation = glm::mat4(1);
 
 	// Change to AABB later
-	collider_ = new ColliderCircle(glm::vec2(0, 0), 6, false);
+	collider_ = new ColliderCircle(glm::vec2(0, 3.f), 8, false);
 	collider_->collider_is_trigger = true;
 }
 
@@ -20,7 +20,7 @@ NPC::~NPC()
 
 void NPC::FixedUpdate()
 {
-	collider_->center = *translate;
+	//collider_->center = *translate;
 }
 
 glm::mat4 NPC::GetParentTransform()

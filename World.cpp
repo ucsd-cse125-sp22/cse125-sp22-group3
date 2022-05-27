@@ -48,6 +48,12 @@ World::World(ModelEnum curr) {
 	colliders_.push_back(new ColliderAABB(glm::vec2(135, -135), glm::vec2(140, 135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, -140), glm::vec2(135, -135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, 135), glm::vec2(135, 140), true));
+	
+	// NPC Stand
+	colliders_.push_back(new ColliderAABB(glm::vec2(-5.628884, 3.699146), glm::vec2(4.809305, 8.521981), true));
+
+	// NPC
+	colliders_.push_back(new ColliderCircle(glm::vec2(0.475988, 0.107014), 1.5, true));
 
 	translate = new glm::vec2(0.f, 0.f);
 }
