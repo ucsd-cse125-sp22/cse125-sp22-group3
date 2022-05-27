@@ -271,7 +271,7 @@ static std::unordered_map<int, InputCommands> buy_command_map = {
 };
 
 char* GUI::seed_type_list[] = { "Carrot", "Cabbage", "Corn","Radish", "Tomato"};
-char* GUI::veg_type_list[] = {  "Carrot", "Cabbage", "Corn","Radish", "Tomato" };
+char* GUI::veg_type_list[] = {  "Carrot", "Cabbage", "Corn","Radish", "Tomato", "Golden Eggplant"};
 
 char* GUI::tool_type_list[] = { "Net", "Hoe", "Watering Can","Fertilizer", "Shovel", "Glue","Poison", "Super Oats", "Farmer's Ale"};
 char* GUI::tool_func_list[] = {
@@ -313,7 +313,9 @@ float GUI::veg_sell_list[] = { veggie_map[VegetableType::CARROT].sell_price,
 veggie_map[VegetableType::CABBAGE].sell_price,
 veggie_map[VegetableType::CORN].sell_price,
 veggie_map[VegetableType::RADISH].sell_price,
-veggie_map[VegetableType::TOMATO].sell_price };
+veggie_map[VegetableType::TOMATO].sell_price,
+veggie_map[VegetableType::GOLDEN_EGGPLANT].sell_price
+};
 
 float GUI::veg_time_list[] = { veggie_map[VegetableType::CARROT].growth_time,
 veggie_map[VegetableType::CABBAGE].growth_time,
