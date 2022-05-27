@@ -86,6 +86,9 @@ bool Vegetable::CanInteract(Player* player) { return !player->GetIsHolding(); }
 void Vegetable::OnInteract(Player* player)
 {
 	if (holding_player != nullptr) {
+		if (holding_player->sale_confirm_ui_open) {
+			return;
+		}
 		player->sound_steal = true;
 		holding_player->sound_steal = true;
 		holding_player->Drop();
