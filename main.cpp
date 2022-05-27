@@ -297,7 +297,7 @@ int main(int argc, char* argv[])
 
 			if (!two_minute_started && sheader->time_remaining_seconds <= 120) {
 				sound_engine.PlayMusic(MUSIC_TWO_MINUTES, false);
-				two_minute_started = false;
+				two_minute_started = true;
 			}
 
 			// update scoreboard
