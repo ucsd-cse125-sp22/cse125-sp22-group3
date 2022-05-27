@@ -25,10 +25,12 @@ void InputManager::CursorCallback(GLFWwindow* window,const double xpos,const dou
 	
 	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)) {
 		std::cout << "RIGHT_CLICK" << std::endl;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
 	if ((glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)) {
 		std::cout << "LEFT_CLICK" << std::endl;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	}
 }
 glm::vec2 InputManager::GetCursorDelta()
@@ -36,6 +38,7 @@ glm::vec2 InputManager::GetCursorDelta()
 	const glm::vec2 delta = current_cursor - last_cursor;
 	last_cursor = current_cursor;
 	return delta;
+
 }
 
 void InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {

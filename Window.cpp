@@ -236,7 +236,7 @@ GLFWwindow* Window::createWindow(int width, int height)
 	glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 
-	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, monitor, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
 
 	// Check if the window could not be created.
 	if (!window)
