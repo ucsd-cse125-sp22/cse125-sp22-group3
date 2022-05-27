@@ -12,9 +12,9 @@ bool Hoe::CanInteract(Player* player) {
 
 void Hoe::OnInteract(Player* player) {
 	if (holding_player != nullptr) {
-		holding_player->Drop();
 		player->sound_steal = true;
 		holding_player->sound_steal = true;
+		holding_player->Drop();
 	}
 	SetHeight(pickupHeight);
 	player->SetHoldEntity(this);

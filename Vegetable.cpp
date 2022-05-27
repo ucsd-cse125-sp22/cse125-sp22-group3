@@ -87,6 +87,7 @@ void Vegetable::OnInteract(Player* player)
 {
 	if (holding_player != nullptr) {
 		if (holding_player->sale_confirm_ui_open) {
+			printf("return worked\n");
 			return;
 		}
 		player->sound_steal = true;
@@ -96,6 +97,7 @@ void Vegetable::OnInteract(Player* player)
 	else if (type == VegetableType::GOLDEN_EGGPLANT) {
 		player->sound_eggplant_pickup = true;
 	}
+	printf("return didn't work\n");
 	SetHeight(pickupHeight);
 	player->SetHoldEntity(this);
 	player->SetTriggeringEntity(nullptr);
