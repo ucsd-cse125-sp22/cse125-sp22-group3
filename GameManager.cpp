@@ -203,7 +203,7 @@ void GameManager::RemoveEntities(std::vector<GameEntity*> entities) {
 	for (GameEntity* entity : entities) {
 		if (entity != nullptr) {
 			auto iter = std::find(GameManager::game_entities.begin(), GameManager::game_entities.end(), entity);
-			if (*iter != nullptr) {
+			if (*iter != nullptr && iter != GameManager::game_entities.end()) {
 				GameManager::game_entities.erase(iter);
 
 				if (auto phys_object = dynamic_cast<PhysicsObject*>(entity)) {
