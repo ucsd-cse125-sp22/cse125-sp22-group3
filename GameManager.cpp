@@ -372,6 +372,7 @@ void GameManager::SetPlayerSell(int player_index)
 
 void GameManager::SetClosePlayerUI(int player_index) {
 	players_[player_index]->CloseUI();
+	players_[player_index]->CloseSaleUI();
 }
 
 
