@@ -23,7 +23,7 @@ Vegetable::Vegetable(VegetableType vegetable, ModelEnum curr) {
 		float randX= mapMin + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (mapMax - mapMin)));
 		float randZ = mapMin + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (mapMax - mapMin)));
 		*translate = glm::vec2(randX, randZ);
-		*translate3D = glm::vec3(randX, 0.f, randZ);
+		*translate3D = glm::vec3(randX, -7.5f, randZ);
 		printf("GOLDEN EGGPLANT HAS SPAWNED AT %f %f\n", randX, randZ);
 	}
 }
