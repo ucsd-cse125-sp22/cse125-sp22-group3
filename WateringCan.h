@@ -5,7 +5,7 @@ class WateringCan :
 {
 private:
 	float pickupHeight = -1.5; // TODO hello
-	float dropHeight = -2; // TODO danica
+	float dropHeight = -3; // TODO danica
 	glm::mat4 hold_transformation_{}; // TODO ici
 
 public:

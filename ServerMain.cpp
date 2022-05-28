@@ -107,7 +107,7 @@ inline int ServerMain()
 	game.AddEntities({&plotRed, &plotBlue, &plotGreen, &plotYellow, &world, &water, &leaves, &nanaue, &grass, &dome});
 
 	WateringCan can{};
-	can.SetPosition({0, -4, 10});
+	can.SetPosition({15, -3, 0});
 	game.AddEntities({&can});
 
 	world.SetPosition({0, 0, -4.0f});
