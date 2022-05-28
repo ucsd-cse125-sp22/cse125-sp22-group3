@@ -1060,13 +1060,14 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 		ImVec2(window_width, window_width * loading_background.my_image_height / loading_background.my_image_width);
 	ImVec2 window_size = ImVec2(window_width, window_height);
 	ImGui::SetNextWindowSize(window_size);
-	ImGui::SetNextWindowPos((window_size-image_size)*0.5f);
+	ImGui::SetNextWindowPos(ImVec2(0,0));
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(0, 0, 0, 255));
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
-	ImGui::Begin("Loading Background", NULL, TRANS_WINDOW_FLAG);
+	ImGui::Begin("Loading Background", NULL, DRAK_WINDOW_FLAG);
+	ImGui::SetCursorPos((window_size - image_size) * 0.5f);
 	ImGui::Image((void*)(intptr_t)loading_background.my_image_texture, image_size);
-	ImGui::SetCursorPos(ImVec2((window_size.x-image_size.x)*0.5f + 64.0f * display_ratio, (window_size.y - image_size.y) * 0.5f + image_size.y * 2 / 3));
-	ImGui::PushFont(font_Ranchers);
+	ImGui::SetCursorPos(ImVec2((window_size.x-image_size.x)*0.5f + 128.0f * display_ratio, (window_size.y - image_size.y) * 0.5f + image_size.y * 2 / 3));
+	ImGui::PushFont(font_Ranchers_large);
 	ImGui::Text("%d of %d client joined...", client_joined, max_client);
 	ImGui::PopFont();
 	ImGui::End();
