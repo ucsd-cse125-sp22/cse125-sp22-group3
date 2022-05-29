@@ -381,6 +381,11 @@ int main(int argc, char* argv[])
 					point_light_pos.push_back(pos);
 				}
 
+				//trigger the golden eggplant spawn sign if not trigger before 
+				if (model_info.model == VEG_GOLDEN_EGGPLANT) {
+					GUI::setShowGoldenEggplantSign(true);
+				}
+
 				// rotating particles towards players
 				else if (model_info.model == INDICATOR_WATER || model_info.model == INDICATOR_FERTILIZER || model_info.model == PARTICLE_GLOW) {
 					glm::mat4 tempTransform = model_info.parent_transform;

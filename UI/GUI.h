@@ -62,6 +62,7 @@ public:
 	static bool sale_tools; // default to false ( saleing seed), true if show tool shed
 	static bool show_loading;
 	static bool show_eggplant_sign;
+	static bool show_eggplant_sign_prev; // this bool is used to record if the sign is already trigger before
 	static int rack_image_idx;
 	static int tool_image_idx;
 	static int char_selection_idx;
@@ -132,5 +133,6 @@ public:
 	static void setHoldingModel(ModelEnum model);
 	static void setShowSaleUI(bool show);
 	static void createTopSign(bool* show, GUIImage* image);
+	static void setShowGoldenEggplantSign(bool show); 
 
 };

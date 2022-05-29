@@ -63,6 +63,8 @@ ImFont* GUI::font_Sofia_Nicks_Gf;
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
 bool GUI::show_eggplant_sign;
+bool GUI::show_eggplant_sign_prev; // this bool is used to record if the sign is already trigger before
+
 
 
 namespace ImGui {
@@ -240,6 +242,8 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_timer = true; 
 	GUI_show_winning = false; 
 	show_eggplant_sign = false;
+	show_eggplant_sign_prev = false; // this bool is used to record if the sign is already trigger before
+
 	
 
 	stamina_percent = 100; 
@@ -1335,6 +1339,13 @@ void GUI::createTopSign(bool* show, GUIImage* image) {
 	ImGui::SetCursorPos(ImVec2(0, -eggplant_size.y * image->fade_ratio));
 	ImGui::Image((void*)(intptr_t)image->my_image_texture, eggplant_size);
 	ImGui::End();
+}
+
+void GUI::setShowGoldenEggplantSign(bool show) {
+	if (show && !show_eggplant_sign_prev) {
+		show_eggplant_sign = true; 
+		show_eggplant_sign_prev = true; 
+	}
 }
 
 
