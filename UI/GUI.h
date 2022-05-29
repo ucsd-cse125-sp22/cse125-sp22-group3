@@ -76,7 +76,8 @@ public:
 	static ImFont* font_Fredericka_the_Great;
 	static ImFont* font_Mystery_Quest;
 	static ImFont* font_Ranchers;
-	static ImFont* font_Ranchers_large; 
+	static ImFont* font_Ranchers_large;
+	static ImFont* font_Sofia_Not_Nicks_Gf;
 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static std::unordered_map<ModelEnum, GUIImage> icon_images_map;

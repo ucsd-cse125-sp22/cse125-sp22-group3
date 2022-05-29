@@ -22,8 +22,9 @@ class Player : public Drawable, public GameEntity, public PhysicsObject, public 
 		float drunk_friction_ = 5.f;
 		float base_accel_ = 200.f; // Acceleration in Units/Sec^2
 		float drunk_accel_ = 20.f;
+		float max_eggplant_velocity_ = 10.f; // Eggplant speed
 		float max_velocity_ = 20.f; // Max Velocity in Units/Sec
-		float max_sprint_velocity_ = 30.f;
+		float sprint_modifier = 1.5f;
 		float entityHeldDist = 2.5f; // distance of entity from player
 		float seedHeldDist = 2.5f; // distance of entity from player
 		float veggieHeldDist = 3.f; // distance of entity from player

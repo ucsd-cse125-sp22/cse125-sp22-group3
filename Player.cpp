@@ -99,7 +99,10 @@ void Player::FixedUpdate() {
 		float applied_accel = intoxicationTimeRemaining > 0 ? drunk_accel_ : base_accel_;
 		curr_vel_ += applied_accel * move_input * delta;
 		// Cap our speed at some max velocity
-		const float max_vel = sprint ? max_sprint_velocity_ : max_velocity_;
+		Vegetable* eggplant = dynamic_cast<Vegetable*>(entityHeld);
+		bool holding_eggplant = eggplant != nullptr && eggplant->type == VegetableType::GOLDEN_EGGPLANT;
+		float max_vel = holding_eggplant ? max_eggplant_velocity_ : max_velocity_;
+		if (sprint) max_vel *= sprint_modifier;
 		if (glm::length(curr_vel_) > max_vel * glm::length(move_input)) {
 			curr_vel_ = glm::normalize(curr_vel_) * max_vel * glm::length(move_input);
 		}

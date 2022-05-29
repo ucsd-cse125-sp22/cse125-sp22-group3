@@ -53,6 +53,7 @@ ImFont* GUI::font_Fredericka_the_Great;
 ImFont* GUI::font_Mystery_Quest;
 ImFont* GUI::font_Ranchers;
 ImFont* GUI::font_Ranchers_large;
+ImFont* GUI::font_Sofia_Not_Nicks_Gf;
 
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
@@ -218,7 +219,7 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
 	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
 	font_Ranchers_large = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 64.0f);
-
+	font_Sofia_Not_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 36.0f);
 
 	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
@@ -553,7 +554,7 @@ bool GUI::renderUI() {
 		}
 		ImGui::Image((void*)(intptr_t)rack_image_actual->my_image_texture, rack_size);
 
-		ImGui::PushFont(font_Are_You_Serious);
+		ImGui::PushFont(font_Sofia_Not_Nicks_Gf);
 		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 
 		//show talking box
@@ -1237,7 +1238,7 @@ void GUI::createSaleConfirmation() {
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.75 - veg_size.x *0.5, (fish_size.y - veg_size.y) * 0.5f));
 	ImGui::Image((void*)(intptr_t)veg_image.my_image_texture, veg_size);
 
-	ImGui::PushFont(font_Are_You_Serious);
+	ImGui::PushFont(font_Sofia_Not_Nicks_Gf);
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 
 	//show talking box

@@ -182,6 +182,7 @@ void Plot::OnInteract(Player* player) {
 			else if (auto wateringCan = dynamic_cast<WateringCan*>(player->GetHoldEntity()))
 			{
 				if (isPlanted) {
+					printf("Is planted: %d\n", isPlanted);
 					player->sound_watering = true;
 					plantedVegetable->waterSeed();
 				}
