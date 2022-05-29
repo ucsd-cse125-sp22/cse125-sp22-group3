@@ -559,13 +559,13 @@ bool GUI::renderUI() {
 		//show talking box
 		if (sale_tools) {
 			int currIdx = tool_image_idx - 1;
-			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.125));
-			ImGui::Text("Oh my! The %s!\n It can be used to %s.\nThat will be %.0f dollar(s).\nPress [Enter] to buy!", \
+			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.115));
+			ImGui::Text("Oh my! The %s!\nIt can be used to %s.\nThat will be %.0f dollar(s).\nPress [Enter] to buy!", \
 				tool_type_list[currIdx], tool_func_list[currIdx],tool_sell_list[currIdx]);
 		} else {
 			int currIdx = rack_image_idx - 1;
-			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-			ImGui::Text("Why yes! A %s seed!\nThe %s requires %.0f seconds to grow\n    and %s.\nAfter harvest, it will sell for %.0f dollars(s).\nThat will be %.0f dollar(s).\nPress [Enter] to buy!",
+			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.1));
+			ImGui::Text("Why yes! A %s seed!\nThe %s requires %.0f seconds to grow\n\tand %s.\nAfter harvest, it will sell for %.0f dollars(s).\nThat will be %.0f dollar(s). Press [Enter] to buy!",
 				seed_type_list[currIdx], seed_type_list[currIdx], veg_time_list[currIdx], seed_prop_list[currIdx],veg_sell_list[currIdx],veg_price_list[currIdx]);
 		}
 		ImGui::PopFont(); 
@@ -1242,7 +1242,7 @@ void GUI::createSaleConfirmation() {
 
 	//show talking box
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.125));
-	ImGui::Text("%s! That is worth %.0f dollar(s)\n. Press [Enter] to sell!", veg_type_list[veggie_sale_idx], veg_sell_list[veggie_sale_idx]);
+	ImGui::Text("%s! That is worth %.0f dollar(s).\n Press [Enter] to sell!", veg_type_list[veggie_sale_idx], veg_sell_list[veggie_sale_idx]);
 	ImGui::PopFont();
 	ImGui::PopStyleColor(2);
 	ImGui::End();

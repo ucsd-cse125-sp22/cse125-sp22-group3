@@ -339,7 +339,7 @@ void Player::Buy(ModelEnum tool) {
 		isHolding = true;
 
 		// Spawn the correct tool
-		GameEntity* tempEntity = nullptr;
+		GardenTool* tempEntity = nullptr;
 		switch (tool) {
 			case ModelEnum::NET:
 				tempEntity = new VeggieNet();
@@ -375,7 +375,7 @@ void Player::Buy(ModelEnum tool) {
 		
 		GameManager::AddEntities({ tempEntity });
 		SetHoldEntity(tempEntity);
-		
+		tempEntity->holding_player = this;
 		sound_buy = true;
 	}
 	CloseUI();
