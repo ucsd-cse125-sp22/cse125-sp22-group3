@@ -13,7 +13,9 @@ std::vector<ModelEnum> GUI::char_selections;
 GUIImage GUI::score_background; 
 GUIImage GUI::loading_background;
 GUIImage GUI::minimap_background;
-GUIImage GUI::golden_eggplant_sign;
+GUIImage GUI::eggplant_sign_img;
+int GUI::eggplant_spawn_time;
+
 
 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
@@ -60,6 +62,8 @@ ImFont* GUI::font_Sofia_Nicks_Gf;
 
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
+bool GUI::show_eggplant_sign;
+
 
 namespace ImGui {
 
@@ -235,6 +239,9 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_buy_ui= false; 
 	GUI_show_timer = true; 
 	GUI_show_winning = false; 
+	show_eggplant_sign = false;
+	
+
 	stamina_percent = 100; 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -662,6 +669,36 @@ bool GUI::renderUI() {
 		createSaleConfirmation();
 	}
 
+	if (ImGui::IsKeyPressed(ImGuiKey_B)) {
+		show_eggplant_sign = !show_eggplant_sign;
+	}
+	if (show_eggplant_sign) {
+		eggplant_sign_img.fade_in = true; 
+		eggplant_sign_img.fade_ratio = 1; 
+		eggplant_spawn_time = remaining_sec; 
+		show_eggplant_sign = false; 
+	}
+
+	if (eggplant_sign_img.fade_in) {
+		eggplant_sign_img.fade_ratio = eggplant_sign_img.fade_ratio < 0.001 ? 0.001 : eggplant_sign_img.fade_ratio*0.8;
+	} else if (eggplant_sign_img.fade_ratio < 1) {
+		eggplant_sign_img.fade_ratio *= 1.25;
+	}
+
+	if (eggplant_spawn_time - remaining_sec >= SIGN_TIME_INTERVAL) {
+		eggplant_sign_img.fade_in = false; 
+	}	
+	ImVec2 eggplant_size = ImVec2(eggplant_sign_img.my_image_width * display_ratio, eggplant_sign_img.my_image_height * display_ratio);
+
+	ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x)*0.5f,0)); 
+	ImGui::SetNextWindowSize(eggplant_size);
+	ImGui::Begin("Sign", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, -eggplant_size.y * eggplant_sign_img.fade_ratio));
+	ImGui::Image((void*)(intptr_t)eggplant_sign_img.my_image_texture, eggplant_size);
+	ImGui::End();
+	
+
+
 	//test fading out
 	/*float padding = 64.0f;
 	int test_width = 2000; 
@@ -838,6 +875,11 @@ void GUI::initializeImage() {
 		
 		i++;
 	}
+	std::string eggplant_dir = picture_dir + std::string("/eggplant-sign.png");
+	LoadTextureFromFile(eggplant_dir.c_str(), &(eggplant_sign_img.my_image_texture),
+		&(eggplant_sign_img.my_image_width), &(eggplant_sign_img.my_image_height));
+	eggplant_sign_img.fade_in = false;
+	eggplant_sign_img.fade_ratio = 1;
 }
 
 void GUI::initializeLoadingImage() {
@@ -1289,6 +1331,11 @@ void GUI::setHoldingModel(ModelEnum model) {
 void GUI::setShowSaleUI(bool show) {
 	GUI_show_sale = show; 
 }
+
+void GUI::createTopSign(bool show, GUIImage* image) {
+
+}
+
 
 
 

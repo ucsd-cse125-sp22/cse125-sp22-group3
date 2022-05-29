@@ -26,6 +26,7 @@
 #define NUM_FISH_IMG 3
 #define NUM_TOOL_IMG 10
 #define NUM_VEG_IMG 6
+#define SIGN_TIME_INTERVAL 5
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
 						  ImGuiWindowFlags_NoInputs 
@@ -60,6 +61,7 @@ public:
 
 	static bool sale_tools; // default to false ( saleing seed), true if show tool shed
 	static bool show_loading;
+	static bool show_eggplant_sign;
 	static int rack_image_idx;
 	static int tool_image_idx;
 	static int char_selection_idx;
@@ -67,6 +69,7 @@ public:
 	static float timer_percent;
 	static int remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
+	static int eggplant_spawn_time; 
 
 	static float winning_fade_ratio;
 	static bool GUI_show_winning;
@@ -91,7 +94,7 @@ public:
 	static GUIImage curtain_img;
 	static GUIImage stamina_image;
 	static GUIImage timer_background;
-	static GUIImage golden_eggplant_sign; 
+	static GUIImage eggplant_sign_img; 
 	static int scoreboard_data[NUM_ICON];
 	static std::string characters_name_list[];
 	static char* seed_type_list[];
