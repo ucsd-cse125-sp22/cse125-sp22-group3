@@ -672,31 +672,8 @@ bool GUI::renderUI() {
 	if (ImGui::IsKeyPressed(ImGuiKey_B)) {
 		show_eggplant_sign = !show_eggplant_sign;
 	}
-	if (show_eggplant_sign) {
-		eggplant_sign_img.fade_in = true; 
-		eggplant_sign_img.fade_ratio = 1; 
-		eggplant_spawn_time = remaining_sec; 
-		show_eggplant_sign = false; 
-	}
-
-	if (eggplant_sign_img.fade_in) {
-		eggplant_sign_img.fade_ratio = eggplant_sign_img.fade_ratio < 0.001 ? 0.001 : eggplant_sign_img.fade_ratio*0.8;
-	} else if (eggplant_sign_img.fade_ratio < 1) {
-		eggplant_sign_img.fade_ratio *= 1.25;
-	}
-
-	if (eggplant_spawn_time - remaining_sec >= SIGN_TIME_INTERVAL) {
-		eggplant_sign_img.fade_in = false; 
-	}	
-	ImVec2 eggplant_size = ImVec2(eggplant_sign_img.my_image_width * display_ratio, eggplant_sign_img.my_image_height * display_ratio);
-
-	ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x)*0.5f,0)); 
-	ImGui::SetNextWindowSize(eggplant_size);
-	ImGui::Begin("Sign", NULL, TRANS_WINDOW_FLAG);
-	ImGui::SetCursorPos(ImVec2(0, -eggplant_size.y * eggplant_sign_img.fade_ratio));
-	ImGui::Image((void*)(intptr_t)eggplant_sign_img.my_image_texture, eggplant_size);
-	ImGui::End();
 	
+	createTopSign(&show_eggplant_sign, &eggplant_sign_img);
 
 
 	//test fading out
@@ -1332,8 +1309,32 @@ void GUI::setShowSaleUI(bool show) {
 	GUI_show_sale = show; 
 }
 
-void GUI::createTopSign(bool show, GUIImage* image) {
+void GUI::createTopSign(bool* show, GUIImage* image) {
+	if (*show) {
+		image->fade_in = true;
+		image->fade_ratio = 1;
+		eggplant_spawn_time = remaining_sec;
+		*show = false;
+	}
 
+	if (image->fade_in) {
+		image->fade_ratio = image->fade_ratio < 0.001 ? 0.001 : image->fade_ratio * 0.8;
+	}
+	else if (image->fade_ratio < 1) {
+		image->fade_ratio *= 1.25;
+	}
+
+	if (eggplant_spawn_time - remaining_sec >= SIGN_TIME_INTERVAL) {
+		image->fade_in = false;
+	}
+	ImVec2 eggplant_size = ImVec2(image->my_image_width * display_ratio, image->my_image_height * display_ratio);
+
+	ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x) * 0.5f, 0));
+	ImGui::SetNextWindowSize(eggplant_size);
+	ImGui::Begin("Sign", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, -eggplant_size.y * image->fade_ratio));
+	ImGui::Image((void*)(intptr_t)image->my_image_texture, eggplant_size);
+	ImGui::End();
 }
 
 

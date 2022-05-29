@@ -131,5 +131,6 @@ public:
 	static void createSaleConfirmation();
 	static void setHoldingModel(ModelEnum model);
 	static void setShowSaleUI(bool show);
+	static void createTopSign(bool* show, GUIImage* image);
 
 };
