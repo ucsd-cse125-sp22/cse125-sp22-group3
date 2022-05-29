@@ -78,6 +78,7 @@ public:
 	static ImFont* font_Ranchers;
 	static ImFont* font_Ranchers_large;
 	static ImFont* font_Sofia_Not_Nicks_Gf;
+	static ImFont* font_Sofia_Nicks_Gf;
 
 	static GUIImage rack_images_list[NUM_RACK_IMG];
 	static std::unordered_map<ModelEnum, GUIImage> icon_images_map;
@@ -90,6 +91,7 @@ public:
 	static GUIImage curtain_img;
 	static GUIImage stamina_image;
 	static GUIImage timer_background;
+	static GUIImage golden_eggplant_sign; 
 	static int scoreboard_data[NUM_ICON];
 	static std::string characters_name_list[];
 	static char* seed_type_list[];

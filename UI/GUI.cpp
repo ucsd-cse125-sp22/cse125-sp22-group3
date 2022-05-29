@@ -13,6 +13,7 @@ std::vector<ModelEnum> GUI::char_selections;
 GUIImage GUI::score_background; 
 GUIImage GUI::loading_background;
 GUIImage GUI::minimap_background;
+GUIImage GUI::golden_eggplant_sign;
 
 
 GUIImage GUI::loading_bg[NUM_LOAD_IMG];
@@ -54,6 +55,8 @@ ImFont* GUI::font_Mystery_Quest;
 ImFont* GUI::font_Ranchers;
 ImFont* GUI::font_Ranchers_large;
 ImFont* GUI::font_Sofia_Not_Nicks_Gf;
+ImFont* GUI::font_Sofia_Nicks_Gf;
+
 
 float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
@@ -219,7 +222,9 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
 	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
 	font_Ranchers_large = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 64.0f);
-	font_Sofia_Not_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 36.0f);
+	font_Sofia_Not_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 38.0f);
+	font_Sofia_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 50.0f);
+
 
 	picture_dir = std::string("./UI/Pictures");
 	my_window = window;
@@ -561,13 +566,40 @@ bool GUI::renderUI() {
 		if (sale_tools) {
 			int currIdx = tool_image_idx - 1;
 			ImGui::SetCursorPos(ImVec2(fish_size.x*0.125, fish_size.x * 0.115));
-			ImGui::Text("Oh my! The %s!\nIt can be used to %s.\nThat will be %.0f dollar(s).\nPress [Enter] to buy!", \
-				tool_type_list[currIdx], tool_func_list[currIdx],tool_sell_list[currIdx]);
+			ImGui::Text("Oh my! ");
+			ImGui::SameLine();
+			ImGui::PushFont(font_Sofia_Nicks_Gf);
+			ImGui::Text(" The % s!", tool_type_list[currIdx]);
+			ImGui::PopFont();
+			ImGui::SetCursorPosX(fish_size.x * 0.125);
+			ImGui::Text("It can be used to% s.", tool_func_list[currIdx]);
+			ImGui::SetCursorPosX(fish_size.x * 0.125);
+			ImGui::Text("That will be ");
+			ImGui::SameLine();
+			ImGui::PushFont(font_Sofia_Nicks_Gf);
+			ImGui::Text("% .0f dollar(s)", tool_sell_list[currIdx]);
+			ImGui::PopFont(); 
+			ImGui::SetCursorPosX(fish_size.x * 0.125);
+			ImGui::Text("Press[Enter] to buy!"); 
 		} else {
 			int currIdx = rack_image_idx - 1;
-			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.125, fish_size.x * 0.1));
-			ImGui::Text("Why yes! A %s seed!\nThe %s requires %.0f seconds to grow\n\tand %s.\nAfter harvest, it will sell for %.0f dollars(s).\nThat will be %.0f dollar(s). Press [Enter] to buy!",
-				seed_type_list[currIdx], seed_type_list[currIdx], veg_time_list[currIdx], seed_prop_list[currIdx],veg_sell_list[currIdx],veg_price_list[currIdx]);
+			ImGui::SetCursorPos(ImVec2(fish_size.x * 0.12, fish_size.x * 0.1));
+			ImGui::Text("Why yes!");
+			ImGui::SameLine(); 
+			ImGui::PushFont(font_Sofia_Nicks_Gf);
+			ImGui::Text("A % s seed!", seed_type_list[currIdx]);
+			ImGui::PopFont();
+			ImGui::SetCursorPosX(fish_size.x * 0.08);
+			ImGui::Text("%s requires % .0f sec to grow and %s.\nAfter harvest, it will sell for % .0f dollars(s).", \
+						seed_type_list[currIdx], veg_time_list[currIdx], seed_prop_list[currIdx], veg_sell_list[currIdx]);
+			ImGui::SetCursorPosX(fish_size.x * 0.12);
+			ImGui::Text("That will be");
+			ImGui::PushFont(font_Sofia_Nicks_Gf);
+			ImGui::SameLine();
+			ImGui::Text(" % .0f dollar(s)", veg_price_list[currIdx]);
+			ImGui::PopFont();
+			ImGui::SetCursorPosX(fish_size.x * 0.12);
+			ImGui::Text("Press[Enter] to buy!");
 		}
 		ImGui::PopFont(); 
 		ImGui::PopStyleColor(2);
@@ -625,10 +657,7 @@ bool GUI::renderUI() {
 		//ImGui::PopStyleVar(2);
 	}
 
-	//TODO: for testing purpose, remove after connect to server
-	if (ImGui::IsKeyPressed(ImGuiKey_B)) {
-		GUI_show_sale = !GUI_show_sale; 
-	}
+	
 	if (GUI_show_sale) {
 		createSaleConfirmation();
 	}
@@ -1238,7 +1267,7 @@ void GUI::createSaleConfirmation() {
 	ImGui::SetCursorPos(ImVec2(fish_size.x * 0.75 - veg_size.x *0.5, (fish_size.y - veg_size.y) * 0.5f));
 	ImGui::Image((void*)(intptr_t)veg_image.my_image_texture, veg_size);
 
-	ImGui::PushFont(font_Sofia_Not_Nicks_Gf);
+	ImGui::PushFont(font_Sofia_Nicks_Gf);
 	ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 
 	//show talking box
