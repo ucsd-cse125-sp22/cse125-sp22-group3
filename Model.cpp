@@ -225,6 +225,19 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 				texture.path = filepath;
 				textures.push_back(texture);
 			}
+
+			else if (model == WORLD_DOME) {
+				for (int i = 2; i < 5; i++) {
+					std::string filepath = "sky" + std::to_string(i) + ".png";
+					unsigned int result = TextureFromFile(filepath.c_str(), directory);
+
+					Texture texture;
+					texture.id = result;
+					texture.type = "texture_diffuse";
+					texture.path = filepath;
+					textures.push_back(texture);
+				}
+			}
 		}
 
 		// If it is, we are gonna add textures from its respective directory

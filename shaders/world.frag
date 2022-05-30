@@ -170,6 +170,7 @@ void main()
 
     vec4 result = vec4(0.0f);
     float secondsToMinutes = time / 60.0f;
+    // float secondsToMinutes = time;
     float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     // float interpolate = clamp((time - 30.0f) / 15.0f, 0.0f, 1.0f);
     vec3 lightColor = day;
