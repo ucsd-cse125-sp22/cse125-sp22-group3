@@ -15,6 +15,7 @@ GUIImage GUI::loading_background;
 GUIImage GUI::minimap_background;
 GUIImage GUI::eggplant_sign_img;
 int GUI::eggplant_spawn_time;
+GUIImage GUI::two_min_sign_img;
 
 
 
@@ -64,7 +65,6 @@ float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
 bool GUI::show_eggplant_sign;
 bool GUI::show_eggplant_sign_prev; // this bool is used to record if the sign is already trigger before
-
 
 
 namespace ImGui {
@@ -243,7 +243,6 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_winning = false; 
 	show_eggplant_sign = false;
 	show_eggplant_sign_prev = false; // this bool is used to record if the sign is already trigger before
-
 	
 
 	stamina_percent = 100; 
@@ -677,7 +676,13 @@ bool GUI::renderUI() {
 		show_eggplant_sign = !show_eggplant_sign;
 	}
 	
-	createTopSign(&show_eggplant_sign, &eggplant_sign_img);
+	bool two_min_remain = remaining_sec == 120; 
+	if (remaining_sec<=120) {
+		createTopSign(&two_min_remain, &two_min_sign_img);
+	}
+	else {
+		createTopSign(&show_eggplant_sign, &eggplant_sign_img);
+	}
 
 
 	//test fading out
@@ -861,6 +866,13 @@ void GUI::initializeImage() {
 		&(eggplant_sign_img.my_image_width), &(eggplant_sign_img.my_image_height));
 	eggplant_sign_img.fade_in = false;
 	eggplant_sign_img.fade_ratio = 1;
+
+	std::string two_min_path = picture_dir + std::string("/2min_sign.png");
+	LoadTextureFromFile(two_min_path.c_str(), &(two_min_sign_img.my_image_texture),
+		&(two_min_sign_img.my_image_width), &(two_min_sign_img.my_image_height));
+	two_min_sign_img.fade_in = false;
+	two_min_sign_img.fade_ratio = 1;
+
 }
 
 void GUI::initializeLoadingImage() {

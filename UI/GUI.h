@@ -96,6 +96,7 @@ public:
 	static GUIImage stamina_image;
 	static GUIImage timer_background;
 	static GUIImage eggplant_sign_img; 
+	static GUIImage two_min_sign_img;
 	static int scoreboard_data[NUM_ICON];
 	static std::string characters_name_list[];
 	static char* seed_type_list[];
