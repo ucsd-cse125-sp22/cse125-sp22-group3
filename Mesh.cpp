@@ -155,6 +155,8 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, float ti
         glUniform3fv(glGetUniformLocation(shaderProgram, "viewPos"), 1, glm::value_ptr(glm::vec3(glm::inverse(view)[3])));
         glUniform3fv(glGetUniformLocation(shaderProgram, "lightPos"), 1, glm::value_ptr(FBO::lightPos));
         glUniform3fv(glGetUniformLocation(shaderProgram, "playerLight"), FBO::playerPos.size(), glm::value_ptr(FBO::playerPos[0]));
+        glUniform1f(glGetUniformLocation(shaderProgram, "lightSize"), FBO::playerPos.size());
+
         // Bind the VAO
         glBindVertexArray(VAO);
 
@@ -260,6 +262,8 @@ void Mesh::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 parent, std::vec
         GL_FALSE, glm::value_ptr(transforms[0]));
 
     glUniform3fv(glGetUniformLocation(shaderProgram, "playerLight"), FBO::playerPos.size(), glm::value_ptr(FBO::playerPos[0]));
+    glUniform1f(glGetUniformLocation(shaderProgram, "lightSize"), FBO::playerPos.size());
+
     // for shadows
     for (size_t i = 0; i < FBO::shadowCascadeLevels.size(); ++i)
     {

@@ -15,6 +15,7 @@ in mat4 viewMat;
 uniform vec3 viewPos;
 uniform vec3 lightPos;
 uniform vec3 playerLight[6];
+uniform float lightSize;
 uniform sampler2D texture_diffuse1;
 uniform sampler2DArray shadowMap;
 
@@ -184,7 +185,7 @@ void main()
         float interpolate = clamp((convTime - 3.0f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(sunset, night, interpolate);
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < lightSize; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 (vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * interpolate);
@@ -194,7 +195,7 @@ void main()
     else if(convTime >= 3.5f && convTime < 8.5f) {
         lightColor = night;
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < lightSize; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f);
@@ -205,7 +206,7 @@ void main()
         float interpolate = clamp((convTime - 8.5f) / 0.5f, 0.0f, 1.0f);
         lightColor = mix(night, sunrise, interpolate);
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < lightSize; i++) {
         if(playerLight[i].y == 0.0f) { break; }
             result += 
                 vec4(CalcPointLight(playerLight[i], viewDir, norm, vec3(1, 0.894, 0.419), vec3(tex)), 0.0f) * (1.0f - interpolate);

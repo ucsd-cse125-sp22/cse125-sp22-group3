@@ -373,17 +373,20 @@ int main(int argc, char* argv[])
 				curr_model.setAnimationMode(model_info.modelAnim);
 
 				// get light for NPC and golden eggplant
-				if (model_info.model == CHAR_NPC || model_info.model == VEG_GOLDEN_EGGPLANT) {
+				if (model_info.model == CHAR_NPC) {
 					glm::vec3 pos = glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 6.0f, 0.0f);
-
-					// if eggplant is dropped, point light wont show. set minimum to 1.
-					if (pos.y == 0.0f) { pos.y = 1.0f; }
 					point_light_pos.push_back(pos);
 				}
 
 				//trigger the golden eggplant spawn sign if not trigger before 
-				if (model_info.model == VEG_GOLDEN_EGGPLANT) {
+				else if (model_info.model == VEG_GOLDEN_EGGPLANT) {
 					GUI::setShowGoldenEggplantSign(true);
+					if (glm::vec3(model_info.parent_transform[3]).y == -1) {
+						glm::vec3 pos = glm::vec3(model_info.parent_transform[3]) + glm::vec3(0.0f, 6.0f, 0.0f);
+
+						std::cout << glm::to_string(pos) << std::endl;
+						point_light_pos.push_back(pos);
+					}
 				}
 
 				// rotating particles towards players
