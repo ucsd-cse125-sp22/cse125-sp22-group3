@@ -57,6 +57,7 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0f);   
 
     float secondsToMinutes = t / 60.0f;
+    // float secondsToMinutes = t;
     float convTime = clamp(secondsToMinutes, 0.0f, 15.0f);
     vec3 lightColor = day;
 
