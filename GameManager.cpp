@@ -261,7 +261,9 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		//				reinterpret_cast<uintptr_t>(entity),
 		//				DEBUG_SQUARE,
 		//				drawable->GetAniMode(),
-		//				glm::translate(glm::vec3(avg.x, 0.0f, -(avg.y))),
+		//				glm::translate(glm::vec3(avg.x, 0.0f, -(avg.y))) * 
+		//				glm::scale(glm::vec3((aabb->maximum.x - aabb->minimum.x) / 2.0f, 
+		//					1.0f, (aabb->maximum.y - aabb->minimum.y) / 2.0f)),
 		//				false
 		//				});
 		//		}
