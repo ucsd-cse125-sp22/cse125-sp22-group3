@@ -327,7 +327,7 @@ void Player::Buy(VegetableType bought_vegetable) {
 		GameManager::AddEntities({ bought_seed });
 		SetHoldEntity(bought_seed);
 		bought_seed->holding_player = this;
-
+		bought_seed->isHeld = true;
 		sound_buy = true;
 	}
 	CloseUI();
@@ -379,6 +379,7 @@ void Player::Buy(ModelEnum tool) {
 		GameManager::AddEntities({ tempEntity });
 		SetHoldEntity(tempEntity);
 		tempEntity->holding_player = this;
+		tempEntity->isHeld = true;
 		sound_buy = true;
 	}
 	CloseUI();
