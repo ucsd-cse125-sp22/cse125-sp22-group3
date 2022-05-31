@@ -236,6 +236,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		}
 
 		// COLLIDER DEBUG VISUALIZERS
+		/**
 		auto collide = dynamic_cast<PhysicsObject*>(entity);
 		if (collide) {
 			std::vector<Collider*> colliders = collide->GetColliders();
@@ -267,6 +268,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 				}
 			}
 		}
+		*/
 	}
 
 	std::vector<PendingDeleteInfo> pending_delete_infos;
