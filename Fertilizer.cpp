@@ -3,6 +3,7 @@
 Fertilizer::Fertilizer()
 	: GardenTool(FERTILIZER)
 {
+	SetHeight(pickupHeight);
 	hold_transformation_ = glm::rotate(glm::radians(90.f), glm::vec3(0, 0, 1));
 }
 
