@@ -230,6 +230,7 @@ int main(int argc, char* argv[])
 	sound_engine.PlayMusic(MUSIC_DAY_1, false);
 
 	// Loop while GLFW window should stay open and server hasn't closed connection
+	bool two_minute_started = false;
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
 		// adjust camera direction (player's forward direction depends on camera)
@@ -258,7 +259,6 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		bool two_minute_started = false;
 		status = client->syncWithServer(&out_packet, sizeof(out_packet), [&](char* recv_buf, size_t recv_len) {
 			// deserialize incoming packet into structs
 			ServerHeader* sheader;
