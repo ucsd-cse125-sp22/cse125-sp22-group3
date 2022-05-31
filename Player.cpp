@@ -50,6 +50,7 @@ void Player::SetRotation(glm::vec3 newRot)
 }
 
 void Player::FixedUpdate() {
+	printf("location: %f %f\n", this->GetPosition().x, -this->GetPosition().z);
 	if (glm::length(move_input) > 1) move_input = glm::normalize(move_input); 
 	const auto delta = static_cast<float>(GameManager::GetFixedDeltaTime());
 	// If no movement is given apply friction (epsilon to account for FP errors)
