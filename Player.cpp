@@ -237,15 +237,21 @@ void Player::Use() {
 		auto plot = new Plot(plot_ownership[this->GetModelEnum()]);
 		const float plotOffset = 7.5f;
 		glm::vec4 direction4 = glm::vec4(0, 0, -plotOffset, 1) * GetRotation();
-		glm::vec3 direction = glm::vec3(direction4/direction4.w);
+		glm::vec3 direction = glm::vec3(direction4 / direction4.w);
 		glm::vec3 plotPosition = glm::vec3((*translate)[0], -4, -(*translate)[1]) + glm::vec3(direction.x, direction.y, -direction.z);
-		plot->SetPosition(plotPosition);
-		GameManager::AddEntities({plot});
+		Collider* testCollider = new ColliderCircle{glm::vec2{plotPosition.x, -plotPosition.z}, 5};
+		if (!GameManager::physics.IsPlotObstructed(testCollider)) {
+			plot->SetPosition(plotPosition);
+			GameManager::AddEntities({ plot });
 
-		Drop();
-		GameManager::RemoveEntities({hoe});
+			Drop();
+			GameManager::RemoveEntities({ hoe });
 
-		sound_plot_placement = true;
+			sound_plot_placement = true;
+		}
+		else {
+			sound_no = true;
+		}
 	}
 	else if (auto glue = dynamic_cast<Glue*>(entityHeld)) {
 		auto glueOnGround = new GlueOnGround();

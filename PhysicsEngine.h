@@ -21,6 +21,7 @@ public:
     void RemovePhysObject(PhysicsObject* phys_object);
     void ConstructBVH();
     void Compute();
+    bool IsPlotObstructed(Collider* col);
     static void ResolveTriggerCollision(PhysicsObject* first, PhysicsObject* second);
     static void ResolveCollision(Collider* first, PhysicsObject* first_phys, Collider* second, PhysicsObject* second_phys);
 

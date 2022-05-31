@@ -84,7 +84,6 @@ void Plot::OnInteract(Player* player) {
 		player->sound_shovel = true;
 		Seed* seed = plantedVegetable;
 		if (seed != nullptr) {
-
 			// TODO: REMOVE THIS IF WE DO DESTRUCTOR CALLS
 			if (seed->glow_particle != nullptr) {
 				GameManager::RemoveEntities({ seed->glow_particle });

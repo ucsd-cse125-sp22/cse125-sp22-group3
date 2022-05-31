@@ -1,4 +1,5 @@
 ﻿#include "PhysicsEngine.h"
+#include "Plot.h"
 
 PhysicsEngine::PhysicsEngine(const std::vector<PhysicsObject*>& phys_objects)
 {
@@ -93,6 +94,30 @@ void PhysicsEngine::Compute()
 		}
 	}
 
+}
+
+bool PhysicsEngine::IsPlotObstructed(Collider* col)
+{
+	for (int i = 0; i < static_collidables_.size(); i++) {
+		PhysicsObject* object = static_collidables_[i];
+		for (Collider* col_2 : object->GetColliders()) {
+			if (col->CollidesWith(col_2)) {
+				return true;
+			}
+		}
+	}
+
+	for (int i = 0; i < moving_collidables_.size(); i++) {
+		PhysicsObject* object = moving_collidables_[i];
+		if (dynamic_cast<Plot*>(object)) {
+			for (Collider* col_2 : object->GetColliders()) {
+				if (col->CollidesWith(col_2)) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 inline void ResolveCircleToAABBCollision(ColliderCircle* circle, ColliderAABB* aabb, glm::vec2* circle_pos, glm::vec2* aabb_pos) {
