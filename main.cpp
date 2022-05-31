@@ -469,6 +469,8 @@ int main(int argc, char* argv[])
 		glfwPollEvents();
 
 		//IMGUI rendering
+
+		
 		if (GUI::GUI_show_winning) {
 			GUI::renderWinningScene();
 		} else {

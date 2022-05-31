@@ -18,6 +18,7 @@
 #include <thread>         
 #include <chrono>
 #include <unordered_set>
+#include <algorithm>
 
 #define NUM_ICON 4 // should be consistent with the number of character, will be used in multiple place
 #define NUM_RACK_IMG 6
@@ -71,6 +72,7 @@ public:
 	static int remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
 	static int eggplant_spawn_time; 
+	static int my_player_idx; 
 
 	static float winning_fade_ratio;
 	static bool GUI_show_winning;
@@ -97,6 +99,8 @@ public:
 	static GUIImage timer_background;
 	static GUIImage eggplant_sign_img; 
 	static GUIImage two_min_sign_img;
+	static GUIImage you_win_img; 
+
 	static int scoreboard_data[NUM_ICON];
 	static std::string characters_name_list[];
 	static char* seed_type_list[];
