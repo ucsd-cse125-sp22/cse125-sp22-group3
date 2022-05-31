@@ -236,39 +236,38 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		}
 
 		// COLLIDER DEBUG VISUALIZERS
-		/**
-		auto collide = dynamic_cast<PhysicsObject*>(entity);
-		if (collide) {
-			std::vector<Collider*> colliders = collide->GetColliders();
+		// auto collide = dynamic_cast<PhysicsObject*>(entity);
+		// if (collide) {
+		// 	std::vector<Collider*> colliders = collide->GetColliders();
 
-			for each (Collider* collider in colliders)
-			{
-				if (collider->GetColliderShape() == Collider::Shape::CIRCLE) {
-					auto circle = dynamic_cast<ColliderCircle*>(collider);
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(entity),
-						DEBUG_CIRCLE,
-						drawable->GetAniMode(),
-						glm::translate(glm::vec3((circle->center.x), 0.0f, -(circle->center.y))) *
-						glm::scale(glm::vec3(circle->radius)),
-						false
-						});
-				}
-
-				else {
-					auto aabb = dynamic_cast<ColliderAABB*>(collider);
-					const glm::vec2 avg = (aabb->minimum + aabb->maximum) / 2.0f;
-					model_infos.push_back(ModelInfo{
-						reinterpret_cast<uintptr_t>(entity),
-						DEBUG_SQUARE,
-						drawable->GetAniMode(),
-						glm::translate(glm::vec3(avg.x, 0.0f, -(avg.y))),
-						false
-						});
-				}
-			}
-		}
-		*/
+		// 	for each (Collider* collider in colliders)
+		// 	{
+		// 		if (collider->GetColliderShape() == Collider::Shape::CIRCLE) {
+		// 			auto circle = dynamic_cast<ColliderCircle*>(collider);
+		// 			model_infos.push_back(ModelInfo{
+		// 				reinterpret_cast<uintptr_t>(entity),
+		// 				DEBUG_CIRCLE,
+		// 				drawable->GetAniMode(),
+		// 				glm::translate(glm::vec3((circle->center.x), 0.0f, -(circle->center.y))) *
+		// 				glm::scale(glm::vec3(circle->radius)),
+		// 				false
+		// 				});
+		// 		}
+		//		else {
+		//			auto aabb = dynamic_cast<ColliderAABB*>(collider);
+		//			const glm::vec2 avg = (aabb->minimum + aabb->maximum) / 2.0f;
+		//			model_infos.push_back(ModelInfo{
+		//				reinterpret_cast<uintptr_t>(entity),
+		//				DEBUG_SQUARE,
+		//				drawable->GetAniMode(),
+		//				glm::translate(glm::vec3(avg.x, 0.0f, -(avg.y))) * 
+		//				glm::scale(glm::vec3((aabb->maximum.x - aabb->minimum.x) / 2.0f, 
+		//					1.0f, (aabb->maximum.y - aabb->minimum.y) / 2.0f)),
+		//				false
+		//				});
+		//		}
+		//	}
+		//}
 	}
 
 	std::vector<PendingDeleteInfo> pending_delete_infos;
