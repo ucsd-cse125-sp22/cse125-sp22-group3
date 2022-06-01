@@ -225,6 +225,9 @@ int main(int argc, char* argv[])
 	int status = 1;
 	std::map<uintptr_t, Model*> model_map;
 	glm::vec3 eye_offset = glm::vec3(0,30,30); //TODO no magic number :,(
+	glm::vec3 winning_camera = glm::vec3(0, 0, -100);
+	glm::vec3 winning_view = glm::vec3(0, 0, 0);
+
 
 	sound_engine.Play(SFX_AMBIENCE);
 	sound_engine.PlayMusic(MUSIC_DAY_1, false);
@@ -283,17 +286,46 @@ int main(int argc, char* argv[])
 			//Rendering Code
 			const glm::mat4 player_transform = sheader->player_transform;
 			const glm::vec3 player_pos = glm::vec3(player_transform[3][0], player_transform[3][1], player_transform[3][2]) / player_transform[3][3];
-			const glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
-			const glm::vec3 look_at_point = player_pos; // The point we are looking at.
-			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
+			glm::vec3 eye_pos = player_pos + eye_offset;	// TODO implement angle.
+			glm::vec3 look_at_point = player_pos; // The point we are looking at.
+			
 
 			std::vector<glm::vec3> point_light_pos; // TODO ask cynthia <--- used to get players positions for point lights in night phase -cynthia
 
 			// check if need to trigger client-side winning sequence
-			if (sheader->time_remaining_seconds <= 0)
-			{
+			if (sheader->time_remaining_seconds <= 0){
 				GUI::GUI_show_winning = true;
+				if (sheader->time_remaining_seconds < -0.1) {
+					if (sheader->time_remaining_seconds > -5) {
+
+						if (sheader->time_remaining_seconds > -1) {
+							winning_camera = winning_camera + glm::vec3(0, 0, 0.3);
+						}
+						else if (sheader->time_remaining_seconds > -3) {
+							winning_camera = winning_camera + glm::vec3(0, 0, 0.3);
+							winning_view = winning_view + glm::vec3(0, 0.1, 0);
+						}
+						else {
+							winning_camera = winning_camera + glm::vec3(0, 0.1, 0.2);
+							winning_view = winning_view + glm::vec3(0, 0.1, 0);
+
+						}
+
+					}
+				}
+				
+				if (winning_camera.y > 4)
+					winning_camera[1] = 4;
+				if (winning_camera.z > -40)
+					winning_camera[2] = -40;
+				if (look_at_point.y > 11)
+					winning_view[1] = 11;
+				eye_pos = winning_camera;
+				look_at_point = winning_view;
+
 			}
+
+			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
 			if (!two_minute_started && sheader->time_remaining_seconds <= 120) {
 				sound_engine.PlayMusic(MUSIC_TWO_MINUTES, false);

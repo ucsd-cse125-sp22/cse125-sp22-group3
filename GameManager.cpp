@@ -309,7 +309,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 			}
 		}
 		sheader.time_remaining_seconds = GameManager::GetRemainingSeconds();
-		sheader.time_max_seconds = GAME_TIME_MINS * 60.f;
+		sheader.time_max_seconds = GAME_TIME_SECS;
 		sheader.stamina_bar = player->curr_stamina;
 		for (int i = 0; i < players_.size(); i++) {
 			sheader.balance[i] = players_[i]->curr_balance;
@@ -392,7 +392,7 @@ void GameManager::UpdateFixedDeltaTime()
 
 void GameManager::StartGameTime() {
 	if (!isStarted) {
-		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::minutes(GAME_TIME_MINS);
+		game_end_time_ = std::chrono::steady_clock::now() + std::chrono::seconds(GAME_TIME_SECS);
 		isStarted = true;
 	}
 }
