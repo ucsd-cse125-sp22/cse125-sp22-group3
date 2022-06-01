@@ -301,6 +301,8 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.ui_open = player->ui_open;
 		sheader.sale_confirm_ui_open = player->sale_confirm_ui_open; 
 		sheader.holding_veggie = ModelEnum(0); 
+		sheader.isDrunk = (player->intoxicationTimeRemaining != 0.f);
+		sheader.isGlued = player->isGlued;
 		if (player->GetIsHolding()){
 			if(auto vegetable = dynamic_cast<Vegetable*>(player->GetHoldEntity())) {
 				if (vegetable != nullptr) {

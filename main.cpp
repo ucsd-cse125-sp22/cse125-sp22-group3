@@ -332,6 +332,8 @@ int main(int argc, char* argv[])
 				two_minute_started = true;
 			}
 
+		
+
 			// update scoreboard
 			for (int i = 0; i < num_clients; i++) {
 				GUI::scoreboard_data[i] = sheader->balance[i];
@@ -354,6 +356,11 @@ int main(int argc, char* argv[])
 			//if (sheader->holding_veggie != -1 && sheader->sale_confirm_ui_open) {
 				//fprintf(stderr, "player is holding vegetable: %d", sheader->holding_veggie);
 			//}
+			// UI for glue and soju
+			if (sheader->isGlued) GUI::setShowGlueSign(true);
+			else GUI::setShowGlueSign(false);
+			if (sheader->isDrunk) GUI::setShowSojuSign(true);
+			else GUI::setShowSojuSign(false);
 
 			// play sounds
 			for (int i = 0; i < sheader->num_sounds; i++) {

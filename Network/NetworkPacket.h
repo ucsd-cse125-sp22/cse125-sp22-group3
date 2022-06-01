@@ -93,6 +93,8 @@ struct ServerHeader {
 	bool ui_open;
 	ModelEnum holding_veggie; 
 	bool sale_confirm_ui_open; 
+	bool isGlued;
+	bool isDrunk;
 };
 
 inline void serverSerialize(char* out_buf, struct ServerHeader* head, struct ModelInfo* model_arr, struct SoundInfo* sound_arr, struct PendingDeleteInfo* pending_arr) {
