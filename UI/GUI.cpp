@@ -20,6 +20,7 @@ int GUI::eggplant_spawn_time;
 GUIImage GUI::two_min_sign_img;
 GUIImage GUI::you_win_img;
 int GUI::my_player_idx;
+int GUI::bottom_sign_time;
 
 
 
@@ -228,11 +229,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 45.0f);
+	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 45.0f);
+	//ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 45.0f);
 	font_Are_You_Serious = io.Fonts->AddFontFromFileTTF("./UI/fonts/Are_You_Serious/AreYouSerious-Regular.ttf", 36.0f);
 	font_Fredericka_the_Great = io.Fonts->AddFontFromFileTTF("./UI/fonts/Fredericka_the_Great/FrederickatheGreat-Regular.ttf", 36.0f);
 	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
-	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 45.0f);
 	font_Ranchers_large = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 64.0f);
 	font_Sofia_Not_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 38.0f);
 	font_Sofia_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 50.0f);
@@ -688,12 +689,14 @@ bool GUI::renderUI() {
 	}
 
 	if (ImGui::IsKeyPressed(ImGuiKey_T)) {
-		show_glued_sign = !show_glued_sign;
+		setShowGlueSign(!show_glued_sign);
 	}else if (ImGui::IsKeyPressed(ImGuiKey_Y)) {
-		show_soju_sign = !show_soju_sign;
+		setShowSojuSign(!show_soju_sign);
 	}
-	createBottomSign(&show_glued_sign,&glue_sign_img);
-	createBottomSign(&show_soju_sign, &soju_sign_img);
+
+
+	createBottomSign( "#bottom sign", &show_glued_sign, &glue_sign_img);
+	createBottomSign( "#bottom sign", &show_soju_sign, &soju_sign_img);
 
 	//test fading out
 	/*float padding = 64.0f;
@@ -1091,7 +1094,7 @@ void GUI::createStamina() {
 
 	float top_padding = border_size.y * 0.1f ;
 	float side_padding = border_size.x / 6.0f; 
-	float frame_padding = 100.0f * display_ratio; 
+	float frame_padding = 60.0f * display_ratio; 
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::SetNextWindowSize(border_size);
@@ -1394,13 +1397,7 @@ void GUI::setShowGoldenEggplantSign(bool show) {
 	}
 }
 
-void GUI::createBottomSign(bool* show, GUIImage* image) {
-	if ((*show)) {
-		image->fade_in = true;
-		image->fade_ratio = 1;
-		eggplant_spawn_time = remaining_sec;
-		*show = false;
-	}
+void GUI::createBottomSign(std::string label, bool* show, GUIImage* image) {
 
 	if (image->fade_in) {
 		image->fade_ratio = image->fade_ratio < 0.001 ? 0.001 : image->fade_ratio * 0.8;
@@ -1409,17 +1406,38 @@ void GUI::createBottomSign(bool* show, GUIImage* image) {
 		image->fade_ratio *= 1.25;
 	}
 
-	if (eggplant_spawn_time - remaining_sec >= SIGN_TIME_INTERVAL) {
+	if (bottom_sign_time - remaining_sec >= SIGN_TIME_INTERVAL) {
 		image->fade_in = false;
 	}
 	ImVec2 eggplant_size = ImVec2(image->my_image_width * display_ratio, image->my_image_height * display_ratio);
+	if (*show) {
+		ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x) * 0.5f, window_height - eggplant_size.y));
+		ImGui::SetNextWindowSize(eggplant_size);
+		ImGui::Begin(label.c_str(), NULL, TRANS_WINDOW_FLAG);
+		ImGui::SetCursorPos(ImVec2(0, eggplant_size.y * image->fade_ratio));
+		ImGui::Image((void*)(intptr_t)image->my_image_texture, eggplant_size);
+		ImGui::End();
+	}
+}
 
-	ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x) * 0.5f, window_height-eggplant_size.y));
-	ImGui::SetNextWindowSize(eggplant_size);
-	ImGui::Begin("Sign", NULL, TRANS_WINDOW_FLAG);
-	ImGui::SetCursorPos(ImVec2(0, eggplant_size.y * image->fade_ratio));
-	ImGui::Image((void*)(intptr_t)image->my_image_texture, eggplant_size);
-	ImGui::End();
+void GUI::setShowGlueSign(bool show) {
+	if (show && !show_glued_sign) {
+		glue_sign_img.fade_in = true;
+		glue_sign_img.fade_ratio = 1;
+		bottom_sign_time = remaining_sec;
+		show_soju_sign = false; 
+	}
+	show_glued_sign = show; 
+}
+
+void GUI::setShowSojuSign(bool show) {
+	if (show && !show_soju_sign) {
+		soju_sign_img.fade_in = true;
+		soju_sign_img.fade_ratio = 1;
+		bottom_sign_time = remaining_sec;
+		show_glued_sign = false; 
+	}
+	show_soju_sign = show;
 }
 
 

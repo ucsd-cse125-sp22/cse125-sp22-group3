@@ -75,6 +75,7 @@ public:
 	static float stamina_percent; //use this variable to set the stamina display
 	static int eggplant_spawn_time; 
 	static int my_player_idx; 
+	static int bottom_sign_time; 
 
 	static float winning_fade_ratio;
 	static bool GUI_show_winning;
@@ -142,8 +143,12 @@ public:
 	static void setHoldingModel(ModelEnum model);
 	static void setShowSaleUI(bool show);
 	static void createTopSign(bool* show, GUIImage* image);
-	static void createBottomSign(bool* show, GUIImage* image);
+	static void createBottomSign(std::string label, bool* show, GUIImage* image);
 
 	static void setShowGoldenEggplantSign(bool show); 
+	static void setShowGlueSign(bool show);
+	static void setShowSojuSign(bool show);
+
+
 
 };
