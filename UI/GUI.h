@@ -64,6 +64,8 @@ public:
 	static bool show_loading;
 	static bool show_eggplant_sign;
 	static bool show_eggplant_sign_prev; // this bool is used to record if the sign is already trigger before
+	static bool show_glued_sign;
+	static bool show_soju_sign;
 	static int rack_image_idx;
 	static int tool_image_idx;
 	static int char_selection_idx;
@@ -100,6 +102,8 @@ public:
 	static GUIImage eggplant_sign_img; 
 	static GUIImage two_min_sign_img;
 	static GUIImage you_win_img; 
+	static GUIImage soju_sign_img;
+	static GUIImage glue_sign_img; 
 
 	static int scoreboard_data[NUM_ICON];
 	static std::string characters_name_list[];
@@ -138,6 +142,8 @@ public:
 	static void setHoldingModel(ModelEnum model);
 	static void setShowSaleUI(bool show);
 	static void createTopSign(bool* show, GUIImage* image);
+	static void createBottomSign(bool* show, GUIImage* image);
+
 	static void setShowGoldenEggplantSign(bool show); 
 
 };

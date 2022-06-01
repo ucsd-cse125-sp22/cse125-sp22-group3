@@ -14,6 +14,8 @@ GUIImage GUI::score_background;
 GUIImage GUI::loading_background;
 GUIImage GUI::minimap_background;
 GUIImage GUI::eggplant_sign_img;
+GUIImage GUI::soju_sign_img;
+GUIImage GUI::glue_sign_img;
 int GUI::eggplant_spawn_time;
 GUIImage GUI::two_min_sign_img;
 GUIImage GUI::you_win_img;
@@ -68,7 +70,8 @@ float GUI::winning_fade_ratio = 1;
 bool GUI::GUI_show_winning;
 bool GUI::show_eggplant_sign;
 bool GUI::show_eggplant_sign_prev; // this bool is used to record if the sign is already trigger before
-
+bool GUI::show_glued_sign;
+bool GUI::show_soju_sign;
 
 namespace ImGui {
 
@@ -225,11 +228,11 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 36.0f);
+	ImFont* font1 = io.Fonts->AddFontFromFileTTF("./UI/fonts/PlayfairDisplay-VariableFont_wght.ttf", 45.0f);
 	font_Are_You_Serious = io.Fonts->AddFontFromFileTTF("./UI/fonts/Are_You_Serious/AreYouSerious-Regular.ttf", 36.0f);
 	font_Fredericka_the_Great = io.Fonts->AddFontFromFileTTF("./UI/fonts/Fredericka_the_Great/FrederickatheGreat-Regular.ttf", 36.0f);
 	font_Mystery_Quest = io.Fonts->AddFontFromFileTTF("./UI/fonts/Mystery_Quest/MysteryQuest-Regular.ttf", 36.0f);
-	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 36.0f);
+	font_Ranchers = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 45.0f);
 	font_Ranchers_large = io.Fonts->AddFontFromFileTTF("./UI/fonts/Ranchers/Ranchers-Regular.ttf", 64.0f);
 	font_Sofia_Not_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 38.0f);
 	font_Sofia_Nicks_Gf = io.Fonts->AddFontFromFileTTF("./UI/fonts/Sofia/Sofia-Regular.ttf", 50.0f);
@@ -246,7 +249,8 @@ void GUI::initializeGUI(GLFWwindow* window) {
 	GUI_show_winning = false; 
 	show_eggplant_sign = false;
 	show_eggplant_sign_prev = false; // this bool is used to record if the sign is already trigger before
-	
+	show_glued_sign = false;
+	show_soju_sign = false; 
 
 	stamina_percent = 100; 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
@@ -662,7 +666,7 @@ bool GUI::renderUI() {
 		if (remaining_sec > 120 || remaining_sec % 2 == 0) {
 			auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
 			ImGui::SetCursorPos((spinner_size - text_size) * 0.5f + padding);
-			ImGui::PushStyleColor(ImGuiCol_Text, col);
+			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
 			ImGui::Text(GUI_timer_string.c_str());
 			ImGui::PopStyleColor();
 		}
@@ -674,10 +678,6 @@ bool GUI::renderUI() {
 	if (GUI_show_sale) {
 		createSaleConfirmation();
 	}
-
-	if (ImGui::IsKeyPressed(ImGuiKey_B)) {
-		show_eggplant_sign = !show_eggplant_sign;
-	}
 	
 	bool two_min_remain = remaining_sec == 120; 
 	if (remaining_sec<=120) {
@@ -687,6 +687,13 @@ bool GUI::renderUI() {
 		createTopSign(&show_eggplant_sign, &eggplant_sign_img);
 	}
 
+	if (ImGui::IsKeyPressed(ImGuiKey_T)) {
+		show_glued_sign = !show_glued_sign;
+	}else if (ImGui::IsKeyPressed(ImGuiKey_Y)) {
+		show_soju_sign = !show_soju_sign;
+	}
+	createBottomSign(&show_glued_sign,&glue_sign_img);
+	createBottomSign(&show_soju_sign, &soju_sign_img);
 
 	//test fading out
 	/*float padding = 64.0f;
@@ -883,6 +890,18 @@ void GUI::initializeImage() {
 	you_win_img.fade_in = false;
 	you_win_img.fade_ratio = 1;
 
+	std::string soju_sign_path = picture_dir + std::string("/soju_sign.png");
+	LoadTextureFromFile(soju_sign_path.c_str(), &(soju_sign_img.my_image_texture),
+		&(soju_sign_img.my_image_width), &(soju_sign_img.my_image_height));
+	soju_sign_img.fade_in = false;
+	soju_sign_img.fade_ratio = 1;
+
+	std::string glue_sign_path = picture_dir + std::string("/glue_sign.png");
+	LoadTextureFromFile(glue_sign_path.c_str(), &(glue_sign_img.my_image_texture),
+		&(glue_sign_img.my_image_width), &(glue_sign_img.my_image_height));
+	glue_sign_img.fade_in = false;
+	glue_sign_img.fade_ratio = 1;
+
 }
 
 void GUI::initializeLoadingImage() {
@@ -983,18 +1002,19 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	ImGui::NewFrame();
 	
 	ImVec2 size = ImVec2(1200 * display_ratio * 5, 18 * display_ratio * 5);
-	ImGui::SetNextWindowPos((ImVec2(window_width, window_height) - size) * 0.5f);
+	ImGui::SetNextWindowPos(ImVec2(0,0));
 	ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
 	ImGui::Begin("Progress Indicators", NULL, TRANS_WINDOW_FLAG);
 
 	const ImU32 col = IM_COL32(245.f, 61.f,119.f, 255);//ImGui::GetColorU32(ImGuiCol_ButtonHovered);
 	const ImU32 bg = IM_COL32(227.f, 188.f, 208.f, 255); //ImGui::GetColorU32(ImGuiCol_Button);
 
-	//ImGui::Spinner("##spinner", 15, 6, col);
 	int idx = flip_image ? 1 : 0;
-	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, \
-						ImVec2(chase_images_list[idx].my_image_width * display_ratio,\
-							   chase_images_list[idx].my_image_height * display_ratio));
+	ImVec2 image_size = ImVec2(chase_images_list[idx].my_image_width * display_ratio, \
+		chase_images_list[idx].my_image_height * display_ratio);
+	ImGui::SetCursorPos(ImVec2(0, (window_height - image_size.y) * 0.5f));
+
+	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, image_size);
 	ImGui::PushFont(font_Ranchers);
 	ImGui::Text("Loading: %d %c...", (int)(percent * 100), '%');
 	ImGui::PopFont();
@@ -1071,10 +1091,11 @@ void GUI::createStamina() {
 
 	float top_padding = border_size.y * 0.1f ;
 	float side_padding = border_size.x / 6.0f; 
+	float frame_padding = 100.0f * display_ratio; 
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
 	ImGui::SetNextWindowSize(border_size);
-	ImGui::SetNextWindowPos(ImVec2(window_width- border_size.x, window_height), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
+	ImGui::SetNextWindowPos(ImVec2(window_width- border_size.x-frame_padding, window_height-frame_padding), ImGuiCond_Always, ImVec2(0.0f, 1.0f));
 	ImGui::Begin("Stamina Bar", &bptr, TRANS_WINDOW_FLAG);
 	ImGui::SetCursorPos(ImVec2(0, 0));
 	ImGui::Image((void*)(intptr_t)stamina_image.my_image_texture, border_size);
@@ -1371,6 +1392,34 @@ void GUI::setShowGoldenEggplantSign(bool show) {
 		show_eggplant_sign = true; 
 		show_eggplant_sign_prev = true; 
 	}
+}
+
+void GUI::createBottomSign(bool* show, GUIImage* image) {
+	if ((*show)) {
+		image->fade_in = true;
+		image->fade_ratio = 1;
+		eggplant_spawn_time = remaining_sec;
+		*show = false;
+	}
+
+	if (image->fade_in) {
+		image->fade_ratio = image->fade_ratio < 0.001 ? 0.001 : image->fade_ratio * 0.8;
+	}
+	else if (image->fade_ratio < 1) {
+		image->fade_ratio *= 1.25;
+	}
+
+	if (eggplant_spawn_time - remaining_sec >= SIGN_TIME_INTERVAL) {
+		image->fade_in = false;
+	}
+	ImVec2 eggplant_size = ImVec2(image->my_image_width * display_ratio, image->my_image_height * display_ratio);
+
+	ImGui::SetNextWindowPos(ImVec2((window_width - eggplant_size.x) * 0.5f, window_height-eggplant_size.y));
+	ImGui::SetNextWindowSize(eggplant_size);
+	ImGui::Begin("Sign", NULL, TRANS_WINDOW_FLAG);
+	ImGui::SetCursorPos(ImVec2(0, eggplant_size.y * image->fade_ratio));
+	ImGui::Image((void*)(intptr_t)image->my_image_texture, eggplant_size);
+	ImGui::End();
 }
 
 
