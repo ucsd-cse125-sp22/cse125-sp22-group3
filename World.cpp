@@ -38,6 +38,15 @@ World::World(ModelEnum curr) {
 	colliders_.push_back(new ColliderCircle(glm::vec2(-58.899, 123.030), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-60.256, 101.020), 1.2, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-1.013875, 44.297501), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-9.263116, -81.550880), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(24.058933, -50.326801), 1.2, true));
+
+	// Signs
+	colliders_.push_back(new ColliderCircle(glm::vec2(-49.074203, 62.015278), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(-56.047314, -26.710447), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(21.903704, -35.772022), 1.2, true));
+	colliders_.push_back(new ColliderCircle(glm::vec2(32.855274, 55.259705), 1.2, true));
+
 	
 	// had to remove houses
 	/**
@@ -46,10 +55,15 @@ World::World(ModelEnum curr) {
 	colliders_.push_back(new ColliderCircle(glm::vec2(114.126, 123.026), 12, true));
 	colliders_.push_back(new ColliderCircle(glm::vec2(-128.408, 123.026), 12, true));
 	*/
+
+	// Map
 	colliders_.push_back(new ColliderAABB(glm::vec2(-140, -135), glm::vec2(-135, 135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(135, -135), glm::vec2(140, 135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, -140), glm::vec2(135, -135), true));
 	colliders_.push_back(new ColliderAABB(glm::vec2(-135, 135), glm::vec2(135, 140), true));
+
+	// Fence
+	colliders_.push_back(new ColliderAABB(glm::vec2(-34.596115, 62.779514), glm::vec2(-19.376390, 65.485535), true));
 
 	// bandaid corner fix
 	colliders_.push_back(new ColliderCircle(glm::vec2(-130, -130), 4, true));

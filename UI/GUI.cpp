@@ -16,6 +16,9 @@ GUIImage GUI::minimap_background;
 GUIImage GUI::eggplant_sign_img;
 int GUI::eggplant_spawn_time;
 GUIImage GUI::two_min_sign_img;
+GUIImage GUI::you_win_img;
+int GUI::my_player_idx;
+
 
 
 
@@ -873,6 +876,13 @@ void GUI::initializeImage() {
 	two_min_sign_img.fade_in = false;
 	two_min_sign_img.fade_ratio = 1;
 
+
+	std::string you_won_path = picture_dir + std::string("/you_won.png");
+	LoadTextureFromFile(you_won_path.c_str(), &(you_win_img.my_image_texture),
+		&(you_win_img.my_image_width), &(you_win_img.my_image_height));
+	you_win_img.fade_in = false;
+	you_win_img.fade_ratio = 1;
+
 }
 
 void GUI::initializeLoadingImage() {
@@ -1151,6 +1161,7 @@ void GUI::setTimer(float time, int r_sec) {
 
 ModelEnum GUI::renderCharacterSelection(std::unordered_map<ModelEnum, int>& selected_chars, int client_idx) {
 	ModelEnum res = SENTINEL_END;
+	my_player_idx = client_idx; 
 	glfwPollEvents();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -1244,9 +1255,7 @@ bool GUI::renderWinningScene() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	if (ImGui::IsKeyPressed(ImGuiKey_R)) {
-		winning_fade_ratio = 1; 
-	}
+	
 	winning_fade_ratio  = winning_fade_ratio < 0.0001? 0 : winning_fade_ratio* 0.9;
 	float banner_width_ratio = 0.2f; 
 	float ratio = 1 - winning_fade_ratio;
@@ -1261,8 +1270,12 @@ bool GUI::renderWinningScene() {
 	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true, banner_width_ratio);
 	ImGui::SetCursorPos(ImVec2(0, window_height * (1-banner_width_ratio * ratio)));
 	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false, banner_width_ratio);
+	if (scoreboard_data[my_player_idx] == *std::max_element(scoreboard_data, scoreboard_data + char_selections.size())) {
+		ImVec2 image_size = ImVec2(you_win_img.my_image_width * display_ratio, you_win_img.my_image_height * display_ratio);
+		ImGui::SetCursorPos((size - image_size) * 0.5f); 
+		ImGui::Image((void*)(intptr_t)you_win_img.my_image_texture,image_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.7));
+	}
 	ImGui::End();
-
 	ImGui::PopStyleVar(2);
 
 	ImGui::Render();
