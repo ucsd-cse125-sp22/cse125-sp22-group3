@@ -234,6 +234,7 @@ int main(int argc, char* argv[])
 
 	// Loop while GLFW window should stay open and server hasn't closed connection
 	bool two_minute_started = false;
+	bool victory_started = false;
 	while (!glfwWindowShouldClose(window) && status > 0)
 	{
 		// adjust camera direction (player's forward direction depends on camera)
@@ -327,12 +328,16 @@ int main(int argc, char* argv[])
 
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-			if (!two_minute_started && sheader->time_remaining_seconds <= 120) {
+			if (!two_minute_started && sheader->time_remaining_seconds <= 120
+				&& sheader->time_remaining_seconds > 0) {
 				sound_engine.PlayMusic(MUSIC_TWO_MINUTES, false);
 				two_minute_started = true;
 			}
 
-		
+			if (!victory_started && sheader->time_remaining_seconds <= 3) {
+				sound_engine.PlayMusic(MUSIC_VICTORY, false);
+				victory_started = true;
+			}
 
 			// update scoreboard
 			for (int i = 0; i < num_clients; i++) {
