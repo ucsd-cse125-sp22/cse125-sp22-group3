@@ -254,7 +254,7 @@ void FBO::draw(GLuint shader) {
 
 void FBO::bloomBlur(GLuint shader) {
     glUseProgram(shader);
-    unsigned int amount = 2;
+    unsigned int amount = 5;
     bool horizontal = true, first_iteration = true;
     for (unsigned int i = 0; i < amount; i++)
     {
@@ -279,7 +279,7 @@ void FBO::finalDraw(GLuint shader) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, FBO::colorBuffers[0]);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[1]);
+    glBindTexture(GL_TEXTURE_2D, FBO::pColorBuffers[0]);
 
     glUniform1i(glGetUniformLocation(shader, "scene"), 0);
     glUniform1i(glGetUniformLocation(shader, "bloomBlur"), 1);

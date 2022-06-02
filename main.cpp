@@ -451,6 +451,13 @@ int main(int argc, char* argv[])
 					model_info.parent_transform = rotation;
 				}
 
+				// rotating the woooorrrllllddd
+				else if (model_info.model == WORLD_DOME) {
+					float degrees = glm::clamp(FBO::timePassed / 720.0f, 0.0f, 1.0f);
+					glm::mat4 rotation = glm::rotate(glm::mix(0.0f, 6.28f, degrees), glm::vec3(0.0f, 1.0f, 0.0f));
+					model_info.parent_transform = rotation * glm::translate(glm::vec3(model_info.parent_transform[3]));
+				}
+
 				// Do not draw shadow for the big sky dome
 				if (model_info.model != WORLD_DOME) {
 					curr_model.draw(model_info.parent_transform, Window::shadowShaderProgram);
