@@ -20,7 +20,9 @@ int GUI::eggplant_spawn_time;
 GUIImage GUI::two_min_sign_img;
 GUIImage GUI::you_win_img;
 int GUI::my_player_idx;
-int GUI::bottom_sign_time;
+int GUI::soju_sign_time; 
+int GUI::glue_sign_time;
+
 
 
 
@@ -696,9 +698,14 @@ bool GUI::renderUI() {
 		setShowSojuSign(!show_soju_sign);
 	}
 
-
-	createBottomSign( "#bottom sign", &show_glued_sign, &glue_sign_img);
-	createBottomSign( "#bottom sign", &show_soju_sign, &soju_sign_img);
+	if (soju_sign_time > glue_sign_time) {
+		createBottomSign("#bottom sign", &show_soju_sign, &soju_sign_img,soju_sign_time);
+		createBottomSign("#bottom sign", &show_glued_sign, &glue_sign_img, glue_sign_time);
+	}
+	else {
+		createBottomSign("#bottom sign", &show_glued_sign, &glue_sign_img, glue_sign_time);
+		createBottomSign("#bottom sign", &show_soju_sign, &soju_sign_img, soju_sign_time);
+	}
 
 	//test fading out
 	/*float padding = 64.0f;
@@ -1435,7 +1442,7 @@ void GUI::setShowGoldenEggplantSign(bool show) {
 	}
 }
 
-void GUI::createBottomSign(std::string label, bool* show, GUIImage* image) {
+void GUI::createBottomSign(std::string label, bool* show, GUIImage* image, int time) {
 
 	if (image->fade_in) {
 		image->fade_ratio = image->fade_ratio < 0.001 ? 0.001 : image->fade_ratio * 0.8;
@@ -1444,7 +1451,7 @@ void GUI::createBottomSign(std::string label, bool* show, GUIImage* image) {
 		image->fade_ratio *= 1.25;
 	}
 
-	if (bottom_sign_time - remaining_sec >= SIGN_TIME_INTERVAL) {
+	if (time - remaining_sec >= SIGN_TIME_INTERVAL) {
 		image->fade_in = false;
 	}
 	ImVec2 eggplant_size = ImVec2(image->my_image_width * display_ratio, image->my_image_height * display_ratio);
@@ -1462,8 +1469,7 @@ void GUI::setShowGlueSign(bool show) {
 	if (show && !show_glued_sign) {
 		glue_sign_img.fade_in = true;
 		glue_sign_img.fade_ratio = 1;
-		bottom_sign_time = remaining_sec;
-		show_soju_sign = false; 
+		glue_sign_time = remaining_sec;
 	}
 	show_glued_sign = show; 
 }
@@ -1472,8 +1478,7 @@ void GUI::setShowSojuSign(bool show) {
 	if (show && !show_soju_sign) {
 		soju_sign_img.fade_in = true;
 		soju_sign_img.fade_ratio = 1;
-		bottom_sign_time = remaining_sec;
-		show_glued_sign = false; 
+		soju_sign_time = remaining_sec; 
 	}
 	show_soju_sign = show;
 }
