@@ -233,6 +233,8 @@ int main(int argc, char* argv[])
 
 	// Loop while GLFW window should stay open and server hasn't closed connection
 	bool day_1_started = false;
+	bool night_started = false;
+	bool day_2_started = false;
 	bool two_minute_started = false;
 	bool victory_started = false;
 	while (!glfwWindowShouldClose(window) && status > 0)
@@ -341,9 +343,19 @@ int main(int argc, char* argv[])
 
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
-			if (!day_1_started && sheader->time_remaining_seconds > 120) {
+			if (!day_1_started && sheader->time_remaining_seconds > 8.5f * 60) {
 				sound_engine.PlayMusic(MUSIC_DAY_1, false);
 				day_1_started = true;
+			}
+			if (!night_started && sheader->time_remaining_seconds <= 8.5f * 60
+				&& sheader->time_remaining_seconds > 3.5f * 60) {
+				sound_engine.PlayMusic(MUSIC_NIGHT, true);
+				night_started = true;
+			}
+			if (!day_2_started && sheader->time_remaining_seconds <= 3.5f * 60
+				&& sheader->time_remaining_seconds > 120) {
+				sound_engine.PlayMusic(MUSIC_DAY_1, false);
+				day_2_started = true;
 			}
 			if (!two_minute_started && sheader->time_remaining_seconds <= 120
 				&& sheader->time_remaining_seconds > 0) {

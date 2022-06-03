@@ -25,6 +25,7 @@ enum SoundEnum
     MUSIC_MENU,
     MUSIC_DAY_1,
     MUSIC_TWO_MINUTES,
+    MUSIC_NIGHT,
     MUSIC_VICTORY
 };
 
@@ -85,6 +86,7 @@ struct SoundEngine
         {MUSIC_MENU, "sound/music/menu.wav"},
         {MUSIC_DAY_1, "sound/music/day-1.wav"},
         {MUSIC_TWO_MINUTES, "sound/music/two-minutes.wav"},
+        {MUSIC_NIGHT, "sound/music/night.wav"},
         {MUSIC_VICTORY, "sound/music/victory.wav"},
     };
     

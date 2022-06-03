@@ -317,6 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\Downloads\FM-Victory.wav" />
+    <Media Include="..\Downloads\night.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

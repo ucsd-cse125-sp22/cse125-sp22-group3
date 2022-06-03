@@ -237,8 +237,8 @@ GLFWwindow* Window::createWindow(int width, int height)
 	glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 
 	//TODO: change it back to fullscreen
-	//GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, monitor, NULL);
-	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, monitor, NULL);
+	//GLFWwindow* window = glfwCreateWindow(width, height, windowTitle, NULL, NULL);
 
 	// Check if the window could not be created.
 	if (!window)

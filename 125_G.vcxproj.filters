@@ -138,5 +138,6 @@
   </ItemGroup>
   <ItemGroup>
     <Media Include="..\..\..\Downloads\FM-Victory.wav" />
+    <Media Include="..\Downloads\night.wav" />
   </ItemGroup>
 </Project>
