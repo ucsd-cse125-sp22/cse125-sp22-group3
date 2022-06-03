@@ -32,6 +32,8 @@ GUIImage GUI::fish_images_list[NUM_FISH_IMG];
 GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::veg_images_list[NUM_VEG_IMG];
 GUIImage GUI::char_images_list[NUM_ICON];
+GUIImage GUI::res_images_list[NUM_RES_IMG];
+
 int GUI::char_selection_idx;
 float GUI::remaining_sec;
 int GUI::veggie_sale_idx; 
@@ -905,6 +907,18 @@ void GUI::initializeImage() {
 	glue_sign_img.fade_in = false;
 	glue_sign_img.fade_ratio = 1;
 
+	i = 0;
+	std::string res_path = picture_dir + std::string("/result");
+	for (auto& entry : fs::directory_iterator(res_path.c_str())) {
+		//std::cout << entry.path() << std::endl;
+		GUIImage* image = &(res_images_list[i]);
+		bool ret = LoadTextureFromFile(entry.path().string().c_str(), &(image->my_image_texture),
+			&(image->my_image_width), &(image->my_image_height));
+		image->my_image_width *= 3;
+		image->my_image_height *= 3; 
+		i++;
+	}
+
 }
 
 void GUI::initializeLoadingImage() {
@@ -1294,11 +1308,31 @@ bool GUI::renderWinningScene() {
 	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true, banner_width_ratio);
 	ImGui::SetCursorPos(ImVec2(0, window_height * (1-banner_width_ratio * ratio)));
 	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false, banner_width_ratio);
-	/*if (scoreboard_data[my_player_idx] == *std::max_element(scoreboard_data, scoreboard_data + char_selections.size())) {
-		ImVec2 image_size = ImVec2(you_win_img.my_image_width * display_ratio, you_win_img.my_image_height * display_ratio);
-		ImGui::SetCursorPos((size - image_size) * 0.5f); 
-		ImGui::Image((void*)(intptr_t)you_win_img.my_image_texture,image_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.7));
-	}*/
+
+	std::vector<int> scores;
+	for (int score : scoreboard_data) {
+		if (score > 0) {
+			scores.push_back(score);
+		}
+		
+	}
+	sort(scores.begin(), scores.end());	
+
+	int player_rank;
+	for (int i = 0; i < scores.size(); i++) {
+		if (scores[i] == scoreboard_data[my_player_idx]) {
+			player_rank = i;
+			break;
+		}
+	}
+
+	if (remaining_sec <= -11) {
+		GUIImage rank_image = res_images_list[player_rank];
+		ImVec2 rank_image_size = ImVec2(rank_image.my_image_width * display_ratio, rank_image.my_image_height * display_ratio);
+		ImGui::SetCursorPos(ImVec2(size.x * 0.1f, (size.y - rank_image_size.y) * 0.5f));
+		ImGui::Image((void*)(intptr_t)rank_image.my_image_texture, rank_image_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1));
+	}
+
 	ImGui::End();
 	ImGui::PopStyleVar(2);
 

@@ -370,7 +370,6 @@ int main(int argc, char* argv[])
 			char strbuf[16];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
 			if (sheader->time_remaining_seconds < 0) {
-				GUI::setTimer(0.f, 0.9f);
 				rem_s = 0;
 			}
 

@@ -11,7 +11,7 @@ static bool GUI_show_stamina;
 static bool GUI_show_timer; 
 static bool GUI_show_sale; 
 
-#define GAME_TIME_SECS 12 * 60
+#define GAME_TIME_SECS 5//12 * 60
 
 enum InputCommands {
 	NONE,

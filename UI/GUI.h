@@ -27,6 +27,7 @@
 #define NUM_FISH_IMG 3
 #define NUM_TOOL_IMG 10
 #define NUM_VEG_IMG 6
+#define NUM_RES_IMG 4
 #define SIGN_TIME_INTERVAL 5
 #define TRANS_WINDOW_FLAG ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar| \
 						  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | \
@@ -96,6 +97,7 @@ public:
 	static GUIImage fish_images_list[NUM_FISH_IMG];
 	static GUIImage tool_images_list[NUM_TOOL_IMG];
 	static GUIImage veg_images_list[NUM_VEG_IMG];
+	static GUIImage res_images_list[NUM_RES_IMG];
 	static GUIImage sale_background;
 	static GUIImage curtain_img;
 	static GUIImage stamina_image;
@@ -117,7 +119,7 @@ public:
 	static float veg_sell_list[];
 	static float veg_time_list[];
 	static char* veg_type_list[];
-
+	
 
 	static ImVec2 player_pos[4];
 	static std::vector<ModelEnum> char_selections;
