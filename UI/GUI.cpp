@@ -1294,11 +1294,11 @@ bool GUI::renderWinningScene() {
 	bool b = ImGui::BlackBanner("#top_black_banner", window_width, window_height, ratio, true, banner_width_ratio);
 	ImGui::SetCursorPos(ImVec2(0, window_height * (1-banner_width_ratio * ratio)));
 	ImGui::BlackBanner("#bot_black_banner", window_width, window_height, ratio, false, banner_width_ratio);
-	if (scoreboard_data[my_player_idx] == *std::max_element(scoreboard_data, scoreboard_data + char_selections.size())) {
+	/*if (scoreboard_data[my_player_idx] == *std::max_element(scoreboard_data, scoreboard_data + char_selections.size())) {
 		ImVec2 image_size = ImVec2(you_win_img.my_image_width * display_ratio, you_win_img.my_image_height * display_ratio);
 		ImGui::SetCursorPos((size - image_size) * 0.5f); 
 		ImGui::Image((void*)(intptr_t)you_win_img.my_image_texture,image_size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 0.7));
-	}
+	}*/
 	ImGui::End();
 	ImGui::PopStyleVar(2);
 
