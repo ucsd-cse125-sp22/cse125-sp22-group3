@@ -33,7 +33,7 @@ GUIImage GUI::tool_images_list[NUM_TOOL_IMG];
 GUIImage GUI::veg_images_list[NUM_VEG_IMG];
 GUIImage GUI::char_images_list[NUM_ICON];
 int GUI::char_selection_idx;
-int GUI::remaining_sec;
+float GUI::remaining_sec;
 int GUI::veggie_sale_idx; 
 
 
@@ -664,7 +664,7 @@ bool GUI::renderUI() {
 		ImGui::Spinner("##spinner", radius, thickness, 1, col, 30);
 		ImGui::SetCursorPos(padding);
 		ImGui::Spinner("##spinner", radius, thickness, ratio, bg, 120);
-		if (remaining_sec > 120 || remaining_sec % 2 == 0) {
+		if (remaining_sec > 120 || fmodf(remaining_sec,1) < 0.5f) {
 			auto text_size = ImGui::CalcTextSize(GUI_timer_string.c_str());
 			ImGui::SetCursorPos((spinner_size - text_size) * 0.5f + padding);
 			ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(51, 48, 49, 255));
@@ -1015,7 +1015,7 @@ bool GUI::renderProgressBar(float percent, GLFWwindow* window, bool flip_image) 
 	int idx = flip_image ? 1 : 0;
 	ImVec2 image_size = ImVec2(chase_images_list[idx].my_image_width * display_ratio, \
 		chase_images_list[idx].my_image_height * display_ratio);
-	ImGui::SetCursorPos(ImVec2(0, (window_height - image_size.y) * 0.5f));
+	ImGui::SetCursorPos(ImVec2(50, (window_height - image_size.y) * 0.5f));
 
 	ImGui::Image((void*)(intptr_t)chase_images_list[idx].my_image_texture, image_size);
 	ImGui::PushFont(font_Ranchers);
@@ -1178,7 +1178,7 @@ void GUI::renderWaitingClient(int client_joined, int max_client) {
 	glfwSwapBuffers(my_window);
 }
 
-void GUI::setTimer(float time, int r_sec) {
+void GUI::setTimer(float time, float r_sec) {
 	timer_percent = time; 
 	remaining_sec = r_sec; 
 }

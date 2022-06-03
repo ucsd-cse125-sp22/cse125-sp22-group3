@@ -71,7 +71,7 @@ public:
 	static int char_selection_idx;
 	static int veggie_sale_idx; 
 	static float timer_percent;
-	static int remaining_sec;
+	static float remaining_sec;
 	static float stamina_percent; //use this variable to set the stamina display
 	static int eggplant_spawn_time; 
 	static int my_player_idx; 
@@ -137,7 +137,7 @@ public:
 	static bool ShowGUI(bool show);
 	static void createStamina();
 	static void createTimer(float ratio);
-	static void setTimer(float time, int remaining_sec);
+	static void setTimer(float time, float remaining_sec);
 	static bool renderWinningScene();
 	static void createSaleConfirmation();
 	static void setHoldingModel(ModelEnum model);

@@ -136,4 +136,7 @@
     <Image Include="UI\Pictures\p2.jpg" />
     <Image Include="..\..\..\Downloads\saleboard.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\..\Downloads\FM-Victory.wav" />
+  </ItemGroup>
 </Project>

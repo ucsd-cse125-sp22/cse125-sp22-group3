@@ -156,12 +156,7 @@ void GameManager::FixedUpdate()
 {
 	GameManager::UpdateFixedDeltaTime();
 
-	bool victory_condition_met = GameManager::GetRemainingSeconds() <= 0;
-	if (victory_condition_met)
-	{
-		WinningFixedUpdate();
-	}
-	else {
+	if (GameManager::GetRemainingSeconds() > 0) {
 		if (!eggplantSpawned && GameManager::GetRemainingSeconds() <= timeToSpawnEggplant) {
 			AddEntities({ new Vegetable(VegetableType::GOLDEN_EGGPLANT, VEG_GOLDEN_EGGPLANT) });
 			eggplantSpawned = true;
@@ -181,6 +176,10 @@ void GameManager::FixedUpdate()
 		for (GameEntity* entity : GameManager::game_entities) {
 			entity->FixedUpdate();
 		}
+	}
+	else if (GameManager::GetRemainingSeconds() <= -3)
+	{
+		WinningFixedUpdate();
 	}
 
 	// printf("size: %d\n", physics.moving_collidables_.size());

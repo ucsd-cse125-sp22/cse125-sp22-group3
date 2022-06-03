@@ -98,7 +98,7 @@ void preload_assets(GLFWwindow* window)
 {
 	Model tmp; 
 
-	int size = SENTINEL_END - SENTINEL_BEGIN; // implicit + 2 from (progress = 1) and excess (progress++)
+	int size = SENTINEL_END - SENTINEL_BEGIN + 1; // implicit + 2 from (progress = 1) and excess (progress++)
 
 	float progress = 1; 
 	bool flip_image = true; // variable use to flip the image
@@ -230,9 +230,9 @@ int main(int argc, char* argv[])
 
 
 	sound_engine.Play(SFX_AMBIENCE);
-	sound_engine.PlayMusic(MUSIC_DAY_1, false);
 
 	// Loop while GLFW window should stay open and server hasn't closed connection
+	bool day_1_started = false;
 	bool two_minute_started = false;
 	bool victory_started = false;
 	while (!glfwWindowShouldClose(window) && status > 0)
@@ -294,7 +294,8 @@ int main(int argc, char* argv[])
 			std::vector<glm::vec3> point_light_pos; // TODO ask cynthia <--- used to get players positions for point lights in night phase -cynthia
 
 			// check if need to trigger client-side winning sequence
-			if (sheader->time_remaining_seconds <= 0){
+			// Camera Code I
+			if (false && sheader->time_remaining_seconds <= 0){
 				GUI::GUI_show_winning = true;
 				if (sheader->time_remaining_seconds < -0.1) {
 					if (sheader->time_remaining_seconds > -5) {
@@ -320,23 +321,40 @@ int main(int argc, char* argv[])
 				if (winning_camera.z > -40)
 					winning_camera[2] = -40;
 				if (look_at_point.y > 11)
-					winning_view[1] = 11;
+					winning_view[1] = 5;
 				eye_pos = winning_camera;
 				look_at_point = winning_view;
+			}
 
+			//Camera Code II
+			if (sheader->time_remaining_seconds <= -3) {
+				double x = sheader->time_remaining_seconds + 11;
+				winning_view = glm::vec3{ 0, 1, 0 };
+				if (x >= 0) {
+					winning_camera[0] = cosf(7 * sqrtf(x)) * sqrt(x) * 10;
+					winning_camera[1] = powf(2.7182f,-x+3);
+					winning_camera[2] = ((x / 8) * -200) - 50;
+				}
+				eye_pos = winning_camera;
+				look_at_point = winning_view;
 			}
 
 			const glm::mat4 view = glm::lookAt(eye_pos, look_at_point, Window::upVector);
 
+			if (!day_1_started && sheader->time_remaining_seconds > 120) {
+				sound_engine.PlayMusic(MUSIC_DAY_1, false);
+				day_1_started = true;
+			}
 			if (!two_minute_started && sheader->time_remaining_seconds <= 120
 				&& sheader->time_remaining_seconds > 0) {
 				sound_engine.PlayMusic(MUSIC_TWO_MINUTES, false);
 				two_minute_started = true;
 			}
 
-			if (!victory_started && sheader->time_remaining_seconds <= 3) {
+			if (!victory_started && sheader->time_remaining_seconds <= -3) {
 				sound_engine.PlayMusic(MUSIC_VICTORY, false);
 				victory_started = true;
+				GUI::GUI_show_winning = true;
 			}
 
 			// update scoreboard
@@ -351,6 +369,11 @@ int main(int argc, char* argv[])
 			GUI::setTimer(static_cast<float>(1 - (sheader->time_remaining_seconds / sheader->time_max_seconds)), sheader->time_remaining_seconds);
 			char strbuf[16];
 			int rem_s = static_cast<int>(sheader->time_remaining_seconds);
+			if (sheader->time_remaining_seconds < 0) {
+				GUI::setTimer(0.f, 0.9f);
+				rem_s = 0;
+			}
+
 			sprintf(strbuf, "%02d:%02d", rem_s / 60, rem_s % 60);
 			GUI::GUI_timer_string = std::string(strbuf);
 
