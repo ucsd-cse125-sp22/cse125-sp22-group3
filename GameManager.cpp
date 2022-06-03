@@ -51,24 +51,28 @@ inline void GameManager::WinningFixedUpdate()
 		}
 		sort(tieBreaker.begin(), tieBreaker.end());
 		if (players_.size() > 0) {
-			tieBreaker[tieBreaker.size()-1].second->playerHeight = goldPosition.y;
+			//tieBreaker[tieBreaker.size() - 1].second->EnableMovement();
+			tieBreaker[tieBreaker.size() - 1].second->playerHeight = goldPosition.y;
 			tieBreaker[tieBreaker.size() - 1].second->SetWorldPosition(goldPosition);
 			tieBreaker[tieBreaker.size() - 1].second->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
 			tieBreaker[tieBreaker.size() - 1].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 1) {
+			tieBreaker[tieBreaker.size() - 2].second->EnableMovement();
 			tieBreaker[tieBreaker.size() - 2].second->playerHeight = silverPosition.y;
 			tieBreaker[tieBreaker.size() - 2].second->SetWorldPosition(silverPosition);
 			tieBreaker[tieBreaker.size() - 2].second->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
 			tieBreaker[tieBreaker.size() - 2].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 2) {
+			tieBreaker[tieBreaker.size() - 3].second->EnableMovement();
 			tieBreaker[tieBreaker.size() - 3].second->playerHeight = bronzePosition.y;
 			tieBreaker[tieBreaker.size() - 3].second->SetWorldPosition(bronzePosition);
 			tieBreaker[tieBreaker.size() - 3].second->SetRotation(glm::vec3(0, glm::pi<float>() , 0));
 			tieBreaker[tieBreaker.size() - 3].second->modelAnim = DANCE;
 		}
 		if (players_.size() > 3) {
+			tieBreaker[tieBreaker.size() - 4].second->EnableMovement();
 			tieBreaker[tieBreaker.size() - 4].second->playerHeight = loserPosition.y;
 			tieBreaker[tieBreaker.size() - 4].second->SetWorldPosition(loserPosition);
 			tieBreaker[tieBreaker.size() - 4].second->SetRotation(glm::vec3(0, glm::pi<float>(), 0));
@@ -176,16 +180,14 @@ void GameManager::FixedUpdate()
 		for (GameEntity* entity : GameManager::game_entities) {
 			entity->FixedUpdate();
 		}
+
+		// Check collisions
+		GameManager::physics.Compute();
 	}
 	else if (GameManager::GetRemainingSeconds() <= -3)
 	{
 		WinningFixedUpdate();
-	}
-
-	// printf("size: %d\n", physics.moving_collidables_.size());
-
-	// Check collisions
-	GameManager::physics.Compute();
+	}	
 }
 
 void GameManager::AddEntities(std::vector<GameEntity*> entities)
@@ -300,7 +302,7 @@ std::vector<std::pair<char*, int>> GameManager::GetServerBuf()
 		sheader.ui_open = player->ui_open;
 		sheader.sale_confirm_ui_open = player->sale_confirm_ui_open; 
 		sheader.holding_veggie = ModelEnum(0); 
-		sheader.isDrunk = (player->intoxicationTimeRemaining != 0.f);
+		sheader.isDrunk = (player->intoxicationTimeRemaining > 0.1f);
 		sheader.isGlued = player->isGlued;
 		if (player->GetIsHolding()){
 			if(auto vegetable = dynamic_cast<Vegetable*>(player->GetHoldEntity())) {

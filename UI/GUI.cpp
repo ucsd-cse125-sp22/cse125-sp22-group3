@@ -323,11 +323,11 @@ tool_map[ModelEnum::SOJU].price,
 };
 
 char* GUI::seed_prop_list[] = {
-	"won't require much care",
-	"will require some water",
-	"won't require much care",
-	"will require some fertilizer",
-	"will require water and fertilizer"
+	"won't require much \ncare",
+	"will require some \n water",
+	"won't require much \ncare",
+	"will require some \n fertilizer",
+	"will require water \n and fertilizer"
 };
 float GUI::veg_price_list[] = { veggie_map[VegetableType::CARROT].seed_price,
 veggie_map[VegetableType::CABBAGE].seed_price,
@@ -592,7 +592,7 @@ bool GUI::renderUI() {
 			ImGui::Text(" The % s!", tool_type_list[currIdx]);
 			ImGui::PopFont();
 			ImGui::SetCursorPosX(fish_size.x * 0.125);
-			ImGui::Text("It can be used to% s.", tool_func_list[currIdx]);
+			ImGui::Text("It can be used to % s.", tool_func_list[currIdx]);
 			ImGui::SetCursorPosX(fish_size.x * 0.125);
 			ImGui::Text("That will be ");
 			ImGui::SameLine();
@@ -610,7 +610,7 @@ bool GUI::renderUI() {
 			ImGui::Text("A % s seed!", seed_type_list[currIdx]);
 			ImGui::PopFont();
 			ImGui::SetCursorPosX(fish_size.x * 0.08);
-			ImGui::Text("%s requires % .0f sec to grow and %s.\nAfter harvest, it will sell for % .0f dollars(s).", \
+			ImGui::Text("%s requires % .0f sec to grow and %s. After harvest, it will sell for % .0f dollars(s).", \
 						seed_type_list[currIdx], veg_time_list[currIdx], seed_prop_list[currIdx], veg_sell_list[currIdx]);
 			ImGui::SetCursorPosX(fish_size.x * 0.12);
 			ImGui::Text("That will be");
@@ -900,10 +900,14 @@ void GUI::initializeImage() {
 		&(soju_sign_img.my_image_width), &(soju_sign_img.my_image_height));
 	soju_sign_img.fade_in = false;
 	soju_sign_img.fade_ratio = 1;
+	soju_sign_img.my_image_width *= 3; 
+	soju_sign_img.my_image_height *= 3;
 
 	std::string glue_sign_path = picture_dir + std::string("/glue_sign.png");
 	LoadTextureFromFile(glue_sign_path.c_str(), &(glue_sign_img.my_image_texture),
 		&(glue_sign_img.my_image_width), &(glue_sign_img.my_image_height));
+	glue_sign_img.my_image_width *= 3; 
+	glue_sign_img.my_image_height*= 3; 
 	glue_sign_img.fade_in = false;
 	glue_sign_img.fade_ratio = 1;
 
@@ -1321,7 +1325,7 @@ bool GUI::renderWinningScene() {
 	int player_rank;
 	for (int i = 0; i < scores.size(); i++) {
 		if (scores[i] == scoreboard_data[my_player_idx]) {
-			player_rank = i;
+			player_rank = scores.size() - 1 - i;
 			break;
 		}
 	}
