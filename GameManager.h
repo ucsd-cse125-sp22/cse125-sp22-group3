@@ -94,8 +94,8 @@ private:
     glm::vec3 podiumPosition = glm::vec3(0, -1, -20);
 
     // firefly info
-    float timeToSpawnFireflies = 540;
-    float timeToDespawnFireflies = 360;
+    float timeToSpawnFireflies = 520;
+    float timeToDespawnFireflies = 200;
     bool firefliesSpawned = false;
     std::vector<Particle*> fireflies;
     int numFireFlies = 5;
