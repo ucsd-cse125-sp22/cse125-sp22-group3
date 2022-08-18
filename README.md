@@ -1,7 +1,7 @@
 # CSE125 Spring 2022: Group 3 - Farmers Market
-By: Cherellen Banaga, Cynthia Butarbutar, Jakob Getzel, Nicholas Limit, Danica Xiong, Leon Yang, Shujing Zhang
-Demo Video: (https://cse125.ucsd.edu/2022/groups.html)
-Group Home Page: (https://cse125.ucsd.edu/2022/cse125g3/wordpress/index.php/2022/06/08/final-report/)
+By: Cherellen Banaga, Cynthia Butarbutar, Jakob Getzel, Nicholas Limit, Danica Xiong, Leon Yang, Shujing Zhang<br/><br/>
+Demo Video: (https://cse125.ucsd.edu/2022/groups.html)<br/>
+Group Home Page: (https://cse125.ucsd.edu/2022/cse125g3/wordpress/index.php/2022/06/08/final-report/)<br/>
 
 ## Project Description
 Have you ever wanted to trade stonks in an adorable farming game while sabotaging your friends? Well thats Farmers Market.
@@ -33,4 +33,4 @@ Visual Studio, C++ / JetBrains Rider, OpenGL will be used<br/>
 Project timeline can be found on our [miro page](https://miro.com/welcomeonboard/cFF1MTFUenZteXlOQXNwaUlGY3dyOWJEREtCSFVGQVhscjc1dUhvQ1hJZnhhVjVjT0pZaGZKUEhIZXBJN0Y4N3wzMDc0NDU3MzY1OTQzMzg1MDk2?invite_link_id=78445583029)
 ![image](https://user-images.githubusercontent.com/26129457/185441739-66b0a49c-d843-440e-b384-724edc03c2fc.png)
 ![image](https://user-images.githubusercontent.com/26129457/185441761-dc300d25-5230-4e48-9eeb-e3f79134bad2.png)
-![Alt text](https://gyazo.com/23a2dd62efd6f558538820684dc23695.gif)
+![image](https://gyazo.com/23a2dd62efd6f558538820684dc23695.gif)
